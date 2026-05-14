@@ -1,0 +1,440 @@
+/* =========================================================================
+   Vynatix Design System — Transformative Teal
+   colors_and_type.css
+   ========================================================================= */
+
+/* Webfonts:
+   - Instrument Serif (display)  — Google Fonts
+   - Geist (body + mono)         — Google Fonts
+   - Aptos (system / UI accent)  — Microsoft 365; CDN mirror via cdnfonts as fallback
+*/
+/* Webfonts loaded via <link> in the document head, not @import, to avoid
+   blocking the parent stylesheet's load event in restricted environments. */
+
+:root {
+  /* ---------------------------------------------------------------------
+     PRIMITIVE COLOR — Transformative Teal palette (2026)
+     --------------------------------------------------------------------- */
+
+  /* Deep Teal scale — anchor: --teal-600 = #145F64 */
+  --teal-50:  #EAF4F4;
+  --teal-100: #CFE3E3;
+  --teal-200: #A2C8C9;
+  --teal-300: #6EA9AB;
+  --teal-400: #3F878A;
+  --teal-500: #1F6E72;
+  --teal-600: #145F64;   /* Deep Teal — brand primary */
+  --teal-700: #0F4B4F;
+  --teal-800: #0B393C;
+  --teal-900: #0D2A2C;   /* Ink Teal-Black — body text on Cloud Dancer */
+  --teal-950: #07191B;
+
+  /* Cloud Dancer scale — anchor: --cloud-100 = #F3F0E9 (Pantone CY 2026) */
+  --cloud-50:  #FBF9F4;
+  --cloud-100: #F3F0E9;  /* Cloud Dancer — page surface */
+  --cloud-200: #E8E3D7;
+  --cloud-300: #D8D1C0;
+  --cloud-400: #BDB5A2;
+  --cloud-500: #9D957F;
+
+  /* Champagne accent — anchor: --champagne-500 = #C9A96E */
+  --champagne-50:  #FAF4E5;
+  --champagne-100: #F1E4C2;
+  --champagne-200: #E5CF94;
+  --champagne-300: #D7BB78;
+  --champagne-400: #CFB073;
+  --champagne-500: #C9A96E;   /* Reserved CTA accent */
+  --champagne-600: #A6884F;
+  --champagne-700: #7E663B;
+  --champagne-800: #574627;
+
+  /* Warm Grey — supporting neutral */
+  --grey-50:  #EFEFEC;
+  --grey-100: #DCDCD7;
+  --grey-200: #C0C2BE;
+  --grey-300: #A0A6A6;
+  --grey-400: #7C8A94;   /* Warm Grey — captions, dividers */
+  --grey-500: #5C6770;
+  --grey-600: #43515A;
+  --grey-700: #2E3A41;
+
+  /* Functional palette — derived to sit beside teal without rupturing warmth */
+  --error-100: #F4DEDB;
+  --error-500: #B14A3D;     /* Warm oxblood — never saturated red */
+  --error-700: #7E2F26;
+  --success-100: #DDE7DD;
+  --success-500: #4F7A5C;
+  --success-700: #2F4D38;
+  --warning-100: #F5E5C5;
+  --warning-500: #B58A3F;   /* Distinct from champagne accent */
+  --warning-700: #76561F;
+  --info-100: #D8E1E6;
+  --info-500: #5B7F89;
+  --info-700: #335058;
+
+  /* ---------------------------------------------------------------------
+     SEMANTIC COLOR — Light theme (default)
+     --------------------------------------------------------------------- */
+
+  --bg:                    var(--cloud-100);   /* canvas */
+  --bg-dim:                var(--cloud-200);
+  --bg-bright:             var(--cloud-50);
+  --surface-1:             #ECE7DD;            /* card at rest */
+  --surface-2:             #E4DECF;            /* hovered card */
+  --surface-3:             #DCD4C2;            /* floating */
+  --surface-inverse:       var(--teal-900);    /* dark bar / snackbar */
+  --surface-on-inverse:    var(--cloud-100);
+
+  --fg-1:                  var(--teal-900);    /* primary text */
+  --fg-2:                  var(--teal-800);    /* secondary text */
+  --fg-3:                  var(--grey-500);    /* captions, helper */
+  --fg-4:                  var(--grey-400);    /* disabled, placeholder */
+  --fg-on-teal:            var(--cloud-100);
+  --fg-on-champagne:       var(--teal-900);
+
+  --primary:               var(--teal-600);
+  --primary-hover:         var(--teal-700);
+  --primary-pressed:       var(--teal-800);
+  --primary-fg:            var(--cloud-100);
+
+  --accent:                var(--champagne-500);  /* "guest, not resident" */
+  --accent-hover:          var(--champagne-600);
+  --accent-fg:             var(--teal-900);
+
+  --border:                rgba(13, 42, 44, 0.14);
+  --border-strong:         rgba(13, 42, 44, 0.28);
+  --border-teal:           var(--teal-600);
+  --border-champagne:      var(--champagne-500);
+
+  --focus-ring:            var(--champagne-500);
+  --selection-bg:          var(--champagne-100);
+  --selection-fg:          var(--teal-900);
+  --scrim:                 rgba(13, 42, 44, 0.48);
+
+  /* ---------------------------------------------------------------------
+     PRIMITIVE — Type families
+     --------------------------------------------------------------------- */
+  --font-sans:    'Geist', 'Aptos', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-aptos:   'Aptos', 'Geist', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:   'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono:    'Geist Mono', ui-monospace, Menlo, monospace;
+  --font-display:   var(--font-serif);   /* Instrument Serif — display */
+  --font-body:      var(--font-sans);    /* Geist — body */
+  --font-editorial: var(--font-serif);
+  --font-code:      var(--font-mono);
+
+  /* Weights — Bold reserved for display, Black/Extrabold forbidden */
+  --w-light:    300;
+  --w-regular:  400;
+  --w-medium:   500;
+  --w-semibold: 600;
+  --w-bold:     700;
+
+  /* Modular size scale, ratio ~1.25 (major third), base 16 */
+  --size-12: 0.75rem;
+  --size-14: 0.875rem;
+  --size-16: 1rem;
+  --size-18: 1.125rem;
+  --size-20: 1.25rem;
+  --size-24: 1.5rem;
+  --size-30: 1.875rem;
+  --size-36: 2.25rem;
+  --size-44: 2.75rem;
+  --size-56: 3.5rem;
+  --size-72: 4.5rem;
+  --size-90: 5.625rem;
+
+  --lh-tight:    1.05;
+  --lh-snug:     1.18;
+  --lh-normal:   1.4;
+  --lh-relaxed:  1.55;
+  --lh-loose:    1.7;
+
+  --tr-tight:  -0.025em;
+  --tr-snug:   -0.012em;
+  --tr-normal: 0;
+  --tr-wide:   0.04em;
+
+  /* ---------------------------------------------------------------------
+     SPACING — 4px base, 8px spine
+     --------------------------------------------------------------------- */
+  --sp-0:   0;
+  --sp-2:   2px;
+  --sp-4:   4px;
+  --sp-8:   8px;
+  --sp-12:  12px;
+  --sp-16:  16px;
+  --sp-20:  20px;
+  --sp-24:  24px;
+  --sp-32:  32px;
+  --sp-40:  40px;
+  --sp-48:  48px;
+  --sp-64:  64px;
+  --sp-96:  96px;
+  --sp-128: 128px;
+
+  /* ---------------------------------------------------------------------
+     RADII — moderate Nordic restraint
+     --------------------------------------------------------------------- */
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   8px;   /* buttons, inputs */
+  --radius-lg:   12px;  /* cards */
+  --radius-xl:   16px;  /* modals */
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* ---------------------------------------------------------------------
+     ELEVATION — warm-charcoal-tinted shadows; never pure black
+     --------------------------------------------------------------------- */
+  --shadow-0: none;
+  --shadow-1: 0 1px 2px rgba(13, 42, 44, 0.06);
+  --shadow-2: 0 1px 4px rgba(13, 42, 44, 0.08), 0 1px 2px rgba(13, 42, 44, 0.04);
+  --shadow-3: 0 4px 12px rgba(13, 42, 44, 0.10), 0 1px 3px rgba(13, 42, 44, 0.06);
+  --shadow-4: 0 12px 32px rgba(13, 42, 44, 0.12), 0 2px 6px rgba(13, 42, 44, 0.06);
+  --shadow-5: 0 24px 56px rgba(13, 42, 44, 0.16);
+
+  /* Champagne hairline accent — focus rings, single-moment dividers */
+  --hairline-champagne: 0 0 0 1px var(--champagne-500);
+
+  /* ---------------------------------------------------------------------
+     MOTION — damped, deferential
+     --------------------------------------------------------------------- */
+  --d-instant: 50ms;
+  --d-quick:   100ms;
+  --d-short:   200ms;
+  --d-medium:  300ms;
+  --d-long:    500ms;
+  --d-extended: 700ms;
+  --d-deliberate: 1000ms;
+
+  --ease-standard:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized:  cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-accelerate:  cubic-bezier(0.3, 0, 1, 1);
+  --ease-decelerate:  cubic-bezier(0, 0, 0, 1);
+  --ease-enter:       cubic-bezier(0, 0, 0, 1);
+  --ease-exit:        cubic-bezier(0.3, 0, 1, 1);
+
+  /* ---------------------------------------------------------------------
+     LAYOUT
+     --------------------------------------------------------------------- */
+  --container-content: 720px;
+  --container-laptop:  1200px;
+  --container-desktop: 1440px;
+  --container-wide:    1600px;
+}
+
+/* =========================================================================
+   DARK / INK THEME — "Stockholm in winter, lit from within"
+
+   Three rules:
+   1) Canvas is Ink Teal-Black (#0D2A2C), never #000000. The palette stays warm.
+   2) Elevation comes from BRIGHTNESS, not shadow. Each surface step warms +
+      lightens one notch. Shadows exist but recede; brightness leads.
+   3) Champagne brightens up the scale (300, occasionally 200) so it stays
+      legible on Ink without going neon. Still ≤1% footprint — same rule.
+   ========================================================================= */
+[data-theme="dark"] {
+  /* Canvas + bright/dim siblings */
+  --bg:                    var(--teal-900);   /* Ink Teal-Black canvas */
+  --bg-dim:                var(--teal-950);   /* deepest, behind canvas */
+  --bg-bright:             #122E31;           /* a half-step warmer than bg */
+
+  /* Elevation by brightness — each step adds warmth, not shadow */
+  --surface-1:             #163336;           /* card at rest */
+  --surface-2:             #1E3F43;           /* hovered card */
+  --surface-3:             #264C50;           /* floating panel */
+  --surface-4:             #305A5E;           /* modal */
+  --surface-inverse:       var(--cloud-100);
+  --surface-on-inverse:    var(--teal-900);
+
+  /* Foreground — Cloud Dancer leads, never pure white */
+  --fg-1:                  var(--cloud-100);  /* primary text */
+  --fg-2:                  #D6D2C7;           /* secondary */
+  --fg-3:                  #9DA8AB;           /* captions */
+  --fg-4:                  #6B7B7E;           /* disabled, placeholder */
+  --fg-on-teal:            var(--cloud-100);
+  --fg-on-champagne:       var(--teal-950);
+
+  /* Primary — teal warms upward to maintain legibility on Ink ground */
+  --primary:               var(--teal-300);   /* #6EA9AB */
+  --primary-hover:         var(--teal-200);
+  --primary-pressed:       var(--teal-100);
+  --primary-fg:            var(--teal-950);
+
+  /* Accent — Champagne brightens; still the rarest color on screen */
+  --accent:                var(--champagne-300);   /* #D7BB78 */
+  --accent-hover:          var(--champagne-200);
+  --accent-fg:             var(--teal-950);
+
+  /* Borders — Cloud at low alpha; emphasis tier doubles the alpha */
+  --border:                rgba(243, 240, 233, 0.10);
+  --border-strong:         rgba(243, 240, 233, 0.22);
+  --border-teal:           var(--teal-300);
+  --border-champagne:      var(--champagne-300);
+
+  /* Focus + selection */
+  --focus-ring:            var(--champagne-300);
+  --selection-bg:          rgba(215, 187, 120, 0.22);
+  --selection-fg:          var(--cloud-100);
+  --scrim:                 rgba(0, 0, 0, 0.64);
+
+  /* Functional — slightly desaturated, with brighter foregrounds */
+  --error-100:   #3A1F1B;
+  --error-500:   #D78577;       /* dusty oxblood */
+  --error-700:   #F4DEDB;       /* read as fg on the 100 tone */
+  --success-100: #1F2F25;
+  --success-500: #8FB59A;
+  --success-700: #DDE7DD;
+  --warning-100: #2F2818;
+  --warning-500: #E5C68A;
+  --warning-700: #F5E5C5;
+  --info-100:    #1F2C30;
+  --info-500:    #9CB7BF;
+  --info-700:    #D8E1E6;
+
+  /* Shadows — present but de-emphasized; brightness does the lifting */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.50);
+  --shadow-3: 0 8px 22px rgba(0, 0, 0, 0.55);
+  --shadow-4: 0 18px 46px rgba(0, 0, 0, 0.60);
+  --shadow-5: 0 32px 80px rgba(0, 0, 0, 0.66);
+
+  color-scheme: dark;
+}
+
+/* =========================================================================
+   SEMANTIC TYPE ROLES
+   ========================================================================= */
+
+html { font-family: var(--font-sans); color: var(--fg-1); background: var(--bg); }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--size-16);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-1);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display — Instrument Serif, the brand's editorial voice at scale */
+.display-lg, .display-large {
+  font: var(--w-regular) var(--size-90)/var(--lh-tight) var(--font-display);
+  letter-spacing: var(--tr-tight);
+}
+.display-md, .display-medium {
+  font: var(--w-regular) var(--size-72)/var(--lh-tight) var(--font-display);
+  letter-spacing: var(--tr-tight);
+}
+.display-sm, .display-small {
+  font: var(--w-regular) var(--size-56)/var(--lh-snug) var(--font-display);
+  letter-spacing: var(--tr-tight);
+}
+
+/* Headlines — Instrument Serif at H1/H2, Geist (sans) from H3 down for UI clarity */
+h1, .headline-lg {
+  font: var(--w-regular) var(--size-44)/var(--lh-snug) var(--font-display);
+  letter-spacing: var(--tr-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h2, .headline-md {
+  font: var(--w-regular) var(--size-36)/var(--lh-snug) var(--font-display);
+  letter-spacing: var(--tr-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h3, .headline-sm {
+  font: var(--w-medium) var(--size-30)/var(--lh-snug) var(--font-sans);
+  letter-spacing: var(--tr-normal);
+  color: var(--fg-1);
+  margin: 0;
+}
+h4, .title-lg {
+  font: var(--w-medium) var(--size-24)/var(--lh-normal) var(--font-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+h5, .title-md {
+  font: var(--w-medium) var(--size-20)/var(--lh-normal) var(--font-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+h6, .title-sm {
+  font: var(--w-medium) var(--size-18)/var(--lh-normal) var(--font-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* Body */
+p, .body-md {
+  font: var(--w-regular) var(--size-16)/var(--lh-relaxed) var(--font-body);
+  color: var(--fg-1);
+  margin: 0;
+}
+.body-lg {
+  font: var(--w-regular) var(--size-18)/var(--lh-relaxed) var(--font-body);
+  color: var(--fg-1);
+}
+.body-sm {
+  font: var(--w-regular) var(--size-14)/var(--lh-normal) var(--font-body);
+  color: var(--fg-2);
+}
+
+/* Labels (UI) */
+.label-lg { font: var(--w-medium) var(--size-16)/var(--lh-normal) var(--font-sans); }
+.label-md { font: var(--w-medium) var(--size-14)/var(--lh-normal) var(--font-sans); }
+.label-sm {
+  font: var(--w-medium) var(--size-12)/var(--lh-normal) var(--font-sans);
+  letter-spacing: var(--tr-wide);
+  text-transform: uppercase;
+}
+
+/* Editorial — Instrument Serif for pull-quotes and long-form openers */
+.editorial-headline {
+  font: var(--w-regular) var(--size-44)/var(--lh-snug) var(--font-serif);
+  letter-spacing: var(--tr-snug);
+}
+.editorial-quote {
+  font: italic var(--w-regular) var(--size-30)/var(--lh-snug) var(--font-serif);
+  color: var(--fg-1);
+}
+
+/* Code */
+code, .code-inline {
+  font: var(--w-regular) 0.92em/1.4 var(--font-mono);
+  background: var(--surface-1);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--fg-2);
+}
+pre, .code-block {
+  font: var(--w-regular) var(--size-14)/var(--lh-relaxed) var(--font-mono);
+  background: var(--surface-1);
+  padding: var(--sp-16);
+  border-radius: var(--radius-md);
+  overflow: auto;
+}
+
+/* Selection */
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+
+/* Focus — champagne 2px ring with cloud offset (the system's single
+   approved place for champagne, because accessibility outranks restraint) */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

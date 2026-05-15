@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{meta.title}}</title>
+<meta name="description" content="{{meta.description}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="colors_and_type.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="#home" class="site-header__logo" aria-label="Vynatix home">
+        <img src="assets/wordmark-teal.svg" alt="Vynatix" width="118" height="30">
+      </a>
+
+      <nav class="site-header__nav" aria-label="Primary">
+        {{#nav}}
+        <a href="{{href}}" class="site-header__link">{{label}}</a>
+        {{/nav}}
+      </nav>
+
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <div style="position: relative;">
+          <button class="lang-pill" aria-label="Language: English">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+            <span>EN</span>
+          </button>
+        </div>
+
+        <a href="#contact" class="site-header__cta">{{hero.cta_primary}}</a>
+
+        <button class="icon-btn mobile-toggle" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================ Hero -->
+    <section class="hero" id="home">
+      <div class="hero__top">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="eyebrow">{{hero.eyebrow}}</span>
+          <span style="width: 24px; height: 1px; background: var(--border-strong);"></span>
+          <span style="font: 400 12px/1 var(--font-mono); color: var(--fg-3); letter-spacing: 0.04em;">{{hero.established}}</span>
+        </div>
+
+        <h1 class="hero__h1">
+          {{{hero.headline_html}}}
+        </h1>
+
+        <p class="hero__lede">{{hero.lede}}</p>
+
+        <div class="hero__ctas">
+          <a class="btn-primary" href="#contact">{{hero.cta_primary}}</a>
+          <a class="btn-text" href="#work">
+            {{hero.cta_secondary}}
+            <span class="arrow">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__media">
+        <div class="hero__photo">
+          <div class="hero__photo-meta">
+            <div>
+              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">{{hero.photo.label}}</div>
+              <strong>{{hero.photo.subject}}</strong>
+            </div>
+            <div style="margin-inline-start: auto; text-align: end;">
+              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">{{hero.photo.counter}}</div>
+              <strong>{{hero.photo.location}}</strong>
+            </div>
+          </div>
+          <svg viewBox="0 0 1280 600" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="hero-pg-1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#1F6E72" stop-opacity="0.85"/>
+                <stop offset="1" stop-color="#0D2A2C" stop-opacity="0.9"/>
+              </linearGradient>
+              <linearGradient id="hero-pg-2" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#C9A96E" stop-opacity="0.18"/>
+                <stop offset="1" stop-color="#C9A96E" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <rect width="1280" height="600" fill="url(#hero-pg-1)"/>
+            <rect width="1280" height="600" fill="url(#hero-pg-2)"/>
+            <g opacity="0.32">
+              <circle cx="980" cy="220" r="220" fill="#F3F0E9" opacity="0.18"/>
+              <circle cx="980" cy="220" r="160" fill="#F3F0E9" opacity="0.10"/>
+              <circle cx="980" cy="220" r="100" fill="#C9A96E" opacity="0.45"/>
+            </g>
+            <g opacity="0.4">
+              <line x1="0" y1="500" x2="1280" y2="500" stroke="#F3F0E9" stroke-width="1" stroke-opacity="0.18"/>
+              <line x1="0" y1="540" x2="1280" y2="540" stroke="#F3F0E9" stroke-width="1" stroke-opacity="0.10"/>
+            </g>
+            <path d="M0 480 L160 460 L260 470 L360 440 L520 460 L640 430 L780 450 L900 420 L1080 440 L1280 410 L1280 600 L0 600 Z" fill="#0D2A2C" opacity="0.82"/>
+            <path d="M0 540 L1280 540 L1280 600 L0 600 Z" fill="#07191B" opacity="0.6"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Marquee -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          {{#marquee_doubled}}
+          <span class="marquee__item">{{.}}</span>
+          {{/marquee_doubled}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Practices -->
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="eyebrow">{{practices_section.eyebrow}}</span>
+            <h2 class="section__h2">{{{practices_section.headline_html}}}</h2>
+          </div>
+          <p class="section__lead">{{practices_section.lead}}</p>
+        </div>
+
+        <div class="practices">
+          {{#practices}}
+          <div class="practice">
+            <span class="practice__num">{{num}}</span>
+            <h3 class="practice__title">{{title}}</h3>
+            <p class="practice__body">{{body}}</p>
+            <ul class="practice__bullets">
+              {{#bullets}}
+              <li>{{.}}</li>
+              {{/bullets}}
+            </ul>
+          </div>
+          {{/practices}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Case reel (Ink) -->
+    <section class="section section--ink" id="work">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="eyebrow">{{work_section.eyebrow}}</span>
+            <h2 class="section__h2">{{{work_section.headline_html}}}</h2>
+          </div>
+          <p class="section__lead">{{work_section.lead}}</p>
+        </div>
+
+        <div class="reel-wrap">
+          <div class="reel">
+            {{#case_studies}}
+            <article class="reel__card">
+              <div class="reel__cover {{cover_class}}">
+                <span class="reel__cover-label" aria-hidden="true">{{eyebrow}}</span>
+              </div>
+              <span class="reel__eyebrow">{{eyebrow}}</span>
+              <h3 class="reel__title">{{title}}</h3>
+              <span class="reel__metric">{{metric}}</span>
+              <a class="reel__link" href="#work" aria-label="Read the case: {{title}}">Read the case
+                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </article>
+            {{/case_studies}}
+          </div>
+
+          <div class="reel__controls">
+            <button class="reel__btn" aria-label="Previous">
+              <span style="transform: rotate(180deg); display: inline-flex;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </span>
+            </button>
+            <button class="reel__btn" aria-label="Next">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+            <span style="margin-inline-start: auto; font: 400 13px/1 var(--font-mono); color: var(--fg-3);">
+              <a class="btn-text" href="#work" style="padding: 8px 0; color: inherit;">
+                {{work_section.see_all_label}}
+                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Story strip -->
+    <section class="section" id="about">
+      <div class="container">
+        <span class="eyebrow">{{about.eyebrow}}</span>
+        <h2 class="section__h2" style="margin: 16px 0 56px; max-width: 980px;">{{about.headline}}</h2>
+        <div class="two-up">
+          <div>
+            <p class="two-up__body">{{{about_p1}}}</p>
+            <p class="two-up__body">{{{about_p2}}}</p>
+            <p class="two-up__body">{{{about_p3}}}</p>
+            <a class="btn-text" href="#about" style="padding-inline-start: 0;">
+              {{about.cta_label}}
+              <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+            </a>
+          </div>
+          <div>
+            <blockquote class="pullquote">{{about.pullquote}}</blockquote>
+            <div style="margin-top: 32px; padding: 24px; background: var(--surface-1); border-radius: 12px;">
+              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">{{about.badge_label}}</div>
+              <div style="display: flex; align-items: baseline; gap: 14px;">
+                <span style="font: italic 400 56px/1 var(--font-display); color: var(--primary);">{{about.badge_value}}</span>
+                <span style="font: 400 15px/1.4 var(--font-sans); color: var(--fg-2);">{{about.badge_text}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Numbers -->
+    <section class="section section--tight section--surface">
+      <div class="container">
+        <div style="display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 48px; flex-wrap: wrap;">
+          <div>
+            <span class="eyebrow">{{numbers_section.eyebrow}}</span>
+            <h2 class="section__h2" style="margin: 16px 0 0; max-width: 720px;">{{numbers_section.headline}}</h2>
+          </div>
+        </div>
+        <div class="numbers">
+          {{#numbers}}
+          <div class="numbers__cell{{#accent}} numbers__cell--accent{{/accent}}">
+            <span class="numbers__value">{{value}}</span>
+            <p class="numbers__label">{{label}}</p>
+          </div>
+          {{/numbers}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ CTA band -->
+    <section class="cta-band" id="contact">
+      <div class="cta-band__inner">
+        <div>
+          <span class="eyebrow" style="color: var(--accent);">{{cta_band.eyebrow}}</span>
+          <h2 class="cta-band__h2">{{{cta_band.headline_html}}}</h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">{{cta_band.lede}}</p>
+          <a class="btn-primary" href="#contact">{{cta_band.primary_label}}</a>
+          <p class="cta-band__contact">
+            <a href="mailto:{{contact.email}}">{{contact.email}}</a><br>
+            {{contact.phone}}
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <img src="assets/wordmark-cloud.svg" alt="Vynatix" width="118" height="26">
+        <p class="site-footer__tag">{{footer.tag}}</p>
+        <p class="site-footer__address">
+          {{{footer.address_html}}}
+        </p>
+      </div>
+      {{#footer.columns}}
+      <div class="site-footer__col">
+        <h4>{{title}}</h4>
+        {{#links}}
+        <a href="{{href}}">{{label}}</a>
+        {{/links}}
+      </div>
+      {{/footer.columns}}
+    </div>
+    <div class="site-footer__tail">
+      <span>{{footer.copyright}}</span>
+      <span>{{footer.domain}}</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

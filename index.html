@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
+<style>html:not(.content-ready) #app { visibility: hidden; }</style>
 </head>
 <body>
 <div id="app">
@@ -55,22 +56,24 @@
     <section class="hero" id="home">
       <div class="hero__top">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <span class="eyebrow">A premium Nordic IT consultancy</span>
+          <span class="eyebrow" data-bind="hero.eyebrow">A premium Nordic IT consultancy</span>
           <span style="width: 24px; height: 1px; background: var(--border-strong);"></span>
-          <span style="font: 400 12px/1 var(--font-mono); color: var(--fg-3); letter-spacing: 0.04em;">Est. 2023</span>
+          <span data-bind="hero.established" style="font: 400 12px/1 var(--font-mono); color: var(--fg-3); letter-spacing: 0.04em;">Est. 2023</span>
         </div>
 
-        <h1 class="hero__h1">
+        <h1 class="hero__h1" data-bind="hero.headline">
           The consultancy <em>Volvo</em>
           <br>would hire twice.
         </h1>
 
-        <p class="hero__lede">We rebuilt the truck radio in sixteen weeks. Three engineers, four months, one production media player. We are engineers who write the case studies about the engineering.</p>
+        <p class="hero__lede" data-bind="hero.lede">We rebuilt the truck radio in sixteen weeks. Three engineers, four months, one production media player. We are engineers who write the case studies about the engineering.</p>
 
         <div class="hero__ctas">
-          <a class="btn-primary" href="#contact">Book a call</a>
-          <a class="btn-text" href="#work">
-            See the work
+          <a class="btn-primary" href="#contact"
+             data-bind="hero.ctaPrimary.label"
+             data-bind-attr="href:hero.ctaPrimary.href">Book a call</a>
+          <a class="btn-text" href="#work" data-bind-attr="href:hero.ctaSecondary.href">
+            <span data-bind="hero.ctaSecondary.label">See the work</span>
             <span class="arrow">
               <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
             </span>
@@ -82,12 +85,12 @@
         <div class="hero__photo">
           <div class="hero__photo-meta">
             <div>
-              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Documentary photograph</div>
-              <strong>Subject in working environment</strong>
+              <div data-bind="hero.photoCaption.kicker" style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">Documentary photograph</div>
+              <strong data-bind="hero.photoCaption.subject">Subject in working environment</strong>
             </div>
             <div style="margin-inline-start: auto; text-align: end;">
-              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">1 / 4</div>
-              <strong>Gothenburg, 2025</strong>
+              <div data-bind="hero.photoCaption.indexLabel" style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">1 / 4</div>
+              <strong data-bind="hero.photoCaption.location">Gothenburg, 2025</strong>
             </div>
           </div>
           <svg viewBox="0 0 1280 600" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -120,7 +123,7 @@
 
       <!-- Marquee -->
       <div class="marquee" aria-hidden="true">
-        <div class="marquee__track">
+        <div class="marquee__track" data-bind-list="marquee, #tpl-marquee-item, 2">
           <span class="marquee__item">Volvo Trucks</span>
           <span class="marquee__item">Volvo Cars</span>
           <span class="marquee__item">A Nordic bank</span>
@@ -139,6 +142,7 @@
           <span class="marquee__item">A Swedish ministry</span>
         </div>
       </div>
+      <template id="tpl-marquee-item"><span class="marquee__item" data-bind="."></span></template>
     </section>
 
     <!-- ============================================================ Practices -->
@@ -146,13 +150,13 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">Services</span>
-            <h2 class="section__h2">Three practices.<br>One bench of senior engineers.</h2>
+            <span class="eyebrow" data-bind="services.eyebrow">Services</span>
+            <h2 class="section__h2" data-bind="services.headline">Three practices.<br>One bench of senior engineers.</h2>
           </div>
-          <p class="section__lead">We do three things very well. Anything else, we say no to — politely, and with a referral.</p>
+          <p class="section__lead" data-bind="services.lead">We do three things very well. Anything else, we say no to — politely, and with a referral.</p>
         </div>
 
-        <div class="practices">
+        <div class="practices" data-bind-list="services.practices, #tpl-practice">
           <div class="practice">
             <span class="practice__num">01</span>
             <h3 class="practice__title">AI engineering</h3>
@@ -187,6 +191,15 @@
             </ul>
           </div>
         </div>
+        <template id="tpl-practice">
+          <div class="practice">
+            <span class="practice__num" data-bind=".num"></span>
+            <h3 class="practice__title" data-bind=".title"></h3>
+            <p class="practice__body" data-bind=".body"></p>
+            <ul class="practice__bullets" data-bind-list=".bullets, #tpl-practice-bullet"></ul>
+          </div>
+        </template>
+        <template id="tpl-practice-bullet"><li data-bind="."></li></template>
       </div>
     </section>
 
@@ -195,14 +208,14 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">Recent work</span>
-            <h2 class="section__h2">Three engagements.<br>Three real numbers.</h2>
+            <span class="eyebrow" data-bind="work.eyebrow">Recent work</span>
+            <h2 class="section__h2" data-bind="work.headline">Three engagements.<br>Three real numbers.</h2>
           </div>
-          <p class="section__lead">Selected from twenty-four projects shipped since 2024. The rest are under non-disclosure.</p>
+          <p class="section__lead" data-bind="work.lead">Selected from twenty-four projects shipped since 2024. The rest are under non-disclosure.</p>
         </div>
 
         <div class="reel-wrap">
-          <div class="reel">
+          <div class="reel" data-bind-list="work.cases, #tpl-case">
             <article class="reel__card">
               <div class="reel__cover case-cover-1">
                 <span class="reel__cover-label" aria-hidden="true">Volvo Trucks · 2024</span>
@@ -248,6 +261,19 @@
               </a>
             </article>
           </div>
+          <template id="tpl-case">
+            <article class="reel__card">
+              <div class="reel__cover" data-bind-class-from=".cover">
+                <span class="reel__cover-label" aria-hidden="true"><span data-bind=".client"></span> · <span data-bind=".year"></span></span>
+              </div>
+              <span class="reel__eyebrow"><span data-bind=".client"></span> · <span data-bind=".year"></span></span>
+              <h3 class="reel__title" data-bind=".title"></h3>
+              <span class="reel__metric" data-bind=".metric"></span>
+              <a class="reel__link" data-bind-attr="href:.href">Read the case
+                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+              </a>
+            </article>
+          </template>
 
           <div class="reel__controls">
             <button class="reel__btn" aria-label="Previous">
@@ -259,8 +285,8 @@
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
             </button>
             <span style="margin-inline-start: auto; font: 400 13px/1 var(--font-mono); color: var(--fg-3);">
-              <a class="btn-text" href="#work" style="padding: 8px 0; color: inherit;">
-                See all work
+              <a class="btn-text" data-bind-attr="href:work.seeAllHref" href="#work" style="padding: 8px 0; color: inherit;">
+                <span data-bind="work.seeAllLabel">See all work</span>
                 <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
               </a>
             </span>
@@ -272,25 +298,28 @@
     <!-- ============================================================ Story strip -->
     <section class="section" id="about">
       <div class="container">
-        <span class="eyebrow">About Vynatix</span>
-        <h2 class="section__h2" style="margin: 16px 0 56px; max-width: 980px;">Engineers who write the case studies about the engineering.</h2>
+        <span class="eyebrow" data-bind="about.eyebrow">About Vynatix</span>
+        <h2 class="section__h2" data-bind="about.headline" style="margin: 16px 0 56px; max-width: 980px;">Engineers who write the case studies about the engineering.</h2>
         <div class="two-up">
           <div>
-            <p class="two-up__body">Vynatix is a division of Ultra Group, founded 2023 in Gothenburg. We staff teams with senior engineers — never more than fifteen at one time — and we write the work down so the next team can read it.</p>
-            <p class="two-up__body">We started Vynatix because most consultancies sell hours, and the hours sold rarely match the hours that move a project forward. Our engagements are scoped against an outcome — a deployed system, an audit passed, a build that stays green — and priced as fixed work, not as a body count.</p>
-            <p class="two-up__body">We are based on Magasinsgatan in Gothenburg, and a second desk in Stockholm where two of the security team work. We meet clients in person for the first conversation. The rest happens in writing.</p>
-            <a class="btn-text" href="#about" style="padding-inline-start: 0;">
-              About
+            <div data-bind-list="about.paragraphs, #tpl-about-paragraph">
+              <p class="two-up__body">Vynatix is a division of Ultra Group, founded 2023 in Gothenburg. We staff teams with senior engineers — never more than fifteen at one time — and we write the work down so the next team can read it.</p>
+              <p class="two-up__body">We started Vynatix because most consultancies sell hours, and the hours sold rarely match the hours that move a project forward. Our engagements are scoped against an outcome — a deployed system, an audit passed, a build that stays green — and priced as fixed work, not as a body count.</p>
+              <p class="two-up__body">We are based on Magasinsgatan in Gothenburg, and a second desk in Stockholm where two of the security team work. We meet clients in person for the first conversation. The rest happens in writing.</p>
+            </div>
+            <template id="tpl-about-paragraph"><p class="two-up__body" data-bind="."></p></template>
+            <a class="btn-text" data-bind-attr="href:about.aboutLinkHref" href="#about" style="padding-inline-start: 0;">
+              <span data-bind="about.aboutLinkLabel">About</span>
               <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
             </a>
           </div>
           <div>
-            <blockquote class="pullquote">We staff against an outcome, write it down, and ship it. Then we write the case study.</blockquote>
+            <blockquote class="pullquote" data-bind="about.pullquote">We staff against an outcome, write it down, and ship it. Then we write the case study.</blockquote>
             <div style="margin-top: 32px; padding: 24px; background: var(--surface-1); border-radius: 12px;">
-              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Est. 2023</div>
+              <div data-bind="about.statKicker" style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Est. 2023</div>
               <div style="display: flex; align-items: baseline; gap: 14px;">
-                <span style="font: italic 400 56px/1 var(--font-display); color: var(--primary);">15</span>
-                <span style="font: 400 15px/1.4 var(--font-sans); color: var(--fg-2);">senior engineers, never more than that at one time</span>
+                <span data-bind="about.statValue" style="font: italic 400 56px/1 var(--font-display); color: var(--primary);">15</span>
+                <span data-bind="about.statLabel" style="font: 400 15px/1.4 var(--font-sans); color: var(--fg-2);">senior engineers, never more than that at one time</span>
               </div>
             </div>
           </div>
@@ -303,11 +332,11 @@
       <div class="container">
         <div style="display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 48px; flex-wrap: wrap;">
           <div>
-            <span class="eyebrow">Since 2023</span>
-            <h2 class="section__h2" style="margin: 16px 0 0; max-width: 720px;">Numbers that withstand a second look.</h2>
+            <span class="eyebrow" data-bind="numbers.eyebrow">Since 2023</span>
+            <h2 class="section__h2" data-bind="numbers.headline" style="margin: 16px 0 0; max-width: 720px;">Numbers that withstand a second look.</h2>
           </div>
         </div>
-        <div class="numbers">
+        <div class="numbers" data-bind-list="numbers.kpis, #tpl-kpi">
           <div class="numbers__cell">
             <span class="numbers__value">24</span>
             <p class="numbers__label">Engagements shipped to production</p>
@@ -325,6 +354,12 @@
             <p class="numbers__label">Engagements abandoned mid-flight</p>
           </div>
         </div>
+        <template id="tpl-kpi">
+          <div class="numbers__cell" data-bind-class-if="numbers__cell--accent:.accent">
+            <span class="numbers__value" data-bind=".value"></span>
+            <p class="numbers__label" data-bind=".label"></p>
+          </div>
+        </template>
       </div>
     </section>
 
@@ -332,15 +367,18 @@
     <section class="cta-band" id="contact">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
-          <h2 class="cta-band__h2">Considered work, <em>on a clear timeline.</em></h2>
+          <span class="eyebrow" data-bind="contact.eyebrow" style="color: var(--accent);">Considered work</span>
+          <h2 class="cta-band__h2" data-bind="contact.headline">Considered work, <em>on a clear timeline.</em></h2>
         </div>
         <div class="cta-band__actions">
-          <p class="cta-band__lede">One conversation, one written scope, one fixed price. We respond to inbound within one working day.</p>
-          <a class="btn-primary" href="#contact">Book a call</a>
+          <p class="cta-band__lede" data-bind="contact.lede">One conversation, one written scope, one fixed price. We respond to inbound within one working day.</p>
+          <a class="btn-primary"
+             data-bind="contact.cta.label"
+             data-bind-attr="href:contact.cta.href"
+             href="#contact">Book a call</a>
           <p class="cta-band__contact">
-            <a href="mailto:projects@vynatix.com">projects@vynatix.com</a><br>
-            +46 31 123 45 67
+            <a data-bind="contact.email" data-bind-attr="href:contact.emailHref" href="mailto:projects@vynatix.com">projects@vynatix.com</a><br>
+            <span data-bind="contact.phone">+46 31 123 45 67</span>
           </p>
         </div>
       </div>
@@ -353,42 +391,57 @@
     <div class="site-footer__inner">
       <div class="site-footer__brand">
         <img src="assets/wordmark-cloud.svg" alt="Vynatix" width="118" height="26">
-        <p class="site-footer__tag">A premium Nordic IT consultancy. Engineers who write the case studies about the engineering.</p>
-        <p class="site-footer__address">
+        <p class="site-footer__tag" data-bind="footer.tagline">A premium Nordic IT consultancy. Engineers who write the case studies about the engineering.</p>
+        <p class="site-footer__address" data-bind-list="footer.addressLines, #tpl-footer-address-line">
           Magasinsgatan 14, 411 18 Gothenburg<br>
           Birger Jarlsgatan 41A, 111 45 Stockholm<br>
           Org. nr 559412-2024 · A division of Ultra Group
         </p>
       </div>
-      <div class="site-footer__col">
-        <h4>Services</h4>
-        <a href="#services">AI engineering</a>
-        <a href="#services">Cybersecurity</a>
-        <a href="#services">Cloud platforms</a>
-        <a href="#services">Custom software</a>
-        <a href="#services">Mobile &amp; automotive</a>
-        <a href="#services">Modernisation</a>
-      </div>
-      <div class="site-footer__col">
-        <h4>Company</h4>
-        <a href="#about">About</a>
-        <a href="#work">Work</a>
-        <a href="#about">Careers</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <div class="site-footer__col">
-        <h4>Legal</h4>
-        <a href="#legal">Privacy</a>
-        <a href="#legal">Terms</a>
-        <a href="#legal">WCAG 2.2 AA</a>
+      <div data-bind-list="footer.columns, #tpl-footer-column" style="display: contents;">
+        <div class="site-footer__col">
+          <h4>Services</h4>
+          <a href="#services">AI engineering</a>
+          <a href="#services">Cybersecurity</a>
+          <a href="#services">Cloud platforms</a>
+          <a href="#services">Custom software</a>
+          <a href="#services">Mobile &amp; automotive</a>
+          <a href="#services">Modernisation</a>
+        </div>
+        <div class="site-footer__col">
+          <h4>Company</h4>
+          <a href="#about">About</a>
+          <a href="#work">Work</a>
+          <a href="#about">Careers</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="site-footer__col">
+          <h4>Legal</h4>
+          <a href="#legal">Privacy</a>
+          <a href="#legal">Terms</a>
+          <a href="#legal">WCAG 2.2 AA</a>
+        </div>
       </div>
     </div>
     <div class="site-footer__tail">
-      <span>© 2026 Vynatix AB</span>
-      <span>vynatix.com</span>
+      <span data-bind="footer.copyright">© 2026 Vynatix AB</span>
+      <span data-bind="footer.domain">vynatix.com</span>
     </div>
   </footer>
 
+  <template id="tpl-footer-address-line"><span data-bind="."></span><br></template>
+  <template id="tpl-footer-column">
+    <div class="site-footer__col">
+      <h4 data-bind=".heading"></h4>
+      <div data-bind-list=".links, #tpl-footer-column-link" style="display: contents;"></div>
+    </div>
+  </template>
+  <template id="tpl-footer-column-link"><a data-bind=".label" data-bind-attr="href:.href"></a></template>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js" integrity="sha384-+pxiN6T7yvpryuJmE1gM9PX7yQit15auDb+ZwwvJOd/4be2Cie5/IuVXgQb/S9du" crossorigin="anonymous"></script>
+<script src="content.js" defer></script>
 </body>
 </html>

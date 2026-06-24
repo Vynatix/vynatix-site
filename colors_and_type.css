@@ -97,9 +97,11 @@
   --primary-pressed:       var(--teal-800);
   --primary-fg:            var(--cloud-100);
 
-  --accent:                var(--champagne-500);  /* "guest, not resident" */
-  --accent-hover:          var(--champagne-600);
-  --accent-fg:             var(--teal-900);
+  /* Accent — teal-only variation: champagne sits this composition out,
+     the primary teal carries every accent moment. */
+  --accent:                var(--teal-500);
+  --accent-hover:          var(--teal-600);
+  --accent-fg:             var(--cloud-100);
 
   --border:                rgba(13, 42, 44, 0.14);
   --border-strong:         rgba(13, 42, 44, 0.28);
@@ -222,6 +224,9 @@
   --container-laptop:  1200px;
   --container-desktop: 1440px;
   --container-wide:    1600px;
+
+  /* Density — compact variation: tighter vertical rhythm between sections. */
+  --section-pad: 80px;
 }
 
 /* =========================================================================
@@ -262,9 +267,9 @@
   --primary-pressed:       var(--teal-100);
   --primary-fg:            var(--teal-950);
 
-  /* Accent — Champagne brightens; still the rarest color on screen */
-  --accent:                var(--champagne-300);   /* #D7BB78 */
-  --accent-hover:          var(--champagne-200);
+  /* Accent — teal-only variation; brightens up the scale on Ink ground */
+  --accent:                var(--teal-300);   /* #6EA9AB */
+  --accent-hover:          var(--teal-200);
   --accent-fg:             var(--teal-950);
 
   /* Borders — Cloud at low alpha; emphasis tier doubles the alpha */

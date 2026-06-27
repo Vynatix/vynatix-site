@@ -221,6 +221,9 @@ html[dir="rtl"] .site-header__link::after { transform-origin: 100% 50%; }
 /* Mobile nav button */
 .mobile-toggle { display: none; }
 
+/* Book-a-call CTA inside the mobile menu — desktop has its own header CTA */
+.site-header__menu-cta { display: none; }
+
 @media (max-width: 900px) {
   .site-header__nav { display: none; }
   .site-header__nav.open {
@@ -237,6 +240,22 @@ html[dir="rtl"] .site-header__link::after { transform-origin: 100% 50%; }
   .site-header__nav.open .site-header__link { padding: 12px 0; }
   .site-header__cta { display: none; }
   .mobile-toggle { display: inline-flex; }
+
+  .site-header__nav.open .site-header__menu-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 12px;
+    font: 500 14px/1 var(--font-sans);
+    color: var(--accent-fg);
+    background: var(--accent);
+    padding: 13px 20px;
+    border-radius: 8px;
+    letter-spacing: -0.005em;
+    transition: background 200ms;
+  }
+  .site-header__nav.open .site-header__menu-cta:hover { background: var(--accent-hover); }
 }
 
 /* ---------------------------------------------------------------

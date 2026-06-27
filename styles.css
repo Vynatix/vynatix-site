@@ -586,6 +586,9 @@ section { position: relative; }
   position: relative;
 }
 .section--ink .practice__bullets li { color: #9DA8AB; }
+.svc-detail { gap: 18px; }
+.svc-detail li { font: 400 15px/1.6 var(--font-sans); color: var(--fg-2); }
+.svc-detail li strong { color: var(--fg-1); font-weight: 600; }
 .practice__bullets li::before {
   content: "—";
   position: absolute;
@@ -700,11 +703,18 @@ section { position: relative; }
   letter-spacing: -0.012em;
   margin: 0;
 }
+.reel__desc {
+  font: 400 15px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 14px 0 0;
+}
+.section--ink .reel__desc { color: #D6D2C7; }
 .reel__metric {
   font: italic 400 clamp(44px, 4vw, 56px)/1 var(--font-display);
   color: var(--primary);
   margin-top: auto;
 }
+.reel__metric--text { font: italic 400 clamp(22px, 2.4vw, 28px)/1.2 var(--font-display); }
 .section--ink .reel__metric { color: var(--accent); }
 .reel__link {
   font: 500 13px/1 var(--font-sans);

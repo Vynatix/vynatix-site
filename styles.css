@@ -540,6 +540,7 @@ section { position: relative; }
   border-top: 1px solid var(--border);
 }
 .practices--four { grid-template-columns: repeat(4, 1fr); }
+.practices--three { grid-template-columns: repeat(3, 1fr); }
 @media (min-width: 901px) and (max-width: 1100px) {
   .practices--four { grid-template-columns: repeat(2, 1fr); }
 }

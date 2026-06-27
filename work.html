@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selected work, Vynatix</title>
+<meta name="description" content="Selected engagements shipped since 2024, each written by an engineer who worked on it. Volvo Trucks, Volvo Cars, a Nordic bank, and a regulated client. The rest are under non-disclosure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="colors_and_type.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
+        <img src="assets/wordmark-teal.svg" alt="Vynatix" width="118" height="30">
+      </a>
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="work.html" class="site-header__link" aria-current="page">Work</a>
+        <a href="services.html" class="site-header__link">Services</a>
+        <a href="membership.html" class="site-header__link">Membership</a>
+        <a href="about.html" class="site-header__link">About</a>
+        <a href="contact.html" class="site-header__link">Contact</a>
+      </nav>
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div style="position: relative;">
+          <button class="lang-pill" aria-label="Language: English">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+            <span>EN</span>
+          </button>
+        </div>
+        <a href="contact.html" class="site-header__cta">Book a call</a>
+        <button class="icon-btn mobile-toggle" aria-label="Menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================ Page hero -->
+    <section class="case-hero">
+      <div class="case-hero__container">
+        <span class="eyebrow">Selected work</span>
+        <h1 class="case-hero__h1">Selected from twenty-four engagements.</h1>
+        <p class="case-hero__lede">Selected from the engagements we have shipped since 2024. The rest are under non-disclosure. Each one is written by an engineer who worked on it, which is the point. The headline carries the client and the result, the first sentence carries the number, and we are honest about what was in scope and what was not.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ Case: Volvo Trucks -->
+    <section class="section">
+      <div class="container">
+        <span class="reel__eyebrow">Volvo Trucks · 2024</span>
+        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A truck radio rebuilt in sixteen weeks.</h2>
+        <div class="two-up" style="margin-top: 48px;">
+          <div>
+            <p class="two-up__body">We rebuilt the in-cab radio and media player for Volvo Trucks in sixteen weeks, with three engineers, and shipped it to production across a fleet measured in the hundreds of thousands.</p>
+            <p class="two-up__body">The constraint. Fixed scope, three engineers, sixteen weeks, on Android Automotive above the vehicle hardware layer. We agreed what was in scope and what was not before the first line of code.</p>
+          </div>
+          <div class="case-body__plate" style="margin: 0;">
+            <div class="case-body__plate-cell"><span class="v">700,000</span><span class="l">trucks on the road</span></div>
+            <div class="case-body__plate-cell"><span class="v">16</span><span class="l">weeks, fixed scope</span></div>
+            <div class="case-body__plate-cell"><span class="v">3</span><span class="l">engineers</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Case: Volvo Cars -->
+    <section class="section section--surface">
+      <div class="container">
+        <span class="reel__eyebrow">Volvo Cars · 2025</span>
+        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A build pipeline cut from 47 minutes to 6.</h2>
+        <div class="two-up" style="margin-top: 48px;">
+          <div>
+            <p class="two-up__body">We took a build pipeline from a 47 minute wait to under 6, an 87 percent reduction on every commit, for the whole team.</p>
+            <p class="two-up__body">What it does and does not do. The gain lands on every commit the team pushes. We were scoped to the pipeline, not the build targets, and we agreed that boundary up front.</p>
+          </div>
+          <div class="case-body__plate" style="margin: 0;">
+            <div class="case-body__plate-cell"><span class="v">&minus;87%</span><span class="l">build time</span></div>
+            <div class="case-body__plate-cell"><span class="v">47&rarr;6</span><span class="l">minutes per build</span></div>
+            <div class="case-body__plate-cell"><span class="v">every</span><span class="l">commit, whole team</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Case: Regulated client -->
+    <section class="section">
+      <div class="container">
+        <span class="reel__eyebrow">Regulated client · 2025</span>
+        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A closed-domain assistant that refuses to guess.</h2>
+        <div class="two-up" style="margin-top: 48px;">
+          <div>
+            <p class="two-up__body">We built an assistant that answers inside a defined domain and hands everything else to a person, on purpose. It declines questions it cannot ground in source, rather than inventing an answer.</p>
+            <p class="two-up__body">What it does and does not do. It answers questions it can ground in source, with citations. It refuses questions it cannot ground, and routes them to a human. We set that line deliberately, and we can show you exactly where it sits and why.</p>
+          </div>
+          <div>
+            <blockquote class="pullquote" style="margin: 0;">No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Case: Nordic bank -->
+    <section class="section section--surface">
+      <div class="container">
+        <span class="reel__eyebrow">Nordic bank · 2024</span>
+        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">47 findings, narrowed to the 9 that mattered.</h2>
+        <div class="two-up" style="margin-top: 48px;">
+          <div>
+            <p class="two-up__body">We threat-modelled the system for a Nordic bank and turned 47 raw findings into 9 prioritised, evidenced actions the team could ship against.</p>
+            <p class="two-up__body">What it does and does not do. The model covers the surface we were scoped to review. Physical and social-engineering vectors were out of scope by agreement, and the report says so.</p>
+          </div>
+          <div class="case-body__plate" style="margin: 0;">
+            <div class="case-body__plate-cell"><span class="v">47&rarr;9</span><span class="l">critical findings</span></div>
+            <div class="case-body__plate-cell"><span class="v">9</span><span class="l">evidenced, prioritised actions</span></div>
+            <div class="case-body__plate-cell"><span class="v">1</span><span class="l">audit-ready report</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ CTA band -->
+    <section class="cta-band">
+      <div class="cta-band__inner">
+        <div>
+          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <h2 class="cta-band__h2">The rest are under <em>non-disclosure.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">Tell us the outcome you need and the constraint you are under. We reply to inbound within one working day.</p>
+          <a class="btn-primary" href="contact.html">Book a call</a>
+          <p class="cta-band__contact">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js" defer></script>
+
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <img src="assets/wordmark-cloud.svg" alt="Vynatix" width="118" height="26">
+        <p class="site-footer__tag">Senior engineers who write the work down. Part of Ultra Group.</p>
+        <p class="site-footer__address">
+          <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+          +46 72 071 06 76<br><br>
+          Magasinsgatan 14, 411 18 Gothenburg<br>
+          Birger Jarlsgatan 41A, 111 45 Stockholm<br>
+          Org.nr 559445-6542 · Part of Ultra Group
+        </p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Services</h4>
+        <a href="services.html">AI engineering</a>
+        <a href="services.html">Cybersecurity</a>
+        <a href="services.html">Cloud platforms</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Company</h4>
+        <a href="work.html">Work</a>
+        <a href="membership.html">Membership</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Legal</h4>
+        <a href="#legal">Privacy</a>
+        <a href="#legal">Terms</a>
+        <a href="#legal">Accessibility (WCAG 2.2 AA)</a>
+      </div>
+    </div>
+    <div class="site-footer__tail">
+      <span>© 2026 Vynatix AB</span>
+      <span>vynatix.com</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

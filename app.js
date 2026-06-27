@@ -51,6 +51,34 @@
   }
 })();
 
+// Mobile nav — toggle the menu open/closed from the hamburger button.
+(function () {
+  function init() {
+    var toggle = document.querySelector('.mobile-toggle');
+    var nav = document.querySelector('.site-header__nav');
+    if (!toggle || !nav) return;
+
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    // Close the menu after following a link.
+    nav.addEventListener('click', function (e) {
+      if (e.target.closest('.site-header__link')) {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
 // Case reel — wire the Previous/Next controls to scroll one card at a time.
 (function () {
   function stepFor(reel) {

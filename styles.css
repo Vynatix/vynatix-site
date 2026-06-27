@@ -355,6 +355,10 @@ html[dir="rtl"] .site-footer__col a:hover { transform: translateX(-2px); }
   border: 0;
   padding: 16px 22px;
   border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   transition: background 200ms, transform 200ms, box-shadow 200ms;
 }
 .btn-primary:hover {
@@ -392,6 +396,10 @@ html[dir="rtl"] .btn-text:hover .arrow { transform: scaleX(-1) translateX(4px); 
   border: 1px solid var(--border-strong);
   padding: 15px 22px;
   border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   transition: background 200ms, border-color 200ms;
 }
 .btn-ghost:hover { background: var(--surface-1); border-color: var(--primary); }
@@ -867,6 +875,16 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
   letter-spacing: 0.04em;
   display: block;
   margin-bottom: 8px;
+}
+
+@media (max-width: 520px) {
+  .values { grid-template-columns: 1fr; }
+  .value {
+    border-inline-end: 0;
+    padding-inline-end: 0;
+  }
+  .value:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .value:last-child { border-bottom: 0; }
 }
 
 /* ---------------------------------------------------------------

@@ -161,63 +161,6 @@ html[dir="rtl"] .site-header__link::after { transform-origin: 100% 50%; }
 }
 .icon-btn:hover { background: var(--surface-1); color: var(--fg-1); }
 
-/* Language pill */
-.lang-pill {
-  font: 500 12px/1 var(--font-mono);
-  letter-spacing: 0.04em;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--fg-2);
-  border: 1px solid var(--border);
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 160ms, color 160ms, border-color 160ms;
-}
-.lang-pill:hover { background: var(--surface-1); color: var(--fg-1); }
-.lang-pill svg { width: 12px; height: 12px; opacity: 0.6; }
-
-.menu-pop {
-  position: absolute;
-  top: 100%;
-  inset-inline-end: 0;
-  margin-top: 6px;
-  background: var(--bg-bright);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-3);
-  padding: 8px;
-  min-width: 180px;
-  z-index: 60;
-  animation: menuPop 200ms var(--ease-emphasized) both;
-}
-@keyframes menuPop {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.menu-pop button {
-  display: block;
-  width: 100%;
-  text-align: start;
-  background: transparent;
-  border: 0;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font: 500 14px/1 var(--font-sans);
-  color: var(--fg-1);
-}
-.menu-pop button:hover { background: var(--surface-1); }
-.menu-pop button[aria-selected="true"] {
-  color: var(--primary);
-}
-.menu-pop button[aria-selected="true"]::before {
-  content: "›";
-  margin-inline-end: 6px;
-  color: var(--accent);
-}
-
 /* Mobile nav button */
 .mobile-toggle { display: none; }
 

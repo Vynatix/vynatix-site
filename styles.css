@@ -880,16 +880,15 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
 }
 
 /* ---------------------------------------------------------------
-   CTA band — Ink-on-Cloud single-Champagne moment
+   CTA band — light Cloud Dancer "settle" moment.
+   A deliberately bright conversion section (same in light & dark theme),
+   built from primitive tokens so the palette never flips out from under
+   the deep-teal button. The single gold accent is the champagne underline.
    --------------------------------------------------------------- */
 .cta-band {
-  background: var(--teal-900);
-  color: var(--cloud-100);
+  background: var(--cloud-100);
+  color: var(--teal-900);
   padding: var(--section-pad, 120px) 48px;
-}
-[data-theme="dark"] .cta-band {
-  background: var(--bg-bright);
-  border-top: 1px solid var(--border);
 }
 .cta-band__inner {
   max-width: 1280px;
@@ -899,17 +898,29 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
   gap: 48px;
   align-items: end;
 }
+.cta-band__eyebrow { color: var(--teal-600); }
 .cta-band__h2 {
   font: 400 clamp(40px, 5vw, 72px)/1.05 var(--font-display);
-  color: var(--cloud-100);
+  color: var(--teal-600);
   letter-spacing: -0.02em;
   margin: 16px 0 0;
   max-width: 720px;
 }
-.cta-band__h2 em { font-style: italic; color: var(--accent); }
+.cta-band__h2 em { font-style: italic; color: inherit; }
+/* Champagne underline — the one gold accent. Drawn left→right by JS. */
+.cta-band__underline {
+  display: block;
+  height: 2px;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 20px;
+  background: var(--champagne-500);
+  transform-origin: left center;
+  will-change: transform;
+}
 .cta-band__lede {
   font: 400 18px/1.55 var(--font-sans);
-  color: #D6D2C7;
+  color: var(--teal-800);
   margin: 0 0 28px;
   max-width: 520px;
 }
@@ -921,10 +932,73 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
 }
 .cta-band__contact {
   font: 400 14px/1.6 var(--font-mono);
-  color: #9DA8AB;
+  color: var(--fg-3);
 }
-.cta-band__contact a { color: var(--cloud-100); border-bottom: 1px solid rgba(243,240,233,0.32); transition: border-color 160ms; padding-bottom: 1px; }
-.cta-band__contact a:hover { border-color: var(--accent); }
+.cta-band__contact a { color: var(--teal-700); border-bottom: 1px solid var(--border-strong); transition: border-color 160ms; padding-bottom: 1px; }
+.cta-band__contact a:hover { border-color: var(--teal-600); }
+
+/* ---- Magnetic CTA button (scoped — global .btn-primary is untouched) ---- */
+.btn-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 15px/1 var(--font-sans);
+  color: var(--cloud-100);
+  background: var(--teal-600);
+  border: 0;
+  border-radius: 10px;
+  padding: 16px 22px;
+  text-decoration: none;
+  will-change: transform;
+  transition: transform var(--dur-micro) var(--ease-micro);
+}
+.btn-cta__fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--champagne-500);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 250ms var(--ease-micro);
+}
+.btn-cta__label { color: var(--cloud-100); transition: color 250ms var(--ease-micro); }
+.btn-cta__arrow { display: inline-flex; transition: transform 250ms var(--ease-micro); }
+.btn-cta:hover .btn-cta__fill,
+.btn-cta:focus-visible .btn-cta__fill { transform: scaleX(1); }
+/* Champagne fill behind a deep-teal (--accent-fg = teal-900) label: WCAG AA. */
+.btn-cta:hover .btn-cta__label,
+.btn-cta:focus-visible .btn-cta__label { color: var(--accent-fg); }
+.btn-cta:hover .btn-cta__arrow,
+.btn-cta:focus-visible .btn-cta__arrow { transform: translateX(5px); }
+.btn-cta:active { transform: scale(0.98); transition-duration: 120ms; }
+/* Always-visible keyboard focus ring, independent of hover. */
+.btn-cta:focus-visible { outline: 2px solid var(--champagne-500); outline-offset: 3px; }
+html[dir="rtl"] .btn-cta__fill { transform-origin: right center; }
+html[dir="rtl"] .btn-cta__arrow { transform: scaleX(-1); }
+html[dir="rtl"] .btn-cta:hover .btn-cta__arrow,
+html[dir="rtl"] .btn-cta:focus-visible .btn-cta__arrow { transform: scaleX(-1) translateX(5px); }
+
+/* ---- Pre-animation hidden state — only when JS is on (.js-anim).
+        No-JS users always see the final, fully visible state. ---- */
+.js-anim .cta-band__eyebrow,
+.js-anim .cta-band__h2,
+.js-anim .cta-band__lede { opacity: 0; }
+.js-anim .cta-band__underline { transform: scaleX(0); }
+.js-anim .btn-cta { opacity: 0; transform: scale(0.96); }
+
+/* Reduced motion: skip the choreography, show the final resting state at once. */
+@media (prefers-reduced-motion: reduce) {
+  .js-anim .cta-band__eyebrow,
+  .js-anim .cta-band__h2,
+  .js-anim .cta-band__lede,
+  .js-anim .btn-cta { opacity: 1; transform: none; }
+  .js-anim .cta-band__underline { transform: scaleX(1); }
+  .btn-cta, .btn-cta__fill, .btn-cta__label, .btn-cta__arrow { transition: none; }
+}
+
 @media (max-width: 900px) {
   .cta-band__inner { grid-template-columns: 1fr; }
   .cta-band { padding: 80px 24px; }

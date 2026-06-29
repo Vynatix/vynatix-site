@@ -153,12 +153,6 @@
     return;
   }
   gsap.registerPlugin(ScrollTrigger, SplitText);
-  // Ignore the mobile address-bar show/hide (a height-only "resize") so it never
-  // churns ScrollTrigger or restarts the choreography mid-scroll.
-  ScrollTrigger.config({ ignoreMobileResize: true });
-
-  // Desktop pointers only — used to gate Lenis and the magnetic effect.
-  var isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   var eyebrow   = section.querySelector('[data-cta-eyebrow]');
   var headline  = section.querySelector('[data-cta-headline]');
@@ -168,14 +162,11 @@
 
   var headlineSplit = null;
   var ledeSplit = null;
-  var tl = null;          // the entrance timeline (rebuilt on a real width change)
   var settled = false;
 
-  // ---- Lenis smooth scroll (desktop pointers only) ----
-  // Touch devices keep native scroll: a scroll-hijack library interferes with iOS
-  // momentum / rubber-band overscroll, and ScrollTrigger fires fine on native scroll.
+  // ---- Lenis smooth scroll (the page's foundational motion layer) ----
   function initLenis() {
-    if (reduceMQ.matches || !window.Lenis || !isDesktopPointer) return;
+    if (reduceMQ.matches || !window.Lenis) return;   // native scroll under reduced motion
     var lenis = new Lenis({ duration: 1.2, lerp: 0.1 });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
@@ -203,7 +194,7 @@
     var lastLineStart = T.headlineAt + (lineCount - 1) * T.staggerLine;
     var underlineAt = lastLineStart + T.durHeadline;        // after the lines finish rising
 
-    tl = gsap.timeline({
+    var tl = gsap.timeline({
       scrollTrigger: { trigger: section, start: 'top 80%', once: true },  // ~80% viewport, play once
       defaults: { ease: T.ease },
       onComplete: function () { settled = true; }
@@ -217,7 +208,8 @@
 
   // ---- Magnetic button: pointer-fine devices only ----
   function initMagnetic() {
-    if (reduceMQ.matches || !isDesktopPointer) return;
+    if (reduceMQ.matches) return;
+    if (!window.matchMedia('(pointer: fine)').matches || !window.matchMedia('(hover: hover)').matches) return;
 
     var label = button.querySelector('.btn-cta__label');
     var arrow = button.querySelector('.btn-cta__arrow');
@@ -271,21 +263,12 @@
 
   function bindResize() {
     var t;
-    var lastWidth = window.innerWidth;
     function onResize() {
-      // Only a genuine WIDTH change reflows the lines. Mobile address-bar show/hide
-      // is a height-only "resize" — ignoring it avoids re-hiding the content mid-scroll.
-      if (window.innerWidth === lastWidth) return;
-      lastWidth = window.innerWidth;
-
-      // Re-split creates fresh line/word nodes, so the old timeline (pointing at the
-      // now-detached nodes) must be killed and rebuilt against the new ones.
-      if (tl) { if (tl.scrollTrigger) tl.scrollTrigger.kill(); tl.kill(); tl = null; }
       if (headlineSplit) headlineSplit.revert();
       if (ledeSplit) ledeSplit.revert();
       splitContent();
-      if (settled) { applyFinal(); }            // already played — show final, no replay
-      else { setInitial(); buildTimeline(); }   // rebuild trigger/tweens on the new nodes
+      if (settled) { applyFinal(); }   // already played — don't replay
+      else { setInitial(); }
       ScrollTrigger.refresh();
     }
     function debounced() { clearTimeout(t); t = setTimeout(onResize, 200); }

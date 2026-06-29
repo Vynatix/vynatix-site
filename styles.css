@@ -561,14 +561,10 @@ section { position: relative; }
   .practice:last-child { border-bottom: 0; }
 }
 
-/* Mobile fixes: hero photo aspect + reel card width + softer edge mask */
+/* Mobile: hero photo reads better in 4:3. (Reel-card mobile sizing lives at the
+   end of the reel section so its overrides actually win the cascade.) */
 @media (max-width: 760px) {
   .hero__photo { aspect-ratio: 4 / 3; }
-  .reel__card { flex: 0 0 82vw; min-height: 480px; }
-  .reel {
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-  }
 }
 
 /* ---------------------------------------------------------------
@@ -1348,6 +1344,47 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
     #000 calc(100% - 80px),
     transparent 100%
   );
+}
+
+/* ---------------------------------------------------------------
+   Reel cards on mobile
+   Must come AFTER every other .reel / .reel__card rule above so these
+   overrides win on source order — otherwise the desktop 480px width and
+   80px edge mask leak onto phones and the cards overflow the viewport.
+   --------------------------------------------------------------- */
+@media (max-width: 760px) {
+  .reel {
+    gap: 16px;
+    /* match the 24px mobile container gutter so the first card aligns with
+       the section content while the track still bleeds to the screen edges */
+    padding: 12px 24px;
+    margin: 0 -24px;
+    -webkit-mask-image: linear-gradient(
+      to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(
+      to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+  .reel__card {
+    flex: 0 0 84vw;
+    min-height: 0;          /* let the flex row equalise to content height */
+    padding: 24px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+  .reel__cover { margin-bottom: 4px; }
+  .reel__title { font-size: 24px; }
+  .reel__desc { margin-top: 10px; }
+  .reel__metric { font-size: clamp(36px, 11vw, 44px); }
+  .reel__metric--text { font-size: clamp(20px, 6vw, 24px); }
+}
+
+@media (max-width: 760px) {
+  [dir="rtl"] .reel {
+    -webkit-mask-image: linear-gradient(
+      to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(
+      to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
 }
 
 /* Subtle background pattern for case covers */

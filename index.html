@@ -5,14 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vynatix, a Nordic software consultancy in Gothenburg</title>
 <meta name="description" content="A small team of senior engineers in Gothenburg. We build software for the web, mobile, vehicles and the cloud, on a fixed scope and a clear price. Working with Volvo and regulated industries since 2023.">
-<!-- Fonts self-hosted as woff2 via @font-face in colors_and_type.css. Preload the
-     headline weight so the masked serif reveal isn't blocked on a late font fetch. -->
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/instrument-serif-400-latin.woff2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
-<!-- Add the pre-animation class before first paint so JS-enabled users never see a
-     flash of the final (un-hidden) state. No-JS users keep the fully visible state. -->
-<script>document.documentElement.classList.add('js-anim');</script>
 </head>
 <body>
 <div id="app">
@@ -385,19 +382,12 @@
     <section class="cta-band" id="contact">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow cta-band__eyebrow" data-cta-eyebrow>Let us talk</span>
-          <h2 class="cta-band__h2" data-cta-headline>One conversation, one written scope, <em>one fixed price.</em></h2>
-          <span class="cta-band__underline" data-cta-underline aria-hidden="true"></span>
+          <span class="eyebrow" style="color: var(--accent);">Let us talk</span>
+          <h2 class="cta-band__h2">One conversation, one written scope, <em>one fixed price.</em></h2>
         </div>
         <div class="cta-band__actions">
-          <p class="cta-band__lede" data-cta-lede>Tell us what you are trying to build. We will come back within one working day, and the first step is always the same: one conversation, one written scope, one fixed price.</p>
-          <a class="btn-cta" href="contact.html" data-cta-button>
-            <span class="btn-cta__fill" aria-hidden="true"></span>
-            <span class="btn-cta__label">Book a call</span>
-            <span class="btn-cta__arrow" aria-hidden="true">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-            </span>
-          </a>
+          <p class="cta-band__lede">Tell us what you are trying to build. We will come back within one working day, and the first step is always the same: one conversation, one written scope, one fixed price.</p>
+          <a class="btn-primary" href="contact.html">Book a call</a>
           <p class="cta-band__contact">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a>
@@ -408,13 +398,6 @@
 
   </main>
 
-  <!-- Motion stack for the CTA settle: GSAP 3.13 (SplitText is free as of 3.13) +
-       ScrollTrigger + SplitText, and Lenis for smooth scroll. Deferred so they never
-       block paint; app.js (also deferred, loaded last) orchestrates them. -->
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="app.js" defer></script>
 
   <!-- ============================================================ Footer -->

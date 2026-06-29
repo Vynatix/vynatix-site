@@ -1313,7 +1313,7 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 .reel-wrap { position: relative; }
 /* fade card edges into the section background — applied to the scroll container
    so the prev/next controls below stay sharp */
-.reel {
+.reel.is-scrolling {
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
@@ -1329,7 +1329,7 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
     transparent 100%
   );
 }
-[dir="rtl"] .reel {
+[dir="rtl"] .reel.is-scrolling {
   -webkit-mask-image: linear-gradient(
     to left,
     transparent 0,
@@ -1350,7 +1350,9 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
    Reel cards on mobile
    Must come AFTER every other .reel / .reel__card rule above so these
    overrides win on source order — otherwise the desktop 480px width and
-   80px edge mask leak onto phones and the cards overflow the viewport.
+   edge mask leak onto phones and the cards overflow the viewport.
+   The edge fade itself is gated on .is-scrolling (see app.js), so at rest
+   the card edges stay sharp on both desktop and mobile.
    --------------------------------------------------------------- */
 @media (max-width: 760px) {
   .reel {
@@ -1359,6 +1361,8 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
        the section content while the track still bleeds to the screen edges */
     padding: 12px 24px;
     margin: 0 -24px;
+  }
+  .reel.is-scrolling {
     -webkit-mask-image: linear-gradient(
       to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
     mask-image: linear-gradient(
@@ -1379,7 +1383,7 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 }
 
 @media (max-width: 760px) {
-  [dir="rtl"] .reel {
+  [dir="rtl"] .reel.is-scrolling {
     -webkit-mask-image: linear-gradient(
       to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
     mask-image: linear-gradient(

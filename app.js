@@ -116,3 +116,33 @@
     init();
   }
 })();
+
+// Case reel — edge-fade only while scrolling. At rest the card edges are sharp;
+// a debounced class toggle re-hides the mask once scroll-snap settles. With no JS
+// the mask is never applied, so the (correct) sharp-edged rest state is the default.
+(function () {
+  var SETTLE_MS = 200; // ~--dur-micro; outlasts the smooth-scroll snap
+
+  function wire(reel) {
+    var timer = null; // per-reel debounce id, kept in this closure
+    reel.addEventListener('scroll', function () {
+      reel.classList.add('is-scrolling');
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        reel.classList.remove('is-scrolling');
+        timer = null;
+      }, SETTLE_MS);
+    }, { passive: true });
+  }
+
+  function init() {
+    var reels = document.querySelectorAll('.reel');
+    for (var i = 0; i < reels.length; i++) wire(reels[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

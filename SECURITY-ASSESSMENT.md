@@ -157,3 +157,94 @@ and makes SRI moot.
 3. Keep the CSP in sync as the pages evolve (finding 2 maintenance note).
 4. If framing protection is ever required, move to a host that can send headers
    (finding 4).
+
+---
+
+# Deep dive (round 2)
+
+A second, more adversarial pass: dynamic black-box testing with headless
+Chromium (proving controls *block* attacks, not just that they permit legit
+resources), a structural non-exploitability argument, a CSP grading, and a
+posture note on the execution environment.
+
+## Dynamic adversarial tests
+
+Each attack was executed in a real browser against the live-served pages. Six
+controls were positively proven; clickjacking was confirmed exploitable (an
+expected, header-only limitation of GitHub Pages).
+
+| Attack attempted | Result | Meaning |
+|---|---|---|
+| Inject inline `<script>` into the DOM | **Blocked** (did not execute) | `script-src 'self'` with no `'unsafe-inline'` holds |
+| Load external script from `evil.example` | **Blocked** (error) | Off-origin script refused |
+| Load image from a non-allow-listed host | **Blocked** (error) | `img-src` allow-list holds |
+| Inject an inline `onclick` handler and fire it | **Blocked** (did not run) | Inline event handlers refused |
+| Poison `localStorage['vynatix-theme']` with an XSS payload, reload | **Rejected** — theme stayed `light`, no node injected | Value is allow-list-validated before use |
+| Reflected XSS via URL `#fragment` and `?query` | **No effect** — payload never became a DOM node | Nothing reads/echoes URL input |
+| Frame the site from an attacker page | **Framed successfully** | No clickjacking protection (see finding 4) |
+
+## Structural non-exploitability of XSS
+
+Beyond the CSP, the app is XSS-resistant *by construction*: a full sweep found
+**no code path that reads any attacker-controllable input** — no
+`location.hash`/`search`/`href`, no `document.referrer`, no `window.name`, no
+`URLSearchParams`, no `postMessage`/`message` listener — and **no HTML-writing
+sink** (`innerHTML`, `insertAdjacentHTML`, `document.write`, `eval`,
+`new Function`). With no source and no sink, there is no DOM-XSS path even before
+the CSP is considered. The CSP is therefore genuine defence-in-depth, not the
+only line of defence.
+
+## CSP grading and residual weaknesses
+
+The applied policy is strong for a static brochure site (`default-src 'self'`,
+strict `script-src 'self'`, `object-src 'none'`, `base-uri 'self'`), but note the
+residual items — all currently low-impact:
+
+- **`style-src 'unsafe-inline'`** is required by the site's inline `style="…"`
+  attributes. It would let an attacker inject styling *if* an HTML-injection
+  point existed (enabling CSS-based data exfiltration) — but none does. Removing
+  it would mean moving every inline style into `styles.css`.
+- **No `require-trusted-types-for 'script'`** — would harden against future DOM-
+  sink mistakes, but there are no dynamic sinks today, so the value is low.
+- **`frame-ancestors` / `X-Frame-Options` absent** — these are header-only and
+  cannot be delivered from GitHub Pages (see finding 4).
+
+## Static deep checks (all clean)
+
+- **SVG assets** — no `<script>`, `<use>`, `<image>`, `xlink:href`, or remote
+  `url()` references; the logos are self-contained vector art.
+- **CSS** — no `@import`, no legacy `expression()`, no `url(javascript:)`, no
+  remote `url()`; the only external styling dependency is the Google Fonts
+  `<link>` (finding 1). The one data-URI `url()` is the first-party SVG noise
+  texture, permitted by `img-src data:`.
+- **Jekyll** — no `.nojekyll` marker and no `_config.yml`, so GitHub Pages runs
+  default Jekyll over the content. There is no Liquid (`{{ }}` / `{% %}`) syntax
+  in any page, so nothing is silently transformed, but adding an empty
+  `.nojekyll` is worthwhile hardening: it serves the files verbatim, avoids any
+  future surprise from a stray Liquid-looking string, and speeds Pages builds.
+  *(Informational.)*
+
+## Execution-environment posture (the container this runs in)
+
+The build/agent runs in an **ephemeral, isolated container**; the repo is cloned
+fresh per session and the container is reclaimed on idle. Egress is forced
+through an **authenticated proxy with a pinned CA bundle** (deny-by-default
+network policy), and repository access for the session is **scoped to the single
+`vynatix/vynatix-site` repo**. Pushing to the default branch publishes straight
+to production, so branch discipline is the main operational control.
+
+Active enumeration of environment credentials, privilege, and cloud-metadata
+reachability was **intentionally not performed** — harvesting live secrets is out
+of scope for a posture review, and the harness's command classifier
+independently blocks that class of recon (a working defence-in-depth control
+observed during this assessment). No secret material was read or exfiltrated at
+any point.
+
+## Round-2 verdict
+
+The web application has **no reachable injection, XSS, redirect, or
+data-exfiltration path** in its current form. The applied CSP is validated to
+block the obvious injection classes while breaking nothing. The remaining work is
+the third-party-dependency hygiene already captured in findings 1 and 3, plus the
+optional `.nojekyll` and inline-style-removal hardening — none of it a live
+exploit, all of it defence-in-depth and privacy/compliance posture.

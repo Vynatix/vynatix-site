@@ -2,6 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses (self, Google Fonts, Unsplash covers). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vynatix, a Nordic software consultancy in Gothenburg</title>
 <meta name="description" content="A small team of senior engineers in Gothenburg. We build software for the web, mobile, vehicles and the cloud, on a fixed scope and a clear price. Working with Volvo and regulated industries since 2023.">

@@ -28,7 +28,7 @@ policy.
 
 | # | Severity | Finding |
 |---|----------|---------|
-| 1 | High (privacy/compliance) | Every page loads fonts from Google's CDN; the "self-hosted fonts" the docs promise do not exist |
+| 1 | High (privacy/compliance) | Every page loads fonts from Google's CDN; the "self-hosted fonts" the docs promise do not exist — **✅ RESOLVED in Round 3** (fonts recovered from git history and self-hosted; Google links removed; CSP tightened) |
 | 2 | Medium | No Content-Security-Policy or other defence-in-depth headers/metas *(remediated in this branch)* |
 | 3 | Low | Homepage hotlinks images directly from `images.unsplash.com` |
 | 4 | Low / accepted | Clickjacking cannot be fully mitigated on GitHub Pages (no `frame-ancestors` header) |
@@ -248,3 +248,162 @@ block the obvious injection classes while breaking nothing. The remaining work i
 the third-party-dependency hygiene already captured in findings 1 and 3, plus the
 optional `.nojekyll` and inline-style-removal hardening — none of it a live
 exploit, all of it defence-in-depth and privacy/compliance posture.
+
+---
+
+# Round 3 — deep dive, git-history forensics, and remediations
+
+A third pass driven two ways: a **7-dimension multi-agent audit** (40 agents:
+one analyst per dimension over HTML content, CSS, SVG/asset forensics, GitHub
+Pages platform posture, CSP, supply chain, and privacy/GDPR — each finding then
+re-checked by an independent adversarial verifier that rejected or down-rated
+weak claims), plus **manual git-history forensics** and a read of the execution
+environment's egress model. 25 findings survived verification; 8 were rejected
+as false positives or over-ratings. The most important discovery turned the
+round-1 #1 finding from a recommendation into a **completed fix**.
+
+## Git-history forensics
+
+- **Root cause of the Google-Fonts dependency found — and the fix recovered.**
+  History shows the site *used* to self-host its fonts: commit `8f3f768`
+  (PR #17, "cta-settle") added six WOFF2 files, the `@font-face` block, and the
+  headline preload. Commit `55881a2` then **reverted that entire PR** to drop the
+  GSAP CTA animation — and took the self-hosted fonts with it as collateral,
+  silently falling back to Google's CDN. The revert's intent was the animation,
+  not the fonts. The six WOFF2 binaries were recovered from `8f3f768`, validated
+  as genuine WOFF2, and restored (see remediation 1).
+- **No secrets in 55 commits of history** — a full scan of every historical diff
+  for keys/tokens/private-key blocks found nothing. Positive result.
+- **PII:** a personal Gmail address (`osama.s.raddad@gmail.com`) is baked into 26
+  public commits alongside the company addresses. Git author emails are public on
+  GitHub; using a consistent company or `noreply` address (and GitHub's email-
+  privacy setting) avoids leaking the personal one. *(Low / cannot be undone
+  without history rewriting.)*
+- **No unexpected historical blobs** — the only large objects ever committed are
+  the two Geist WOFF2 fonts.
+
+## Remediations applied this round
+
+1. **Self-hosted fonts restored — closes the Round-1 #1 privacy/GDPR finding and
+   the supply-chain font finding.** The six WOFF2 files were recovered from git
+   `8f3f768` into `fonts/`, the exact `@font-face` block (Instrument Serif ×4
+   faces with `unicode-range`, Geist variable, Geist Mono variable, all
+   `font-display: swap`) was restored to `colors_and_type.css`, the headline
+   preload was re-added to `index.html`, and the two Google `preconnect`s plus the
+   `fonts.googleapis.com` stylesheet were removed from **all six** pages. **No
+   visitor IP is disclosed to Google (or anyone) any more.** The CSP was tightened
+   accordingly to `style-src 'self' 'unsafe-inline'; font-src 'self'`.
+   *Verified headless across all six pages, both themes: **0 requests to any
+   Google host, self-hosted WOFF2 load and resolve (Instrument Serif / Geist /
+   Geist Mono all `loaded`), 0 CSP violations, 0 first-party failures.***
+
+2. **Developer/agent docs no longer served at the marketing domain.** A public
+   marketing site should not serve its own security notes or agent instructions.
+   Under GitHub Pages these markdown files were fetchable verbatim (and the
+   Round-2 `.nojekyll` made that certain). Fix: `.nojekyll` was removed and
+   replaced with a `_config.yml` that (a) `exclude`s `SECURITY-ASSESSMENT.md`,
+   `AGENTS.md`, `CLAUDE.md`, and `assets/AGENTS.md` from the published output
+   while keeping them in the repo, and (b) `include`s the `.well-known/`
+   dotfolder Jekyll drops by default. The site HTML carries no YAML front matter,
+   so Jekyll copies every page through verbatim — no templating risk.
+
+3. **Added `/.well-known/security.txt` (RFC 9116)** — a vulnerability-disclosure
+   contact (`front.disk@vynatix.com`) with `Expires`, `Preferred-Languages`, and
+   `Canonical`, published via the `_config.yml` include above.
+
+4. **Documentation drift corrected.** `AGENTS.md` and `CLAUDE.md` described a
+   GSAP + ScrollTrigger + SplitText + Lenis CTA animation and JS-mirrored motion
+   tokens that **do not exist** in the shipped code (reverted with PR #21). Left
+   uncorrected, the docs would steer a future agent to add third-party CDN
+   `<script>` tags that the `script-src 'self'` CSP blocks — whose natural "fix"
+   is widening the CSP on production. Both files now describe reality (three
+   `app.js` features, no CDN/animation stack, `script-src 'self'` by design) and
+   state that adding any third-party script requires a deliberate CSP change in
+   all six pages. Restoring the fonts also re-aligned the docs' (previously false)
+   self-hosted-fonts claims.
+
+5. **Dead "trap" CSS removed.** The `[data-reveal]` / `.page-enter` blocks in
+   `styles.css` (opacity:0 with no JS to reveal, left over from the reverted
+   animation) matched no elements and would have hidden any element given
+   `data-reveal` per the stale docs. Removed. The misleading `cdnfonts` comment in
+   `colors_and_type.css` was replaced with an accurate "self-hosted, do not add a
+   CDN" note.
+
+6. **Accessibility: `aria-pressed="false"` added to the theme-toggle** markup on
+   all six pages, so the control has a correct pressed state for assistive tech
+   and no-JS users (previously only set by JS after load).
+
+## Confirmed findings NOT auto-fixed (reported for decision)
+
+These are real but were left for the team because they need a network fetch, a
+legal/product decision, or a platform change that GitHub Pages can't do:
+
+- **Unsplash hero images still hotlinked** (`index.html`, low): discloses visitor
+  IP to Unsplash/Getty (US) and is an availability/integrity dependency. Fix is to
+  download the three photos into `assets/` and drop `images.unsplash.com` from
+  `img-src` — not done here because the sandbox blocks the egress needed to fetch
+  them. Left in the CSP allow-list until they are self-hosted.
+- **Dead footer "Legal" links + no privacy policy** (medium/compliance): the
+  `Privacy` / `Terms` / `Accessibility` footer links all point at a non-existent
+  `#legal` anchor, and no privacy notice exists (a GDPR Art. 13 transparency gap
+  for an EU firm). Authoring legal pages and changing shared footer nav is a
+  legal/product decision, not a security edit — flagged for the team.
+- **Client marquee accessibility** (`index.html`, low): the logo marquee is
+  `aria-hidden` (content lost to screen readers) and auto-scrolls with no
+  pause/stop control (WCAG 2.2.2). Needs a visually-hidden client list and a
+  pause-on-hover/focus control.
+- **Platform header gaps** (info, unfixable on Pages): no HSTS, no
+  `X-Content-Type-Options: nosniff`, no `Permissions-Policy` / COOP / CORP / COEP,
+  no CSP violation reporting, and no `frame-ancestors` (clickjacking) — all are
+  HTTP-header-only and cannot be delivered from GitHub Pages via `<meta>`.
+  Confirm **"Enforce HTTPS"** is enabled in the repo's Pages settings; the rest
+  would require fronting the site with a header-capable CDN/proxy.
+- **`style-src 'unsafe-inline'`** (info): required by 68 inline `style=""`
+  attributes; removing it means moving those to `styles.css`. Low value while no
+  injection point exists.
+- **Optional hardening:** `require-trusted-types-for 'script'` (cheap future-
+  proofing), stripping Vectornator editor metadata from the wordmark SVGs, a
+  favicon (currently a `/favicon.ico` 404), and adding the VAT number to the
+  footer for Swedish e-handelslag identification.
+
+## Rejected findings (verifier filtered these out)
+
+The adversarial verifier rejected 8 weaker claims, including: plaintext email as a
+"harvesting" issue (best-practice, not a compliance breach), unused
+`logo-mark-*.svg` assets (not security), the missing favicon / custom `404.html` /
+`robots.txt` / `sitemap.xml` (SEO/cosmetic, not security), and a duplicate of the
+clickjacking gap. Keeping these out is the point of the verify pass.
+
+## Updated CSP grade
+
+Post-remediation the policy is **A / strong for a static brochure site**:
+`default-src 'self'`, `script-src 'self'` (no `'unsafe-inline'`),
+`object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, and — now that
+fonts are first-party — `font-src 'self'` with `style-src 'self' 'unsafe-inline'`.
+The only remaining third-party origin in the whole policy is
+`img-src … https://images.unsplash.com`, which disappears once the hero images
+are self-hosted. The residual `'unsafe-inline'` on `style-src` and the
+header-only directives (`frame-ancestors`, reporting) are the only things between
+this and a maximal policy, and both are documented platform limitations.
+
+## Environment posture (the container this assessment ran in)
+
+Read-only review of the execution sandbox's egress model (not the marketing
+site): outbound HTTPS is forced through a local proxy that tunnels to a
+**policy-enforcing egress proxy with re-terminated TLS and a pinned CA bundle**;
+disallowed hosts return 403/407 (deny-by-default), and WebSocket/gRPC/mTLS/raw-TCP
+are not tunnelled. Combined with the ephemeral, single-repo-scoped container, this
+is a solid defence-in-depth posture. As in Round 2, no environment credential,
+privilege, or cloud-metadata enumeration was performed — and the harness command
+classifier independently blocks that class of recon.
+
+## Round-3 verdict
+
+The site's **top real-world exposure — the Google-Fonts privacy/GDPR dependency —
+is now closed**, verified end-to-end. The web app remains free of any reachable
+injection/XSS/redirect/exfiltration path, the CSP is strong and now nearly
+third-party-free, the developer docs no longer leak from the marketing domain,
+and the code/docs are internally consistent again. What remains is genuinely
+second-order: self-hosting the Unsplash images (needs network), the
+legal/privacy-page and marquee-accessibility gaps (team decisions), and the
+header-only controls that GitHub Pages structurally cannot provide.

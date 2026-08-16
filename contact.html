@@ -2,15 +2,13 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses (self, Google Fonts, Unsplash covers). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Contact Vynatix</title>
 <meta name="description" content="One conversation, one written scope, one fixed price. We reply to inbound within one working day. One inbox, front.disk@vynatix.com, sorted by subject line: Project or Membership.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css (no third-party font CDN). -->
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -31,7 +29,7 @@
         <a href="contact.html" class="site-header__menu-cta">Book a call</a>
       </nav>
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <a href="contact.html" class="site-header__cta">Book a call</a>

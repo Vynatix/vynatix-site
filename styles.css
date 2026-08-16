@@ -28,32 +28,6 @@ main { flex: 1; }
 /* Sticky header offset for in-page hash navigation */
 section[id] { scroll-margin-top: 80px; }
 
-/* ---------------------------------------------------------------
-   Page transition
-   --------------------------------------------------------------- */
-.page-enter {
-  /* no entry animation — relying on document.timeline pauses captures.
-     Per-element [data-reveal] handles motion; visibility-hidden is handled
-     in JS so screenshots/PDFs render the final state. */
-}
-
-/* ---------------------------------------------------------------
-   Reveal-on-scroll
-   --------------------------------------------------------------- */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 800ms var(--ease-emphasized), transform 800ms var(--ease-emphasized);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-[data-reveal="show"],
-[data-reveal].is-revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1; transform: none; transition: none; }
-}
 
 /* ---------------------------------------------------------------
    Containers

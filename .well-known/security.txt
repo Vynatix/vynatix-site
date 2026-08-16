@@ -1,0 +1,6 @@
+# Vynatix vulnerability-disclosure contact (RFC 9116).
+# If you believe you have found a security issue with vynatix.com, please email us.
+Contact: mailto:front.disk@vynatix.com
+Expires: 2027-08-16T00:00:00.000Z
+Preferred-Languages: en, sv
+Canonical: https://vynatix.com/.well-known/security.txt

@@ -19,13 +19,14 @@ highlights the things most worth keeping front-of-mind.
 - **Header and footer are duplicated across every `*.html` file** — there is no
   template/include system. Any nav, logo, footer, or contact-detail change must
   be made in **all** pages, and `aria-current="page"` set on the active link.
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded. Only `index.html`
-  loads the GSAP/ScrollTrigger/SplitText/Lenis CDN stack for the CTA "settle"
-  animation. Motion durations/easings are mirrored between the CSS `--dur-*` /
-  `--ease-*` tokens and `app.js` — change both together.
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded — three features
+  (theme toggle, mobile nav, case-reel controls) and no CDN/animation stack. The
+  CSP pins `script-src 'self'`, so adding any third-party script means widening
+  the CSP in all six pages first. (A GSAP/Lenis CTA animation was reverted; it is
+  not in the shipped code.)
 - **Progressive enhancement and accessibility are load-bearing:** no-JS users
-  and `prefers-reduced-motion` users must get the final visible state, and the
-  page must still reveal if the CDN libs fail. Don't regress this.
+  and `prefers-reduced-motion` users must get the final visible state, with
+  nothing hidden pending JS. Don't regress this.
 
 ## Verifying work
 

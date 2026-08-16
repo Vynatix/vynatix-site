@@ -15,7 +15,7 @@ branch publishes it; there is nothing to compile.
 ## Layout
 
 ```
-index.html          Home — the only page with the GSAP/Lenis animation stack
+index.html          Home — hero, case reel, CTA band (no animation stack)
 about.html          Company / team
 services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
@@ -53,29 +53,26 @@ links, the logo, the footer, contact details, or addresses must be applied to
 all `*.html` files.** Set `aria-current="page"` on the current page's nav link.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
-guarded so a missing element is a no-op. Every page loads `app.js` (deferred).
-The theme toggle, mobile nav, and case-reel controls run everywhere; the CTA
-"settle" choreography only activates on pages that have a `.cta-band` section
-(currently just `index.html`), and **only `index.html` loads the GSAP +
-ScrollTrigger + SplitText + Lenis CDN scripts** that it depends on.
+guarded so a missing element is a no-op. Every page loads `app.js` (deferred),
+and `app.js` is the **only** script — there is no CDN or animation stack. It has
+exactly three features, all running on every page: the theme toggle, the mobile
+nav, and the case-reel Previous/Next controls.
 
-**Motion tokens are mirrored in JS.** `app.js`'s CTA timeline duplicates the
-`--dur-*` / `--ease-*` / `--stagger-*` values from `colors_and_type.css`
-(GSAP needs JS numbers, not `cubic-bezier()` strings). If you change one, change
-both — they are meant to be a single source of truth kept in sync by hand.
+The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
+`script-src 'self'`, so **any third-party script is blocked by default**. A
+GSAP + ScrollTrigger + SplitText + Lenis CTA "settle" animation once lived on
+`index.html` but was reverted (PR #21); it is not in the shipped code. If it is
+ever restored, adding those CDN `<script>` tags means deliberately widening
+`script-src` in the CSP on all six pages — and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
 afterthought — preserve it:
-- No-JS users get the fully visible final state. The `js-anim` class is added
-  before first paint to hide animated content, and JS removes it (or never
-  hides) so content is never stranded.
-- All motion is gated on `prefers-reduced-motion`; under it, Lenis, the
-  magnetic button, and the choreography are skipped and the final state shows.
-- If the animation CDN libs fail to load, the page reveals the final state.
-- The magnetic CTA button only runs on fine-pointer + hover devices.
-- Keep `aria-label`/`aria-expanded`/`aria-current` and decorative
-  `aria-hidden` attributes correct when editing markup. The footer claims
-  WCAG 2.2 AA.
+- No-JS users get the fully visible final state; nothing is hidden pending JS.
+- All decorative motion (e.g. the client marquee, the smooth reel scroll) must
+  be gated on `prefers-reduced-motion` and fall back to the static final state.
+- Keep `aria-label` / `aria-expanded` / `aria-pressed` / `aria-current` and
+  decorative `aria-hidden` attributes correct when editing markup. The footer
+  claims WCAG 2.2 AA.
 
 ## Assets
 

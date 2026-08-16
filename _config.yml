@@ -1,0 +1,23 @@
+# GitHub Pages (Jekyll) build configuration.
+#
+# This is a hand-written static site: no page carries YAML front matter, so
+# Jekyll templates nothing and copies every file through verbatim. This config
+# exists only to control what gets PUBLISHED:
+#
+#   exclude: keep developer- and agent-facing docs in the repo but OUT of the
+#            deployed site, so they are never fetchable at https://vynatix.com/…
+#            (a public marketing domain should not serve its own security notes
+#            or agent instructions).
+#   include: Jekyll drops dotfiles/dotfolders from the build by default, so the
+#            .well-known/ directory must be force-included to publish security.txt.
+#
+# NOTE: this replaces the previous .nojekyll marker. .nojekyll would serve every
+# file verbatim — including the docs below — which is exactly what we must avoid.
+include:
+  - .well-known
+exclude:
+  - SECURITY-ASSESSMENT.md
+  - AGENTS.md
+  - CLAUDE.md
+  - assets/AGENTS.md
+  - .gitignore

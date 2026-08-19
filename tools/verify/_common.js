@@ -4,6 +4,7 @@ const fs = require('fs');
 const PAGES = [
   'index.html', 'about.html', 'services.html',
   'work.html', 'membership.html', 'contact.html',
+  'privacy.html', 'terms.html', 'accessibility.html',
 ];
 
 const BASE = process.env.BASE || 'http://localhost:8000/';

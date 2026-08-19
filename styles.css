@@ -1379,6 +1379,44 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 .u-gap-14 { gap: 14px; }
 .u-pis-0  { padding-inline-start: 0; }
 
+/* ---------------------------------------------------------------
+   Legal pages (privacy, terms, accessibility) — long-form prose
+   --------------------------------------------------------------- */
+.legal { max-width: 720px; }
+.legal h2 {
+  font: 400 28px/1.25 var(--font-display);
+  color: var(--fg-1);
+  letter-spacing: -0.012em;
+  margin: 48px 0 16px;
+}
+.legal h3 {
+  font: 500 15px/1.4 var(--font-sans);
+  color: var(--fg-1);
+  margin: 28px 0 8px;
+}
+.legal p,
+.legal li { font: 400 16px/1.65 var(--font-sans); color: var(--fg-2); }
+.legal p { margin: 0 0 16px; }
+.legal ul { margin: 0 0 16px; padding-inline-start: 20px; }
+.legal li { margin-bottom: 8px; }
+.legal a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal dt { font: 500 15px/1.4 var(--font-sans); color: var(--fg-1); margin-top: 16px; }
+.legal dd { font: 400 16px/1.65 var(--font-sans); color: var(--fg-2); margin: 4px 0 0; }
+.legal__meta { font: 400 13px/1.6 var(--font-mono); color: var(--fg-3); margin: 0 0 32px; }
+/* Draft banner — these documents still need review by counsel. */
+.legal__notice {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 0 0 40px;
+  background: var(--surface-1);
+}
+.legal__notice p { margin: 0; color: var(--fg-1); }
+
 /* Accent text on light surfaces — WCAG AA contrast.
    The reserved champagne accent (--champagne-500) is designed for light-on-dark.
    Used as small text on the light canvas it measures 1.97:1 on Cloud Dancer and

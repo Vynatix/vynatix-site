@@ -117,3 +117,30 @@ requests for fonts.
 - Do all work on the branch you were assigned; never push to another branch
   without explicit permission.
 - Do not open a pull request unless explicitly asked.
+- `_config.yml` decides what is actually published. Developer docs (`AGENTS.md`,
+  `CLAUDE.md`, `SECURITY.md`, `CODEOWNERS`, the security assessment) and
+  `tools/` are excluded, so they stay in the repo but are never served from
+  `vynatix.com`. **Anything new that is documentation rather than site content
+  must be added to that exclude list.**
+
+### Repository hardening (set once, in GitHub settings)
+
+These are not code changes, so they cannot be committed — they need someone with
+admin rights on the repository:
+
+- **Branch protection on the default branch.** Because a push publishes to
+  production, require a pull request and a Code Owner review before merging, and
+  disallow bypassing it. `CODEOWNERS` is in place; replace the placeholder team
+  with the real one.
+- **Commit email privacy.** The history contains a personal address on 26
+  commits. Git author emails are public on GitHub. Enable *Keep my email
+  addresses private* and *Block command line pushes that expose my email* in
+  personal account settings, and use the `@users.noreply.github.com` address
+  going forward. **Do not rewrite the existing history** — it would break the
+  merged pull-request record for no real gain, since the address is already
+  public.
+- **Footer VAT number.** Swedish e-handelslag expects the
+  `momsregistreringsnummer` alongside the company identification already in the
+  footer. It is not added here because it is a legal identifier that must be
+  confirmed rather than derived; add it to the footer on all nine pages once
+  known.

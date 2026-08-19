@@ -116,3 +116,34 @@
     init();
   }
 })();
+
+// Client marquee — pause/play control. WCAG 2.2.2 asks for a mechanism to stop
+// motion that starts on its own and runs for more than five seconds. The button
+// is hidden in CSS until this runs, so it never sits dead for no-JS visitors.
+(function () {
+  function init() {
+    var marquee = document.querySelector('.marquee');
+    if (!marquee) return;
+    var track = marquee.querySelector('.marquee__track');
+    var toggle = marquee.querySelector('.marquee__toggle');
+    if (!track || !toggle) return;
+
+    toggle.classList.add('is-ready');
+
+    toggle.addEventListener('click', function () {
+      var paused = track.classList.toggle('is-paused');
+      toggle.classList.toggle('is-paused', paused);
+      toggle.setAttribute('aria-pressed', String(paused));
+      toggle.setAttribute(
+        'aria-label',
+        paused ? 'Resume the scrolling client list' : 'Pause the scrolling client list'
+      );
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

@@ -410,6 +410,31 @@ html[dir="rtl"] .marquee__track { animation-direction: reverse; }
   .marquee__track { animation: none; }
 }
 
+/* Pause/play for the marquee (WCAG 2.2.2). The control does nothing without
+   JS, so it stays hidden until app.js wires it up and adds .is-ready. */
+.marquee { position: relative; }
+.marquee__toggle {
+  display: none;
+  position: absolute;
+  inset-inline-end: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: var(--bg);
+}
+.marquee__toggle.is-ready { display: inline-flex; }
+.marquee__track.is-paused { animation-play-state: paused; }
+.marquee__toggle .marquee__icon-play { display: none; }
+.marquee__toggle.is-paused .marquee__icon-pause { display: none; }
+.marquee__toggle.is-paused .marquee__icon-play { display: block; }
+
+/* Under reduced motion nothing is moving, so the control has nothing to do.
+   This must come after .is-ready and match its specificity to win. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__toggle,
+  .marquee__toggle.is-ready { display: none; }
+}
+
 /* ---------------------------------------------------------------
    Sections
    --------------------------------------------------------------- */
@@ -679,6 +704,11 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
 .section--ink .reel__card { background: rgba(243,240,233,0.07); }
 .section--ink .reel__card:hover { background: rgba(243,240,233,0.11); }
 .section--ink .reel__eyebrow { color: var(--accent); }
+/* The reel's other parts already invert on ink; .reel__link and the trailing
+   controls link were missed, leaving near-invisible dark-on-dark text
+   (1.21:1 and 2.62:1 against the ink canvas). */
+.section--ink .reel__link { color: var(--cloud-100); }
+.section--ink .reel__controls-link { color: #D6D2C7; }
 
 /* ---------------------------------------------------------------
    Big metric strip (numbers reframed)
@@ -1348,6 +1378,38 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 .u-mb-72  { margin-bottom: 72px; }
 .u-gap-14 { gap: 14px; }
 .u-pis-0  { padding-inline-start: 0; }
+
+/* Visually hidden, still announced by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — off-screen until focused, then it lands above the sticky header. */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: 500 14px/1 var(--font-sans);
+  transform: translateY(-250%);
+  transition: transform 160ms var(--ease-emphasized);
+}
+.skip-link:focus { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .skip-link { transition: none; }
+}
 /* ---------------------------------------------------------------
    Reel cards on mobile
    Must come AFTER every other .reel / .reel__card rule above so these

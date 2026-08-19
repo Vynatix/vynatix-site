@@ -24,6 +24,7 @@
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D2A2C">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
   <!-- ============================================================ Header -->
@@ -55,7 +56,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
 
     <!-- ============================================================ Hero -->
     <section class="hero" id="home">
@@ -130,8 +131,19 @@
       </div>
 
       <!-- Marquee -->
-      <div class="marquee" aria-hidden="true">
-        <div class="marquee__track">
+      <div class="marquee">
+        <!-- The visible track repeats the list twice to loop seamlessly, so it is
+             hidden from assistive tech; this list carries the names once instead. -->
+        <ul class="sr-only" aria-label="Clients we have worked with">
+          <li>Volvo Trucks</li>
+          <li>Volvo Cars</li>
+          <li>A Nordic manufacturer</li>
+          <li>A Nordic construction group</li>
+          <li>A Nordic telecoms group</li>
+          <li>A pharmaceutical company</li>
+          <li>A Swedish ministry</li>
+        </ul>
+        <div class="marquee__track" aria-hidden="true">
           <span class="marquee__item">Volvo Trucks</span>
           <span class="marquee__item">Volvo Cars</span>
           <span class="marquee__item">A Nordic manufacturer</span>
@@ -147,6 +159,10 @@
           <span class="marquee__item">A pharmaceutical company</span>
           <span class="marquee__item">A Swedish ministry</span>
         </div>
+        <button class="icon-btn marquee__toggle" type="button" aria-pressed="false" aria-label="Pause the scrolling client list">
+          <svg class="marquee__icon-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="marquee__icon-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5z"/></svg>
+        </button>
       </div>
     </section>
 

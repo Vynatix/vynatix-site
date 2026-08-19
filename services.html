@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>What we do, Vynatix</title>
@@ -57,13 +58,13 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">01</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">AI engineering</h2>
+            <h2 class="section__h2 heading-spaced">AI engineering</h2>
             <p class="two-up__body">We build production systems on foundation models, not slideware. That means retrieval that returns the right context, evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability so you can see what the system is doing after it ships.</p>
             <p class="two-up__body">We will tell you plainly what a model can and cannot do for your problem. If a simpler tool would serve you better than a foundation model, we will say so before you spend on one.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Retrieval-augmented generation</li>
               <li>Evaluation pipelines</li>
               <li>On-prem and sovereign cloud deployment</li>
@@ -80,12 +81,12 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">02</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">Cloud platforms</h2>
+            <h2 class="section__h2 heading-spaced">Cloud platforms</h2>
             <p class="two-up__body">We build and run cloud platforms for regulated industries, on GCP, AWS, and on-prem hybrids. The goal is boring infrastructure: pipelines that stay green, deployments you can reason about, and a bill that matches what you actually use.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Platform engineering</li>
               <li>Kubernetes and GitOps</li>
               <li>FinOps and cost control</li>
@@ -102,13 +103,13 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">03</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">Application development</h2>
+            <h2 class="section__h2 heading-spaced">Application development</h2>
             <p class="two-up__body">Application development is the largest share of what we do. We build software for the surface it actually runs on, native mobile, web and desktop, automotive and Android Automotive, wearables, and VR, and we wire it into the enterprise systems and SaaS behind it.</p>
             <p class="two-up__body">We are scoped to ship, not to staff. We agree the surfaces, the platforms and the integration points in writing before we start, and we say plainly which ones are out of scope. The result is software a client owns and the next team can read.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Native mobile, web and desktop</li>
               <li>Automotive and Android Automotive (AAOS)</li>
               <li>Wearables and VR</li>
@@ -122,7 +123,7 @@
     <!-- ============================================================ How we scope and price -->
     <section class="section section--ink">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">How we scope and price</span>
             <h2 class="section__h2">You pay for the outcome,<br>not the hours.</h2>
@@ -136,7 +137,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <span class="eyebrow eyebrow--accent">Considered work</span>
           <h2 class="cta-band__h2">Tell us the outcome you need, <em>and the constraint.</em></h2>
         </div>
         <div class="cta-band__actions">

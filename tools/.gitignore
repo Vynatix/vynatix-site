@@ -1,6 +1,8 @@
 node_modules/
 package-lock.json
 package.json
-baseline/
-current/
-diff/
+
+# Generated screenshot sets (baseline, baseline-mobile, current-*, diff-*).
+baseline*/
+current*/
+diff*/

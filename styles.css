@@ -1247,6 +1247,108 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 }
 
 /* ---------------------------------------------------------------
+   Components and utilities that replaced inline styles
+   These carry the one-off layout the pages used to express with
+   inline style="" attributes. Inline styles are no longer allowed:
+   the CSP pins style-src 'self', which blocks them outright.
+   --------------------------------------------------------------- */
+
+/* Hero meta row — eyebrow, hairline rule, and the "working since" note. */
+.hero__meta { display: flex; align-items: center; gap: 12px; }
+.hero__meta-rule { width: 24px; height: 1px; background: var(--border-strong); }
+.hero__meta-note {
+  font: 400 12px/1 var(--font-mono);
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+
+/* Small uppercase label above a list panel. Deliberately NOT an .eyebrow
+   modifier: [data-theme="dark"] .eyebrow re-asserts the primary colour at a
+   higher specificity, so a plain modifier would lose in dark mode. */
+.panel-label {
+  font: 500 11px/1 var(--font-sans);
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+/* Eyebrow in the champagne accent, used on the ink CTA bands. Paired with the
+   dark-theme selector for the same specificity reason as .panel-label above. */
+.eyebrow--accent,
+[data-theme="dark"] .eyebrow--accent { color: var(--accent); }
+
+/* Stat panel — the "Est. 2023 / 15 senior engineers" block on About. */
+.stat-panel {
+  margin-top: 32px;
+  padding: 24px;
+  background: var(--surface-1);
+  border-radius: 12px;
+}
+.stat-panel__label {
+  font: 500 11px/1 var(--font-sans);
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.stat-panel__row { display: flex; align-items: baseline; gap: 14px; }
+.stat-panel__value { font: italic 400 56px/1 var(--font-display); color: var(--primary); }
+.stat-panel__note { font: 400 15px/1.4 var(--font-sans); color: var(--fg-2); }
+
+/* Contact page — the two "ways in" option cards. */
+.contact-lede {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0 0 40px;
+  max-width: 520px;
+}
+.contact-options { display: flex; flex-direction: column; gap: 24px; }
+.contact-option {
+  padding: 28px;
+  background: var(--surface-1);
+  border-radius: 12px;
+}
+.contact-option__h3 {
+  font: 400 26px/1.2 var(--font-display);
+  color: var(--fg-1);
+  margin: 0 0 12px;
+  letter-spacing: -0.012em;
+}
+.contact-option__body {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0 0 20px;
+}
+
+/* Reel controls — the trailing "see all work" link and the flipped Previous icon. */
+.reel__controls-link {
+  margin-inline-start: auto;
+  font: 400 13px/1 var(--font-mono);
+  color: var(--fg-3);
+}
+.icon-flip { transform: rotate(180deg); display: inline-flex; }
+
+/* Component modifiers (anything beyond pure spacing). */
+.section__h2--wide { margin: 14px 0 0; max-width: 880px; }
+.btn-text--on-ink { color: var(--cloud-100); }
+.btn-text--inherit { padding: 8px 0; color: inherit; }
+
+/* Shared heading rhythm, used by both .section__h2 and .two-up__h3. */
+.heading-spaced { margin: 16px 0 24px; }
+
+/* Utilities — pure spacing only. Keep this list short; anything with colour,
+   type or background belongs in a named component above. */
+.u-m-0    { margin: 0; }
+.u-mt-16  { margin-top: 16px; }
+.u-mt-48  { margin-top: 48px; }
+.u-mb-0   { margin-bottom: 0; }
+.u-mb-8   { margin-bottom: 8px; }
+.u-mb-48  { margin-bottom: 48px; }
+.u-mb-72  { margin-bottom: 72px; }
+.u-gap-14 { gap: 14px; }
+.u-pis-0  { padding-inline-start: 0; }
+/* ---------------------------------------------------------------
    Reel cards on mobile
    Must come AFTER every other .reel / .reel__card rule above so these
    overrides win on source order — otherwise the desktop 480px width and

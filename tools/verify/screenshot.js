@@ -7,9 +7,13 @@ const crypto = require('crypto');
 const { PAGES, BASE, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
-const OUT = path.join(__dirname, '..', MODE === 'compare' ? 'current' : MODE);
+const SUFFIX = process.env.SUFFIX || '';
+const OUT = path.join(__dirname, '..', (MODE === 'compare' ? 'current' : MODE) + SUFFIX);
 const THEMES = ['light', 'dark'];
-const VIEWPORT = { width: 1440, height: 900 };
+const VIEWPORT = {
+  width: Number(process.env.VW) || 1440,
+  height: Number(process.env.VH) || 900,
+};
 
 async function capture() {
   fs.mkdirSync(OUT, { recursive: true });
@@ -40,8 +44,8 @@ function sha(file) {
 }
 
 function compare() {
-  const baseDir = path.join(__dirname, '..', 'baseline');
-  const curDir = path.join(__dirname, '..', 'current');
+  const baseDir = path.join(__dirname, '..', 'baseline' + SUFFIX);
+  const curDir = path.join(__dirname, '..', 'current' + SUFFIX);
   if (!fs.existsSync(baseDir)) {
     console.error('No baseline/ — run `node verify/screenshot.js baseline` first.');
     process.exit(1);

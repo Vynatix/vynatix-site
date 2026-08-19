@@ -103,9 +103,11 @@ requests for fonts.
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
   and an off-origin request check (`requests.js`).
 - Match the surrounding style: 2-space indentation, the existing comment voice
-  (explanatory, full sentences), and the token-first approach. Inline `style="
-  "` attributes are used in places for one-off layout — follow the local
-  pattern of the file you're editing.
+  (explanatory, full sentences), and the token-first approach.
+- **Do not add inline `style=""` attributes.** The CSP pins `style-src 'self'`,
+  so the browser blocks them outright. One-off layout goes in `styles.css` as a
+  component modifier (`.section__h2--wide`) or, for pure spacing, one of the
+  small `.u-*` utilities at the end of the file.
 - Keep the brand copy voice intact: plain, direct, Nordic-understated.
 
 ## Git & deploys

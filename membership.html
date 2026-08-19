@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Membership, Vynatix</title>
@@ -85,7 +86,7 @@
     <!-- ============================================================ The fourth option -->
     <section class="section section--ink">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">The fourth option</span>
             <h2 class="section__h2">So we built one.</h2>
@@ -221,7 +222,7 @@
         <div class="two-up">
           <div>
             <h3 class="two-up__h3">This is for you if</h3>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <ul class="practice__bullets u-gap-14">
               <li>You are a senior-plus engineer or designer with 7+ years of real delivery behind you</li>
               <li>You are already freelance, or seriously considering the move</li>
               <li>You are after both independence and a community of peers, rather than one or the other</li>
@@ -231,7 +232,7 @@
           </div>
           <div>
             <h3 class="two-up__h3">This is not for you if</h3>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <ul class="practice__bullets u-gap-14">
               <li>You want traditional full-time employment with benefits</li>
               <li>You need daily management</li>
               <li>You are earlier than the senior track</li>
@@ -246,7 +247,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Let us talk</span>
+          <span class="eyebrow eyebrow--accent">Let us talk</span>
           <h2 class="cta-band__h2">A thirty-minute conversation, <em>no pitch, no pressure.</em></h2>
         </div>
         <div class="cta-band__actions">

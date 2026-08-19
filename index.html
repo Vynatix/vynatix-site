@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vynatix, a Nordic software consultancy in Gothenburg</title>
@@ -51,10 +52,10 @@
     <!-- ============================================================ Hero -->
     <section class="hero" id="home">
       <div class="hero__top">
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="hero__meta">
           <span class="eyebrow">A Nordic software consultancy</span>
-          <span style="width: 24px; height: 1px; background: var(--border-strong);"></span>
-          <span style="font: 400 12px/1 var(--font-mono); color: var(--fg-3); letter-spacing: 0.04em;">Working since 2023</span>
+          <span class="hero__meta-rule"></span>
+          <span class="hero__meta-note">Working since 2023</span>
         </div>
 
         <h1 class="hero__h1">
@@ -153,15 +154,15 @@
         </div>
 
         <!-- Application development -->
-        <div class="two-up" style="margin-bottom: 72px;">
+        <div class="two-up u-mb-72">
           <div>
             <span class="eyebrow">Application development</span>
-            <h3 class="two-up__h3" style="margin: 16px 0 24px;">The software people use every day</h3>
+            <h3 class="two-up__h3 heading-spaced">The software people use every day</h3>
             <p class="two-up__body">We build the software people use every day, on whatever it needs to run on: web and desktop apps, native mobile, in-car systems, wearables, VR, and the enterprise and SaaS platforms behind them. A lot of our team comes from years in automotive and embedded work, so we are at home with the awkward, real-world constraints that come with hardware and regulated environments.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Web, desktop and SaaS</li>
               <li>Native mobile, iOS and Android</li>
               <li>Automotive and embedded systems</li>
@@ -172,15 +173,15 @@
         </div>
 
         <!-- AI engineering -->
-        <div class="two-up" style="margin-bottom: 72px;">
+        <div class="two-up u-mb-72">
           <div>
             <span class="eyebrow">AI engineering</span>
-            <h3 class="two-up__h3" style="margin: 16px 0 24px;">Honest about what it can and cannot do</h3>
+            <h3 class="two-up__h3 heading-spaced">Honest about what it can and cannot do</h3>
             <p class="two-up__body">AI is a fast-growing part of what we do, and we build it the same way we build everything else: to run in production, and to be honest about what it can and cannot do. We can take something from a rough first prototype all the way to a tool your team uses every day, and we work in the open so you always know how it reaches its answers.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Chatbots and assistants</li>
               <li>Retrieval and grounded answers</li>
               <li>Agent and harness engineering</li>
@@ -196,12 +197,12 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">Cloud platforms</span>
-            <h3 class="two-up__h3" style="margin: 16px 0 24px;">The kind regulated industries actually need</h3>
+            <h3 class="two-up__h3 heading-spaced">The kind regulated industries actually need</h3>
             <p class="two-up__body">Platforms on GCP, AWS and on-prem hybrids, the kind regulated industries actually need. Build pipelines that stay green, infrastructure that costs what it should, and a sensible path off legacy systems.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Platform engineering</li>
               <li>Kubernetes and GitOps</li>
               <li>Cost control</li>
@@ -210,8 +211,8 @@
           </div>
         </div>
 
-        <div style="margin-top: 48px;">
-          <a class="btn-text" href="services.html" style="padding-inline-start: 0;">
+        <div class="u-mt-48">
+          <a class="btn-text u-pis-0" href="services.html">
             More on what we do
             <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
           </a>
@@ -222,7 +223,7 @@
     <!-- ============================================================ How working with us goes -->
     <section class="section section--tight section--surface">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">How it goes</span>
             <h2 class="section__h2">How working<br>with us goes</h2>
@@ -288,15 +289,15 @@
 
           <div class="reel__controls">
             <button class="reel__btn" aria-label="Previous">
-              <span style="transform: rotate(180deg); display: inline-flex;">
+              <span class="icon-flip">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
               </span>
             </button>
             <button class="reel__btn" aria-label="Next">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
             </button>
-            <span style="margin-inline-start: auto; font: 400 13px/1 var(--font-mono); color: var(--fg-3);">
-              <a class="btn-text" href="work.html" style="padding: 8px 0; color: inherit;">
+            <span class="reel__controls-link">
+              <a class="btn-text btn-text--inherit" href="work.html">
                 See all work
                 <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
               </a>
@@ -321,7 +322,7 @@
           <div>
             <p class="two-up__body">We started Vynatix because we had seen how most consultancies sell hours, and the hours billed rarely match the hours that actually move a project forward. We wanted to work a different way: agree on an outcome, price it as fixed work, and write it all down so the next person can pick it up.</p>
             <p class="two-up__body">We have our main office on Magasinsgatan in Gothenburg and a second desk on Birger Jarlsgatan in Stockholm, where a couple of the team are based. We like meeting clients face to face for that first conversation. After that, most of the work happens in writing, which keeps everyone clear on what was agreed.</p>
-            <a class="btn-text" href="about.html" style="padding-inline-start: 0;">
+            <a class="btn-text u-pis-0" href="about.html">
               More about us
               <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
             </a>
@@ -336,10 +337,10 @@
     <!-- ============================================================ Where we are so far -->
     <section class="section section--tight section--surface">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 48px;">
+        <div class="section__head u-mb-48">
           <div>
             <span class="eyebrow">Where we are so far</span>
-            <h2 class="section__h2" style="margin-top: 16px;">Where we<br>are so far</h2>
+            <h2 class="section__h2 u-mt-16">Where we<br>are so far</h2>
           </div>
           <p class="section__lead">Founded 2023 in Gothenburg, part of Ultra Group. Clients include Volvo Trucks and Volvo Cars.</p>
         </div>
@@ -374,7 +375,7 @@
           </div>
           <p class="section__lead">We are a consultancy built by engineers, for engineers. If you are senior, you have been freelance or you are thinking about it, and you would rather keep your independence without doing all your own sales and admin, we would like to talk. We find and qualify the assignments, you choose which ones to take, and there are no lock-ins, no non-competes, and no claim on your work beyond what we deliver together.</p>
         </div>
-        <a class="btn-text" href="membership.html" style="padding-inline-start: 0;">
+        <a class="btn-text u-pis-0" href="membership.html">
           Get in touch
           <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
@@ -385,7 +386,7 @@
     <section class="cta-band" id="contact">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Let us talk</span>
+          <span class="eyebrow eyebrow--accent">Let us talk</span>
           <h2 class="cta-band__h2">One conversation, one written scope, <em>one fixed price.</em></h2>
         </div>
         <div class="cta-band__actions">

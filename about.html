@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Vynatix</title>
@@ -57,17 +58,17 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">Why we exist</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">Most consultancies sell hours. We sell outcomes.</h2>
+            <h2 class="section__h2 heading-spaced">Most consultancies sell hours. We sell outcomes.</h2>
             <p class="two-up__body">Most consultancies sell hours, and the hours sold rarely match the hours that move a project forward. We scope our projects against an outcome, a deployed system, an audit passed, a build that stays green, and we price them as fixed work, not as a head count.</p>
             <p class="two-up__body">We are run by engineers, for engineers. There is no management layer between the person doing your work and the decision about how to do it. That is the same reason the work is good and the reason engineers want to join us.</p>
           </div>
           <div>
             <blockquote class="pullquote">We staff against an outcome, write it down, and ship it. Then we write the case study.</blockquote>
-            <div style="margin-top: 32px; padding: 24px; background: var(--surface-1); border-radius: 12px;">
-              <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Est. 2023</div>
-              <div style="display: flex; align-items: baseline; gap: 14px;">
-                <span style="font: italic 400 56px/1 var(--font-display); color: var(--primary);">15</span>
-                <span style="font: 400 15px/1.4 var(--font-sans); color: var(--fg-2);">senior engineers, never more than that at one time</span>
+            <div class="stat-panel">
+              <div class="stat-panel__label">Est. 2023</div>
+              <div class="stat-panel__row">
+                <span class="stat-panel__value">15</span>
+                <span class="stat-panel__note">senior engineers, never more than that at one time</span>
               </div>
             </div>
           </div>
@@ -78,7 +79,7 @@
     <!-- ============================================================ How we work -->
     <section class="section section--surface">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">How we work</span>
             <h2 class="section__h2">We stay small on purpose.</h2>
@@ -132,7 +133,7 @@
           </div>
           <p class="section__lead">The engineers who deliver your work are members of a transparent collective. They stay independent, keep their IP, and see exactly where the money goes on every project. We think that is why the people are senior and the work gets documented.</p>
         </div>
-        <a class="btn-text" href="membership.html" style="padding-inline-start: 0; color: var(--cloud-100);">
+        <a class="btn-text u-pis-0 btn-text--on-ink" href="membership.html">
           If you are an engineer, there is more on the membership page
           <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
@@ -143,7 +144,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <span class="eyebrow eyebrow--accent">Considered work</span>
           <h2 class="cta-band__h2">One conversation, one written scope, <em>one fixed price.</em></h2>
         </div>
         <div class="cta-band__actions">

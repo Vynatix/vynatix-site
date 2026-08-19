@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Selected work, Vynatix</title>
@@ -55,13 +56,13 @@
     <section class="section">
       <div class="container">
         <span class="reel__eyebrow">Volvo Trucks · 2024</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A truck radio rebuilt in sixteen weeks.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A truck radio rebuilt in sixteen weeks.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We rebuilt the in-cab radio and media player for Volvo Trucks in sixteen weeks, with three engineers, and shipped it to production across a fleet measured in the hundreds of thousands.</p>
             <p class="two-up__body">The constraint. Fixed scope, three engineers, sixteen weeks, on Android Automotive above the vehicle hardware layer. We agreed what was in scope and what was not before the first line of code.</p>
           </div>
-          <div class="case-body__plate" style="margin: 0;">
+          <div class="case-body__plate u-m-0">
             <div class="case-body__plate-cell"><span class="v">700,000</span><span class="l">trucks on the road</span></div>
             <div class="case-body__plate-cell"><span class="v">16</span><span class="l">weeks, fixed scope</span></div>
             <div class="case-body__plate-cell"><span class="v">3</span><span class="l">engineers</span></div>
@@ -74,13 +75,13 @@
     <section class="section section--surface">
       <div class="container">
         <span class="reel__eyebrow">Volvo Cars · 2025</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A build pipeline cut from 47 minutes to 6.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A build pipeline cut from 47 minutes to 6.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We took a build pipeline from a 47 minute wait to under 6, an 87 percent reduction on every commit, for the whole team.</p>
             <p class="two-up__body">What it does and does not do. The gain lands on every commit the team pushes. We were scoped to the pipeline, not the build targets, and we agreed that boundary up front.</p>
           </div>
-          <div class="case-body__plate" style="margin: 0;">
+          <div class="case-body__plate u-m-0">
             <div class="case-body__plate-cell"><span class="v">&minus;87%</span><span class="l">build time</span></div>
             <div class="case-body__plate-cell"><span class="v">47&rarr;6</span><span class="l">minutes per build</span></div>
             <div class="case-body__plate-cell"><span class="v">every</span><span class="l">commit, whole team</span></div>
@@ -93,14 +94,14 @@
     <section class="section">
       <div class="container">
         <span class="reel__eyebrow">Regulated client · 2025</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A closed-domain assistant that refuses to guess.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A closed-domain assistant that refuses to guess.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We built an assistant that answers inside a defined domain and hands everything else to a person, on purpose. It declines questions it cannot ground in source, rather than inventing an answer.</p>
             <p class="two-up__body">What it does and does not do. It answers questions it can ground in source, with citations. It refuses questions it cannot ground, and routes them to a human. We set that line deliberately, and we can show you exactly where it sits and why.</p>
           </div>
           <div>
-            <blockquote class="pullquote" style="margin: 0;">No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
+            <blockquote class="pullquote u-m-0">No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
           </div>
         </div>
       </div>
@@ -110,7 +111,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <span class="eyebrow eyebrow--accent">Considered work</span>
           <h2 class="cta-band__h2">The rest are under <em>non-disclosure.</em></h2>
         </div>
         <div class="cta-band__actions">

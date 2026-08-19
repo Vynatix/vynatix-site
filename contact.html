@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted, so no font CDN appears here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://images.unsplash.com; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Contact Vynatix</title>
@@ -52,19 +53,19 @@
 
       <div class="contact-layout">
         <div>
-          <h2 class="two-up__h3" style="margin-bottom: 8px;">Two ways in</h2>
-          <p style="font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 40px; max-width: 520px;">One inbox, front.disk@vynatix.com. To help us route your message, start the subject line with Project or Membership.</p>
+          <h2 class="two-up__h3 u-mb-8">Two ways in</h2>
+          <p class="contact-lede">One inbox, front.disk@vynatix.com. To help us route your message, start the subject line with Project or Membership.</p>
 
-          <div style="display: flex; flex-direction: column; gap: 24px;">
-            <div style="padding: 28px; background: var(--surface-1); border-radius: 12px;">
-              <h3 style="font: 400 26px/1.2 var(--font-display); color: var(--fg-1); margin: 0 0 12px; letter-spacing: -0.012em;">Have a problem to solve</h3>
-              <p style="font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 20px;">Tell us the outcome you need and the constraint you are under. We will tell you whether it is work we can do well.</p>
+          <div class="contact-options">
+            <div class="contact-option">
+              <h3 class="contact-option__h3">Have a problem to solve</h3>
+              <p class="contact-option__body">Tell us the outcome you need and the constraint you are under. We will tell you whether it is work we can do well.</p>
               <a class="btn-primary" href="mailto:front.disk@vynatix.com?subject=Project">Book a call, subject Project</a>
             </div>
 
-            <div style="padding: 28px; background: var(--surface-1); border-radius: 12px;">
-              <h3 style="font: 400 26px/1.2 var(--font-display); color: var(--fg-1); margin: 0 0 12px; letter-spacing: -0.012em;">Want to join the collective</h3>
-              <p style="font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 20px;">If you are a senior engineer or designer weighing independence against community, start here.</p>
+            <div class="contact-option">
+              <h3 class="contact-option__h3">Want to join the collective</h3>
+              <p class="contact-option__body">If you are a senior engineer or designer weighing independence against community, start here.</p>
               <a class="btn-ghost" href="mailto:front.disk@vynatix.com?subject=Membership">Start a conversation, subject Membership</a>
             </div>
           </div>

@@ -14,6 +14,7 @@ highlights the things most worth keeping front-of-mind.
   repo is what ships, served via GitHub Pages at `vynatix.com` (`CNAME`).
 - **Two-layer CSS:** design tokens in `colors_and_type.css`, components in
   `styles.css`. Use `var(--token)`; add new tokens rather than hard-coding.
+  **No inline `style=""`** — the CSP pins `style-src 'self'` and blocks it.
 - **Dark mode** is token overrides under `[data-theme="dark"]`; the toggle lives
   in `app.js` and persists to `localStorage`. Test changes in both themes.
 - **Header and footer are duplicated across every `*.html` file** — there is no

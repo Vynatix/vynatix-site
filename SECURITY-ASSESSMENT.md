@@ -224,6 +224,11 @@ residual items — all currently low-impact:
   future surprise from a stray Liquid-looking string, and speeds Pages builds.
   *(Informational.)*
 
+  > **Superseded in Round 3.** `.nojekyll` was added, then removed again: serving
+  > every file verbatim would also serve the developer docs. `_config.yml` is used
+  > instead, because it is the only mechanism that can exclude them. Do not
+  > re-add `.nojekyll` — it would defeat every exclusion.
+
 ## Execution-environment posture (the container this runs in)
 
 The build/agent runs in an **ephemeral, isolated container**; the repo is cloned
@@ -424,15 +429,15 @@ include the image, icon, accessibility and hygiene work.
 ## The verification harness came first
 
 Nothing was changed until there was a way to prove the change was safe.
-`tools/` now holds five checks, excluded from the published site and with their
+`tools/` now holds six checks, excluded from the published site and with its
 `node_modules/` gitignored, so the site itself still has no build step:
 
 | Check | What it proves |
 |---|---|
 | `screenshot.js` | 9 pages × light/dark, pixel-diffed against a baseline |
-| `adversarial.js` | the CSP **blocks** 7 concrete attacks |
+| `adversarial.js` | 7 concrete attacks all fail — 5 blocked by the CSP, 2 because `app.js` has no reflective sink |
 | `requests.js` | **zero** off-origin requests; fonts resolve |
-| `a11y.js` | axe-core WCAG 2.0/2.1/2.2 A+AA, plus skip link, marquee, no-JS and reduced-motion behaviour |
+| `a11y.js` | axe-core WCAG 2.0/2.1/2.2 A+AA **and an independent contrast sweep**, plus skip link, marquee, no-JS and reduced-motion behaviour |
 | `links.js` | every internal link, script, style and image resolves |
 | `headers.js` | the response headers from `EDGE-SETUP.md` |
 
@@ -473,7 +478,9 @@ upgrade-insecure-requests
   client-side.)
 
 **Accessibility now matches the claim the footer makes.** axe-core reports zero
-violations across all nine pages in both themes, where it previously found 23.
+violations across all nine pages in both themes, where it previously found 23 —
+but see Round 5: axe alone was not sufficient, and an independent contrast sweep
+later found a node it silently skips.
 
 - A **skip link** (there was none) and an `sr-only` utility; `<main>` had no
   `id` on any page and now has one as the target.
@@ -494,7 +501,8 @@ violations across all nine pages in both themes, where it previously found 23.
 **The site now keeps its legal promises.** The footer's Privacy, Terms and
 Accessibility links pointed at a non-existent `#legal` anchor on all six pages,
 and no privacy notice existed at all — a GDPR Art. 13 gap for an EU company.
-Three pages were written and all 27 footer links repointed. The privacy notice
+Three pages were written; the 18 dead links across the six existing footers
+were repointed, and all nine footers now carry the same three real targets. The privacy notice
 states only what the site verifiably does, and names GitHub Pages and the
 planned Cloudflare layer as processors with the third-country transfer called
 out. The accessibility statement is deliberately unflattering: it says what has
@@ -531,11 +539,11 @@ from the four wordmark SVGs, verified pixel-identical. `SECURITY.md` and
 ## Round-4 verdict
 
 The repository-side work is complete. The site has no reachable
-injection/XSS/redirect/exfiltration path, a CSP with no third-party origin that
-is *proven* to block seven concrete attacks, zero off-origin requests, zero axe
-violations across nine pages in both themes, no broken links, and legal and
-accessibility pages that describe reality rather than aspiration — including
-where it falls short.
+injection/XSS/redirect/exfiltration path, a CSP with no third-party origin under
+which seven concrete attacks all fail, zero off-origin requests, no broken links,
+and legal and accessibility pages that describe reality rather than aspiration —
+including where it falls short. (Round 5 below revisits the accessibility claim,
+which was accurate about axe but overstated about conformance.)
 
 What remains is one infrastructure change and a handful of facts only the
 company can supply.

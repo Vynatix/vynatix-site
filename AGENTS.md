@@ -21,14 +21,23 @@ services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
+privacy.html        Privacy notice (GDPR Art. 13)
+terms.html          Website terms of use
+accessibility.html  Accessibility statement — nine pages in total
 colors_and_type.css Design system: CSS custom properties (tokens) only
 styles.css          Page chrome and component styles built on the tokens
 app.js              All client behaviour (vanilla JS, IIFEs, no modules)
-assets/             SVG logos — wordmark + logo-mark in 4 colour variants
+assets/             SVG logos, self-hosted case photos (jpg + webp), app icons
 fonts/              Self-hosted woff2 (Instrument Serif, Geist, Geist Mono)
+favicon.svg/.ico    Theme-aware SVG icon + 16/32/48 ICO fallback
+apple-touch-icon.png
+site.webmanifest    Name, colours and icons for installed/Android use
 CNAME               GitHub Pages custom domain
 _config.yml         Controls what GitHub Pages publishes (excludes dev docs)
 .well-known/        security.txt (RFC 9116 disclosure contact)
+SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
+CODEOWNERS          Review ownership — not published
+EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
 tools/              Local verification scripts — NOT published, not part of the site
 ```
 
@@ -58,29 +67,39 @@ all `*.html` files.** Set `aria-current="page"` on the current page's nav link.
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` (deferred),
 and `app.js` is the **only** script — there is no CDN or animation stack. It has
-exactly three features, all running on every page: the theme toggle, the mobile
-nav, and the case-reel Previous/Next controls.
+four features: the theme toggle, the mobile nav, and the case-reel Previous/Next
+controls run everywhere; the marquee pause control is index-only and a no-op on
+the other pages.
 
 The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
 `script-src 'self'`, so **any third-party script is blocked by default**. A
 GSAP + ScrollTrigger + SplitText + Lenis CTA "settle" animation once lived on
 `index.html` but was reverted (PR #21); it is not in the shipped code. If it is
 ever restored, adding those CDN `<script>` tags means deliberately widening
-`script-src` in the CSP on all six pages — and updating this file.
+`script-src` in the CSP on **all nine pages** — and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
 afterthought — preserve it:
 - No-JS users get the fully visible final state; nothing is hidden pending JS.
+- **Controls that need JS must not sit dead without it.** The pattern is to hide
+  them in CSS and let `app.js` opt in by adding a class — `.is-ready` for the
+  marquee pause and the reel arrows, `.js-nav` on `<html>` for the collapsible
+  mobile nav. Without JS the nav stays visible and wraps rather than hiding
+  behind a menu button that could never open.
 - All decorative motion (e.g. the client marquee, the smooth reel scroll) must
   be gated on `prefers-reduced-motion` and fall back to the static final state.
 - Keep `aria-label` / `aria-expanded` / `aria-pressed` / `aria-current` and
-  decorative `aria-hidden` attributes correct when editing markup. The footer
-  claims WCAG 2.2 AA.
+  decorative `aria-hidden` attributes correct when editing markup.
+  `accessibility.html` states the target as "we aim to meet WCAG 2.2 Level AA"
+  and lists what has not been independently verified — keep that page honest
+  rather than upgrading the claim.
 
 ## Assets
 
-Logos live in `assets/` as SVGs in four colour variants — `teal`, `ink`,
-`cloud`, `champagne` — for both `wordmark-*` and `logo-mark-*`. Match the
+`assets/` holds the logos as SVGs in four colour variants — `teal`, `ink`,
+`cloud`, `champagne` — for both `wordmark-*` and `logo-mark-*`, plus the three
+self-hosted case photos (`case-*.jpg` with `.webp` siblings, see
+`assets/CREDITS.md`) and the generated app icons (`icon-192/512.png`). Match the
 variant to the background: the `teal` wordmark sits in the (light) header, the
 `cloud` wordmark in the (dark) footer. Fonts are self-hosted woff2; the home
 page preloads the headline serif weight. Don't add third-party font/CDN
@@ -107,7 +126,10 @@ requests for fonts.
 - **Do not add inline `style=""` attributes.** The CSP pins `style-src 'self'`,
   so the browser blocks them outright. One-off layout goes in `styles.css` as a
   component modifier (`.section__h2--wide`) or, for pure spacing, one of the
-  small `.u-*` utilities at the end of the file.
+  small `.u-*` utilities in the "Components and utilities that replaced inline
+  styles" block. Those utilities are single-class rules, so anything you append
+  later with equal specificity will outrank them — put new component rules
+  before that block, not after it.
 - Keep the brand copy voice intact: plain, direct, Nordic-understated.
 
 ## Git & deploys

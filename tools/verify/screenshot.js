@@ -28,6 +28,15 @@ async function capture() {
       }, theme);
       await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
       await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
+      // Force every image to load and decode before capturing. fullPage grows the
+      // viewport after this point, so loading="lazy" covers would otherwise still
+      // be racing the screenshot and produce false diffs on an unchanged page.
+      // This only affects the capture, never the shipped markup.
+      await page.evaluate(async () => {
+        const imgs = [...document.images];
+        imgs.forEach((img) => { img.loading = 'eager'; });
+        await Promise.all(imgs.map((img) => img.decode().catch(() => {})));
+      });
       await page.waitForTimeout(300);
       const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}.png`);
       await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });
@@ -52,7 +61,9 @@ function compare() {
   }
   let pixelmatch, PNG;
   try {
+    // pixelmatch v7+ ships as ESM; require() hands back the namespace object.
     pixelmatch = require('pixelmatch');
+    pixelmatch = pixelmatch.default || pixelmatch;
     PNG = require('pngjs').PNG;
   } catch (e) {
     console.log('(pixelmatch/pngjs not installed — falling back to exact hash comparison)\n');

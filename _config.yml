@@ -24,4 +24,5 @@ exclude:
   - AGENTS.md
   - CLAUDE.md
   - assets/AGENTS.md
+  - assets/CREDITS.md
   - .gitignore

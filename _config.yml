@@ -11,12 +11,16 @@
 #   include: Jekyll drops dotfiles/dotfolders from the build by default, so the
 #            .well-known/ directory must be force-included to publish security.txt.
 #
+# tools/ holds local verification scripts (Playwright checks). They are developer
+# tooling, never site content, so they are excluded from the published output.
+#
 # NOTE: this replaces the previous .nojekyll marker. .nojekyll would serve every
 # file verbatim — including the docs below — which is exactly what we must avoid.
 include:
   - .well-known
 exclude:
   - SECURITY-ASSESSMENT.md
+  - tools
   - AGENTS.md
   - CLAUDE.md
   - assets/AGENTS.md

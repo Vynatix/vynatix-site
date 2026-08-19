@@ -27,6 +27,9 @@ app.js              All client behaviour (vanilla JS, IIFEs, no modules)
 assets/             SVG logos — wordmark + logo-mark in 4 colour variants
 fonts/              Self-hosted woff2 (Instrument Serif, Geist, Geist Mono)
 CNAME               GitHub Pages custom domain
+_config.yml         Controls what GitHub Pages publishes (excludes dev docs)
+.well-known/        security.txt (RFC 9116 disclosure contact)
+tools/              Local verification scripts — NOT published, not part of the site
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -88,10 +91,17 @@ requests for fonts.
 - **Run it** by opening `index.html` in a browser, or serve the folder
   (`python3 -m http.server`) so relative paths and `fetch` behave. There is no
   dev server, hot reload, or watch task.
-- **No build, lint, or test tooling** is configured. "Passing" means: the
-  pages render correctly in light and dark, nav/footer are consistent across
-  pages, behaviour degrades gracefully with JS off and reduced motion on, and
-  no console errors. Check changes visually in both themes.
+- **The site has no build step** — no framework, bundler, or package manager,
+  and what is in the repo ships verbatim. The one exception is `tools/`, which
+  holds optional local verification scripts (Playwright). They are developer
+  tooling only: excluded from the published output in `_config.yml`, with their
+  `node_modules/` gitignored. The site itself stays hand-written.
+- **"Passing" means:** the pages render correctly in light and dark, nav/footer
+  are consistent across pages, behaviour degrades gracefully with JS off and
+  reduced motion on, and there are no console errors. Check changes visually in
+  both themes. `tools/README.md` documents the repeatable checks — a visual
+  regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
+  and an off-origin request check (`requests.js`).
 - Match the surrounding style: 2-space indentation, the existing comment voice
   (explanatory, full sentences), and the token-first approach. Inline `style="
   "` attributes are used in places for one-off layout — follow the local

@@ -13,8 +13,17 @@ IP is disclosed to a third party). Used under the
 
 Each was downloaded from `images.unsplash.com/<id>?auto=format&fit=crop&w=900&q=80`
 (900px wide, progressive JPEG) — the exact rendition the pages used to hotlink.
+The `.webp` sibling of each file was then encoded locally from that JPEG through
+Chromium (quality 0.80, ~40% smaller) and is offered first via `<picture>`; the
+JPEG remains as the fallback. Hotlinking used to hand modern browsers a WebP via
+Unsplash's `auto=format`, so this keeps that benefit while staying first-party.
 
-**TODO:** the photographer names could not be read automatically (the Unsplash
-photo pages render client-side). The Unsplash License does not require
-attribution, but crediting the photographer is good practice — open each source
-URL above and add the name here before treating this file as final.
+**Source URLs above are constructed from the CDN id, not verified photo pages.**
+The id is the one fact we hold: the images were fetched from
+`https://images.unsplash.com/photo-<id>`. Automated lookup of the canonical photo
+page is blocked (Unsplash serves a bot-check to non-browser clients and its
+oEmbed endpoint now needs an API key), so the photographer must be identified by
+searching Unsplash for the id from a normal browser.
+
+**TODO:** add the photographer for each image. The Unsplash License does not
+require attribution, but crediting the photographer is good practice.

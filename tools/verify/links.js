@@ -24,6 +24,13 @@ const { PAGES, BASE, launch } = require('./_common');
         const h = el.getAttribute('src') || el.getAttribute('href');
         if (h && !/^(data:|https?:)/.test(h)) out.add(h);
       });
+      // <source srcset> inside <picture> — the modern-format siblings.
+      document.querySelectorAll('source[srcset]').forEach((el) => {
+        el.getAttribute('srcset').split(',').forEach((cand) => {
+          const h = cand.trim().split(/\s+/)[0];
+          if (h && !/^(data:|https?:)/.test(h)) out.add(h);
+        });
+      });
       return [...out];
     });
     for (const h of hrefs) {

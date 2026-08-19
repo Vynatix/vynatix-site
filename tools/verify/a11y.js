@@ -62,6 +62,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
       const t = document.querySelector('.marquee__toggle');
       return { visible: getComputedStyle(t).display !== 'none',
                pressed: t.getAttribute('aria-pressed'),
+               label: t.getAttribute('aria-label'),
                play: getComputedStyle(document.querySelector('.marquee__track')).animationPlayState };
     });
     await page.click('.marquee__toggle');
@@ -74,8 +75,11 @@ const AXE = require.resolve('axe-core/axe.min.js');
       const ul = document.querySelector('.marquee .sr-only');
       return ul ? { items: ul.querySelectorAll('li').length, label: ul.getAttribute('aria-label') } : null;
     });
+    // aria-pressed carries the state and the label stays constant, so the two
+    // can never contradict each other in an announcement.
     const ok = before.visible && before.play === 'running' && after.play === 'paused'
-      && after.pressed === 'true' && /resume/i.test(after.label || '') && srList && srList.items === 7;
+      && after.pressed === 'true' && after.label === before.label
+      && srList && srList.items === 7;
     if (!ok) problems++;
     console.log(`${ok ? 'ok  ' : 'FAIL'} marquee pause control + sr-only client list`);
     console.log(`       before=${JSON.stringify(before)}\n       after=${JSON.stringify(after)}\n       srList=${JSON.stringify(srList)}`);

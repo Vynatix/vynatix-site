@@ -9,6 +9,9 @@
 
   function applyTheme(theme, button) {
     root.setAttribute('data-theme', theme);
+    // Keep the browser chrome colour matching what is actually rendered.
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0D2A2C' : '#F3F0E9');
     if (button) {
       button.setAttribute('aria-label', labelFor(theme));
       button.setAttribute('aria-pressed', String(theme === 'dark'));
@@ -58,6 +61,10 @@
     var nav = document.querySelector('.site-header__nav');
     if (!toggle || !nav) return;
 
+    // Opt into the collapsible mobile nav. Without this class the nav stays
+    // visible and wrapped, so a no-JS visitor on a phone still has every link.
+    document.documentElement.classList.add('js-nav');
+
     toggle.addEventListener('click', function () {
       var open = nav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(open));
@@ -103,6 +110,10 @@
 
     if (prev) prev.addEventListener('click', function () { scrollByCards(-1); });
     if (next) next.addEventListener('click', function () { scrollByCards(1); });
+
+    // The arrows are hidden in CSS until they actually work; the reel itself
+    // scrolls natively without them.
+    controls.classList.add('is-ready');
   }
 
   function init() {
@@ -133,11 +144,9 @@
     toggle.addEventListener('click', function () {
       var paused = track.classList.toggle('is-paused');
       toggle.classList.toggle('is-paused', paused);
+      // aria-pressed carries the state; the label stays constant so the two
+      // never contradict each other ("Resume…, pressed" reads as nonsense).
       toggle.setAttribute('aria-pressed', String(paused));
-      toggle.setAttribute(
-        'aria-label',
-        paused ? 'Resume the scrolling client list' : 'Pause the scrolling client list'
-      );
     });
   }
 

@@ -16,12 +16,14 @@
 <link rel="stylesheet" href="styles.css">
 <!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
-<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F0E9">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D2A2C">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>

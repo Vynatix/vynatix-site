@@ -14,12 +14,14 @@
 <link rel="stylesheet" href="styles.css">
 <!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
-<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F0E9">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D2A2C">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -78,7 +80,7 @@
           <p>It is worth stating plainly, because it is unusual:</p>
           <ul>
             <li>There is <strong>no analytics</strong> of any kind. No Google Analytics, no Plausible, no server-side page counting we control.</li>
-            <li>There are <strong>no cookies</strong>. The site sets none, so there is no consent banner to click.</li>
+            <li>There are <strong>no cookies</strong>. We set none, so there is no consent banner to click. (Once the Cloudflare layer described below is live it may set its own strictly-necessary security cookie; we will name it here when that happens.)</li>
             <li>There are <strong>no tracking pixels</strong>, advertising tags, social widgets or embedded third-party content.</li>
             <li>There is <strong>no contact form</strong>. Getting in touch means emailing or calling us directly.</li>
             <li>Fonts and images are <strong>served from this domain</strong>. Nothing is fetched from a font CDN or image host, so visiting a page does not disclose your address to any third party for content.</li>
@@ -99,7 +101,7 @@
 
           <h2>Your rights</h2>
           <p>Under the GDPR you may ask us to confirm what we hold about you and give you a copy, correct it, delete it, restrict or object to how we use it, or receive it in a portable form. Ask at <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> and we will answer within one month.</p>
-          <p>If you think we have handled your data badly, you can complain to the Swedish Authority for Privacy Protection (Integritetsskyddsmyndigheten, IMY), Box 8114, 104 20 Stockholm.</p>
+          <p>If you think we have handled your data badly, you can complain to the Swedish Authority for Privacy Protection (<span lang="sv">Integritetsskyddsmyndigheten</span>, IMY), Box 8114, 104 20 Stockholm.</p>
 
           <h2>Changes</h2>
           <p>If this notice changes we will update the date at the top. Material changes will be described rather than quietly folded in.</p>

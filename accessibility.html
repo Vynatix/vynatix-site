@@ -14,12 +14,14 @@
 <link rel="stylesheet" href="styles.css">
 <!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
-<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F0E9">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D2A2C">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -80,7 +82,7 @@
             <li>The scrolling client list has a <strong>pause control</strong>, and its names are also given to screen readers as a plain list rather than being hidden behind the animation.</li>
             <li>All motion respects <strong>prefers-reduced-motion</strong>: with that setting on, animation stops and the final state is shown.</li>
             <li>Text meets the <strong>AA contrast ratio</strong> in both the light and dark themes.</li>
-            <li>The site works <strong>without JavaScript</strong>. Nothing is hidden waiting for a script, and controls that need JavaScript do not appear until they work.</li>
+            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and controls that need JavaScript &mdash; the menu button, the case-reel arrows, the marquee pause &mdash; are hidden rather than left sitting dead. The theme toggle and the horizontally scrolling case reel still work by preference and by touch.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
           </ul>
 
@@ -99,7 +101,7 @@
 
           <h2>Tell us if something does not work</h2>
           <p>If any part of this site is difficult to use, please tell us &mdash; it is the fastest way for us to fix it. Email <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> or call +46 72 071 06 76. We reply to inbound within one working day, and will tell you what we can fix and when.</p>
-          <p>If you are not satisfied with our response, you can raise the matter with the Swedish Agency for Digital Government (Myndigheten f&ouml;r digital f&ouml;rvaltning, DIGG).</p>
+          <p>If you are not satisfied with our response, ask for it to be escalated and we will put it in front of someone else here. Vynatix is a private company, so the Swedish public-sector accessibility supervision route (<span lang="sv">Myndigheten f&ouml;r digital f&ouml;rvaltning</span>, DIGG) does not apply to this site; if the European Accessibility Act brings us in scope, we will name the competent authority here.</p>
         </div>
       </div>
     </section>

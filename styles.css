@@ -142,22 +142,50 @@ html[dir="rtl"] .site-header__link::after { transform-origin: 100% 50%; }
 .site-header__menu-cta { display: none; }
 
 @media (max-width: 900px) {
-  .site-header__nav { display: none; }
-  .site-header__nav.open {
+  /* Progressive enhancement: the hamburger cannot work without JavaScript, so
+     the nav must not be collapsed behind it by default — otherwise a no-JS
+     visitor on a phone loses every navigation link. Unenhanced, the nav simply
+     wraps onto its own row. app.js adds .js-nav to <html> to opt into the
+     collapsible behaviour, the same way the marquee control opts in. */
+  .site-header__inner { flex-wrap: wrap; }
+  .site-header__nav {
+    order: 3;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 4px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .js-nav .site-header__inner { flex-wrap: nowrap; }
+  .js-nav .site-header__nav {
+    display: none;
+    order: 0;
+    width: auto;
+    margin-inline-start: auto;
+    margin-inline-end: 32px;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .js-nav .site-header__nav.open {
     display: flex;
     flex-direction: column;
     position: absolute;
     top: 100%;
     left: 0; right: 0;
+    width: auto;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 16px 24px 24px;
     gap: 4px;
   }
-  .site-header__nav.open .site-header__link { padding: 12px 0; }
+  .js-nav .site-header__nav.open .site-header__link { padding: 12px 0; }
+
   .theme-toggle { display: none; }
   .site-header__cta { padding: 10px 16px; }
-  .mobile-toggle { display: inline-flex; }
+  .mobile-toggle { display: none; }
+  .js-nav .mobile-toggle { display: inline-flex; }
 }
 
 /* ---------------------------------------------------------------
@@ -540,9 +568,6 @@ section { position: relative; }
   position: relative;
 }
 .section--ink .practice__bullets li { color: #9DA8AB; }
-.svc-detail { gap: 18px; }
-.svc-detail li { font: 400 15px/1.6 var(--font-sans); color: var(--fg-2); }
-.svc-detail li strong { color: var(--fg-1); font-weight: 600; }
 .practice__bullets li::before {
   content: "•";
   position: absolute;
@@ -698,6 +723,11 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
 }
 .reel__btn:hover { background: var(--surface-1); border-color: var(--primary); }
 .section--ink .reel__btn { color: var(--cloud-100); border-color: rgba(243,240,233,0.22); }
+/* The reel scrolls natively, so the arrows are an enhancement: hidden until
+   app.js wires them up rather than sitting dead for no-JS visitors. The
+   "see all work" link beside them is a real link and always shows. */
+.reel__btn { display: none; }
+.reel__controls.is-ready .reel__btn { display: inline-flex; }
 .section--ink .reel__btn:hover { background: rgba(243,240,233,0.06); border-color: var(--accent); }
 
 /* Section--ink card */
@@ -1389,11 +1419,6 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
   letter-spacing: -0.012em;
   margin: 48px 0 16px;
 }
-.legal h3 {
-  font: 500 15px/1.4 var(--font-sans);
-  color: var(--fg-1);
-  margin: 28px 0 8px;
-}
 .legal p,
 .legal li { font: 400 16px/1.65 var(--font-sans); color: var(--fg-2); }
 .legal p { margin: 0 0 16px; }
@@ -1404,8 +1429,6 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.legal dt { font: 500 15px/1.4 var(--font-sans); color: var(--fg-1); margin-top: 16px; }
-.legal dd { font: 400 16px/1.65 var(--font-sans); color: var(--fg-2); margin: 4px 0 0; }
 .legal__meta { font: 400 13px/1.6 var(--font-mono); color: var(--fg-3); margin: 0 0 32px; }
 /* Draft banner — these documents still need review by counsel. */
 .legal__notice {
@@ -1430,6 +1453,11 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 [data-theme="light"] .contact-page__h1 em { color: var(--champagne-700); }
 [data-theme="light"] .section--surface .value__num,
 [data-theme="light"] .section--surface .process__num { color: var(--champagne-800); }
+/* The single accent cell in the numbers strip is 80px champagne on the dim
+   surface — 1.75:1, which fails even the 3:1 large-text threshold. axe does not
+   flag it, so it was missed on the first pass and found by audit instead. */
+[data-theme="light"] .numbers__cell--accent .numbers__value { color: var(--champagne-700); }
+[data-theme="light"] .section--surface .numbers__cell--accent .numbers__value { color: var(--champagne-800); }
 
 /* Visually hidden, still announced by screen readers. */
 .sr-only {

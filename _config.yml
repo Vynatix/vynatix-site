@@ -27,4 +27,5 @@ exclude:
   - assets/CREDITS.md
   - SECURITY.md
   - CODEOWNERS
+  - EDGE-SETUP.md
   - .gitignore

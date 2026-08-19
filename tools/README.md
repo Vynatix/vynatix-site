@@ -10,8 +10,11 @@ Requires Node and Playwright's browser bindings:
 
 ```sh
 cd tools
-npm init -y && npm i playwright
+npm install
 ```
+
+`package.json` lists all four dependencies (playwright, axe-core, pixelmatch,
+pngjs); installing only playwright leaves `a11y.js` and the pixel diff broken.
 
 Chromium is expected at `/opt/pw-browsers/chromium-*/chrome-linux/chrome`.
 Override with `CHROME=/path/to/chrome`. Nothing here is committed except the
@@ -29,7 +32,7 @@ Then, from `tools/`:
 
 | Command | Checks |
 |---|---|
-| `node verify/adversarial.js` | CSP actually **blocks** injected scripts/styles/images/handlers; localStorage poisoning; URL reflection; framing |
+| `node verify/adversarial.js` | CSP actually **blocks** injected scripts/styles/images/handlers; localStorage poisoning; URL reflection |
 | `node verify/requests.js` | **Zero** off-origin requests; self-hosted fonts resolve; no CSP violations |
 | `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in both themes, plus skip link, marquee pause control, no-JS and reduced-motion fallbacks |
 | `node verify/links.js` | Every internal link, script, style and image resolves |
@@ -48,6 +51,13 @@ site with `BASE=https://vynatix.com/ node verify/headers.js`.
 
 `a11y.js` bypasses CSP only to inject the scanner; `script-src 'self'` correctly
 refuses it otherwise. CSP enforcement is proven separately by `adversarial.js`.
+It also runs an independent contrast sweep over every visible text node, because
+axe silently skips nodes whose background it cannot resolve — it missed a 66px
+accent at 1.75:1 that the sweep catches.
+
+Framing is deliberately **not** tested by `adversarial.js`: `frame-ancestors`
+cannot be carried in a meta CSP at all, so framing protection is an edge-layer
+concern and `headers.js` is where it is asserted.
 
 Other useful env vars: `VW`/`VH` set the screenshot viewport (e.g. `VW=390
 VH=844` for mobile) and `SUFFIX` writes to a separate directory set.

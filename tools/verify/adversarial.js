@@ -1,5 +1,11 @@
 // Proves the CSP BLOCKS attacks, rather than merely permitting legitimate traffic.
 // Every check here is an attack that must fail.
+//
+// Framing/clickjacking is deliberately absent: `frame-ancestors` cannot be
+// expressed in a meta CSP at all, so it is an edge-layer control and is
+// asserted by headers.js instead. Two of the checks below (localStorage
+// poisoning and URL reflection) pass because app.js has no reflective sink,
+// not because the CSP blocks them — they guard against a future regression.
 const { BASE, launch } = require('./_common');
 
 (async () => {

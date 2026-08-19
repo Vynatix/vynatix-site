@@ -68,7 +68,7 @@ function compare() {
   } catch (e) {
     console.log('(pixelmatch/pngjs not installed — falling back to exact hash comparison)\n');
   }
-  const diffDir = path.join(__dirname, '..', 'diff');
+  const diffDir = path.join(__dirname, '..', 'diff' + SUFFIX);
   if (pixelmatch) fs.mkdirSync(diffDir, { recursive: true });
 
   let changed = 0;

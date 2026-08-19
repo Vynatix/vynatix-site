@@ -35,22 +35,29 @@ const AXE = require.resolve('axe-core/axe.min.js');
     }
   }
 
-  // --- skip link ----------------------------------------------------------
+  // --- skip link, on every page --------------------------------------------
   {
     const page = await browser.newPage();
-    await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    await page.keyboard.press('Tab');
-    await page.waitForTimeout(300);            // let the reveal transition finish
-    const r = await page.evaluate(() => {
-      const el = document.activeElement;
-      const box = el.getBoundingClientRect();
-      return { cls: el.className, href: el.getAttribute('href'),
-               onScreen: box.top >= 0 && box.top < window.innerHeight,
-               target: !!document.querySelector('#main') };
-    });
-    const ok = r.cls.includes('skip-link') && r.href === '#main' && r.onScreen && r.target;
-    if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} skip link is first Tab stop, visible on focus, target exists — ${JSON.stringify(r)}`);
+    const bad = [];
+    for (const pg of PAGES) {
+      await page.goto(BASE + pg, { waitUntil: 'load' });
+      await page.keyboard.press('Tab');
+      await page.waitForTimeout(250);          // let the reveal transition finish
+      const r = await page.evaluate(() => {
+        const el = document.activeElement;
+        const box = el.getBoundingClientRect();
+        return { cls: el.className || '', href: el.getAttribute('href'),
+                 onScreen: box.top >= 0 && box.top < window.innerHeight,
+                 target: !!document.querySelector('#main') };
+      });
+      if (!(r.cls.includes('skip-link') && r.href === '#main' && r.onScreen && r.target)) {
+        bad.push(`${pg}: ${JSON.stringify(r)}`);
+      }
+    }
+    if (bad.length) problems++;
+    console.log(bad.length
+      ? `FAIL skip link — ${bad.join(' | ')}`
+      : `ok   skip link is the first Tab stop and reveals on focus on all ${PAGES.length} pages`);
     await page.close();
   }
 
@@ -113,6 +120,72 @@ const AXE = require.resolve('axe-core/axe.min.js');
     if (!ok) problems++;
     console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: marquee static and control hidden — ${JSON.stringify(r)}`);
     await ctx.close();
+  }
+
+  // --- independent contrast sweep -----------------------------------------
+  // axe skips nodes whose background it cannot resolve, and it missed a 66px
+  // accent at 1.75:1 outright. Compute every visible text node ourselves.
+  {
+    const page = await browser.newPage();
+    const failures = [];
+    for (const pg of PAGES) {
+      for (const theme of ['light', 'dark']) {
+        await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
+        await page.goto(BASE + pg, { waitUntil: 'load' });
+        const bad = await page.evaluate(() => {
+          const lum = (rgb) => {
+            const c = rgb.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+          };
+          const nums = (str) => { const m = str.match(/[\d.]+/g); return m ? m.map(Number) : null; };
+          const out = [];
+          document.querySelectorAll('*').forEach((el) => {
+            const ownText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+            if (!ownText) return;
+            const cs = getComputedStyle(el);
+            if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) return;
+            const box = el.getBoundingClientRect();
+            if (!box.width || !box.height) return;
+            if (el.closest('[aria-hidden="true"]')) return;
+            const fgAll = nums(cs.color);
+            if (!fgAll) return;
+            const fg = fgAll.slice(0, 3);
+            let bg = null, n = el, bailed = false;
+            while (n) {
+              const ncs = getComputedStyle(n);
+              if (ncs.backgroundImage !== 'none') { bailed = true; break; }
+              const c = ncs.backgroundColor;
+              const parts = nums(c);
+              if (parts && (parts.length < 4 || parts[3] === 1) && c !== 'rgba(0, 0, 0, 0)') {
+                bg = parts.slice(0, 3);
+                break;
+              }
+              n = n.parentElement;
+            }
+            if (bailed || !bg) return;
+            const L1 = lum(fg), L2 = lum(bg);
+            const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+            const px = parseFloat(cs.fontSize);
+            const large = px >= 24 || (px >= 18.66 && Number(cs.fontWeight) >= 700);
+            const need = large ? 3 : 4.5;
+            if (ratio < need) {
+              out.push({
+                sel: el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''),
+                text: el.textContent.trim().slice(0, 24),
+                ratio: Math.round(ratio * 100) / 100, need, px: Math.round(px),
+              });
+            }
+          });
+          return out;
+        });
+        bad.forEach((b) => failures.push(`${pg} [${theme}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
+      }
+    }
+    if (failures.length) problems++;
+    console.log(failures.length
+      ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 15).join('\n       ')}`
+      : 'ok   contrast sweep — every visible text node meets AA in both themes');
+    await page.close();
   }
 
   console.log(problems === 0 ? '\nPASS — no accessibility problems found'

@@ -30,9 +30,9 @@ policy.
 |---|----------|---------|
 | 1 | High (privacy/compliance) | Every page loads fonts from Google's CDN; the "self-hosted fonts" the docs promise do not exist — **✅ RESOLVED in Round 3** (fonts recovered from git history and self-hosted; Google links removed; CSP tightened) |
 | 2 | Medium | No Content-Security-Policy or other defence-in-depth headers/metas *(remediated in this branch)* |
-| 3 | Low | Homepage hotlinks images directly from `images.unsplash.com` |
-| 4 | Low / accepted | Clickjacking cannot be fully mitigated on GitHub Pages (no `frame-ancestors` header) |
-| 5 | Info | No Subresource Integrity — not fixable for Google's dynamic CSS; self-hosting removes the need |
+| 3 | Low | Homepage hotlinks images directly from `images.unsplash.com` — **✅ RESOLVED in Round 4** (self-hosted; `img-src` no longer names any third party) |
+| 4 | Low / accepted | Clickjacking cannot be fully mitigated on GitHub Pages (no `frame-ancestors` header) — **runbook delivered in Round 4** (`EDGE-SETUP.md`); still open until the edge is live |
+| 5 | Info | No Subresource Integrity — not fixable for Google's dynamic CSS; self-hosting removes the need — **✅ moot since Round 3** |
 
 ---
 
@@ -407,3 +407,135 @@ and the code/docs are internally consistent again. What remains is genuinely
 second-order: self-hosting the Unsplash images (needs network), the
 legal/privacy-page and marquee-accessibility gaps (team decisions), and the
 header-only controls that GitHub Pages structurally cannot provide.
+
+---
+
+# Round 4 — full fortification
+
+Rounds 1–3 were assessment with targeted fixes. Round 4 executed an approved
+plan to close everything that could be closed in the repository, and to write a
+runbook for the one class of control that a repository cannot deliver.
+
+Four decisions were taken by the site owner before work started: put a
+header-capable edge in front of the origin, draft real legal content for counsel
+to review, refactor away the inline styles so the CSP could be tightened, and
+include the image, icon, accessibility and hygiene work.
+
+## The verification harness came first
+
+Nothing was changed until there was a way to prove the change was safe.
+`tools/` now holds five checks, excluded from the published site and with their
+`node_modules/` gitignored, so the site itself still has no build step:
+
+| Check | What it proves |
+|---|---|
+| `screenshot.js` | 9 pages × light/dark, pixel-diffed against a baseline |
+| `adversarial.js` | the CSP **blocks** 7 concrete attacks |
+| `requests.js` | **zero** off-origin requests; fonts resolve |
+| `a11y.js` | axe-core WCAG 2.0/2.1/2.2 A+AA, plus skip link, marquee, no-JS and reduced-motion behaviour |
+| `links.js` | every internal link, script, style and image resolves |
+| `headers.js` | the response headers from `EDGE-SETUP.md` |
+
+The screenshot gate needed two fixes before it could be trusted. `pixelmatch` v7
+ships as ESM, so `require()` returned a namespace object rather than the
+function — a latent crash that had never fired because every comparison until
+then matched by hash. And once real images existed, lazy-loaded covers raced the
+capture, because `fullPage` grows the viewport *after* the wait: two runs of an
+unchanged page disagreed by 4%. Captures now force eager loading and await
+`img.decode()`, which is stable across repeated runs. A gate that lies is worse
+than no gate.
+
+## What was fixed
+
+**The CSP is now `'self'`-only, with no third-party origin at all.**
+
+```
+default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:;
+style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self';
+upgrade-insecure-requests
+```
+
+- **All 68 inline `style=""` attributes removed**, which is what `style-src
+  'unsafe-inline'` existed for. They held only 30 distinct values, so most
+  became shared classes: named components where there was type, colour or
+  background (`.stat-panel*`, `.contact-option*`, `.hero__meta*`,
+  `.panel-label`), `--modifier` classes where the element already had one, and
+  nine `.u-*` utilities for pure spacing. Verified pixel-identical at 1440×900
+  **and** 390×844, in both themes, before the policy was tightened.
+  - One trap worth recording: `.panel-label` and `.eyebrow--accent` are
+    deliberately *not* plain `.eyebrow` modifiers, because
+    `[data-theme="dark"] .eyebrow` re-asserts the primary colour at a higher
+    specificity and would have silently overridden them in dark mode.
+- **The three Unsplash covers are self-hosted.** They had been hotlinked,
+  disclosing every homepage visitor's IP to Getty. `img-src` no longer names any
+  external host. (`assets/CREDITS.md` records the sources; the photographer
+  names still need filling in by hand, since the Unsplash pages render
+  client-side.)
+
+**Accessibility now matches the claim the footer makes.** axe-core reports zero
+violations across all nine pages in both themes, where it previously found 23.
+
+- A **skip link** (there was none) and an `sr-only` utility; `<main>` had no
+  `id` on any page and now has one as the target.
+- The **client marquee** was entirely `aria-hidden`, so screen-reader users lost
+  the client list. The looping track stays hidden — it repeats the names twice —
+  and a plain `sr-only` list now carries them once. A **pause control** satisfies
+  WCAG 2.2.2; it is hidden until JS wires it up, so it is never a dead control,
+  and hidden entirely under reduced motion where nothing moves.
+- A **genuine defect** axe surfaced: `.section--ink` inverts the reel's eyebrow,
+  description, metric, card and buttons but had **missed `.reel__link`**, so
+  "Read the case" rendered ink-on-ink at **1.21:1** — effectively invisible —
+  while the identical link one section above read fine.
+- The brand champagne accent used as small text on light surfaces measured
+  1.75–1.97:1 against a 4.5:1 threshold. Deepened within the same family
+  (champagne-700, and -800 on the dimmer surface), **scoped to the light theme**
+  — an unscoped rule would have created new dark-on-dark failures in dark mode.
+
+**The site now keeps its legal promises.** The footer's Privacy, Terms and
+Accessibility links pointed at a non-existent `#legal` anchor on all six pages,
+and no privacy notice existed at all — a GDPR Art. 13 gap for an EU company.
+Three pages were written and all 27 footer links repointed. The privacy notice
+states only what the site verifiably does, and names GitHub Pages and the
+planned Cloudflare layer as processors with the third-country transfer called
+out. The accessibility statement is deliberately unflattering: it says what has
+**not** been verified — no external audit, no testing with screen-reader users,
+and that automated tools cover only about half the WCAG criteria.
+
+**Smaller items.** A favicon set and manifest (the four `logo-mark-*.svg` files
+were already in the repo, referenced nowhere), rendered offline from the SVG
+through the Chromium already present; the theme-aware `favicon.svg` switches to
+Cloud Dancer on dark browser chrome. Vectornator editor fingerprints stripped
+from the four wordmark SVGs, verified pixel-identical. `SECURITY.md` and
+`CODEOWNERS` added, both excluded from publication.
+
+## What is deliberately not done
+
+- **The edge layer itself.** `EDGE-SETUP.md` is a complete runbook, but it
+  changes production DNS and is the owner's to run. It records the two things
+  that actually bite: GitHub validates its certificate over unproxied DNS, so
+  proxying too early leaves *Enforce HTTPS* greyed out; and the SSL mode must be
+  **Full (strict)**, since Flexible leaves the edge-to-origin hop in plaintext.
+  Until it is live, HSTS, `nosniff`, clickjacking protection,
+  `Permissions-Policy`, COOP/CORP and CSP reporting remain missing —
+  `headers.js` reports exactly that, which is a record of the gap rather than a
+  failure.
+- **The footer VAT number.** A legal identifier that must be confirmed, not
+  derived from the org.nr.
+- **Photographer attribution** for the three photos.
+- **Rewriting git history** to remove a personal email from 26 commits. The
+  address is already public; rewriting would break the merged pull-request
+  record for no real gain. Going-forward settings are documented instead.
+- **Branch protection.** Cannot be committed — it is a GitHub setting, and the
+  single most valuable one here, since a push publishes straight to production.
+
+## Round-4 verdict
+
+The repository-side work is complete. The site has no reachable
+injection/XSS/redirect/exfiltration path, a CSP with no third-party origin that
+is *proven* to block seven concrete attacks, zero off-origin requests, zero axe
+violations across nine pages in both themes, no broken links, and legal and
+accessibility pages that describe reality rather than aspiration — including
+where it falls short.
+
+What remains is one infrastructure change and a handful of facts only the
+company can supply.

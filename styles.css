@@ -1379,6 +1379,20 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
 .u-gap-14 { gap: 14px; }
 .u-pis-0  { padding-inline-start: 0; }
 
+/* Accent text on light surfaces — WCAG AA contrast.
+   The reserved champagne accent (--champagne-500) is designed for light-on-dark.
+   Used as small text on the light canvas it measures 1.97:1 on Cloud Dancer and
+   1.75:1 on the dimmer surface, well under the 4.5:1 AA threshold. These rules
+   deepen it within the same family: champagne-700 reaches 4.79:1 on Cloud
+   Dancer, and champagne-800 is needed on the dimmer surface where 700 only
+   reaches 4.26:1. Scoped to the light theme on purpose — in dark mode the
+   accent sits on an ink canvas, where the lighter champagne is correct. */
+[data-theme="light"] .value__num,
+[data-theme="light"] .process__num,
+[data-theme="light"] .contact-page__h1 em { color: var(--champagne-700); }
+[data-theme="light"] .section--surface .value__num,
+[data-theme="light"] .section--surface .process__num { color: var(--champagne-800); }
+
 /* Visually hidden, still announced by screen readers. */
 .sr-only {
   position: absolute;

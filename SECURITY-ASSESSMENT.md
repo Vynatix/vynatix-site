@@ -547,3 +547,79 @@ which was accurate about axe but overstated about conformance.)
 
 What remains is one infrastructure change and a handful of facts only the
 company can supply.
+
+---
+
+# Round 5 — independent audit of the implementation
+
+Rounds 1–4 were done by the same hands that wrote the code, which is exactly the
+condition under which a self-assessment goes stale. Round 5 put thirteen
+independent agents on the finished work: six auditors, one per area, each reading
+the real files and git history against the approved plan; an adversarial verifier
+per area to reject anything the auditor got wrong; and a completeness critic
+asked only "what did all six miss?".
+
+It confirmed 89 plan items genuinely done, rejected three findings as wrong, and
+surfaced real defects. The important ones were not the ones anyone would have
+guessed.
+
+## What it caught that the implementation missed
+
+**A contrast failure that automated testing reports as clean.** The single
+accent cell in the homepage numbers strip is 66px champagne on the dim light
+surface: **1.75:1**, which fails even the lenient 3:1 large-text threshold. axe
+reports zero violations for that node. The Round-4 claim of "zero axe violations"
+was therefore *true and insufficient* — a good illustration that a passing
+scanner is evidence, not proof. Fixed to 7.10:1, and `a11y.js` now runs an
+independent contrast sweep over every visible text node in both themes. That
+sweep was validated by reverting the fix and confirming it reports the node.
+
+**No-JS visitors on phones had no navigation at all.** Below 900px the nav was
+`display: none`, revealed only by a JS-added class, so the hamburger was a dead
+control and every navigation link was unreachable without JavaScript — while
+`accessibility.html` claimed "nothing is hidden waiting for a script". Both the
+code and the claim were wrong. The nav now stays visible and wraps by default,
+and JS opts into the collapsible behaviour; the reel arrows, likewise dead
+without JS, are hidden until wired.
+
+**A performance regression introduced by a privacy fix.** Self-hosting the
+Unsplash covers in Phase 1B dropped `auto=format`, so the homepage began shipping
+~424KB of JPEG where browsers had been getting WebP. WebP siblings are now
+encoded locally and served via `<picture>`: 424KB → 257KB, no new dependency.
+
+**The harness asserted less than it claimed.** `headers.js` accepted looser
+values than `EDGE-SETUP.md` mandates and never checked the meta/header CSP sync
+the runbook calls mandatory — it would have passed a misconfigured edge. The
+skip-link test ran only on `index.html`. `links.js` never followed the manifest.
+`tools/.gitignore` excluded `package.json` while the README said to install
+playwright alone, so a fresh clone could not run half the checks.
+
+Plus: `theme-color` gated on `prefers-color-scheme` while the theme actually
+follows the toggle; a marquee button setting both `aria-pressed` and a swapping
+`aria-label`, which announce the same state twice and disagree;
+`accessibility.html` pointing complainants at DIGG, which supervises
+public-sector bodies rather than a private consultancy; and an unqualified "no
+cookies" on the same page that announces a Cloudflare layer.
+
+## What it correctly rejected
+
+Three findings were thrown out by the adversarial pass: a claimed contradiction
+between `.panel-label` and `.eyebrow--accent` (the two comments agree — one is a
+plain modifier, the other explicitly the paired form); a claimed convention
+breach by `.heading-spaced` (based on a misreading of AGENTS.md); and an
+objection to `assets/CREDITS.md` being unpublished. Rejecting these matters as
+much as finding the rest: an audit that confirms everything is not an audit.
+
+## What this says about the earlier rounds
+
+Every substantive claim in Rounds 1–4 held up except the accessibility one, and
+that failed in a specific, instructive way: the tool was run correctly, reported
+honestly, and still did not support the conclusion drawn from it. The corrected
+position is in `accessibility.html`, which now states the target, the testing,
+and what has not been independently verified.
+
+The remaining open items are unchanged and unchanged for good reasons: the
+Cloudflare edge (runbook written, needs DNS access), the footer VAT number and
+photographer attribution (facts only the company can supply — automated
+attribution lookup is blocked by Unsplash's bot check), and branch protection
+(a GitHub setting, not a commit).

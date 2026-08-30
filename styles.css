@@ -28,32 +28,6 @@ main { flex: 1; }
 /* Sticky header offset for in-page hash navigation */
 section[id] { scroll-margin-top: 80px; }
 
-/* ---------------------------------------------------------------
-   Page transition
-   --------------------------------------------------------------- */
-.page-enter {
-  /* no entry animation — relying on document.timeline pauses captures.
-     Per-element [data-reveal] handles motion; visibility-hidden is handled
-     in JS so screenshots/PDFs render the final state. */
-}
-
-/* ---------------------------------------------------------------
-   Reveal-on-scroll
-   --------------------------------------------------------------- */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 800ms var(--ease-emphasized), transform 800ms var(--ease-emphasized);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-[data-reveal="show"],
-[data-reveal].is-revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1; transform: none; transition: none; }
-}
 
 /* ---------------------------------------------------------------
    Containers
@@ -168,22 +142,50 @@ html[dir="rtl"] .site-header__link::after { transform-origin: 100% 50%; }
 .site-header__menu-cta { display: none; }
 
 @media (max-width: 900px) {
-  .site-header__nav { display: none; }
-  .site-header__nav.open {
+  /* Progressive enhancement: the hamburger cannot work without JavaScript, so
+     the nav must not be collapsed behind it by default — otherwise a no-JS
+     visitor on a phone loses every navigation link. Unenhanced, the nav simply
+     wraps onto its own row. app.js adds .js-nav to <html> to opt into the
+     collapsible behaviour, the same way the marquee control opts in. */
+  .site-header__inner { flex-wrap: wrap; }
+  .site-header__nav {
+    order: 3;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 4px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .js-nav .site-header__inner { flex-wrap: nowrap; }
+  .js-nav .site-header__nav {
+    display: none;
+    order: 0;
+    width: auto;
+    margin-inline-start: auto;
+    margin-inline-end: 32px;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .js-nav .site-header__nav.open {
     display: flex;
     flex-direction: column;
     position: absolute;
     top: 100%;
     left: 0; right: 0;
+    width: auto;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 16px 24px 24px;
     gap: 4px;
   }
-  .site-header__nav.open .site-header__link { padding: 12px 0; }
+  .js-nav .site-header__nav.open .site-header__link { padding: 12px 0; }
+
   .theme-toggle { display: none; }
   .site-header__cta { padding: 10px 16px; }
-  .mobile-toggle { display: inline-flex; }
+  .mobile-toggle { display: none; }
+  .js-nav .mobile-toggle { display: inline-flex; }
 }
 
 /* ---------------------------------------------------------------
@@ -436,6 +438,31 @@ html[dir="rtl"] .marquee__track { animation-direction: reverse; }
   .marquee__track { animation: none; }
 }
 
+/* Pause/play for the marquee (WCAG 2.2.2). The control does nothing without
+   JS, so it stays hidden until app.js wires it up and adds .is-ready. */
+.marquee { position: relative; }
+.marquee__toggle {
+  display: none;
+  position: absolute;
+  inset-inline-end: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: var(--bg);
+}
+.marquee__toggle.is-ready { display: inline-flex; }
+.marquee__track.is-paused { animation-play-state: paused; }
+.marquee__toggle .marquee__icon-play { display: none; }
+.marquee__toggle.is-paused .marquee__icon-pause { display: none; }
+.marquee__toggle.is-paused .marquee__icon-play { display: block; }
+
+/* Under reduced motion nothing is moving, so the control has nothing to do.
+   This must come after .is-ready and match its specificity to win. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__toggle,
+  .marquee__toggle.is-ready { display: none; }
+}
+
 /* ---------------------------------------------------------------
    Sections
    --------------------------------------------------------------- */
@@ -541,9 +568,6 @@ section { position: relative; }
   position: relative;
 }
 .section--ink .practice__bullets li { color: #9DA8AB; }
-.svc-detail { gap: 18px; }
-.svc-detail li { font: 400 15px/1.6 var(--font-sans); color: var(--fg-2); }
-.svc-detail li strong { color: var(--fg-1); font-weight: 600; }
 .practice__bullets li::before {
   content: "•";
   position: absolute;
@@ -699,12 +723,22 @@ html[dir="rtl"] .reel__card:hover .reel__link .arrow { transform: scaleX(-1) tra
 }
 .reel__btn:hover { background: var(--surface-1); border-color: var(--primary); }
 .section--ink .reel__btn { color: var(--cloud-100); border-color: rgba(243,240,233,0.22); }
+/* The reel scrolls natively, so the arrows are an enhancement: hidden until
+   app.js wires them up rather than sitting dead for no-JS visitors. The
+   "see all work" link beside them is a real link and always shows. */
+.reel__btn { display: none; }
+.reel__controls.is-ready .reel__btn { display: inline-flex; }
 .section--ink .reel__btn:hover { background: rgba(243,240,233,0.06); border-color: var(--accent); }
 
 /* Section--ink card */
 .section--ink .reel__card { background: rgba(243,240,233,0.07); }
 .section--ink .reel__card:hover { background: rgba(243,240,233,0.11); }
 .section--ink .reel__eyebrow { color: var(--accent); }
+/* The reel's other parts already invert on ink; .reel__link and the trailing
+   controls link were missed, leaving near-invisible dark-on-dark text
+   (1.21:1 and 2.62:1 against the ink canvas). */
+.section--ink .reel__link { color: var(--cloud-100); }
+.section--ink .reel__controls-link { color: #D6D2C7; }
 
 /* ---------------------------------------------------------------
    Big metric strip (numbers reframed)
@@ -1272,6 +1306,190 @@ html[dir="rtl"] .work-row:hover { background: linear-gradient(-90deg, var(--surf
   );
 }
 
+/* ---------------------------------------------------------------
+   Components and utilities that replaced inline styles
+   These carry the one-off layout the pages used to express with
+   inline style="" attributes. Inline styles are no longer allowed:
+   the CSP pins style-src 'self', which blocks them outright.
+   --------------------------------------------------------------- */
+
+/* Hero meta row — eyebrow, hairline rule, and the "working since" note. */
+.hero__meta { display: flex; align-items: center; gap: 12px; }
+.hero__meta-rule { width: 24px; height: 1px; background: var(--border-strong); }
+.hero__meta-note {
+  font: 400 12px/1 var(--font-mono);
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+
+/* Small uppercase label above a list panel. Deliberately NOT an .eyebrow
+   modifier: [data-theme="dark"] .eyebrow re-asserts the primary colour at a
+   higher specificity, so a plain modifier would lose in dark mode. */
+.panel-label {
+  font: 500 11px/1 var(--font-sans);
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+/* Eyebrow in the champagne accent, used on the ink CTA bands. Paired with the
+   dark-theme selector for the same specificity reason as .panel-label above. */
+.eyebrow--accent,
+[data-theme="dark"] .eyebrow--accent { color: var(--accent); }
+
+/* Stat panel — the "Est. 2023 / 15 senior engineers" block on About. */
+.stat-panel {
+  margin-top: 32px;
+  padding: 24px;
+  background: var(--surface-1);
+  border-radius: 12px;
+}
+.stat-panel__label {
+  font: 500 11px/1 var(--font-sans);
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.stat-panel__row { display: flex; align-items: baseline; gap: 14px; }
+.stat-panel__value { font: italic 400 56px/1 var(--font-display); color: var(--primary); }
+.stat-panel__note { font: 400 15px/1.4 var(--font-sans); color: var(--fg-2); }
+
+/* Contact page — the two "ways in" option cards. */
+.contact-lede {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0 0 40px;
+  max-width: 520px;
+}
+.contact-options { display: flex; flex-direction: column; gap: 24px; }
+.contact-option {
+  padding: 28px;
+  background: var(--surface-1);
+  border-radius: 12px;
+}
+.contact-option__h3 {
+  font: 400 26px/1.2 var(--font-display);
+  color: var(--fg-1);
+  margin: 0 0 12px;
+  letter-spacing: -0.012em;
+}
+.contact-option__body {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0 0 20px;
+}
+
+/* Reel controls — the trailing "see all work" link and the flipped Previous icon. */
+.reel__controls-link {
+  margin-inline-start: auto;
+  font: 400 13px/1 var(--font-mono);
+  color: var(--fg-3);
+}
+.icon-flip { transform: rotate(180deg); display: inline-flex; }
+
+/* Component modifiers (anything beyond pure spacing). */
+.section__h2--wide { margin: 14px 0 0; max-width: 880px; }
+.btn-text--on-ink { color: var(--cloud-100); }
+.btn-text--inherit { padding: 8px 0; color: inherit; }
+
+/* Shared heading rhythm, used by both .section__h2 and .two-up__h3. */
+.heading-spaced { margin: 16px 0 24px; }
+
+/* Utilities — pure spacing only. Keep this list short; anything with colour,
+   type or background belongs in a named component above. */
+.u-m-0    { margin: 0; }
+.u-mt-16  { margin-top: 16px; }
+.u-mt-48  { margin-top: 48px; }
+.u-mb-0   { margin-bottom: 0; }
+.u-mb-8   { margin-bottom: 8px; }
+.u-mb-48  { margin-bottom: 48px; }
+.u-mb-72  { margin-bottom: 72px; }
+.u-gap-14 { gap: 14px; }
+.u-pis-0  { padding-inline-start: 0; }
+
+/* ---------------------------------------------------------------
+   Legal pages (privacy, terms, accessibility) — long-form prose
+   --------------------------------------------------------------- */
+.legal { max-width: 720px; }
+.legal h2 {
+  font: 400 28px/1.25 var(--font-display);
+  color: var(--fg-1);
+  letter-spacing: -0.012em;
+  margin: 48px 0 16px;
+}
+.legal p,
+.legal li { font: 400 16px/1.65 var(--font-sans); color: var(--fg-2); }
+.legal p { margin: 0 0 16px; }
+.legal ul { margin: 0 0 16px; padding-inline-start: 20px; }
+.legal li { margin-bottom: 8px; }
+.legal a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal__meta { font: 400 13px/1.6 var(--font-mono); color: var(--fg-3); margin: 0 0 32px; }
+/* Draft banner — these documents still need review by counsel. */
+.legal__notice {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 0 0 40px;
+  background: var(--surface-1);
+}
+.legal__notice p { margin: 0; color: var(--fg-1); }
+
+/* Accent text on light surfaces — WCAG AA contrast.
+   The reserved champagne accent (--champagne-500) is designed for light-on-dark.
+   Used as small text on the light canvas it measures 1.97:1 on Cloud Dancer and
+   1.75:1 on the dimmer surface, well under the 4.5:1 AA threshold. These rules
+   deepen it within the same family: champagne-700 reaches 4.79:1 on Cloud
+   Dancer, and champagne-800 is needed on the dimmer surface where 700 only
+   reaches 4.26:1. Scoped to the light theme on purpose — in dark mode the
+   accent sits on an ink canvas, where the lighter champagne is correct. */
+[data-theme="light"] .value__num,
+[data-theme="light"] .process__num,
+[data-theme="light"] .contact-page__h1 em { color: var(--champagne-700); }
+[data-theme="light"] .section--surface .value__num,
+[data-theme="light"] .section--surface .process__num { color: var(--champagne-800); }
+/* The single accent cell in the numbers strip is 80px champagne on the dim
+   surface — 1.75:1, which fails even the 3:1 large-text threshold. axe does not
+   flag it, so it was missed on the first pass and found by audit instead. */
+[data-theme="light"] .numbers__cell--accent .numbers__value { color: var(--champagne-700); }
+[data-theme="light"] .section--surface .numbers__cell--accent .numbers__value { color: var(--champagne-800); }
+
+/* Visually hidden, still announced by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — off-screen until focused, then it lands above the sticky header. */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: 500 14px/1 var(--font-sans);
+  transform: translateY(-250%);
+  transition: transform 160ms var(--ease-emphasized);
+}
+.skip-link:focus { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .skip-link { transition: none; }
+}
 /* ---------------------------------------------------------------
    Reel cards on mobile
    Must come AFTER every other .reel / .reel__card rule above so these

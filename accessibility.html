@@ -7,8 +7,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact Vynatix</title>
-<meta name="description" content="One conversation, one written scope, one fixed price. We reply to inbound within one working day. One inbox, front.disk@vynatix.com, sorted by subject line: Project or Membership.">
+<title>Accessibility statement, Vynatix</title>
+<meta name="description" content="We aim for WCAG 2.2 Level AA on vynatix.com. What is in place, how we test it, and what we have not independently verified.">
 <!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css (no third-party font CDN). -->
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
@@ -37,7 +37,7 @@
         <a href="services.html" class="site-header__link">Services</a>
         <a href="work.html" class="site-header__link">Work</a>
         <a href="about.html" class="site-header__link">About</a>
-        <a href="contact.html" class="site-header__link" aria-current="page">Contact</a>
+        <a href="contact.html" class="site-header__link">Contact</a>
         <a href="contact.html" class="site-header__menu-cta">Book a call</a>
       </nav>
       <div class="site-header__tools">
@@ -54,50 +54,55 @@
 
   <main id="main">
 
-    <!-- ============================================================ Contact -->
-    <section class="contact-page">
-      <div class="contact-page__intro">
-        <span class="eyebrow">Contact</span>
-        <h1 class="contact-page__h1">Considered work, <em>on a clear timeline.</em></h1>
-        <p class="contact-page__lede">One conversation, one written scope, one fixed price. We reply to inbound within one working day.</p>
+    <!-- ============================================================ Accessibility -->
+    <section class="case-hero">
+      <div class="case-hero__container">
+        <span class="eyebrow">Legal</span>
+        <h1 class="case-hero__h1">Accessibility statement</h1>
+        <p class="case-hero__lede">We aim to meet WCAG 2.2 Level AA on this site. This page says what we have done, how we check it, and what we have not yet verified.</p>
       </div>
+    </section>
 
-      <div class="contact-layout">
-        <div>
-          <h2 class="two-up__h3 u-mb-8">Two ways in</h2>
-          <p class="contact-lede">One inbox, front.disk@vynatix.com. To help us route your message, start the subject line with Project or Membership.</p>
+    <section class="section">
+      <div class="container">
+        <div class="legal">
+          <p class="legal__meta">Last updated 19 August 2026</p>
 
-          <div class="contact-options">
-            <div class="contact-option">
-              <h3 class="contact-option__h3">Have a problem to solve</h3>
-              <p class="contact-option__body">Tell us the outcome you need and the constraint you are under. We will tell you whether it is work we can do well.</p>
-              <a class="btn-primary" href="mailto:front.disk@vynatix.com?subject=Project">Book a call, subject Project</a>
-            </div>
-
-            <div class="contact-option">
-              <h3 class="contact-option__h3">Want to join the collective</h3>
-              <p class="contact-option__body">If you are a senior engineer or designer weighing independence against community, start here.</p>
-              <a class="btn-ghost" href="mailto:front.disk@vynatix.com?subject=Membership">Start a conversation, subject Membership</a>
-            </div>
+          <div class="legal__notice">
+            <p><strong>Draft pending review.</strong> This statement reflects automated testing and our own checks. It has not been validated by an external auditor or by testing with assistive-technology users.</p>
           </div>
+
+          <h2>What we are aiming for</h2>
+          <p>Our target is the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA, across every page of this site.</p>
+
+          <h2>What is in place</h2>
+          <ul>
+            <li>A <strong>skip link</strong> as the first item in the tab order, so keyboard users can jump past the header straight to the content.</li>
+            <li>Every control is <strong>reachable and operable by keyboard</strong>, with a visible focus indicator.</li>
+            <li>The scrolling client list has a <strong>pause control</strong>, and its names are also given to screen readers as a plain list rather than being hidden behind the animation.</li>
+            <li>All motion respects <strong>prefers-reduced-motion</strong>: with that setting on, animation stops and the final state is shown.</li>
+            <li>Text meets the <strong>AA contrast ratio</strong> in both the light and dark themes.</li>
+            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and controls that need JavaScript &mdash; the menu button, the case-reel arrows, the marquee pause &mdash; are hidden rather than left sitting dead. The theme toggle and the horizontally scrolling case reel still work by preference and by touch.</li>
+            <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
+          </ul>
+
+          <h2>How we check</h2>
+          <p>Every page is scanned with axe-core against the WCAG 2.0, 2.1 and 2.2 A and AA rule sets, in both themes, and the build is checked with JavaScript disabled and with reduced motion enabled. At the last check, all pages passed with no violations.</p>
+
+          <h2>What we have not verified</h2>
+          <p>We want to be straightforward about the limits of that:</p>
+          <ul>
+            <li>Automated tools catch roughly half of the WCAG criteria. <strong>No external audit</strong> has been carried out.</li>
+            <li>We have <strong>not tested with screen-reader users</strong>, or with voice control, switch access or magnification software.</li>
+            <li>Cognitive and plain-language criteria have not been formally assessed.</li>
+            <li>Documents and photography supplied by third parties may not meet the same standard.</li>
+          </ul>
+          <p>So while our automated checks pass, we describe this as conformance we have tested for rather than conformance that has been independently certified.</p>
+
+          <h2>Tell us if something does not work</h2>
+          <p>If any part of this site is difficult to use, please tell us &mdash; it is the fastest way for us to fix it. Email <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> or call +46 72 071 06 76. We reply to inbound within one working day, and will tell you what we can fix and when.</p>
+          <p>If you are not satisfied with our response, ask for it to be escalated and we will put it in front of someone else here. Vynatix is a private company, so the Swedish public-sector accessibility supervision route (<span lang="sv">Myndigheten f&ouml;r digital f&ouml;rvaltning</span>, DIGG) does not apply to this site; if the European Accessibility Act brings us in scope, we will name the competent authority here.</p>
         </div>
-
-        <aside class="contact-sidebar">
-          <h4>Email</h4>
-          <p><a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
-
-          <h4>Phone</h4>
-          <p><a href="tel:+46720710676">+46 72 071 06 76</a></p>
-
-          <h4>Gothenburg</h4>
-          <address>Magasinsgatan 14<br>411 18 Gothenburg</address>
-
-          <h4>Stockholm</h4>
-          <address>Birger Jarlsgatan 41A<br>111 45 Stockholm</address>
-
-          <h4>Company</h4>
-          <p>Part of Ultra Group<br>Org.nr 559445-6542</p>
-        </aside>
       </div>
     </section>
 

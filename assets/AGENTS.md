@@ -31,3 +31,22 @@ on every page.
   regenerate every variant so they stay identical apart from colour.
 - `<img>` tags reference these with explicit `width`/`height`; preserve the
   SVG's aspect ratio so those stay correct.
+
+## Photography
+
+`case-volvo-trucks`, `case-volvo-cars` and `case-regulated-ai` are the three
+homepage case covers, self-hosted rather than hotlinked so no visitor IP is
+disclosed to a third party. Each ships as a `.jpg` plus a `.webp` sibling
+encoded from it; `index.html` offers the WebP first through `<picture>` and
+keeps the JPEG as the fallback. **Replace both files together** — a stale
+`.webp` will be served in preference to a fresh `.jpg`.
+
+Sources and the outstanding photographer attribution are in `CREDITS.md`
+(excluded from the published site, like this file).
+
+## App icons
+
+`icon-192.png` and `icon-512.png` are referenced by `/site.webmanifest`. They
+were rendered offline from the logo mark through Chromium, as were `/favicon.svg`,
+`/favicon.ico` and `/apple-touch-icon.png` at the repo root. If the mark changes,
+regenerate all five — nothing rebuilds them automatically.

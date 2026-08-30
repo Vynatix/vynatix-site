@@ -15,18 +15,30 @@ branch publishes it; there is nothing to compile.
 ## Layout
 
 ```
-index.html          Home — the only page with the GSAP/Lenis animation stack
+index.html          Home — hero, case reel, CTA band (no animation stack)
 about.html          Company / team
 services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
+privacy.html        Privacy notice (GDPR Art. 13)
+terms.html          Website terms of use
+accessibility.html  Accessibility statement — nine pages in total
 colors_and_type.css Design system: CSS custom properties (tokens) only
 styles.css          Page chrome and component styles built on the tokens
 app.js              All client behaviour (vanilla JS, IIFEs, no modules)
-assets/             SVG logos — wordmark + logo-mark in 4 colour variants
+assets/             SVG logos, self-hosted case photos (jpg + webp), app icons
 fonts/              Self-hosted woff2 (Instrument Serif, Geist, Geist Mono)
+favicon.svg/.ico    Theme-aware SVG icon + 16/32/48 ICO fallback
+apple-touch-icon.png
+site.webmanifest    Name, colours and icons for installed/Android use
 CNAME               GitHub Pages custom domain
+_config.yml         Controls what GitHub Pages publishes (excludes dev docs)
+.well-known/        security.txt (RFC 9116 disclosure contact)
+SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
+CODEOWNERS          Review ownership — not published
+EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
+tools/              Local verification scripts — NOT published, not part of the site
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -53,34 +65,41 @@ links, the logo, the footer, contact details, or addresses must be applied to
 all `*.html` files.** Set `aria-current="page"` on the current page's nav link.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
-guarded so a missing element is a no-op. Every page loads `app.js` (deferred).
-The theme toggle, mobile nav, and case-reel controls run everywhere; the CTA
-"settle" choreography only activates on pages that have a `.cta-band` section
-(currently just `index.html`), and **only `index.html` loads the GSAP +
-ScrollTrigger + SplitText + Lenis CDN scripts** that it depends on.
+guarded so a missing element is a no-op. Every page loads `app.js` (deferred),
+and `app.js` is the **only** script — there is no CDN or animation stack. It has
+four features: the theme toggle, the mobile nav, and the case-reel Previous/Next
+controls run everywhere; the marquee pause control is index-only and a no-op on
+the other pages.
 
-**Motion tokens are mirrored in JS.** `app.js`'s CTA timeline duplicates the
-`--dur-*` / `--ease-*` / `--stagger-*` values from `colors_and_type.css`
-(GSAP needs JS numbers, not `cubic-bezier()` strings). If you change one, change
-both — they are meant to be a single source of truth kept in sync by hand.
+The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
+`script-src 'self'`, so **any third-party script is blocked by default**. A
+GSAP + ScrollTrigger + SplitText + Lenis CTA "settle" animation once lived on
+`index.html` but was reverted (PR #21); it is not in the shipped code. If it is
+ever restored, adding those CDN `<script>` tags means deliberately widening
+`script-src` in the CSP on **all nine pages** — and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
 afterthought — preserve it:
-- No-JS users get the fully visible final state. The `js-anim` class is added
-  before first paint to hide animated content, and JS removes it (or never
-  hides) so content is never stranded.
-- All motion is gated on `prefers-reduced-motion`; under it, Lenis, the
-  magnetic button, and the choreography are skipped and the final state shows.
-- If the animation CDN libs fail to load, the page reveals the final state.
-- The magnetic CTA button only runs on fine-pointer + hover devices.
-- Keep `aria-label`/`aria-expanded`/`aria-current` and decorative
-  `aria-hidden` attributes correct when editing markup. The footer claims
-  WCAG 2.2 AA.
+- No-JS users get the fully visible final state; nothing is hidden pending JS.
+- **Controls that need JS must not sit dead without it.** The pattern is to hide
+  them in CSS and let `app.js` opt in by adding a class — `.is-ready` for the
+  marquee pause and the reel arrows, `.js-nav` on `<html>` for the collapsible
+  mobile nav. Without JS the nav stays visible and wraps rather than hiding
+  behind a menu button that could never open.
+- All decorative motion (e.g. the client marquee, the smooth reel scroll) must
+  be gated on `prefers-reduced-motion` and fall back to the static final state.
+- Keep `aria-label` / `aria-expanded` / `aria-pressed` / `aria-current` and
+  decorative `aria-hidden` attributes correct when editing markup.
+  `accessibility.html` states the target as "we aim to meet WCAG 2.2 Level AA"
+  and lists what has not been independently verified — keep that page honest
+  rather than upgrading the claim.
 
 ## Assets
 
-Logos live in `assets/` as SVGs in four colour variants — `teal`, `ink`,
-`cloud`, `champagne` — for both `wordmark-*` and `logo-mark-*`. Match the
+`assets/` holds the logos as SVGs in four colour variants — `teal`, `ink`,
+`cloud`, `champagne` — for both `wordmark-*` and `logo-mark-*`, plus the three
+self-hosted case photos (`case-*.jpg` with `.webp` siblings, see
+`assets/CREDITS.md`) and the generated app icons (`icon-192/512.png`). Match the
 variant to the background: the `teal` wordmark sits in the (light) header, the
 `cloud` wordmark in the (dark) footer. Fonts are self-hosted woff2; the home
 page preloads the headline serif weight. Don't add third-party font/CDN
@@ -91,14 +110,26 @@ requests for fonts.
 - **Run it** by opening `index.html` in a browser, or serve the folder
   (`python3 -m http.server`) so relative paths and `fetch` behave. There is no
   dev server, hot reload, or watch task.
-- **No build, lint, or test tooling** is configured. "Passing" means: the
-  pages render correctly in light and dark, nav/footer are consistent across
-  pages, behaviour degrades gracefully with JS off and reduced motion on, and
-  no console errors. Check changes visually in both themes.
+- **The site has no build step** — no framework, bundler, or package manager,
+  and what is in the repo ships verbatim. The one exception is `tools/`, which
+  holds optional local verification scripts (Playwright). They are developer
+  tooling only: excluded from the published output in `_config.yml`, with their
+  `node_modules/` gitignored. The site itself stays hand-written.
+- **"Passing" means:** the pages render correctly in light and dark, nav/footer
+  are consistent across pages, behaviour degrades gracefully with JS off and
+  reduced motion on, and there are no console errors. Check changes visually in
+  both themes. `tools/README.md` documents the repeatable checks — a visual
+  regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
+  and an off-origin request check (`requests.js`).
 - Match the surrounding style: 2-space indentation, the existing comment voice
-  (explanatory, full sentences), and the token-first approach. Inline `style="
-  "` attributes are used in places for one-off layout — follow the local
-  pattern of the file you're editing.
+  (explanatory, full sentences), and the token-first approach.
+- **Do not add inline `style=""` attributes.** The CSP pins `style-src 'self'`,
+  so the browser blocks them outright. One-off layout goes in `styles.css` as a
+  component modifier (`.section__h2--wide`) or, for pure spacing, one of the
+  small `.u-*` utilities in the "Components and utilities that replaced inline
+  styles" block. Those utilities are single-class rules, so anything you append
+  later with equal specificity will outrank them — put new component rules
+  before that block, not after it.
 - Keep the brand copy voice intact: plain, direct, Nordic-understated.
 
 ## Git & deploys
@@ -108,3 +139,30 @@ requests for fonts.
 - Do all work on the branch you were assigned; never push to another branch
   without explicit permission.
 - Do not open a pull request unless explicitly asked.
+- `_config.yml` decides what is actually published. Developer docs (`AGENTS.md`,
+  `CLAUDE.md`, `SECURITY.md`, `CODEOWNERS`, the security assessment) and
+  `tools/` are excluded, so they stay in the repo but are never served from
+  `vynatix.com`. **Anything new that is documentation rather than site content
+  must be added to that exclude list.**
+
+### Repository hardening (set once, in GitHub settings)
+
+These are not code changes, so they cannot be committed — they need someone with
+admin rights on the repository:
+
+- **Branch protection on the default branch.** Because a push publishes to
+  production, require a pull request and a Code Owner review before merging, and
+  disallow bypassing it. `CODEOWNERS` is in place; replace the placeholder team
+  with the real one.
+- **Commit email privacy.** The history contains a personal address on 26
+  commits. Git author emails are public on GitHub. Enable *Keep my email
+  addresses private* and *Block command line pushes that expose my email* in
+  personal account settings, and use the `@users.noreply.github.com` address
+  going forward. **Do not rewrite the existing history** — it would break the
+  merged pull-request record for no real gain, since the address is already
+  public.
+- **Footer VAT number.** Swedish e-handelslag expects the
+  `momsregistreringsnummer` alongside the company identification already in the
+  footer. It is not added here because it is a legal identifier that must be
+  confirmed rather than derived; add it to the footer on all nine pages once
+  known.

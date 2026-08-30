@@ -2,16 +2,29 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Membership, Vynatix</title>
 <meta name="description" content="A consultancy built and run by senior engineers. Stay freelance, keep your work, and get the client access, infrastructure and peer network that solo operators cannot build alone. No margin extraction, no non-competes.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css (no third-party font CDN). -->
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
+<!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
   <!-- ============================================================ Header -->
@@ -28,7 +41,7 @@
         <a href="contact.html" class="site-header__menu-cta">Book a call</a>
       </nav>
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <a href="contact.html" class="site-header__cta">Book a call</a>
@@ -39,7 +52,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
 
     <!-- ============================================================ Hero -->
     <section class="case-hero">
@@ -84,7 +97,7 @@
     <!-- ============================================================ The fourth option -->
     <section class="section section--ink">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">The fourth option</span>
             <h2 class="section__h2">So we built one.</h2>
@@ -220,7 +233,7 @@
         <div class="two-up">
           <div>
             <h3 class="two-up__h3">This is for you if</h3>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <ul class="practice__bullets u-gap-14">
               <li>You are a senior-plus engineer or designer with 7+ years of real delivery behind you</li>
               <li>You are already freelance, or seriously considering the move</li>
               <li>You are after both independence and a community of peers, rather than one or the other</li>
@@ -230,7 +243,7 @@
           </div>
           <div>
             <h3 class="two-up__h3">This is not for you if</h3>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <ul class="practice__bullets u-gap-14">
               <li>You want traditional full-time employment with benefits</li>
               <li>You need daily management</li>
               <li>You are earlier than the senior track</li>
@@ -245,7 +258,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Let us talk</span>
+          <span class="eyebrow eyebrow--accent">Let us talk</span>
           <h2 class="cta-band__h2">A thirty-minute conversation, <em>no pitch, no pressure.</em></h2>
         </div>
         <div class="cta-band__actions">
@@ -291,9 +304,9 @@
       </div>
       <div class="site-footer__col">
         <h4>Legal</h4>
-        <a href="#legal">Privacy</a>
-        <a href="#legal">Terms</a>
-        <a href="#legal">Accessibility (WCAG 2.2 AA)</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="accessibility.html">Accessibility</a>
       </div>
     </div>
     <div class="site-footer__tail">

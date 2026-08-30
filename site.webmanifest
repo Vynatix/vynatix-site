@@ -1,0 +1,27 @@
+{
+  "name": "Vynatix",
+  "short_name": "Vynatix",
+  "description": "A Nordic software consultancy in Gothenburg.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#F3F0E9",
+  "theme_color": "#F3F0E9",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

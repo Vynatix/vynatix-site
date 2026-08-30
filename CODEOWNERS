@@ -1,0 +1,15 @@
+# Every change to this repository publishes straight to vynatix.com, so the
+# default branch should require review. Pair this file with a branch protection
+# rule on the default branch (Settings -> Branches):
+#   - Require a pull request before merging
+#   - Require review from Code Owners
+#   - Do not allow bypassing the above settings
+#
+# Replace the placeholder below with the real GitHub team or usernames.
+* @Vynatix/site-maintainers
+
+# Security-relevant surfaces: the CSP lives in every page head, _config.yml
+# controls what is published at all, and the disclosure contact is public.
+/_config.yml          @Vynatix/site-maintainers
+/.well-known/         @Vynatix/site-maintainers
+/SECURITY.md          @Vynatix/site-maintainers

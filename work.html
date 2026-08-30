@@ -2,16 +2,29 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Selected work, Vynatix</title>
 <meta name="description" content="Selected projects shipped since 2024, each written by an engineer who worked on it. Volvo Trucks, Volvo Cars, and a regulated client. The rest are under non-disclosure.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css (no third-party font CDN). -->
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
+<!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
   <!-- ============================================================ Header -->
@@ -28,7 +41,7 @@
         <a href="contact.html" class="site-header__menu-cta">Book a call</a>
       </nav>
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <a href="contact.html" class="site-header__cta">Book a call</a>
@@ -39,7 +52,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
 
     <!-- ============================================================ Page hero -->
     <section class="case-hero">
@@ -54,13 +67,13 @@
     <section class="section">
       <div class="container">
         <span class="reel__eyebrow">Volvo Trucks · 2024</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A truck radio rebuilt in sixteen weeks.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A truck radio rebuilt in sixteen weeks.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We rebuilt the in-cab radio and media player for Volvo Trucks in sixteen weeks, with three engineers, and shipped it to production across a fleet measured in the hundreds of thousands.</p>
             <p class="two-up__body">The constraint. Fixed scope, three engineers, sixteen weeks, on Android Automotive above the vehicle hardware layer. We agreed what was in scope and what was not before the first line of code.</p>
           </div>
-          <div class="case-body__plate" style="margin: 0;">
+          <div class="case-body__plate u-m-0">
             <div class="case-body__plate-cell"><span class="v">700,000</span><span class="l">trucks on the road</span></div>
             <div class="case-body__plate-cell"><span class="v">16</span><span class="l">weeks, fixed scope</span></div>
             <div class="case-body__plate-cell"><span class="v">3</span><span class="l">engineers</span></div>
@@ -73,13 +86,13 @@
     <section class="section section--surface">
       <div class="container">
         <span class="reel__eyebrow">Volvo Cars · 2025</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A build pipeline cut from 47 minutes to 6.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A build pipeline cut from 47 minutes to 6.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We took a build pipeline from a 47 minute wait to under 6, an 87 percent reduction on every commit, for the whole team.</p>
             <p class="two-up__body">What it does and does not do. The gain lands on every commit the team pushes. We were scoped to the pipeline, not the build targets, and we agreed that boundary up front.</p>
           </div>
-          <div class="case-body__plate" style="margin: 0;">
+          <div class="case-body__plate u-m-0">
             <div class="case-body__plate-cell"><span class="v">&minus;87%</span><span class="l">build time</span></div>
             <div class="case-body__plate-cell"><span class="v">47&rarr;6</span><span class="l">minutes per build</span></div>
             <div class="case-body__plate-cell"><span class="v">every</span><span class="l">commit, whole team</span></div>
@@ -92,14 +105,14 @@
     <section class="section">
       <div class="container">
         <span class="reel__eyebrow">Regulated client · 2025</span>
-        <h2 class="section__h2" style="margin: 14px 0 0; max-width: 880px;">A closed-domain assistant that refuses to guess.</h2>
-        <div class="two-up" style="margin-top: 48px;">
+        <h2 class="section__h2 section__h2--wide">A closed-domain assistant that refuses to guess.</h2>
+        <div class="two-up u-mt-48">
           <div>
             <p class="two-up__body">We built an assistant that answers inside a defined domain and hands everything else to a person, on purpose. It declines questions it cannot ground in source, rather than inventing an answer.</p>
             <p class="two-up__body">What it does and does not do. It answers questions it can ground in source, with citations. It refuses questions it cannot ground, and routes them to a human. We set that line deliberately, and we can show you exactly where it sits and why.</p>
           </div>
           <div>
-            <blockquote class="pullquote" style="margin: 0;">No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
+            <blockquote class="pullquote u-m-0">No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
           </div>
         </div>
       </div>
@@ -109,7 +122,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <span class="eyebrow eyebrow--accent">Considered work</span>
           <h2 class="cta-band__h2">The rest are under <em>non-disclosure.</em></h2>
         </div>
         <div class="cta-band__actions">
@@ -155,9 +168,9 @@
       </div>
       <div class="site-footer__col">
         <h4>Legal</h4>
-        <a href="#legal">Privacy</a>
-        <a href="#legal">Terms</a>
-        <a href="#legal">Accessibility (WCAG 2.2 AA)</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="accessibility.html">Accessibility</a>
       </div>
     </div>
     <div class="site-footer__tail">

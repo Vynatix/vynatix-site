@@ -1,0 +1,15 @@
+{
+  "name": "vynatix-site-verify",
+  "private": true,
+  "description": "Local verification scripts for the Vynatix site. Not part of the site build; excluded from the published output by _config.yml.",
+  "scripts": {
+    "check": "node verify/links.js && node verify/requests.js && node verify/adversarial.js && node verify/a11y.js",
+    "shots": "node verify/screenshot.js current && node verify/screenshot.js compare"
+  },
+  "dependencies": {
+    "axe-core": "^4",
+    "pixelmatch": "^7",
+    "playwright": "^1",
+    "pngjs": "^7"
+  }
+}

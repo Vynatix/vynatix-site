@@ -2,16 +2,29 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
+     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>What we do, Vynatix</title>
 <meta name="description" content="Vynatix does three things: application development, AI engineering, and cloud platforms. Fixed scope before we start, priced against an outcome, not a head count.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css (no third-party font CDN). -->
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
+<!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
+     localStorage, not the OS preference, so a media-gated value would contradict
+     the rendered page. -->
+<meta name="theme-color" content="#F3F0E9">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
   <!-- ============================================================ Header -->
@@ -28,7 +41,7 @@
         <a href="contact.html" class="site-header__menu-cta">Book a call</a>
       </nav>
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme">
+        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <a href="contact.html" class="site-header__cta">Book a call</a>
@@ -39,7 +52,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
 
     <!-- ============================================================ Page hero -->
     <section class="case-hero">
@@ -56,13 +69,13 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">01</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">AI engineering</h2>
+            <h2 class="section__h2 heading-spaced">AI engineering</h2>
             <p class="two-up__body">We build production systems on foundation models, not slideware. That means retrieval that returns the right context, evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability so you can see what the system is doing after it ships.</p>
             <p class="two-up__body">We will tell you plainly what a model can and cannot do for your problem. If a simpler tool would serve you better than a foundation model, we will say so before you spend on one.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Retrieval-augmented generation</li>
               <li>Evaluation pipelines</li>
               <li>On-prem and sovereign cloud deployment</li>
@@ -79,12 +92,12 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">02</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">Cloud platforms</h2>
+            <h2 class="section__h2 heading-spaced">Cloud platforms</h2>
             <p class="two-up__body">We build and run cloud platforms for regulated industries, on GCP, AWS, and on-prem hybrids. The goal is boring infrastructure: pipelines that stay green, deployments you can reason about, and a bill that matches what you actually use.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Platform engineering</li>
               <li>Kubernetes and GitOps</li>
               <li>FinOps and cost control</li>
@@ -101,13 +114,13 @@
         <div class="two-up">
           <div>
             <span class="eyebrow">03</span>
-            <h2 class="section__h2" style="margin: 16px 0 24px;">Application development</h2>
+            <h2 class="section__h2 heading-spaced">Application development</h2>
             <p class="two-up__body">Application development is the largest share of what we do. We build software for the surface it actually runs on, native mobile, web and desktop, automotive and Android Automotive, wearables, and VR, and we wire it into the enterprise systems and SaaS behind it.</p>
             <p class="two-up__body">We are scoped to ship, not to staff. We agree the surfaces, the platforms and the integration points in writing before we start, and we say plainly which ones are out of scope. The result is software a client owns and the next team can read.</p>
           </div>
           <div>
-            <div style="font: 500 11px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;">What we build</div>
-            <ul class="practice__bullets" style="gap: 14px;">
+            <div class="panel-label">What we build</div>
+            <ul class="practice__bullets u-gap-14">
               <li>Native mobile, web and desktop</li>
               <li>Automotive and Android Automotive (AAOS)</li>
               <li>Wearables and VR</li>
@@ -121,7 +134,7 @@
     <!-- ============================================================ How we scope and price -->
     <section class="section section--ink">
       <div class="container">
-        <div class="section__head" style="margin-bottom: 0;">
+        <div class="section__head u-mb-0">
           <div>
             <span class="eyebrow">How we scope and price</span>
             <h2 class="section__h2">You pay for the outcome,<br>not the hours.</h2>
@@ -135,7 +148,7 @@
     <section class="cta-band">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow" style="color: var(--accent);">Considered work</span>
+          <span class="eyebrow eyebrow--accent">Considered work</span>
           <h2 class="cta-band__h2">Tell us the outcome you need, <em>and the constraint.</em></h2>
         </div>
         <div class="cta-band__actions">
@@ -181,9 +194,9 @@
       </div>
       <div class="site-footer__col">
         <h4>Legal</h4>
-        <a href="#legal">Privacy</a>
-        <a href="#legal">Terms</a>
-        <a href="#legal">Accessibility (WCAG 2.2 AA)</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="accessibility.html">Accessibility</a>
       </div>
     </div>
     <div class="site-footer__tail">

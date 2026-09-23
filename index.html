@@ -70,10 +70,10 @@
         </div>
 
         <h1 class="hero__h1">
-          Senior engineers who build the hard part, <em>and write it down so you can keep it running.</em>
+          Software that still works <em>after we have gone home.</em>
         </h1>
 
-        <p class="hero__lede">We are a small team based in Gothenburg. We take on one clear problem at a time, agree with you what done looks like and what it costs, then hand back software that works and the notes to maintain it. For Volvo Trucks that meant rebuilding the in-cab radio in sixteen weeks. Three of us, four months, one media player now running across the fleet.</p>
+        <p class="hero__lede">We are a small team of senior engineers in Gothenburg. Most of our work is in-car software on Android Automotive and the build pipelines behind it, for Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside. One conversation, one written scope, one fixed price. When we hand over, the documentation comes with it, and your team runs it from there.</p>
 
         <div class="hero__ctas">
           <a class="btn-primary" href="contact.html">Book a call</a>
@@ -141,34 +141,112 @@
         </div>
       </div>
 
-      <!-- Marquee -->
+      <!-- Client strip -->
       <div class="marquee">
-        <!-- The visible track repeats the list twice to loop seamlessly, so it is
-             hidden from assistive tech; this list carries the names once instead. -->
-        <ul class="sr-only" aria-label="Clients we have worked with">
-          <li>Volvo Trucks</li>
-          <li>Volvo Cars</li>
-          <li>A Nordic manufacturer</li>
-          <li>A Nordic construction group</li>
-          <li>A Nordic telecoms group</li>
-          <li>A pharmaceutical company</li>
-          <li>A Swedish ministry</li>
-        </ul>
-        <div class="marquee__track" aria-hidden="true">
-          <span class="marquee__item">Volvo Trucks</span>
-          <span class="marquee__item">Volvo Cars</span>
-          <span class="marquee__item">A Nordic manufacturer</span>
-          <span class="marquee__item">A Nordic construction group</span>
-          <span class="marquee__item">A Nordic telecoms group</span>
-          <span class="marquee__item">A pharmaceutical company</span>
-          <span class="marquee__item">A Swedish ministry</span>
-          <span class="marquee__item">Volvo Trucks</span>
-          <span class="marquee__item">Volvo Cars</span>
-          <span class="marquee__item">A Nordic manufacturer</span>
-          <span class="marquee__item">A Nordic construction group</span>
-          <span class="marquee__item">A Nordic telecoms group</span>
-          <span class="marquee__item">A pharmaceutical company</span>
-          <span class="marquee__item">A Swedish ministry</span>
+        <!-- The Volvo iron mark is defined once here and reused with <use>, so it
+             follows the text colour (currentColor) in both themes. Source and
+             licence: assets/CREDITS.md. -->
+        <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+          <symbol id="volvo-iron-mark" viewBox="0 0 250 250">
+            <path d="M112.8,134.5h30.3v-10.1h-3.3c0,3.9-2.8,6.7-7.2,6.7H128v-15.1h5v-3.4h-20.2v3.4h5.1l0,15.1h-5.1L112.8,134.5L112.8,134.5 z"/>
+            <polygon points="157.7,134.5 169.5,134.5 179.6,116 184.6,116 184.6,112.6 169.5,112.6 169.5,116 173.9,116 166.5,129.5 159.2,116 164.5,116 164.5,112.6 142.5,112.6 142.5,116 147.5,116"/>
+            <polygon points="52.4,112.6 30.5,112.6 30.5,116 35.5,116 45.7,134.5 57.5,134.5 67.5,116 72.5,116 72.5,112.6 57.4,112.6 57.4,116 61.8,116 54.5,129.5 47.1,116 52.4,116"/>
+            <path d="M75.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C80.9,112.1,75.5,117.2,75.5,123.6z M96.4,123.6c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2c0.1-4.2,2.1-7.9,5.6-7.8 C94.7,115.6,96.5,119.4,96.4,123.6z"/>
+            <path d="M187.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C192.9,112.1,187.5,117.2,187.5,123.6z M203.2,115.6c3.5,0.1,5.3,3.8,5.2,8c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2 C197.7,119.2,199.7,115.5,203.2,115.6z"/>
+            <path d="M227.9,54l-12.7,12.7c10.9,16.8,17.2,36.8,17.2,58.3c0,59.3-48.1,107.4-107.4,107.4S17.6,184.3,17.6,125 S65.7,17.6,125,17.6c21.6,0,41.6,6.4,58.4,17.3l12.7-12.7C176,8.2,151.4,0,125,0C56,0,0,56,0,125s56,125,125,125s125-56,125-125 C250,98.6,241.8,74.1,227.9,54z"/>
+            <path d="M187.9,4.9v3.5c7.6,4.1,14.7,9,21.3,14.4l-17.8,17.8c6.7,5.3,12.8,11.3,18.1,18l17.8-17.8c5.5,6.6,10.3,13.8,14.4,21.2h3.4 V4.9H187.9z"/>
+          </symbol>
+        </svg>
+        <!-- The track holds the client list six times: two identical halves so the
+             -50% keyframe loops seamlessly, three copies per half so the strip stays
+             full on wide screens. Only the first copy is real: its links are in the
+             tab order and it is announced as a list. The other five are decoration,
+             hidden from assistive tech, with their links taken out of the tab order. -->
+        <div class="marquee__track">
+          <ul class="marquee__group" aria-label="Clients we have worked with">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span><span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span><span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="marquee__group" aria-hidden="true">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="marquee__group" aria-hidden="true">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="marquee__group" aria-hidden="true">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="marquee__group" aria-hidden="true">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="marquee__group" aria-hidden="true">
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Trucks</span>
+              </a>
+            </li>
+            <li class="marquee__item">
+              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
+                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span class="marquee__name">Volvo Cars</span>
+              </a>
+            </li>
+          </ul>
         </div>
         <button class="icon-btn marquee__toggle" type="button" aria-pressed="false" aria-label="Pause the scrolling client list">
           <svg class="marquee__icon-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
@@ -263,7 +341,7 @@
             <span class="eyebrow">How it goes</span>
             <h2 class="section__h2">How working<br>with us goes</h2>
           </div>
-          <p class="section__lead">We try to keep things simple and honest. We meet you in person for the first conversation, usually in Gothenburg or Stockholm. From there we write down exactly what we are going to do, what done looks like, and what it costs, as one fixed price rather than an open meter. Then we build it, keep you in the loop as we go, and hand it over with the documentation to maintain it. If you get in touch, you will hear back within one working day.</p>
+          <p class="section__lead">We try to keep things simple and honest. We meet you in person for the first conversation, usually in Gothenburg. From there we write down exactly what we are going to do, what done looks like, and what it costs, as one fixed price rather than an open meter. Then we build it, keep you in the loop as we go, and hand it over with the documentation to maintain it. If you get in touch, you will hear back within one working day.</p>
         </div>
       </div>
     </section>
@@ -365,7 +443,7 @@
         <div class="two-up">
           <div>
             <p class="two-up__body">We started Vynatix because we had seen how most consultancies sell hours, and the hours billed rarely match the hours that actually move a project forward. We wanted to work a different way: agree on an outcome, price it as fixed work, and write it all down so the next person can pick it up.</p>
-            <p class="two-up__body">We have our main office on Magasinsgatan in Gothenburg and a second desk on Birger Jarlsgatan in Stockholm, where a couple of the team are based. We like meeting clients face to face for that first conversation. After that, most of the work happens in writing, which keeps everyone clear on what was agreed.</p>
+            <p class="two-up__body">We are based in Gothenburg, and most of our work is done alongside the client teams we build for. We like meeting clients face to face for that first conversation. After that, most of the work happens in writing, which keeps everyone clear on what was agreed.</p>
             <a class="btn-text u-pis-0" href="about.html">
               More about us
               <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
@@ -457,8 +535,7 @@
         <p class="site-footer__address">
           <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
           +46 72 071 06 76<br><br>
-          Magasinsgatan 14, 411 18 Gothenburg<br>
-          Birger Jarlsgatan 41A, 111 45 Stockholm<br>
+          Mailbox 1611, 411 42 Gothenburg<br>
           Org.nr 559445-6542 · Part of Ultra Group
         </p>
       </div>

@@ -27,3 +27,22 @@ searching Unsplash for the id from a normal browser.
 
 **TODO:** add the photographer for each image. The Unsplash License does not
 require attribution, but crediting the photographer is good practice.
+
+## Client marks
+
+The Volvo iron mark in the client strip on the home page is inlined as an SVG
+`<symbol>` in `index.html` (one definition, reused with `<use>`, so it follows
+the text colour in both themes). It is not a separate file in `assets/`.
+
+| Mark | Source |
+|---|---|
+| Volvo iron mark | https://commons.wikimedia.org/wiki/File:Volvo-Iron-Mark-Black.svg |
+
+Wikimedia Commons lists the file as public domain (the mark is too simple for
+copyright), uploaded from Volvo Group's own logotype set. Copyright is not the
+point, though: **the iron mark is a registered trademark of the Volvo
+companies.** Showing it as "a client we have worked with" is ordinary
+nominative use, but each client's brand guidelines and the contracts under
+which the work was done decide whether the mark may appear here at all. Get the
+client's consent before adding any further mark, and take a mark down if a
+client asks.

@@ -71,6 +71,15 @@ four features: the theme toggle, the mobile nav, and the case-reel Previous/Next
 controls run everywhere; the marquee pause control is index-only and a no-op on
 the other pages.
 
+**The client strip** (`.marquee` on `index.html`) is a row of client marks, each
+an off-site link to the client's own website. The list is repeated six times so
+one `-50%` translation loops seamlessly; only the first copy is real (labelled,
+links in the tab order, `rel="noopener"`), the other five are `aria-hidden` with
+`tabindex="-1"` on their links. `a11y.js` asserts exactly that shape. The strip
+holds still on hover and keyboard focus so a moving link can be clicked. Only
+clients who are named on the site appear there: a mark is a trademark, so add
+one only with the client's consent (see `assets/CREDITS.md`).
+
 The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
 `script-src 'self'`, so **any third-party script is blocked by default**. A
 GSAP + ScrollTrigger + SplitText + Lenis CTA "settle" animation once lived on
@@ -101,7 +110,10 @@ afterthought — preserve it:
 self-hosted case photos (`case-*.jpg` with `.webp` siblings, see
 `assets/CREDITS.md`) and the generated app icons (`icon-192/512.png`). Match the
 variant to the background: the `teal` wordmark sits in the (light) header, the
-`cloud` wordmark in the (dark) footer. Fonts are self-hosted woff2; the home
+`cloud` wordmark in the (dark) footer. The client mark in the home-page strip is
+not a file here: it is an inline SVG `<symbol>` in `index.html`, referenced
+with `<use>` and filled with `currentColor` so it follows the theme
+(provenance in `assets/CREDITS.md`). Fonts are self-hosted woff2; the home
 page preloads the headline serif weight. Don't add third-party font/CDN
 requests for fonts.
 

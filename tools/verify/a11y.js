@@ -78,18 +78,35 @@ const AXE = require.resolve('axe-core/axe.min.js');
       return { pressed: t.getAttribute('aria-pressed'), label: t.getAttribute('aria-label'),
                play: getComputedStyle(document.querySelector('.marquee__track')).animationPlayState };
     });
-    const srList = await page.evaluate(() => {
-      const ul = document.querySelector('.marquee .sr-only');
-      return ul ? { items: ul.querySelectorAll('li').length, label: ul.getAttribute('aria-label') } : null;
+    // The strip repeats the client list several times so the loop is seamless.
+    // Exactly one copy must be the real one (labelled, links in the tab order,
+    // every link off-site); every other copy must be aria-hidden with its
+    // links taken out of the tab order, or a keyboard user tabs through
+    // hidden duplicates.
+    const clients = await page.evaluate(() => {
+      const groups = [...document.querySelectorAll('.marquee__group')];
+      const real = groups.filter((g) => g.getAttribute('aria-hidden') !== 'true');
+      const decor = groups.filter((g) => g.getAttribute('aria-hidden') === 'true');
+      const links = (g) => [...g.querySelectorAll('a')];
+      return {
+        groups: groups.length,
+        real: real.length,
+        label: real[0] && real[0].getAttribute('aria-label'),
+        items: real[0] ? real[0].querySelectorAll('li').length : 0,
+        realTabbable: real.every((g) => links(g).every((a) => !a.hasAttribute('tabindex'))),
+        realExternal: real.every((g) => links(g).every((a) => /^https:\/\//.test(a.getAttribute('href')) && a.getAttribute('rel') === 'noopener')),
+        decorUntabbable: decor.every((g) => links(g).every((a) => a.getAttribute('tabindex') === '-1')),
+      };
     });
     // aria-pressed carries the state and the label stays constant, so the two
     // can never contradict each other in an announcement.
     const ok = before.visible && before.play === 'running' && after.play === 'paused'
       && after.pressed === 'true' && after.label === before.label
-      && srList && srList.items === 7;
+      && clients.groups >= 2 && clients.real === 1 && !!clients.label && clients.items >= 2
+      && clients.realTabbable && clients.realExternal && clients.decorUntabbable;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} marquee pause control + sr-only client list`);
-    console.log(`       before=${JSON.stringify(before)}\n       after=${JSON.stringify(after)}\n       srList=${JSON.stringify(srList)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} marquee pause control + one real client list, decorative copies hidden`);
+    console.log(`       before=${JSON.stringify(before)}\n       after=${JSON.stringify(after)}\n       clients=${JSON.stringify(clients)}`);
     await page.close();
   }
 

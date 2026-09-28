@@ -400,7 +400,10 @@ html[dir="rtl"] .btn-text:hover .arrow { transform: scaleX(-1) translateX(4px); 
 }
 .hero__photo-meta strong { color: var(--fg-1); font-weight: 500; }
 
-/* Marquee */
+/* Client strip: a scrolling row of client marks, each linking to the client's
+   site. The track holds the list six times (see index.html), so one -50%
+   translation is exactly one seamless loop. Items carry their spacing as
+   padding rather than a flex gap so both halves measure the same width. */
 .marquee {
   margin-top: 64px;
   padding: 32px 0;
@@ -411,23 +414,55 @@ html[dir="rtl"] .btn-text:hover .arrow { transform: scaleX(-1) translateX(4px); 
 }
 .marquee__track {
   display: flex;
-  gap: 64px;
-  animation: marqueeMove 38s linear infinite;
   width: max-content;
+  animation: marqueeMove 38s linear infinite;
+}
+.marquee__group {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .marquee__item {
-  font: 400 24px/1 var(--font-display);
-  color: var(--fg-3);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding-inline-end: 96px;
+}
+.marquee__link {
   display: inline-flex;
   align-items: center;
-  gap: 64px;
+  gap: 14px;
+  font: 400 24px/1 var(--font-display);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--fg-3);
+  text-decoration: none;
+  transition: color 160ms;
 }
-.marquee__item::after {
-  content: "·";
-  color: var(--grey-400);
-  font-size: 22px;
+.marquee__link:hover,
+.marquee__link:focus-visible { color: var(--fg-1); }
+.marquee__link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+.marquee__logo {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  fill: currentColor;
+}
+/* A moving link is hard to click and impossible to keep focus on, so the strip
+   holds still while the pointer or keyboard focus is on it. Scoped to the
+   track so the pause button outside it does not trigger this. */
+.marquee__track:hover,
+.marquee__track:focus-within { animation-play-state: paused; }
+/* Inline SVG <symbol> definitions: rendered nowhere, referenced with <use>. */
+.svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 @keyframes marqueeMove {
   from { transform: translateX(0); }

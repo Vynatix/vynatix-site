@@ -9,6 +9,15 @@ const PAGES = [
 
 const BASE = process.env.BASE || 'http://localhost:8000/';
 
+// The design system's six theme ids. The checks run on the Forest pair by
+// default; set THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark to
+// sweep every theme the role tokens have to hold in.
+const ALL_THEMES = ['light', 'dark', 'teal-light', 'teal-dark', 'mono-light', 'mono-dark'];
+const THEMES = (process.env.THEMES || 'light,dark').split(',').map((t) => t.trim()).filter(Boolean);
+for (const t of THEMES) {
+  if (!ALL_THEMES.includes(t)) { console.error(`Unknown theme "${t}" (expected one of ${ALL_THEMES.join(', ')})`); process.exit(2); }
+}
+
 // Chromium lives in a versioned directory; find it rather than pinning a version.
 function chromePath() {
   if (process.env.CHROME) return process.env.CHROME;
@@ -29,4 +38,4 @@ async function launch() {
   return chromium.launch(executablePath ? { executablePath } : {});
 }
 
-module.exports = { PAGES, BASE, launch, chromePath };
+module.exports = { PAGES, BASE, THEMES, ALL_THEMES, launch, chromePath };

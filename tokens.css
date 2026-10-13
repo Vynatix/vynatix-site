@@ -1,0 +1,833 @@
+/* Vynatix Design System — generated from tokens.json */
+:root, [data-theme="light"] {
+  --color-forest: #1e3a2f; /* Deep Hunter Green, the primary anchor and the 30 in 60/30/10: logo, headlines, primary UI, inverse sections. In product code reach for md-sys-color-primary; use this raw anchor only for brand artwork the roles cannot express. Cream text on it measures 10.1:1. */
+  --color-moss: #2d4a3e; /* Moss Shadow, the secondary anchor: less prominent accents and secondary text. Same value as forest-40 and the light md-sys-color-secondary. */
+  --color-cream: #efe8da; /* Warm Cream, the surface anchor and the canvas: 60 percent of every surface. Stands in for pure white, which the system forbids. Charcoal text on it measures 13.1:1, Forest 10.1:1. */
+  --color-bronze: #8b6f47; /* Bronze, the guest accent: CTAs, focus rings, hairlines, foil, at most one Bronze moment per surface. As text on Cream it measures 3.9:1, enough only from 24px (or bold 19px) up, so smaller Bronze text uses text-accent. It clears 3:1 for focus rings, rules and icons. */
+  --color-charcoal: #222222; /* Warm Charcoal: body copy and dense text. Stands in for pure black, which the system forbids. 13.1:1 on Cream. */
+  --color-paper: #fffbf5; /* Warm paper white for the brightest surface (md-sys-color-surface-bright); use it wherever pure white would otherwise sneak in. */
+  --color-ink: #14110f; /* Warm black, the deepest forest, for brand artwork where pure black would otherwise sneak in. No role uses it. */
+  --forest-0: #000000; /* Forest Heritage tonal scale (theme-invariant). Primary tone 0, pure black: listed to complete the Material 3 scale. The system forbids pure black anywhere; do not use it. */
+  --forest-10: #081e14; /* Forest Heritage tonal scale (theme-invariant). Primary tone 10: on-forest-container (light). */
+  --forest-20: #142f22; /* Forest Heritage tonal scale (theme-invariant). Primary tone 20: link hover colour (light), on-primary (dark). */
+  --forest-30: #1e3a2f; /* Forest Heritage tonal scale (theme-invariant). Primary tone 30, equal to Deep Hunter Green: md-sys-color-primary and inverse-surface (light), forest-container and inverse-primary (dark). */
+  --forest-40: #2d4a3e; /* Forest Heritage tonal scale (theme-invariant). Primary tone 40, equal to Moss Shadow: md-sys-color-secondary (light). */
+  --forest-50: #3f5c4f; /* Forest Heritage tonal scale (theme-invariant). Primary tone 50. No role uses it. */
+  --forest-60: #557060; /* Forest Heritage tonal scale (theme-invariant). Primary tone 60. No role uses it. */
+  --forest-70: #6e8a7a; /* Forest Heritage tonal scale (theme-invariant). Primary tone 70. No role uses it. */
+  --forest-80: #88c3a8; /* Forest Heritage tonal scale (theme-invariant). Primary tone 80: md-sys-color-primary (dark) and inverse-primary (light). 8.6:1 on the dark surface. */
+  --forest-90: #a6dfc3; /* Forest Heritage tonal scale (theme-invariant). Primary tone 90, the mint: forest-container (light), on-forest-container (dark). Mint on Forest measures 8.2:1. */
+  --forest-95: #c5efd7; /* Forest Heritage tonal scale (theme-invariant). Primary tone 95. Same value as md-sys-color-secondary-container (light). */
+  --forest-99: #f3fef5; /* Forest Heritage tonal scale (theme-invariant). Primary tone 99. Same value as md-sys-color-on-secondary (light). */
+  --forest-100: #ffffff; /* Forest Heritage tonal scale (theme-invariant). Primary tone 100, pure white: listed to complete the Material 3 scale. The system forbids pure white anywhere; use color-cream or color-paper instead. */
+  --bronze-10: #2a1e0f; /* Bronze tone 10. No role uses it. */
+  --bronze-20: #44331c; /* Bronze tone 20: on-tertiary-container (light), on-tertiary (dark). */
+  --bronze-30: #5e4830; /* Bronze tone 30: tertiary-container (dark). */
+  --bronze-40: #735839; /* Bronze tone 40: text-accent (light). 5.4:1 on Cream, 5.9:1 on surface-container-low. */
+  --bronze-50: #8b6f47; /* Bronze tone 50, equal to the Bronze anchor: md-sys-color-tertiary (light). */
+  --bronze-60: #a88a66; /* Bronze tone 60. No role uses it. */
+  --bronze-70: #c2a788; /* Bronze tone 70: md-sys-color-tertiary and text-accent (dark); eyebrows, cites and footer headings on Forest bands (5.4:1 on Forest). */
+  --bronze-80: #dcc4ab; /* Bronze tone 80. No role uses it. */
+  --bronze-90: #f2dfc8; /* Bronze tone 90: tertiary-container (light), on-tertiary-container (dark). */
+  --bronze-95: #f9eddd; /* Bronze tone 95. No role uses it. */
+  --neutral-10: #1b1a16; /* Neutral tone 10: background, surface and inverse-on-surface (dark). */
+  --neutral-20: #2f2d26; /* Neutral tone 20. No role uses it. */
+  --neutral-30: #444239; /* Neutral tone 30. No role uses it. */
+  --neutral-40: #5a584f; /* Neutral tone 40. No role uses it. */
+  --neutral-50: #777970; /* Neutral tone 50: md-sys-color-outline (light). 3.6:1 on Cream: enough for borders (3:1), not for text. */
+  --neutral-60: #91938a; /* Neutral tone 60: md-sys-color-outline (dark). */
+  --neutral-70: #acaea5; /* Neutral tone 70. No role uses it. */
+  --neutral-80: #c8cabe; /* Neutral tone 80: md-sys-color-outline-variant (light), decorative dividers only (1.4:1 on Cream). */
+  --neutral-90: #e3dccd; /* Neutral tone 90: surface-container-highest (light). */
+  --neutral-95: #efe8da; /* Neutral tone 95, equal to Warm Cream. */
+  --neutral-99: #fffbf5; /* Neutral tone 99, equal to the warm paper white. */
+  --error-10: #410001; /* Error tone 10. No role uses it. */
+  --error-20: #690004; /* Error tone 20: on-error-container (light), on-error (dark). */
+  --error-30: #93000a; /* Error tone 30: error-container (dark). */
+  --error-40: #b3251b; /* Error tone 40, the muted terracotta anchor: md-sys-color-error (light). 5.4:1 on Cream. */
+  --error-50: #c24b3e; /* Error tone 50, as the colour specimen card showed it (the stylesheet had no 50 to 80). No role uses it. */
+  --error-60: #d17265; /* Error tone 60, as the colour specimen card showed it. No role uses it. */
+  --error-70: #e0998e; /* Error tone 70, as the colour specimen card showed it. No role uses it. */
+  --error-80: #edc0b8; /* Error tone 80, as the colour specimen card showed it. No role uses it. */
+  --error-90: #ffdad6; /* Error tone 90: error-container (light), on-error-container (dark). */
+  --error-95: #ffedea; /* Error tone 95. No role uses it. */
+  --teal-50: #eaf4f4; /* Transformative Teal palette. Lightest teal tint. Quiet highlight fills. */
+  --teal-100: #cfe3e3; /* Transformative Teal palette. Teal tint. In the dark theme, the pressed state of primary. */
+  --teal-200: #a2c8c9; /* Transformative Teal palette. Teal tint. In the dark theme, the hover state of primary. */
+  --teal-300: #6ea9ab; /* Transformative Teal palette. Dark-theme primary: the teal warms upward to stay legible on Ink. 5.7:1 on the dark bg. */
+  --teal-400: #3f878a; /* Transformative Teal palette. Mid teal step. Scale reference. */
+  --teal-500: #1f6e72; /* Transformative Teal palette. Mid teal step. Scale reference. */
+  --teal-600: #145f64; /* Transformative Teal palette. Deep Teal, the brand primary: wordmark, primary buttons, key chrome. Cloud Dancer text on it holds 6.5:1; as text it holds 6.5:1 on bg and 6.0:1 on surface-1. */
+  --teal-700: #0f4b4f; /* Transformative Teal palette. Primary hover in the light theme. Status text on the active badge. */
+  --teal-800: #0b393c; /* Transformative Teal palette. Primary pressed in the light theme; secondary text (fg-2). */
+  --teal-900: #0d2a2c; /* Transformative Teal palette. Ink Teal-Black: body text on Cloud Dancer (13.3:1) and the dark theme's canvas. */
+  --teal-950: #07191b; /* Transformative Teal palette. Deepest ink. Dark-theme bg-dim and text on light fills (primary-fg, accent-fg) in the dark theme. */
+  --cloud-50: #fbf9f4; /* Transformative Teal palette. Brightest canvas step (bg-bright): inputs, raised cards, tags. */
+  --cloud-100: #f3f0e9; /* Transformative Teal palette. Cloud Dancer, Pantone CY 2026: the page canvas. Never pure white. */
+  --cloud-200: #e8e3d7; /* Transformative Teal palette. Dimmed canvas (bg-dim); neutral badge and segmented-control track. */
+  --cloud-300: #d8d1c0; /* Transformative Teal palette. Cloud step. Photo-slot placeholder fills. */
+  --cloud-400: #bdb5a2; /* Transformative Teal palette. Cloud step. Scale reference. */
+  --cloud-500: #9d957f; /* Transformative Teal palette. Deepest cloud step. Scale reference. */
+  --champagne-50: #faf4e5; /* Transformative Teal palette. Lightest champagne tint. */
+  --champagne-100: #f1e4c2; /* Transformative Teal palette. Champagne tint: featured-badge fill and text selection (selection-bg). */
+  --champagne-200: #e5cf94; /* Transformative Teal palette. Champagne tint. In the dark theme, accent hover. */
+  --champagne-300: #d7bb78; /* Transformative Teal palette. Dark-theme accent and focus ring: brighter so it reads on Ink (8.1:1 on the dark bg). */
+  --champagne-400: #cfb073; /* Transformative Teal palette. Champagne step. Scale reference. */
+  --champagne-500: #c9a96e; /* Transformative Teal palette. Champagne, the reserved CTA and focus accent: under 5% footprint, one moment per viewport. Ink text on it holds 6.8:1. As text on Cloud Dancer it holds only 2.0:1, so never use it for text there. */
+  --champagne-600: #a6884f; /* Transformative Teal palette. Light-theme accent hover; the accent icon tint. */
+  --champagne-700: #7e663b; /* Transformative Teal palette. Text on champagne-100 (featured badge, chip). */
+  --champagne-800: #574627; /* Transformative Teal palette. Deepest champagne step. Scale reference. */
+  --grey-50: #efefec; /* Transformative Teal palette. Lightest warm grey. */
+  --grey-100: #dcdcd7; /* Transformative Teal palette. Warm grey step. */
+  --grey-200: #c0c2be; /* Transformative Teal palette. Warm grey step. */
+  --grey-300: #a0a6a6; /* Transformative Teal palette. Switch track when off; supporting structure in the 60/30/9/1 split. */
+  --grey-400: #7c8a94; /* Transformative Teal palette. Warm Grey: captions, dividers, disabled state, placeholder (fg-4). */
+  --grey-500: #5c6770; /* Transformative Teal palette. Captions and helper text (fg-3). */
+  --grey-600: #43515a; /* Transformative Teal palette. Warm grey step. */
+  --grey-700: #2e3a41; /* Transformative Teal palette. Deepest warm grey. */
+  --mono-charcoal-950: #0f0d0c; /* Stockholm Monochrome palette. Deepest charcoal step. */
+  --mono-charcoal-900: #1c1917; /* Stockholm Monochrome palette. Warm Charcoal, the Monochrome primary: text, primary fills, the wordmark. */
+  --mono-charcoal-800: #2a2521; /* Stockholm Monochrome palette. Charcoal step. Scale reference. */
+  --mono-charcoal-700: #3a332e; /* Stockholm Monochrome palette. Charcoal step: primary hover in the light theme; dark-theme decorative dividers and primary container. */
+  --mono-charcoal-600: #4e453f; /* Stockholm Monochrome palette. Secondary text on Paper (fg2). */
+  --mono-charcoal-500: #645951; /* Stockholm Monochrome palette. Outline on Paper; the light-theme primary container. */
+  --mono-charcoal-400: #7a6f66; /* Stockholm Monochrome palette. Lightest charcoal step. Scale reference. */
+  --mono-stone-900: #6e675d; /* Stockholm Monochrome palette. Deepest stone: captions on Paper (fg3). */
+  --mono-stone-700: #8c857a; /* Stockholm Monochrome palette. Stone 700, the source's muted label colour. 3.2:1 on Paper, so never for text; the dark-theme outline and secondary. */
+  --mono-stone-500: #b8afa3; /* Stockholm Monochrome palette. Stone, the Monochrome secondary: dividers and quiet fills, never text on Paper. */
+  --mono-stone-300: #d4ccbf; /* Stockholm Monochrome palette. Stone step. Scale reference. */
+  --mono-stone-200: #e2dbcf; /* Stockholm Monochrome palette. Stone step: the secondary container and the dark theme's primary hover. */
+  --mono-stone-100: #ece5d9; /* Stockholm Monochrome palette. Lightest stone: surface variant. */
+  --mono-paper-bright: #f9f5ef; /* Stockholm Monochrome palette. Brightest Paper: inputs and raised cards (surface-container-lowest, surface-bright). */
+  --mono-paper: #f5f1ea; /* Stockholm Monochrome palette. Paper, the Monochrome canvas. Never pure white. */
+  --mono-surface-low: #f1ece4; /* Stockholm Monochrome palette. Card at rest on Paper (surface-container-low). */
+  --mono-surface: #ede7de; /* Stockholm Monochrome palette. Surface container. */
+  --mono-surface-high: #e8e2d8; /* Stockholm Monochrome palette. Surface container high. */
+  --mono-surface-higher: #e2dbcf; /* Stockholm Monochrome palette. Surface container highest. */
+  --mono-surface-dim: #ddd5c8; /* Stockholm Monochrome palette. Dimmed ground (surface-dim). */
+  --mono-bronze-deep: #6b5334; /* Stockholm Monochrome palette. Deep bronze: text on bronze-tint, the light theme's text-accent, the dark theme's tertiary container. */
+  --mono-bronze: #8b6f47; /* Stockholm Monochrome palette. Bronze, the Monochrome accent (the same hex as Forest's color-bronze): one accent per viewport. */
+  --mono-bronze-warm: #a88357; /* Stockholm Monochrome palette. Warm Bronze: the inverse primary on Charcoal; in the dark theme, the accent and focus ring. */
+  --mono-bronze-tint: #e8dcc8; /* Stockholm Monochrome palette. Bronze tint: tertiary container and text selection. */
+  --mono-error: #a3432c; /* Stockholm Monochrome palette. Oxblood error mark and text on Paper. */
+  --mono-error-container: #f2d9ce; /* Stockholm Monochrome palette. Error container fill. */
+  --mono-on-error-container: #5a2316; /* Stockholm Monochrome palette. Text on the error container. */
+  --mono-obsidian: #14110f; /* Stockholm Monochrome palette. Obsidian, the dark theme's canvas. */
+  --mono-parchment: #ece6d9; /* Stockholm Monochrome palette. Parchment, the dark theme's text and primary. */
+  --mono-ash-stone: #8c857a; /* Stockholm Monochrome palette. Ash Stone: dark-theme outline and secondary. */
+  --md-sys-color-primary: var(--forest-30); /* Primary role: logo, headlines, primary buttons, links, key selections. Forest on Cream measures 10.1:1; the dark value, forest-80, 8.6:1 on the dark surface. Teal: Deep Teal (teal-600) in light; teal-200 in dark, one step lighter than the source's teal-300, which measures 3.6:1 to 4.3:1 on the raised dark surfaces. Monochrome: Warm Charcoal in light, Parchment in dark. Lowest across the six themes: 6.4:1 on md-sys-color-surface. */
+  --md-sys-color-on-primary: var(--color-cream); /* Text and icons on md-sys-color-primary: Cream on Forest 10.1:1 (light), forest-20 on forest-80 7.1:1 (dark). Lowest across the six themes: 6.4:1 on md-sys-color-primary. */
+  --md-sys-color-primary-container: var(--forest-90); /* Tonal container in the primary hue: mint (light), Forest (dark). */
+  --md-sys-color-on-primary-container: var(--forest-10); /* Text on primary-container: 11.6:1 (light), 8.2:1 (dark). Lowest across the six themes: 6.0:1 on md-sys-color-primary-container. */
+  --md-sys-color-secondary: var(--forest-40); /* Secondary role: less prominent accents, filter chips, secondary controls. */
+  --md-sys-color-on-secondary: #f3fef5; /* Text on md-sys-color-secondary: 9.4:1 (light), 7.1:1 (dark). Lowest across the six themes: 5.0:1 on md-sys-color-secondary. */
+  --md-sys-color-secondary-container: #c5efd7; /* Tonal container in the secondary hue: the selected chip. */
+  --md-sys-color-on-secondary-container: #0f2418; /* Text on secondary-container: 13.0:1 (light), 8.2:1 (dark). Lowest across the six themes: 8.2:1 on md-sys-color-secondary-container. */
+  --md-sys-color-tertiary: var(--bronze-50); /* Tertiary role, Bronze, the one accent per surface: tertiary buttons, focus rings, the active tab underline, link underlines, list dashes, and Bronze display text from 24px up. As text on Cream it measures 3.9:1, so eyebrows and other small Bronze text use text-accent; the dark value measures 7.6:1 on the dark surface. Teal: Champagne, a fill and rule colour only (2.0:1 on Cloud Dancer, never text or a lone icon). Monochrome: Bronze, then Warm Bronze in dark. */
+  --md-sys-color-on-tertiary: #ffffff; /* Text on md-sys-color-tertiary, the Bronze buttons: 4.7:1 (light), 5.3:1 (dark). The light value is pure white, as the stylesheet sets it. Lowest across the six themes: 4.7:1 on md-sys-color-tertiary. */
+  --md-sys-color-tertiary-container: var(--bronze-90); /* Tonal Bronze container: the accent chip (Featured). */
+  --md-sys-color-on-tertiary-container: var(--bronze-20); /* Text on tertiary-container: 9.3:1 (light), 6.6:1 (dark). Lowest across the six themes: 5.3:1 on md-sys-color-tertiary-container. */
+  --md-sys-color-error: var(--error-40); /* Error role, muted terracotta: destructive actions, validation failure, alerts. 5.4:1 on Cream; the dark value 10.3:1 on the dark surface. Pair it with an icon and words, never colour alone. Lowest across the six themes: 4.7:1 on md-sys-color-surface. */
+  --md-sys-color-on-error: #ffffff; /* Text on md-sys-color-error: 6.6:1 (light), 7.7:1 (dark). The light value is pure white, as the stylesheet sets it. Lowest across the six themes: 4.7:1 on md-sys-color-error. */
+  --md-sys-color-error-container: var(--error-90); /* Error container: error banners and alert backgrounds. */
+  --md-sys-color-on-error-container: var(--error-20); /* Text on error-container: 10.1:1 (light), 7.2:1 (dark). Lowest across the six themes: 7.0:1 on md-sys-color-error-container. */
+  --md-sys-color-background: var(--color-cream); /* Root background of every page: Cream (light), neutral-10 (dark). */
+  --md-sys-color-on-background: var(--color-charcoal); /* Text on md-sys-color-background: 13.1:1 in both themes. Lowest across the six themes: 13.0:1 on md-sys-color-background. */
+  --md-sys-color-surface: var(--color-cream); /* Base surface for sections and outlined cards; Cream is the hero. Teal: Cloud Dancer, then Ink Teal-Black in dark. Monochrome: Paper, then Obsidian in dark. */
+  --md-sys-color-on-surface: var(--color-charcoal); /* Body text on surface, surface-dim, surface-bright and every surface-container: at least 11.3:1 (light) and 7.9:1 (dark). Lowest across the six themes: 7.2:1 on md-sys-color-surface-container-highest. */
+  --md-sys-color-surface-variant: #e4e6d9; /* Surface variant for subdued areas. */
+  --md-sys-color-on-surface-variant: #464840; /* Supporting and muted text (text-muted) on surface, surface-variant and surface-container-low: at least 7.2:1 (light) and 5.4:1 (dark). Lowest across the six themes: 5.5:1 on md-sys-color-surface-container-high. */
+  --md-sys-color-outline: var(--neutral-50); /* Default 1px outline: input borders, the secondary button, separators that carry meaning. 3.6:1 on Cream and 5.6:1 on the dark surface, enough for borders (3:1), not for text. Lowest across the six themes: 3.6:1 on md-sys-color-surface. */
+  --md-sys-color-outline-variant: var(--neutral-80); /* Decorative dividers and hairlines only (1.4:1 on Cream): never to communicate state, structure or interactivity. */
+  --md-sys-color-surface-dim: #dfd9cc; /* Dimmest surface tone. */
+  --md-sys-color-surface-bright: var(--color-paper); /* Brightest surface tone: the warm paper white (light). */
+  --md-sys-color-surface-container-lowest: #ffffff; /* Lowest surface container. The light value is pure white, as the stylesheet sets it. */
+  --md-sys-color-surface-container-low: #f8f2e4; /* Cards at rest with shadow-l1, inputs, metric and editorial cards. */
+  --md-sys-color-surface-container: var(--color-cream); /* Interactive cards on hover and filled cards, with shadow-l2. */
+  --md-sys-color-surface-container-high: #e9e2d3; /* Code and pre backgrounds, the secondary button on hover; elevation levels 3 and 4. */
+  --md-sys-color-surface-container-highest: var(--neutral-90); /* Highest surface container: elevation level 5. */
+  --md-sys-color-inverse-surface: var(--forest-30); /* Inverse surfaces: Forest bands (hero, footer) on light pages, snackbars and toasts. */
+  --md-sys-color-inverse-on-surface: var(--color-cream); /* Text on inverse-surface: 10.1:1 (light), 13.1:1 (dark). Lowest across the six themes: 10.1:1 on md-sys-color-inverse-surface. */
+  --md-sys-color-inverse-primary: var(--forest-80); /* Primary accents on inverse surfaces: mint on Forest 6.1:1 (light), Forest on the light inverse surface 9.3:1 (dark). Lowest across the six themes: 5.0:1 on md-sys-color-inverse-surface. */
+  --md-sys-color-shadow: #000000; /* Material 3 shadow role. The system's own shadows are Forest-tinted: see shadow-l1 to shadow-l5. */
+  --md-sys-color-scrim: #000000; /* Material 3 scrim role, behind modal surfaces. */
+  --bg: var(--md-sys-color-surface); /* Convenience alias of md-sys-color-surface. */
+  --fg: var(--md-sys-color-on-surface); /* Convenience alias of md-sys-color-on-surface: body text. */
+  --bg-elevated: var(--md-sys-color-surface-container-low); /* Convenience alias of surface-container-low: raised cards. */
+  --border: var(--md-sys-color-outline); /* Convenience alias of md-sys-color-outline. */
+  --border-decor: var(--md-sys-color-outline-variant); /* Convenience alias of md-sys-color-outline-variant: decorative hairlines only. */
+  --accent: var(--md-sys-color-tertiary); /* Convenience alias of md-sys-color-tertiary, the Bronze accent. */
+  --text-body: var(--md-sys-color-on-surface); /* Body text colour, alias of md-sys-color-on-surface: 13.1:1 on Cream and on the dark surface. */
+  --text-muted: var(--md-sys-color-on-surface-variant); /* Muted text: ledes, captions, hints, table headers. Alias of on-surface-variant, 7.6:1 on Cream. */
+  --text-display: var(--md-sys-color-primary); /* Display and headline colour, alias of md-sys-color-primary: Forest on Cream 10.1:1, forest-80 on the dark surface 8.6:1. Lowest across the six themes: 6.4:1 on md-sys-color-surface. */
+  --text-accent: var(--bronze-40); /* Accent colour for text below 24px: eyebrows, metric and card labels. Forest: bronze-40 (5.4:1 on Cream), bronze-70 in dark (7.6:1). Teal: champagne-800 in light (8.0:1 on Cloud Dancer), champagne-300 in dark (8.1:1 on Ink), because Champagne itself never carries text. Monochrome: mono-bronze-deep in light, bronze-70 in dark. Larger accent type can use md-sys-color-tertiary where the theme allows it. Lowest across the six themes: 5.0:1 on md-sys-color-surface-container-high. */
+  --primary-hover: var(--forest-20); /* Hovered links and primary text actions: one step deeper than md-sys-color-primary in light themes, one step lighter in dark themes. Lowest across the six themes: 8.6:1 on md-sys-color-surface. */
+  --focus-ring: var(--bronze-50); /* Keyboard focus ring: 2px solid, 2px offset, with a 4px md-sys-color-surface halo. Each theme's accent family at 3:1 or more on its canvas. Teal light uses champagne-700, because champagne-500 (the source's ring) measures 2.0:1 on Cloud Dancer. Lowest across the six themes: 4.0:1 on md-sys-color-surface-container-low. */
+  --indicator: var(--bronze-50); /* Thin state marks: the active tab and current-page underline, link underlines, list dashes, the pull-quote rule. Bronze in Forest and Monochrome (3.9:1 or more on the canvas); Teal's primary in Teal, because Champagne measures 2.0:1 on Cloud Dancer and the Teal rules keep Champagne to one moment per viewport. Lowest across the six themes: 3.6:1 on md-sys-color-surface-container-high. */
+  --inverse-on-surface-variant: var(--neutral-80); /* Muted text on md-sys-color-inverse-surface: captions, meta and secondary links in inverse bands, rails and snackbars. Lowest across the six themes: 5.3:1 on md-sys-color-inverse-surface. */
+  --selection-bg: var(--md-sys-color-primary); /* Text selection background. */
+  --selection-fg: var(--md-sys-color-on-primary); /* Text selection foreground, paired with selection-bg. */
+  --glass-on-primary: var(--color-cream); /* Text and icons on glass-tint-primary (.glass--primary). Light in every theme: composited over the page canvas the primary glass is dark enough to carry it (4.7:1 at worst). Over a primary or inverse fill it is not, so keep .glass--primary over the canvas or photography. Lowest across the six themes: 4.6:1 on glass-tint-primary. */
+  --success: #4f7a5c; /* Success mark: dots, icons and borders, 3:1 or more on every theme's canvas. Always pair it with a word: it differs from error mostly by hue. From the Transformative Teal status set, shared by all three themes. Lowest across the six themes: 4.0:1 on md-sys-color-surface. */
+  --success-container: #dde7dd; /* Fill behind on-success-container text: success banners and badges. */
+  --on-success-container: #2f4d38; /* Text on success-container (7.4:1 light, 11.1:1 dark). */
+  --warning: #76561f; /* Warning mark (amber): dots, icons and borders. Light themes use the source's warning-700, because its warning-500 (#b58a3f) measures 2.6:1 to 2.8:1 on the light canvases. Shared by all three themes. Lowest across the six themes: 5.5:1 on md-sys-color-surface. */
+  --warning-container: #f5e5c5; /* Fill behind on-warning-container text. */
+  --on-warning-container: #76561f; /* Text on warning-container (5.4:1 light, 11.8:1 dark). */
+  --info: #5b7f89; /* Info mark (slate): dots, icons and borders. Shared by all three themes. Lowest across the six themes: 3.5:1 on md-sys-color-surface. */
+  --info-container: #d8e1e6; /* Fill behind on-info-container text. */
+  --on-info-container: #335058; /* Text on info-container (6.5:1 light, 10.8:1 dark). */
+  --glass-tint-primary: rgba(30, 58, 47, 0.72); /* Liquid Glass tint from Forest, for chrome and overlays only, never body content; the dark value is the palette guidelines' P80 tint. Labels on it are Cream (.glass--primary). Under prefers-reduced-transparency, colors_and_type.css swaps it for md-sys-color-primary. */
+  --glass-tint-surface: rgba(239, 232, 218, 0.82); /* Liquid Glass tint from Cream: top app bars, popovers, modal headers; the dark value is the palette guidelines' deep warm surface. Labels on it take the body text colour. Under prefers-reduced-transparency it becomes surface-container. */
+  --glass-tint-accent: rgba(139, 111, 71, 0.68); /* Liquid Glass tint from Bronze; the dark value is the palette guidelines' T80 tint, and the guidelines warn against Bronze as a primary glass tint. Labels on it use md-sys-color-on-surface (.glass--accent). Under prefers-reduced-transparency it becomes md-sys-color-tertiary. */
+  --shadow-l0: none; /* Level 0: flat, on surface. */
+  --shadow-l1: 0 1px 2px rgba(30, 58, 47, 0.08); /* Level 1: cards at rest, on surface-container-low. Each theme tints its shadow with its own ink (Forest green, Teal ink, Monochrome charcoal); dark themes use black. */
+  --shadow-l2: 0 2px 6px rgba(30, 58, 47, 0.10); /* Level 2: interactive cards on hover and glass chrome, on surface-container. Each theme tints its shadow with its own ink (Forest green, Teal ink, Monochrome charcoal); dark themes use black. */
+  --shadow-l3: 0 6px 16px rgba(30, 58, 47, 0.12); /* Level 3, on surface-container-high. Each theme tints its shadow with its own ink (Forest green, Teal ink, Monochrome charcoal); dark themes use black. */
+  --shadow-l4: 0 12px 28px rgba(30, 58, 47, 0.14); /* Level 4, on surface-container-high. Each theme tints its shadow with its own ink (Forest green, Teal ink, Monochrome charcoal); dark themes use black. */
+  --shadow-l5: 0 24px 48px rgba(30, 58, 47, 0.16); /* Level 5, on surface-container-highest. Each theme tints its shadow with its own ink (Forest green, Teal ink, Monochrome charcoal); dark themes use black. */
+  --glass-specular-light: inset 0 1px 0 rgba(255, 255, 255, 0.22); /* The specular edge, a 1px inner highlight that every light glass surface must carry; without it glass reads as flat transparency. Under prefers-reduced-transparency, colors_and_type.css removes it. */
+  --glass-specular-dark: inset 0 1px 0 rgba(255, 255, 255, 0.08); /* The specular edge for glass on dark grounds. Removed under prefers-reduced-transparency. */
+}
+[data-theme="dark"] {
+  --md-sys-color-primary: var(--forest-80);
+  --md-sys-color-on-primary: var(--forest-20);
+  --md-sys-color-primary-container: var(--forest-30);
+  --md-sys-color-on-primary-container: var(--forest-90);
+  --md-sys-color-secondary: #88c3a8;
+  --md-sys-color-on-secondary: #142f22;
+  --md-sys-color-secondary-container: #1e3a2f;
+  --md-sys-color-on-secondary-container: #a6dfc3;
+  --md-sys-color-tertiary: var(--bronze-70);
+  --md-sys-color-on-tertiary: var(--bronze-20);
+  --md-sys-color-tertiary-container: var(--bronze-30);
+  --md-sys-color-on-tertiary-container: var(--bronze-90);
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: var(--error-20);
+  --md-sys-color-error-container: var(--error-30);
+  --md-sys-color-on-error-container: var(--error-90);
+  --md-sys-color-background: var(--neutral-10);
+  --md-sys-color-on-background: #e4dfd4;
+  --md-sys-color-surface: var(--neutral-10);
+  --md-sys-color-on-surface: #e4dfd4;
+  --md-sys-color-surface-variant: #46493e;
+  --md-sys-color-on-surface-variant: #c5c8b7;
+  --md-sys-color-outline: var(--neutral-60);
+  --md-sys-color-outline-variant: #464840;
+  --md-sys-color-surface-dim: #1b1a16;
+  --md-sys-color-surface-bright: #423f38;
+  --md-sys-color-surface-container-lowest: #15140f;
+  --md-sys-color-surface-container-low: #23211b;
+  --md-sys-color-surface-container: #27251f;
+  --md-sys-color-surface-container-high: #32302a;
+  --md-sys-color-surface-container-highest: #3d3b34;
+  --md-sys-color-inverse-surface: #e4dfd4;
+  --md-sys-color-inverse-on-surface: var(--neutral-10);
+  --md-sys-color-inverse-primary: var(--forest-30);
+  --bg: var(--md-sys-color-surface);
+  --fg: var(--md-sys-color-on-surface);
+  --bg-elevated: var(--md-sys-color-surface-container-low);
+  --border: var(--md-sys-color-outline);
+  --border-decor: var(--md-sys-color-outline-variant);
+  --accent: var(--md-sys-color-tertiary);
+  --text-body: var(--md-sys-color-on-surface);
+  --text-muted: var(--md-sys-color-on-surface-variant);
+  --text-display: var(--md-sys-color-primary);
+  --text-accent: var(--bronze-70);
+  --primary-hover: var(--forest-90);
+  --focus-ring: var(--bronze-70);
+  --indicator: var(--bronze-70);
+  --inverse-on-surface-variant: var(--neutral-40);
+  --selection-bg: var(--md-sys-color-primary);
+  --selection-fg: var(--md-sys-color-on-primary);
+  --glass-on-primary: var(--color-cream);
+  --success: #8fb59a;
+  --success-container: #1f2f25;
+  --on-success-container: #dde7dd;
+  --warning: #e5c68a;
+  --warning-container: #2f2818;
+  --on-warning-container: #f5e5c5;
+  --info: #9cb7bf;
+  --info-container: #1f2c30;
+  --on-info-container: #d8e1e6;
+  --glass-tint-primary: rgba(136, 195, 168, 0.42);
+  --glass-tint-surface: rgba(27, 26, 22, 0.78);
+  --glass-tint-accent: rgba(217, 189, 155, 0.38);
+  --shadow-l1: 0 1px 2px rgba(0, 0, 0, 0.32);
+  --shadow-l2: 0 2px 6px rgba(0, 0, 0, 0.38);
+  --shadow-l3: 0 6px 16px rgba(0, 0, 0, 0.42);
+  --shadow-l4: 0 12px 28px rgba(0, 0, 0, 0.46);
+  --shadow-l5: 0 24px 48px rgba(0, 0, 0, 0.50);
+}
+[data-theme="teal-light"] {
+  --md-sys-color-primary: var(--teal-600);
+  --md-sys-color-on-primary: var(--cloud-100);
+  --md-sys-color-primary-container: var(--teal-100);
+  --md-sys-color-on-primary-container: var(--teal-900);
+  --md-sys-color-secondary: var(--grey-500);
+  --md-sys-color-on-secondary: var(--cloud-100);
+  --md-sys-color-secondary-container: var(--cloud-200);
+  --md-sys-color-on-secondary-container: var(--teal-900);
+  --md-sys-color-tertiary: var(--champagne-500);
+  --md-sys-color-on-tertiary: var(--teal-900);
+  --md-sys-color-tertiary-container: var(--champagne-100);
+  --md-sys-color-on-tertiary-container: var(--champagne-800);
+  --md-sys-color-error: #b14a3d;
+  --md-sys-color-on-error: var(--cloud-100);
+  --md-sys-color-error-container: #f4dedb;
+  --md-sys-color-on-error-container: #7e2f26;
+  --md-sys-color-background: var(--cloud-100);
+  --md-sys-color-on-background: var(--teal-900);
+  --md-sys-color-surface: var(--cloud-100);
+  --md-sys-color-on-surface: var(--teal-900);
+  --md-sys-color-surface-variant: var(--cloud-200);
+  --md-sys-color-on-surface-variant: var(--grey-600);
+  --md-sys-color-outline: var(--grey-500);
+  --md-sys-color-outline-variant: rgba(13, 42, 44, 0.14);
+  --md-sys-color-surface-dim: var(--cloud-200);
+  --md-sys-color-surface-bright: var(--cloud-50);
+  --md-sys-color-surface-container-lowest: var(--cloud-50);
+  --md-sys-color-surface-container-low: #ece7dd;
+  --md-sys-color-surface-container: #e4decf;
+  --md-sys-color-surface-container-high: #dcd4c2;
+  --md-sys-color-surface-container-highest: var(--cloud-300);
+  --md-sys-color-inverse-surface: var(--teal-900);
+  --md-sys-color-inverse-on-surface: var(--cloud-100);
+  --md-sys-color-inverse-primary: var(--teal-300);
+  --bg: var(--md-sys-color-surface);
+  --fg: var(--md-sys-color-on-surface);
+  --bg-elevated: var(--md-sys-color-surface-container-low);
+  --border: var(--md-sys-color-outline);
+  --border-decor: var(--md-sys-color-outline-variant);
+  --accent: var(--md-sys-color-tertiary);
+  --text-body: var(--md-sys-color-on-surface);
+  --text-muted: var(--md-sys-color-on-surface-variant);
+  --text-display: var(--md-sys-color-primary);
+  --text-accent: var(--champagne-800);
+  --primary-hover: var(--teal-700);
+  --focus-ring: var(--champagne-700);
+  --indicator: var(--teal-600);
+  --inverse-on-surface-variant: var(--grey-200);
+  --selection-bg: var(--champagne-100);
+  --selection-fg: var(--teal-900);
+  --glass-on-primary: var(--cloud-100);
+  --success: #4f7a5c;
+  --success-container: #dde7dd;
+  --on-success-container: #2f4d38;
+  --warning: #76561f;
+  --warning-container: #f5e5c5;
+  --on-warning-container: #76561f;
+  --info: #5b7f89;
+  --info-container: #d8e1e6;
+  --on-info-container: #335058;
+  --glass-tint-primary: rgba(15, 75, 79, 0.78);
+  --glass-tint-surface: rgba(243, 240, 233, 0.82);
+  --glass-tint-accent: rgba(201, 169, 110, 0.68);
+  --shadow-l1: 0 1px 2px rgba(13, 42, 44, 0.06);
+  --shadow-l2: 0 1px 4px rgba(13, 42, 44, 0.08), 0 1px 2px rgba(13, 42, 44, 0.04);
+  --shadow-l3: 0 4px 12px rgba(13, 42, 44, 0.10), 0 1px 3px rgba(13, 42, 44, 0.06);
+  --shadow-l4: 0 12px 32px rgba(13, 42, 44, 0.12), 0 2px 6px rgba(13, 42, 44, 0.06);
+  --shadow-l5: 0 24px 56px rgba(13, 42, 44, 0.16);
+}
+[data-theme="teal-dark"] {
+  --md-sys-color-primary: var(--teal-200);
+  --md-sys-color-on-primary: var(--teal-950);
+  --md-sys-color-primary-container: var(--teal-700);
+  --md-sys-color-on-primary-container: var(--teal-100);
+  --md-sys-color-secondary: var(--grey-200);
+  --md-sys-color-on-secondary: var(--teal-950);
+  --md-sys-color-secondary-container: #1e3f43;
+  --md-sys-color-on-secondary-container: var(--cloud-100);
+  --md-sys-color-tertiary: var(--champagne-300);
+  --md-sys-color-on-tertiary: var(--teal-950);
+  --md-sys-color-tertiary-container: var(--champagne-800);
+  --md-sys-color-on-tertiary-container: var(--champagne-100);
+  --md-sys-color-error: #d78577;
+  --md-sys-color-on-error: var(--teal-950);
+  --md-sys-color-error-container: #3a1f1b;
+  --md-sys-color-on-error-container: #f4dedb;
+  --md-sys-color-background: var(--teal-900);
+  --md-sys-color-on-background: var(--cloud-100);
+  --md-sys-color-surface: var(--teal-900);
+  --md-sys-color-on-surface: var(--cloud-100);
+  --md-sys-color-surface-variant: #1e3f43;
+  --md-sys-color-on-surface-variant: #d6d2c7;
+  --md-sys-color-outline: var(--grey-300);
+  --md-sys-color-outline-variant: rgba(243, 240, 233, 0.10);
+  --md-sys-color-surface-dim: var(--teal-950);
+  --md-sys-color-surface-bright: #122e31;
+  --md-sys-color-surface-container-lowest: var(--teal-950);
+  --md-sys-color-surface-container-low: #163336;
+  --md-sys-color-surface-container: #1e3f43;
+  --md-sys-color-surface-container-high: #264c50;
+  --md-sys-color-surface-container-highest: #2e5559;
+  --md-sys-color-inverse-surface: var(--cloud-100);
+  --md-sys-color-inverse-on-surface: var(--teal-900);
+  --md-sys-color-inverse-primary: var(--teal-600);
+  --bg: var(--md-sys-color-surface);
+  --fg: var(--md-sys-color-on-surface);
+  --bg-elevated: var(--md-sys-color-surface-container-low);
+  --border: var(--md-sys-color-outline);
+  --border-decor: var(--md-sys-color-outline-variant);
+  --accent: var(--md-sys-color-tertiary);
+  --text-body: var(--md-sys-color-on-surface);
+  --text-muted: var(--md-sys-color-on-surface-variant);
+  --text-display: var(--md-sys-color-primary);
+  --text-accent: var(--champagne-300);
+  --primary-hover: var(--teal-100);
+  --focus-ring: var(--champagne-300);
+  --indicator: var(--teal-200);
+  --inverse-on-surface-variant: var(--grey-600);
+  --selection-bg: rgba(215, 187, 120, 0.22);
+  --selection-fg: var(--cloud-100);
+  --glass-on-primary: var(--cloud-100);
+  --success: #8fb59a;
+  --success-container: #1f2f25;
+  --on-success-container: #dde7dd;
+  --warning: #e5c68a;
+  --warning-container: #2f2818;
+  --on-warning-container: #f5e5c5;
+  --info: #9cb7bf;
+  --info-container: #1f2c30;
+  --on-info-container: #d8e1e6;
+  --glass-tint-primary: rgba(110, 169, 171, 0.42);
+  --glass-tint-surface: rgba(13, 42, 44, 0.78);
+  --glass-tint-accent: rgba(215, 187, 120, 0.38);
+  --shadow-l1: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-l2: 0 2px 6px rgba(0, 0, 0, 0.50);
+  --shadow-l3: 0 8px 22px rgba(0, 0, 0, 0.55);
+  --shadow-l4: 0 18px 46px rgba(0, 0, 0, 0.60);
+  --shadow-l5: 0 32px 80px rgba(0, 0, 0, 0.66);
+}
+[data-theme="mono-light"] {
+  --md-sys-color-primary: var(--mono-charcoal-900);
+  --md-sys-color-on-primary: var(--mono-paper);
+  --md-sys-color-primary-container: var(--mono-charcoal-500);
+  --md-sys-color-on-primary-container: var(--mono-paper);
+  --md-sys-color-secondary: var(--mono-stone-500);
+  --md-sys-color-on-secondary: var(--mono-charcoal-900);
+  --md-sys-color-secondary-container: var(--mono-stone-200);
+  --md-sys-color-on-secondary-container: var(--mono-charcoal-900);
+  --md-sys-color-tertiary: var(--mono-bronze);
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: var(--mono-bronze-tint);
+  --md-sys-color-on-tertiary-container: var(--mono-bronze-deep);
+  --md-sys-color-error: var(--mono-error);
+  --md-sys-color-on-error: var(--mono-paper);
+  --md-sys-color-error-container: var(--mono-error-container);
+  --md-sys-color-on-error-container: var(--mono-on-error-container);
+  --md-sys-color-background: var(--mono-paper);
+  --md-sys-color-on-background: var(--mono-charcoal-900);
+  --md-sys-color-surface: var(--mono-paper);
+  --md-sys-color-on-surface: var(--mono-charcoal-900);
+  --md-sys-color-surface-variant: var(--mono-stone-100);
+  --md-sys-color-on-surface-variant: var(--mono-charcoal-600);
+  --md-sys-color-outline: var(--mono-charcoal-500);
+  --md-sys-color-outline-variant: var(--mono-stone-500);
+  --md-sys-color-surface-dim: var(--mono-surface-dim);
+  --md-sys-color-surface-bright: var(--mono-paper-bright);
+  --md-sys-color-surface-container-lowest: var(--mono-paper-bright);
+  --md-sys-color-surface-container-low: var(--mono-surface-low);
+  --md-sys-color-surface-container: var(--mono-surface);
+  --md-sys-color-surface-container-high: var(--mono-surface-high);
+  --md-sys-color-surface-container-highest: var(--mono-surface-higher);
+  --md-sys-color-inverse-surface: var(--mono-charcoal-900);
+  --md-sys-color-inverse-on-surface: var(--mono-paper);
+  --md-sys-color-inverse-primary: var(--mono-bronze-warm);
+  --bg: var(--md-sys-color-surface);
+  --fg: var(--md-sys-color-on-surface);
+  --bg-elevated: var(--md-sys-color-surface-container-low);
+  --border: var(--md-sys-color-outline);
+  --border-decor: var(--md-sys-color-outline-variant);
+  --accent: var(--md-sys-color-tertiary);
+  --text-body: var(--md-sys-color-on-surface);
+  --text-muted: var(--md-sys-color-on-surface-variant);
+  --text-display: var(--md-sys-color-primary);
+  --text-accent: var(--mono-bronze-deep);
+  --primary-hover: var(--mono-charcoal-700);
+  --focus-ring: var(--mono-bronze);
+  --indicator: var(--mono-bronze);
+  --inverse-on-surface-variant: var(--mono-stone-500);
+  --selection-bg: var(--mono-bronze-tint);
+  --selection-fg: var(--mono-charcoal-900);
+  --glass-on-primary: var(--mono-paper);
+  --success: #4f7a5c;
+  --success-container: #dde7dd;
+  --on-success-container: #2f4d38;
+  --warning: #76561f;
+  --warning-container: #f5e5c5;
+  --on-warning-container: #76561f;
+  --info: #5b7f89;
+  --info-container: #d8e1e6;
+  --on-info-container: #335058;
+  --glass-tint-primary: rgba(28, 25, 23, 0.72);
+  --glass-tint-surface: rgba(245, 241, 234, 0.78);
+  --glass-tint-accent: rgba(139, 111, 71, 0.68);
+  --shadow-l1: 0 1px 2px -1px rgba(28, 25, 23, 0.04);
+  --shadow-l2: 0 1px 4px rgba(28, 25, 23, 0.04), 0 2px 6px -2px rgba(28, 25, 23, 0.06);
+  --shadow-l3: 0 2px 8px rgba(28, 25, 23, 0.06), 0 8px 24px -6px rgba(28, 25, 23, 0.08);
+  --shadow-l4: 0 4px 16px rgba(28, 25, 23, 0.08), 0 16px 40px -8px rgba(28, 25, 23, 0.10);
+  --shadow-l5: 0 8px 24px rgba(28, 25, 23, 0.10), 0 24px 64px -12px rgba(28, 25, 23, 0.14);
+}
+[data-theme="mono-dark"] {
+  --md-sys-color-primary: var(--mono-parchment);
+  --md-sys-color-on-primary: var(--mono-obsidian);
+  --md-sys-color-primary-container: var(--mono-charcoal-700);
+  --md-sys-color-on-primary-container: var(--mono-parchment);
+  --md-sys-color-secondary: var(--mono-ash-stone);
+  --md-sys-color-on-secondary: var(--mono-obsidian);
+  --md-sys-color-secondary-container: #2a2421;
+  --md-sys-color-on-secondary-container: var(--mono-parchment);
+  --md-sys-color-tertiary: var(--mono-bronze-warm);
+  --md-sys-color-on-tertiary: var(--mono-obsidian);
+  --md-sys-color-tertiary-container: var(--mono-bronze-deep);
+  --md-sys-color-on-tertiary-container: var(--mono-parchment);
+  --md-sys-color-error: #d97a5c;
+  --md-sys-color-on-error: var(--mono-obsidian);
+  --md-sys-color-error-container: #3a1e16;
+  --md-sys-color-on-error-container: var(--mono-error-container);
+  --md-sys-color-background: var(--mono-obsidian);
+  --md-sys-color-on-background: var(--mono-parchment);
+  --md-sys-color-surface: var(--mono-obsidian);
+  --md-sys-color-on-surface: var(--mono-parchment);
+  --md-sys-color-surface-variant: #2a2421;
+  --md-sys-color-on-surface-variant: #c9c2b4;
+  --md-sys-color-outline: var(--mono-ash-stone);
+  --md-sys-color-outline-variant: var(--mono-charcoal-700);
+  --md-sys-color-surface-dim: #110f0d;
+  --md-sys-color-surface-bright: #34302b;
+  --md-sys-color-surface-container-lowest: #110f0d;
+  --md-sys-color-surface-container-low: #1a1614;
+  --md-sys-color-surface-container: #201b18;
+  --md-sys-color-surface-container-high: #2a2421;
+  --md-sys-color-surface-container-highest: #34302b;
+  --md-sys-color-inverse-surface: var(--mono-parchment);
+  --md-sys-color-inverse-on-surface: var(--mono-obsidian);
+  --md-sys-color-inverse-primary: var(--mono-bronze-deep);
+  --bg: var(--md-sys-color-surface);
+  --fg: var(--md-sys-color-on-surface);
+  --bg-elevated: var(--md-sys-color-surface-container-low);
+  --border: var(--md-sys-color-outline);
+  --border-decor: var(--md-sys-color-outline-variant);
+  --accent: var(--md-sys-color-tertiary);
+  --text-body: var(--md-sys-color-on-surface);
+  --text-muted: var(--md-sys-color-on-surface-variant);
+  --text-display: var(--md-sys-color-primary);
+  --text-accent: var(--bronze-70);
+  --primary-hover: var(--mono-stone-200);
+  --focus-ring: var(--mono-bronze-warm);
+  --indicator: var(--mono-bronze-warm);
+  --inverse-on-surface-variant: var(--mono-charcoal-600);
+  --selection-bg: rgba(168, 131, 87, 0.32);
+  --selection-fg: var(--mono-parchment);
+  --glass-on-primary: var(--mono-paper);
+  --success: #8fb59a;
+  --success-container: #1f2f25;
+  --on-success-container: #dde7dd;
+  --warning: #e5c68a;
+  --warning-container: #2f2818;
+  --on-warning-container: #f5e5c5;
+  --info: #9cb7bf;
+  --info-container: #1f2c30;
+  --on-info-container: #d8e1e6;
+  --glass-tint-primary: rgba(236, 230, 217, 0.30);
+  --glass-tint-surface: rgba(20, 17, 15, 0.78);
+  --glass-tint-accent: rgba(168, 131, 87, 0.38);
+  --shadow-l1: 0 1px 2px -1px rgba(0, 0, 0, 0.45);
+  --shadow-l2: 0 2px 6px rgba(0, 0, 0, 0.40);
+  --shadow-l3: 0 6px 18px rgba(0, 0, 0, 0.44);
+  --shadow-l4: 0 12px 32px rgba(0, 0, 0, 0.50);
+  --shadow-l5: 0 20px 56px rgba(0, 0, 0, 0.58);
+}
+:root {
+  --space-0: 0; /* No space. */
+  --space-px: 1px; /* One pixel, for hairline offsets. The README's approved scale starts at 2. */
+  --space-0_5: 2px; /* The smallest approved step. */
+  --space-1: 4px; /* The 4px base unit. */
+  --space-2: 8px; /* Gap between a button's icon and label; space under list items. */
+  --space-3: 12px; /* Vertical padding of table cells. */
+  --space-4: 16px; /* Compact card padding, space under paragraphs and lists, horizontal padding of table cells; page margin on mobile. */
+  --space-5: 20px; /* Padding of code blocks. */
+  --space-6: 24px; /* Standard card padding and the container's side padding; page margin on tablet. */
+  --space-8: 32px; /* Large card padding, pull-quote side padding, space around a rule. */
+  --space-10: 40px; /* Space above and below a pull-quote. */
+  --space-12: 48px; /* Page margin on laptop. */
+  --space-16: 64px; /* Space between a section heading and its content in the marketing kit. */
+  --space-24: 96px; /* Page margin on desktop, vertical padding of marketing bands, and the sticky-header scroll reserve (scroll-padding-top). */
+  --space-32: 128px; /* Vertical padding of the call-to-action band in the marketing kit. */
+  --space-40: 160px; /* The largest step on the scale. */
+  --radius-none: 0; /* No rounding. */
+  --radius-xs: 2px; /* Inline code and the link focus outline. */
+  --radius-sm: 4px; /* Keyboard keys (kbd). */
+  --radius-md: 8px; /* The default: buttons, inputs, code blocks, banners. */
+  --radius-lg: 12px; /* Cards. */
+  --radius-xl: 16px; /* Modals. */
+  --radius-2xl: 24px; /* Hero and large editorial surfaces, such as the Forest editorial band. */
+  --radius-full: 9999px; /* Pills: chips and toggles. */
+  --text-eyebrow: 11px; /* Eyebrows (.eyebrow) and table headers. */
+  --text-caption: 12px; /* Captions and small text (small, .caption). */
+  --text-label: 13px; /* Small buttons (.btn--sm) and pull-quote cites. */
+  --text-body-sm: 14px; /* Button labels, tables, code blocks. */
+  --text-body-md: 16px; /* The anchor: body copy and large buttons (.btn--lg). Formerly --text-body, the name the body text colour uses. */
+  --text-body-lg: 18px; /* Ledes (p.lede). */
+  --text-h6: 20px; /* h6. */
+  --text-h5: 24px; /* h5. */
+  --text-h4: 32px; /* h4. */
+  --text-h3: 40px; /* h3 at its largest; it scales down to 28px. */
+  --text-h2: 56px; /* h2 at its largest; it scales down to 32px. */
+  --text-h1: 72px; /* h1 at its largest; it scales down to 40px. */
+  --text-display-lg: 96px; /* The largest step; no helper uses it yet. Formerly --text-display, the name the display text colour uses. */
+  --leading-tight: 1.05; /* Display sizes. */
+  --leading-snug: 1.15; /* h1 and h2. */
+  --leading-headline: 1.20; /* h3 to h6 and pull-quotes. */
+  --leading-normal: 1.50; /* Body. */
+  --leading-relaxed: 1.65; /* Long-form editorial: paragraphs, ledes, lists. */
+  --leading-loose: 1.80; /* Small captions and all-caps. */
+  --tracking-display: -0.035em; /* Display sizes, h1 and h2. */
+  --tracking-headline: -0.02em; /* Headlines h3 to h6. */
+  --tracking-body: 0; /* Body text. */
+  --tracking-eyebrow: 0.24em; /* Eyebrows, table headers and cites: the signature +24%. */
+  --tracking-mono: 0; /* Code. */
+  --breakpoint-mobile: 0px; /* Mobile, the default: 0 to 599px. Page margin 16px. */
+  --breakpoint-tablet: 600px; /* Tablet: 600 to 904px. Page margin 24px. */
+  --breakpoint-laptop: 905px; /* Laptop: 905 to 1239px. Page margin 48px; container up to 1200px. */
+  --breakpoint-desktop: 1240px; /* Desktop: 1240 to 1439px. Page margin 96px. */
+  --breakpoint-wide: 1440px; /* Wide: 1440 to 1919px. */
+  --breakpoint-extra-wide: 1920px; /* Extra wide: 1920px and up. */
+  --container-max-mobile: 100%; /* Full viewport width on mobile. */
+  --container-max-tablet: 100%; /* Full viewport width inside the page margins on tablet. */
+  --container-max-laptop: 1200px; /* Laptop container: .container. */
+  --container-max-desktop: 1440px; /* Desktop container: .container--wide. */
+  --container-max-wide: 1600px; /* Wide-screen container. */
+  --container-max-content: 720px; /* Reading line cap: .container--reading. */
+  --icon-size-sm: 16px; /* Inline with body-sm text and dense tables (opsz 20). */
+  --icon-size-md: 20px; /* Dense UI: chips, text fields, menus, list rows (opsz 20). */
+  --icon-size-lg: 24px; /* The default: buttons, navigation, app bars (opsz 24). */
+  --icon-size-xl: 32px; /* Feature lists and empty states (opsz 40). */
+  --icon-size-2xl: 48px; /* Hero and section-opening moments (opsz 48). Never decoration on body content. */
+  --icon-weight: 300; /* The one stroke weight (wght axis): about 1.5px at 24px, matching the brand's hairline type. Never above 300. */
+  --icon-grade-light: 0; /* Grade (GRAD axis) on the light themes. */
+  --icon-grade-dark: -25; /* Grade on the dark themes: thins light-on-dark glyphs so they don't bloom. */
+  --icon-fill-rest: 0; /* FILL axis at rest: outlined. */
+  --icon-fill-active: 1; /* FILL axis for the selected navigation item and a toggled control only. */
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Aptos', 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-editorial: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-display-teal: 'Instrument Serif', 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-fraunces: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-aptos: 'Aptos', 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-icon: 'Material Symbols Outlined';
+  --text-type-display: 500 96px/1.02 var(--font-display); /* Display: Fraunces 500 at opsz 144, 96/1.02, tracked -4%, plus 'SOFT' 30. Hero headlines. */
+  --text-type-headline-1: 500 64px/1.08 var(--font-display); /* Headline 1: Fraunces 500 at opsz 144, 64/1.08, tracked -3.5%, plus 'SOFT' 30. */
+  --text-type-headline-2: 500 48px/1.12 var(--font-display); /* Headline 2: Fraunces 500 at opsz 96, 48/1.12, tracked -3%, plus 'SOFT' 30. */
+  --text-type-headline-3: 600 32px/1.18 var(--font-display); /* Headline 3: Fraunces 600 at opsz 36, 32/1.18, tracked -2%. */
+  --text-type-headline-4: 600 22px/1.3 var(--font-body); /* Headline 4: Aptos SemiBold, 22/1.3, tracked -1%. */
+  --text-type-lede: 350 22px/1.5 var(--font-body); /* Lede: Aptos at weight 350, 22/1.5, in text-muted. */
+  --text-type-body: 400 17px/1.65 var(--font-body); /* Body: Aptos Regular, 17/1.65, at most 65 characters a line. */
+  --text-type-editorial: italic 400 22px/1.55 var(--font-editorial); /* Editorial: Fraunces Italic, 22/1.55, for pull-quotes in the brand voice. */
+  --text-type-eyebrow: 600 11px/16px var(--font-sans); /* Eyebrow, the signature label: Geist SemiBold 11/16, tracked +24%, set in uppercase in text-accent Bronze (the .eyebrow helper in colors_and_type.css adds both). */
+  --text-type-mono: 400 14px/1.6 var(--font-mono); /* Mono: code, terminal output, API references. JetBrains Mono, self-hosted in fonts/, else the system ui-monospace. */
+  --text-type-caption: 400 12px/1.5 var(--font-body); /* Caption: Aptos 12/1.5, tracked +2%, in text-muted: photo credits and metadata. */
+}
+.type-display {
+  font-family: var(--font-display);
+  font-size: 96px;
+  line-height: 1.02;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  font-variation-settings: 'opsz' 144;
+}
+.type-headline-1 {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  font-variation-settings: 'opsz' 144;
+}
+.type-headline-2 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1.12;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variation-settings: 'opsz' 96;
+}
+.type-headline-3 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 36;
+}
+.type-headline-4 {
+  font-family: var(--font-body);
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.type-lede {
+  font-family: var(--font-body);
+  font-size: 22px;
+  line-height: 1.5;
+  font-weight: 350;
+  letter-spacing: 0;
+}
+.type-body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.type-editorial {
+  font-family: var(--font-editorial);
+  font-size: 22px;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: italic;
+}
+.type-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+.type-mono {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.type-caption {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+/* @font-face: the site serves the same faces tokens.json lists, as WOFF2 subsets
+   (Latin and Latin Extended, every OpenType feature and variable axis kept) made
+   from the design system's TTF files with fontTools. Only these src lines differ
+   from the file the Design System page serves; everything above is verbatim.
+   The icon font (Material Symbols Outlined, 4 MB) is not served: the site inlines
+   the SVG glyphs from the system's assets/Icons instead, so .ms is not used here. */
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/geist-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-italic-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-600-italic.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aptos";
+  src: url("fonts/aptos-700-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}

@@ -9,12 +9,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vynatix, a Nordic software consultancy in Gothenburg</title>
 <meta name="description" content="A small team of senior engineers in Gothenburg, embedded with Volvo Trucks and Volvo Cars on in-car software, build pipelines and cloud platforms. Working since 2023.">
-<!-- Fonts self-hosted as WOFF2 via @font-face in colors_and_type.css. Preload the
-     headline weight so the masked serif reveal isn't blocked on a late font fetch. -->
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/instrument-serif-400-latin.woff2">
+<!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
+     colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
+     The theme is data-theme on <html>: light or dark (Forest), teal-light/teal-dark, mono-light/mono-dark. -->
+<!-- Preload the display face so the hero headline is not blocked on a late font fetch. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-variable.woff2">
+<link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
-<!-- Icons. favicon.svg is theme-aware (teal on light chrome, Cloud Dancer on dark);
+<!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -23,324 +26,94 @@
 <!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
      localStorage, not the OS preference, so a media-gated value would contradict
      the rendered page. -->
-<meta name="theme-color" content="#F3F0E9">
+<meta name="theme-color" content="#EFE8DA">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
+  <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
+       design system's logo artwork (assets/vynatix-wordmark-*.svg hold the same geometry), which
+       fills with currentColor so it follows the theme, and the Volvo iron mark (assets/CREDITS.md). -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="vx-wordmark" viewBox="90.1052 381.871 2654.79 653.758"><g fill="currentColor"><path d="M397.299 823.784L240.915 453.728L240.917 453.735C234.456 438.447 227.143 421.141 203.518 421.141L107.415 421.141L107.415 421.141C103.717 421.141 95.655 421.141 92.4292 421.141L92.4292 421.141C91.1417 421.143 90.1052 422.293 90.1052 423.723L90.1052 431.978C90.1052 433.409 91.1425 434.561 92.4309 434.561C115.726 434.729 120.384 451.83 126.802 467.017L367.638 1035.63L608.073 466.623C614.452 451.536 619.183 434.728 642.277 434.561C643.565 434.561 644.603 433.409 644.603 431.978L644.603 423.723C644.603 422.293 643.566 421.143 642.279 421.141L645.259 421.141L645.259 421.141L590.748 421.142C567.433 421.323 560.129 438.475 553.705 453.676L397.299 823.784Z" fill-rule="evenodd"/><path d="M452.438 551.62L411.074 453.738C411.073 453.735 411.072 453.733 411.071 453.731C404.61 438.444 397.296 421.144 373.674 421.144L373.674 421.142L311.764 421.141L311.764 421.141C308.066 421.141 300.004 421.141 296.778 421.141L296.778 421.141C295.49 421.141 294.454 422.293 294.454 423.723L294.454 431.978C294.454 433.409 295.491 434.56 296.78 434.56C296.665 434.56 296.896 434.56 296.78 434.56C320.373 434.56 324.95 452.343 331.404 467.616L409.671 652.821L452.438 551.62Z" fill-rule="evenodd"/><path d="M542.24 764.12L499.473 865.322C457.163 965.442 537.25 1035.63 571.444 1035.63L656.978 1035.63L656.978 1035.63L672.758 1035.63C674.012 1035.58 675.013 1034.46 675.013 1033.06L675.013 1024.81C675.013 1023.38 673.976 1022.22 672.688 1022.22L674.554 1022.22C601.559 990.791 549.605 782.803 557.153 760.668L557.082 760.84C557.623 759.54 557.104 758.009 555.919 757.408L549.078 753.941C547.893 753.34 546.504 753.902 545.962 755.2L542.24 764.12Z" fill-rule="evenodd"/><path d="M899.812 593.257L899.812 649.72C922.211 625.455 943.676 607.801 964.208 596.757C984.74 585.713 1006.83 580.191 1030.47 580.191C1058.78 580.191 1082.27 588.047 1100.93 603.757C1119.6 619.467 1132.04 638.988 1138.26 662.32C1143.24 680.052 1145.73 714.116 1145.73 764.513L1145.73 934.369C1145.73 967.967 1148.76 988.888 1154.83 997.132C1160.9 1005.38 1173.57 1010.59 1192.86 1012.76L1192.86 1029.56L972.141 1029.56L972.141 1012.76C988.629 1010.59 1000.45 1003.74 1007.61 992.232C1012.58 984.455 1015.07 965.167 1015.07 934.369L1015.07 740.248C1015.07 704.472 1013.67 681.918 1010.87 672.586C1008.07 663.253 1003.33 656.02 996.639 650.887C989.951 645.754 982.562 643.187 974.474 643.187C947.72 643.187 922.833 662.32 899.812 700.584L899.812 934.369C899.812 967.034 902.845 987.721 908.911 996.432C914.978 1005.14 926.255 1010.59 942.743 1012.76L942.743 1029.56L722.023 1029.56L722.023 1012.76C740.378 1010.9 753.443 1004.99 761.221 995.032C766.509 988.188 769.154 967.967 769.154 934.369L769.154 687.985C769.154 655.009 766.12 634.477 760.054 626.389C753.988 618.3 741.311 613.012 722.023 610.523L722.023 593.257L899.812 593.257Z" fill-rule="nonzero"/><path d="M1493.84 965.167C1440.64 1012.14 1392.89 1035.63 1350.58 1035.63C1325.7 1035.63 1305.01 1027.46 1288.52 1011.13C1272.03 994.799 1263.79 974.344 1263.79 949.768C1263.79 916.481 1278.1 886.539 1306.72 859.94C1335.34 833.342 1397.71 797.955 1493.84 753.78L1493.84 709.917C1493.84 676.941 1492.05 656.176 1488.47 647.621C1484.9 639.066 1478.13 631.599 1468.18 625.222C1458.22 618.845 1447.02 615.656 1434.58 615.656C1414.36 615.656 1397.71 620.167 1384.65 629.188C1376.56 634.788 1372.52 641.321 1372.52 648.787C1372.52 655.32 1376.87 663.408 1385.58 673.052C1397.4 686.429 1403.31 699.339 1403.31 711.783C1403.31 727.027 1397.64 740.015 1386.28 750.747C1374.93 761.48 1360.07 766.846 1341.72 766.846C1322.12 766.846 1305.71 760.936 1292.49 749.114C1279.27 737.293 1272.65 723.449 1272.65 707.583C1272.65 685.185 1281.52 663.797 1299.25 643.421C1316.99 623.044 1341.72 607.412 1373.45 596.524C1405.18 585.636 1438.16 580.191 1472.38 580.191C1513.75 580.191 1546.49 588.98 1570.6 606.556C1594.71 624.133 1610.34 643.187 1617.5 663.72C1621.86 676.785 1624.03 706.806 1624.03 753.78L1624.03 923.17C1624.03 943.08 1624.81 955.601 1626.37 960.734C1627.92 965.867 1630.25 969.678 1633.37 972.167C1636.48 974.655 1640.05 975.9 1644.1 975.9C1652.19 975.9 1660.43 970.145 1668.83 958.634L1682.83 969.833C1667.27 992.854 1651.18 1009.58 1634.53 1020C1617.89 1030.42 1598.99 1035.63 1577.84 1035.63C1552.95 1035.63 1533.51 1029.8 1519.51 1018.13C1505.51 1006.46 1496.95 988.81 1493.84 965.167ZM1493.84 931.103L1493.84 785.045C1456.2 807.133 1428.2 830.776 1409.85 855.974C1397.71 872.773 1391.65 889.727 1391.65 906.837C1391.65 921.148 1396.78 933.747 1407.05 944.635C1414.82 953.034 1425.71 957.234 1439.71 957.234C1455.27 957.234 1473.31 948.524 1493.84 931.103Z" fill-rule="nonzero"/><path d="M1904.01 433.667L1904.01 593.257L2007.61 593.257L2007.61 639.454L1904.01 639.454L1904.01 908.704C1904.01 933.902 1905.18 950.157 1907.51 957.468C1909.85 964.778 1913.97 970.689 1919.88 975.2C1925.79 979.711 1931.24 981.966 1936.21 981.966C1956.43 981.966 1975.57 966.567 1993.61 935.769L2007.61 946.035C1982.41 1005.76 1941.5 1035.63 1884.88 1035.63C1857.2 1035.63 1833.79 1027.93 1814.65 1012.53C1795.52 997.132 1783.31 979.944 1778.02 960.967C1774.91 950.39 1773.36 921.77 1773.36 875.106L1773.36 639.454L1716.43 639.454L1716.43 623.122C1755.62 595.435 1788.99 566.348 1816.52 535.861C1844.05 505.374 1868.08 471.31 1888.62 433.667L1904.01 433.667Z" fill-rule="nonzero"/><path d="M2154.13 381.871C2174.35 381.871 2191.46 388.948 2205.46 403.103C2219.46 417.257 2226.46 434.29 2226.46 454.199C2226.46 474.109 2219.38 491.064 2205.23 505.063C2191.07 519.062 2174.04 526.062 2154.13 526.062C2134.22 526.062 2117.27 519.062 2103.27 505.063C2089.27 491.064 2082.27 474.109 2082.27 454.199C2082.27 434.29 2089.27 417.257 2103.27 403.103C2117.27 388.948 2134.22 381.871 2154.13 381.871ZM2219.46 593.257L2219.46 939.035C2219.46 969.833 2223.04 989.51 2230.19 998.065C2237.35 1006.62 2251.35 1011.52 2272.19 1012.76L2272.19 1029.56L2036.54 1029.56L2036.54 1012.76C2055.83 1012.14 2070.14 1006.54 2079.47 995.965C2085.69 988.81 2088.8 969.833 2088.8 939.035L2088.8 684.252C2088.8 653.454 2085.23 633.777 2078.07 625.222C2070.92 616.667 2057.07 611.767 2036.54 610.523L2036.54 593.257L2219.46 593.257Z" fill-rule="nonzero"/><path d="M2572.71 762.18L2648.3 905.904C2674.43 955.99 2695.12 987.721 2710.36 1001.1C2718.76 1008.25 2730.27 1012.14 2744.89 1012.76L2744.89 1029.56L2501.78 1029.56L2501.78 1012.76C2520.75 1011.21 2532.5 1008.72 2537.01 1005.3C2541.52 1001.88 2543.77 997.209 2543.77 991.299C2543.77 982.588 2538.8 968.9 2528.84 950.235L2491.04 879.306L2458.85 926.436C2444.23 947.901 2435.98 960.656 2434.11 964.7C2431.63 970.611 2430.38 975.9 2430.38 980.566C2430.38 987.721 2431.86 993.71 2434.81 998.532C2437.77 1003.35 2441.81 1006.93 2446.95 1009.26C2452.08 1011.6 2461.49 1012.76 2475.18 1012.76L2475.18 1029.56L2304.39 1029.56L2304.39 1012.76C2325.54 1012.76 2344.91 1006.93 2362.49 995.265C2380.06 983.599 2405.65 953.034 2439.25 903.571L2475.18 850.374L2400.05 711.317C2375.47 665.897 2357.12 638.054 2344.99 627.788C2332.85 617.522 2319.32 611.767 2304.39 610.523L2304.39 593.257L2546.11 593.257L2546.11 610.523L2533.51 610.99L2509.24 619.389C2506.75 621.567 2505.51 625.144 2505.51 630.122C2505.51 634.788 2506.29 639.61 2507.84 644.587C2508.78 646.765 2513.13 655.165 2520.91 669.786L2554.97 733.248L2572.71 708.05C2597.59 673.83 2610.04 649.876 2610.04 636.188C2610.04 629.655 2607.31 624.133 2601.87 619.622C2596.43 615.111 2586.7 612.078 2572.71 610.523L2572.71 593.257L2727.16 593.257L2727.16 610.523C2708.19 611.145 2690.45 616.978 2673.97 628.022C2657.48 639.066 2638.97 660.453 2618.44 692.184L2572.71 762.18Z" fill-rule="nonzero"/></g></symbol>
+    <symbol id="volvo-iron-mark" viewBox="0 0 250 250">
+      <path d="M112.8,134.5h30.3v-10.1h-3.3c0,3.9-2.8,6.7-7.2,6.7H128v-15.1h5v-3.4h-20.2v3.4h5.1l0,15.1h-5.1L112.8,134.5L112.8,134.5 z"/>
+      <polygon points="157.7,134.5 169.5,134.5 179.6,116 184.6,116 184.6,112.6 169.5,112.6 169.5,116 173.9,116 166.5,129.5 159.2,116 164.5,116 164.5,112.6 142.5,112.6 142.5,116 147.5,116"/>
+      <polygon points="52.4,112.6 30.5,112.6 30.5,116 35.5,116 45.7,134.5 57.5,134.5 67.5,116 72.5,116 72.5,112.6 57.4,112.6 57.4,116 61.8,116 54.5,129.5 47.1,116 52.4,116"/>
+      <path d="M75.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C80.9,112.1,75.5,117.2,75.5,123.6z M96.4,123.6c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2c0.1-4.2,2.1-7.9,5.6-7.8 C94.7,115.6,96.5,119.4,96.4,123.6z"/>
+      <path d="M187.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C192.9,112.1,187.5,117.2,187.5,123.6z M203.2,115.6c3.5,0.1,5.3,3.8,5.2,8c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2 C197.7,119.2,199.7,115.5,203.2,115.6z"/>
+      <path d="M227.9,54l-12.7,12.7c10.9,16.8,17.2,36.8,17.2,58.3c0,59.3-48.1,107.4-107.4,107.4S17.6,184.3,17.6,125 S65.7,17.6,125,17.6c21.6,0,41.6,6.4,58.4,17.3l12.7-12.7C176,8.2,151.4,0,125,0C56,0,0,56,0,125s56,125,125,125s125-56,125-125 C250,98.6,241.8,74.1,227.9,54z"/>
+      <path d="M187.9,4.9v3.5c7.6,4.1,14.7,9,21.3,14.4l-17.8,17.8c6.7,5.3,12.8,11.3,18.1,18l17.8-17.8c5.5,6.6,10.3,13.8,14.4,21.2h3.4 V4.9H187.9z"/>
+    </symbol>
+  </svg>
+
   <!-- ============================================================ Header -->
   <header class="site-header" role="banner">
     <div class="site-header__inner">
       <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
-        <img src="assets/wordmark-teal.svg" alt="Vynatix" width="118" height="30">
+        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
       </a>
-
-      <nav class="site-header__nav" aria-label="Primary">
-        <a href="services.html" class="site-header__link">Services</a>
-        <a href="work.html" class="site-header__link">Work</a>
-        <a href="about.html" class="site-header__link">About</a>
-        <a href="contact.html" class="site-header__link">Contact</a>
-        <a href="contact.html" class="site-header__menu-cta">Book a call</a>
+      <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
+        <ul class="site-header__list list-reset">
+          <li><a href="services.html" class="site-header__link">Services</a></li>
+          <li><a href="work.html" class="site-header__link">Work</a></li>
+          <li><a href="about.html" class="site-header__link">About</a></li>
+          <li><a href="contact.html" class="site-header__link">Contact</a></li>
+          <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">Book a call</a></li>
+        </ul>
       </nav>
-
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
+          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
         </button>
-
-        <a href="contact.html" class="site-header__cta">Book a call</a>
-
-        <button class="icon-btn mobile-toggle" aria-label="Menu" aria-expanded="false">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <a href="contact.html" class="btn btn--sm site-header__cta">Book a call</a>
+        <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+          <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
+          <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
         </button>
       </div>
     </div>
   </header>
 
   <main id="main">
-
     <!-- ============================================================ Hero -->
     <section class="hero" id="home">
-      <div class="hero__top">
-        <div class="hero__meta">
-          <span class="eyebrow">A Nordic software consultancy</span>
-          <span class="hero__meta-rule"></span>
-          <span class="hero__meta-note">Working since 2023</span>
-        </div>
-
-        <h1 class="hero__h1">
-          We own the outcome.<br><em>You own the code.</em>
-        </h1>
-
+      <div class="container">
+        <p class="eyebrow">A Nordic software consultancy · Working since 2023</p>
+        <h1 class="hero__h1">We own the outcome.<br><em>You own the code.</em></h1>
         <p class="hero__lede">We are a small team of senior engineers, on purpose, embedded in client teams rather than kept at arm's length. Right now that means in-car software on Android Automotive and the build pipelines behind it, at Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside. We report our hours honestly every week, and we stay for as long as the assignment needs us.</p>
-
         <div class="hero__ctas">
-          <a class="btn-primary" href="contact.html">Book a call</a>
-          <a class="btn-text" href="work.html">
-            See the work
-            <span class="arrow">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-            </span>
-          </a>
+          <a class="btn btn--lg" href="contact.html">Book a call <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <a class="btn btn--lg btn--secondary" href="work.html">See the work</a>
         </div>
-      </div>
 
-      <div class="hero__media">
-        <div class="reel-wrap">
-          <div class="reel">
-            <article class="reel__card">
-              <div class="reel__cover case-cover-1">
-                <picture>
-                  <source srcset="assets/case-volvo-trucks.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-volvo-trucks.jpg" alt="Truck cab dashboard and instrument cluster" fetchpriority="high" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Volvo Trucks · 2024</span>
-              </div>
-              <span class="reel__eyebrow">Volvo Trucks · 2024</span>
-              <h3 class="reel__title">An in-cab radio, rebuilt for Android Automotive.</h3>
-              <p class="reel__desc">A full in-cab media player, rebuilt from the ground up and shipped to production across the fleet.</p>
-              <a class="reel__link" href="work.html" aria-label="Read the case: An in-cab radio rebuilt for Android Automotive">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-            <article class="reel__card">
-              <div class="reel__cover case-cover-3">
-                <picture>
-                  <source srcset="assets/case-volvo-cars.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-volvo-cars.jpg" alt="Robotic arms on an automotive assembly line" loading="lazy" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Volvo Cars · 2025</span>
-              </div>
-              <span class="reel__eyebrow">Volvo Cars · 2025</span>
-              <h3 class="reel__title">A build that went from 47 minutes down to 6.</h3>
-              <p class="reel__desc">Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
-              <span class="reel__metric">87% faster</span>
-              <a class="reel__link" href="work.html" aria-label="Read the case: A build that went from 47 minutes down to 6">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-            <article class="reel__card">
-              <div class="reel__cover case-cover-4">
-                <picture>
-                  <source srcset="assets/case-regulated-ai.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-regulated-ai.jpg" alt="Close-up of an AI processor on a circuit board" loading="lazy" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Regulator · 2025</span>
-              </div>
-              <span class="reel__eyebrow">Regulator · 2025</span>
-              <h3 class="reel__title">An assistant that says &ldquo;I do not know&rdquo; when it should.</h3>
-              <p class="reel__desc">A closed-domain assistant that only answers from approved documents, and passes anything it cannot ground back to a person.</p>
-              <span class="reel__metric reel__metric--text">Every answer cites its source</span>
-              <a class="reel__link" href="work.html" aria-label="Read the case: An assistant that says I do not know when it should">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-          </div>
-        </div>
-      </div>
-
-      <!-- Client strip -->
-      <div class="marquee">
-        <!-- The Volvo iron mark is defined once here and reused with <use>, so it
-             follows the text colour (currentColor) in both themes. Source and
-             licence: assets/CREDITS.md. -->
-        <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
-          <symbol id="volvo-iron-mark" viewBox="0 0 250 250">
-            <path d="M112.8,134.5h30.3v-10.1h-3.3c0,3.9-2.8,6.7-7.2,6.7H128v-15.1h5v-3.4h-20.2v3.4h5.1l0,15.1h-5.1L112.8,134.5L112.8,134.5 z"/>
-            <polygon points="157.7,134.5 169.5,134.5 179.6,116 184.6,116 184.6,112.6 169.5,112.6 169.5,116 173.9,116 166.5,129.5 159.2,116 164.5,116 164.5,112.6 142.5,112.6 142.5,116 147.5,116"/>
-            <polygon points="52.4,112.6 30.5,112.6 30.5,116 35.5,116 45.7,134.5 57.5,134.5 67.5,116 72.5,116 72.5,112.6 57.4,112.6 57.4,116 61.8,116 54.5,129.5 47.1,116 52.4,116"/>
-            <path d="M75.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C80.9,112.1,75.5,117.2,75.5,123.6z M96.4,123.6c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2c0.1-4.2,2.1-7.9,5.6-7.8 C94.7,115.6,96.5,119.4,96.4,123.6z"/>
-            <path d="M187.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C192.9,112.1,187.5,117.2,187.5,123.6z M203.2,115.6c3.5,0.1,5.3,3.8,5.2,8c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2 C197.7,119.2,199.7,115.5,203.2,115.6z"/>
-            <path d="M227.9,54l-12.7,12.7c10.9,16.8,17.2,36.8,17.2,58.3c0,59.3-48.1,107.4-107.4,107.4S17.6,184.3,17.6,125 S65.7,17.6,125,17.6c21.6,0,41.6,6.4,58.4,17.3l12.7-12.7C176,8.2,151.4,0,125,0C56,0,0,56,0,125s56,125,125,125s125-56,125-125 C250,98.6,241.8,74.1,227.9,54z"/>
-            <path d="M187.9,4.9v3.5c7.6,4.1,14.7,9,21.3,14.4l-17.8,17.8c6.7,5.3,12.8,11.3,18.1,18l17.8-17.8c5.5,6.6,10.3,13.8,14.4,21.2h3.4 V4.9H187.9z"/>
-          </symbol>
-        </svg>
-        <!-- The track holds the client list six times: two identical halves so the
-             -50% keyframe loops seamlessly, three copies per half so the strip stays
-             full on wide screens. Only the first copy is real: its links are in the
-             tab order and it is announced as a list. The other five are decoration,
-             hidden from assistive tech, with their links taken out of the tab order. -->
-        <div class="marquee__track">
-          <ul class="marquee__group" aria-label="Clients we have worked with">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span><span class="sr-only"> (opens in a new tab)</span>
+        <!-- Client marks: a still row. Only the first two are named, with the client's
+             consent (assets/CREDITS.md); the rest are described. Each named client links
+             to its own site. -->
+        <div class="clients">
+          <p class="eyebrow eyebrow--muted" id="clients-label">Clients we have worked with</p>
+          <ul class="clients__list list-reset" aria-labelledby="clients-label">
+            <li>
+              <a class="clients__item" href="https://www.volvotrucks.com/" target="_blank" rel="noopener">
+                <svg class="clients__logo" viewBox="0 0 250 250" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span>Volvo Trucks</span><span class="sr-only"> (opens in a new tab)</span>
               </a>
             </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span><span class="sr-only"> (opens in a new tab)</span>
+            <li>
+              <a class="clients__item" href="https://www.volvocars.com/" target="_blank" rel="noopener">
+                <svg class="clients__logo" viewBox="0 0 250 250" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span>Volvo Cars</span><span class="sr-only"> (opens in a new tab)</span>
               </a>
             </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
-          </ul>
-          <ul class="marquee__group" aria-hidden="true">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
-          </ul>
-          <ul class="marquee__group" aria-hidden="true">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
-          </ul>
-          <ul class="marquee__group" aria-hidden="true">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
-          </ul>
-          <ul class="marquee__group" aria-hidden="true">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
-          </ul>
-          <ul class="marquee__group" aria-hidden="true">
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvotrucks.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Trucks</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <a class="marquee__link" href="https://www.volvocars.com/" target="_blank" rel="noopener" tabindex="-1">
-                <svg class="marquee__logo" viewBox="0 0 250 250" width="40" height="40" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
-                <span class="marquee__name">Volvo Cars</span>
-              </a>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic manufacturer</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic construction group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Nordic telecoms group</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A pharmaceutical company</span>
-            </li>
-            <li class="marquee__item">
-              <span class="marquee__link">A Swedish ministry</span>
-            </li>
+            <li><span class="clients__item">A Nordic manufacturer</span></li>
+            <li><span class="clients__item">A Nordic construction group</span></li>
+            <li><span class="clients__item">A Nordic telecoms group</span></li>
+            <li><span class="clients__item">A pharmaceutical company</span></li>
+            <li><span class="clients__item">A Swedish ministry</span></li>
           </ul>
         </div>
-        <button class="icon-btn marquee__toggle" type="button" aria-pressed="false" aria-label="Pause the scrolling client list">
-          <svg class="marquee__icon-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-          <svg class="marquee__icon-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5z"/></svg>
-        </button>
       </div>
     </section>
 
@@ -349,22 +122,22 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">Services</span>
+            <p class="eyebrow">Services</p>
             <h2 class="section__h2">What we do</h2>
           </div>
           <p class="section__lead">Most of our work is building software, for the web, for desktop, for phones, for vehicles and wearables, and for the systems that sit behind all of it. Alongside that, AI is a fast-growing part of what we do, and we run cloud platforms too. If a job is not something we are genuinely good at, we will tell you so and point you to someone who is.</p>
         </div>
 
         <!-- Application development -->
-        <div class="two-up u-mb-72">
+        <div class="two-up">
           <div>
-            <span class="eyebrow">Application development</span>
-            <h3 class="two-up__h3 heading-spaced">The software people use every day</h3>
+            <p class="eyebrow">Application development</p>
+            <h3 class="two-up__h3">The software people use every day</h3>
             <p class="two-up__body">We build the software people use every day, on whatever it needs to run on: web and desktop apps, native mobile, in-car systems, wearables, VR, and the enterprise and SaaS platforms behind them. A lot of our team comes from years in automotive and embedded work, so we are at home with the awkward, real-world constraints that come with hardware and regulated environments.</p>
           </div>
-          <div>
-            <div class="panel-label">What we build</div>
-            <ul class="practice__bullets u-gap-14">
+          <div class="panel">
+            <p class="eyebrow eyebrow--muted">What we build</p>
+            <ul>
               <li>Web, desktop and SaaS</li>
               <li>Native mobile, iOS and Android</li>
               <li>Automotive and embedded systems</li>
@@ -375,15 +148,15 @@
         </div>
 
         <!-- AI engineering -->
-        <div class="two-up u-mb-72">
+        <div class="two-up">
           <div>
-            <span class="eyebrow">AI engineering</span>
-            <h3 class="two-up__h3 heading-spaced">Honest about what it can and cannot do</h3>
+            <p class="eyebrow">AI engineering</p>
+            <h3 class="two-up__h3">Honest about what it can and cannot do</h3>
             <p class="two-up__body">AI is a fast-growing part of what we do, and we build it the same way we build everything else: to run in production, and to be honest about what it can and cannot do. We can take something from a rough first prototype all the way to a tool your team uses every day, and we work in the open so you always know how it reaches its answers.</p>
           </div>
-          <div>
-            <div class="panel-label">What we build</div>
-            <ul class="practice__bullets u-gap-14">
+          <div class="panel">
+            <p class="eyebrow eyebrow--muted">What we build</p>
+            <ul>
               <li>Chatbots and assistants</li>
               <li>Retrieval and grounded answers</li>
               <li>Agent and harness engineering</li>
@@ -398,13 +171,13 @@
         <!-- Cloud platforms -->
         <div class="two-up">
           <div>
-            <span class="eyebrow">Cloud platforms</span>
-            <h3 class="two-up__h3 heading-spaced">The kind regulated industries actually need</h3>
+            <p class="eyebrow">Cloud platforms</p>
+            <h3 class="two-up__h3">The kind regulated industries actually need</h3>
             <p class="two-up__body">Platforms on GCP, AWS and on-prem hybrids, the kind regulated industries actually need. Build pipelines that stay green, infrastructure that costs what it should, and a sensible path off legacy systems.</p>
           </div>
-          <div>
-            <div class="panel-label">What we build</div>
-            <ul class="practice__bullets u-gap-14">
+          <div class="panel">
+            <p class="eyebrow eyebrow--muted">What we build</p>
+            <ul>
               <li>Platform engineering</li>
               <li>Kubernetes and GitOps</li>
               <li>Cost control</li>
@@ -413,117 +186,88 @@
           </div>
         </div>
 
-        <div class="u-mt-48">
-          <a class="btn-text u-pis-0" href="services.html">
-            More on what we do
-            <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-          </a>
-        </div>
+        <p class="u-mt-12 u-mb-0"><a class="more" href="services.html"><span>More on what we do</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
       </div>
     </section>
 
     <!-- ============================================================ How working with us goes -->
-    <section class="section section--tight section--surface">
-      <div class="container">
-        <div class="section__head u-mb-0">
-          <div>
-            <span class="eyebrow">How it goes</span>
-            <h2 class="section__h2">How working<br>with us goes</h2>
-          </div>
-          <p class="section__lead">We try to keep things simple and honest. We meet you in person for the first conversation, usually in Gothenburg. From there, our engineers work alongside your team, report their hours honestly every week, and stay for as long as the assignment needs them. If you get in touch, you will hear back within one working day.</p>
+    <section class="band--inset inverse" aria-labelledby="how-it-goes">
+      <div class="section__head">
+        <div>
+          <p class="eyebrow">How it goes</p>
+          <h2 class="section__h2" id="how-it-goes">How working with us goes</h2>
         </div>
+        <p class="section__lead">We try to keep things simple and honest. We meet you in person for the first conversation, usually in Gothenburg. From there, our engineers work alongside your team, report their hours honestly every week, and stay for as long as the assignment needs them. If you get in touch, you will hear back within one working day.</p>
       </div>
     </section>
 
     <!-- ============================================================ A few recent projects -->
-    <section class="section section--ink" id="work">
+    <section class="section" id="work">
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">Selected work</span>
-            <h2 class="section__h2">A few recent<br>projects</h2>
+            <p class="eyebrow">Selected work</p>
+            <h2 class="section__h2">A few recent projects</h2>
           </div>
           <p class="section__lead">Three we can talk about. The rest of our work with Volvo Trucks and Volvo Cars is under non-disclosure.</p>
         </div>
 
-        <div class="reel-wrap">
-          <div class="reel">
-            <article class="reel__card">
-              <div class="reel__cover case-cover-1">
-                <picture>
-                  <source srcset="assets/case-volvo-trucks.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-volvo-trucks.jpg" alt="Truck cab dashboard and instrument cluster" loading="lazy" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Volvo Trucks · 2024</span>
-              </div>
-              <span class="reel__eyebrow">Volvo Trucks · 2024</span>
-              <h3 class="reel__title">An in-cab radio, rebuilt for Android Automotive.</h3>
-              <p class="reel__desc">A full in-cab media player, rebuilt from the ground up and shipped to production across the fleet.</p>
-              <a class="reel__link" href="work.html" aria-label="Read the case: An in-cab radio rebuilt for Android Automotive">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-            <article class="reel__card">
-              <div class="reel__cover case-cover-3">
-                <picture>
-                  <source srcset="assets/case-volvo-cars.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-volvo-cars.jpg" alt="Robotic arms on an automotive assembly line" loading="lazy" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Volvo Cars · 2025</span>
-              </div>
-              <span class="reel__eyebrow">Volvo Cars · 2025</span>
-              <h3 class="reel__title">A build that went from 47 minutes down to 6.</h3>
-              <p class="reel__desc">Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
-              <span class="reel__metric">87% faster</span>
-              <a class="reel__link" href="work.html" aria-label="Read the case: A build that went from 47 minutes down to 6">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-            <article class="reel__card">
-              <div class="reel__cover case-cover-4">
-                <picture>
-                  <source srcset="assets/case-regulated-ai.webp" type="image/webp">
-                  <img class="reel__cover-img" src="assets/case-regulated-ai.jpg" alt="Close-up of an AI processor on a circuit board" loading="lazy" decoding="async">
-                </picture>
-                <span class="reel__cover-label" aria-hidden="true">Regulator · 2025</span>
-              </div>
-              <span class="reel__eyebrow">Regulator · 2025</span>
-              <h3 class="reel__title">An assistant that says &ldquo;I do not know&rdquo; when it should.</h3>
-              <p class="reel__desc">A closed-domain assistant that only answers from approved documents, and passes anything it cannot ground back to a person.</p>
-              <span class="reel__metric reel__metric--text">Every answer cites its source</span>
-              <a class="reel__link" href="work.html" aria-label="Read the case: An assistant that says I do not know when it should">Read the case
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </article>
-          </div>
-
-          <div class="reel__controls">
-            <button class="reel__btn" aria-label="Previous">
-              <span class="icon-flip">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-              </span>
-            </button>
-            <button class="reel__btn" aria-label="Next">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-            </button>
-            <span class="reel__controls-link">
-              <a class="btn-text btn-text--inherit" href="work.html">
-                See all work
-                <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-              </a>
-            </span>
-          </div>
+        <!-- Each card is one link: the headline, stretched over the card. -->
+        <div class="cases">
+          <article class="case">
+            <div class="case__img">
+              <picture>
+                <source srcset="assets/case-volvo-trucks.webp" type="image/webp">
+                <img src="assets/case-volvo-trucks.jpg" alt="Truck cab dashboard and instrument cluster" width="900" height="602" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="work.html">An in-cab radio, rebuilt for Android Automotive.</a></h3>
+              <p>A full in-cab media player, rebuilt from the ground up and shipped to production across the fleet.</p>
+            </div>
+          </article>
+          <article class="case">
+            <div class="case__img">
+              <picture>
+                <source srcset="assets/case-volvo-cars.webp" type="image/webp">
+                <img src="assets/case-volvo-cars.jpg" alt="Robotic arms on an automotive assembly line" width="900" height="600" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="work.html">A build that went from 47 minutes down to 6.</a></h3>
+              <p>Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
+              <p class="case__metric">87% faster</p>
+            </div>
+          </article>
+          <article class="case">
+            <div class="case__img">
+              <picture>
+                <source srcset="assets/case-regulated-ai.webp" type="image/webp">
+                <img src="assets/case-regulated-ai.jpg" alt="Close-up of an AI processor on a circuit board" width="900" height="596" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Regulator · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="work.html">An assistant that says &ldquo;I do not know&rdquo; when it should.</a></h3>
+              <p>A closed-domain assistant that only answers from approved documents, and passes anything it cannot ground back to a person.</p>
+              <p class="case__metric case__metric--text">Every answer cites its source</p>
+            </div>
+          </article>
         </div>
+
+        <p class="u-mt-12 u-mb-0"><a class="more" href="work.html"><span>See all work</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
       </div>
     </section>
 
     <!-- ============================================================ Who we are -->
-    <section class="section">
+    <section class="section section--surface">
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">Who we are</span>
-            <h2 class="section__h2">A small team,<br>on purpose.</h2>
+            <p class="eyebrow">Who we are</p>
+            <h2 class="section__h2">A small team, on purpose.</h2>
           </div>
           <p class="section__lead">Vynatix is a small software consultancy in Gothenburg, working since 2023 and part of Ultra Group. We keep the team small on purpose, so the people you meet are the people doing the work.</p>
         </div>
@@ -532,76 +276,76 @@
           <div>
             <p class="two-up__body">We started Vynatix because we wanted to work directly with a client's engineering team, embedded rather than kept at arm's length by an account layer. Our engineers report their hours honestly every week, and we take on new work only when we have the capacity to do it well.</p>
             <p class="two-up__body">We are based in Gothenburg, and most of our work is done alongside the client teams we build for. We like meeting clients face to face for that first conversation. After that, most of the work happens in writing, which keeps everyone clear on what was agreed.</p>
-            <a class="btn-text u-pis-0" href="about.html">
-              More about us
-              <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-            </a>
+            <a class="more" href="about.html"><span>More about us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div>
-            <blockquote class="pullquote">We report our hours honestly every week. No black box, no surprise invoice.</blockquote>
+            <blockquote>We report our hours honestly every week. No black box, no surprise invoice.</blockquote>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ============================================================ Where we are so far -->
-    <section class="section section--tight section--surface">
+    <section class="section">
       <div class="container">
-        <div class="section__head u-mb-48">
+        <div class="section__head">
           <div>
-            <span class="eyebrow">Where we are so far</span>
-            <h2 class="section__h2 u-mt-16">Where we<br>are so far</h2>
+            <p class="eyebrow">Where we are so far</p>
+            <h2 class="section__h2">Where we are so far</h2>
           </div>
           <p class="section__lead">Founded 2023 in Gothenburg, part of Ultra Group. Clients include Volvo Trucks and Volvo Cars.</p>
         </div>
-        <div class="numbers">
-          <div class="numbers__cell">
-            <span class="numbers__value">2023</span>
-            <p class="numbers__label">Founded, in Gothenburg</p>
+        <div class="metrics">
+          <div class="metric">
+            <p class="metric__lbl">Founded</p>
+            <p class="metric__val">2023</p>
+            <p class="metric__ctx">In Gothenburg, part of Ultra Group.</p>
           </div>
-          <div class="numbers__cell">
-            <span class="numbers__value">2</span>
-            <p class="numbers__label">Volvo companies among our clients</p>
+          <div class="metric">
+            <p class="metric__lbl">Volvo companies</p>
+            <p class="metric__val">2</p>
+            <p class="metric__ctx">Volvo Trucks and Volvo Cars among our clients.</p>
           </div>
-          <div class="numbers__cell">
-            <span class="numbers__value">3</span>
-            <p class="numbers__label">Senior engineers, kept small on purpose</p>
+          <div class="metric">
+            <p class="metric__lbl">Senior engineers</p>
+            <p class="metric__val">3</p>
+            <p class="metric__ctx">Kept small on purpose.</p>
           </div>
-          <div class="numbers__cell numbers__cell--accent">
-            <span class="numbers__value">1</span>
-            <p class="numbers__label">Working day, our typical reply time</p>
+          <div class="metric">
+            <p class="metric__lbl">Reply time</p>
+            <p class="metric__val">1</p>
+            <p class="metric__ctx">Working day, our typical reply time.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ============================================================ Working at Vynatix -->
-    <section class="section">
+    <section class="section section--surface">
       <div class="container">
-        <div class="section__head">
+        <div class="section__head section__head--only">
           <div>
-            <span class="eyebrow">Working at Vynatix</span>
-            <h2 class="section__h2">Built by engineers,<br>for engineers.</h2>
+            <p class="eyebrow">Working at Vynatix</p>
+            <h2 class="section__h2">Built by engineers, for engineers.</h2>
           </div>
-          <p class="section__lead">We are a consultancy built by engineers, for engineers. If you are senior, you have been freelance or you are thinking about it, and you would rather keep your independence without doing all your own sales and admin, we would like to talk. We find and qualify the assignments, you choose which ones to take, and there are no lock-ins, no non-competes, and no claim on your work beyond what we deliver together.</p>
+          <div>
+            <p class="section__lead">We are a consultancy built by engineers, for engineers. If you are senior, you have been freelance or you are thinking about it, and you would rather keep your independence without doing all your own sales and admin, we would like to talk. We find and qualify the assignments, you choose which ones to take, and there are no lock-ins, no non-competes, and no claim on your work beyond what we deliver together.</p>
+            <p class="u-mt-6 u-mb-0"><a class="more" href="membership.html"><span>Get in touch</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+          </div>
         </div>
-        <a class="btn-text u-pis-0" href="membership.html">
-          Get in touch
-          <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-        </a>
       </div>
     </section>
 
     <!-- ============================================================ Let us talk -->
-    <section class="cta-band" id="contact">
+    <section class="cta-band band--inset inverse" id="contact" aria-labelledby="cta-title">
       <div class="cta-band__inner">
         <div>
-          <span class="eyebrow eyebrow--accent">Let us talk</span>
-          <h2 class="cta-band__h2">Senior engineers, <em>embedded when you need them.</em></h2>
+          <p class="eyebrow">Let us talk</p>
+          <h2 class="cta-band__h2" id="cta-title">Senior engineers, <em>embedded when you need them.</em></h2>
         </div>
         <div class="cta-band__actions">
           <p class="cta-band__lede">Tell us what you are trying to build, or which of your teams needs another senior engineer. We will come back within one working day, and tell you plainly whether we are a fit.</p>
-          <a class="btn-primary" href="contact.html">Book a call</a>
+          <a class="btn btn--lg btn--tertiary" href="contact.html">Book a call <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <p class="cta-band__contact">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a>
@@ -612,47 +356,56 @@
 
   </main>
 
-  <script src="app.js" defer></script>
-
   <!-- ============================================================ Footer -->
-  <footer class="site-footer">
-    <div class="site-footer__inner">
-      <div class="site-footer__brand">
-        <img src="assets/wordmark-cloud.svg" alt="Vynatix" width="118" height="26">
-        <p class="site-footer__tag">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
-        <p class="site-footer__address">
-          <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
-          +46 72 071 06 76<br><br>
-          Mailbox 1611, 411 42 Gothenburg<br>
-          Org.nr 559445-6542 · Part of Ultra Group
-        </p>
+  <footer class="site-footer inverse">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
+            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+          </a>
+          <p class="site-footer__about">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
+          <address class="site-footer__addr">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Mailbox 1611, 411 42 Gothenburg<br>
+            Org.nr 559445-6542 · Part of Ultra Group
+          </address>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Services</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="services.html">Application development</a></li>
+            <li><a href="services.html">AI engineering</a></li>
+            <li><a href="services.html">Cloud platforms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Company</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="about.html">About</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="membership.html">Careers</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Legal</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms</a></li>
+            <li><a href="accessibility.html">Accessibility</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="site-footer__col">
-        <h4>Services</h4>
-        <a href="services.html">Application development</a>
-        <a href="services.html">AI engineering</a>
-        <a href="services.html">Cloud platforms</a>
+      <div class="site-footer__fine">
+        <span>© 2026 Vynatix AB</span>
+        <span>vynatix.com</span>
       </div>
-      <div class="site-footer__col">
-        <h4>Company</h4>
-        <a href="about.html">About</a>
-        <a href="work.html">Work</a>
-        <a href="membership.html">Careers</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <div class="site-footer__col">
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="accessibility.html">Accessibility</a>
-      </div>
-    </div>
-    <div class="site-footer__tail">
-      <span>© 2026 Vynatix AB</span>
-      <span>vynatix.com</span>
     </div>
   </footer>
 
 </div>
+<script src="app.js" defer></script>
 </body>
 </html>

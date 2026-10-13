@@ -6,7 +6,7 @@
 // asserted by headers.js instead. Two of the checks below (localStorage
 // poisoning and URL reflection) pass because app.js has no reflective sink,
 // not because the CSP blocks them — they guard against a future regression.
-const { BASE, launch } = require('./_common');
+const { BASE, ALL_THEMES, launch } = require('./_common');
 
 (async () => {
   const browser = await launch();
@@ -88,7 +88,7 @@ const { BASE, launch } = require('./_common');
     node: !!document.querySelector('img[src="x"]'),
   }));
   record('localStorage poisoning rejected',
-    ['light', 'dark'].includes(poison.theme) && !poison.xss && !poison.node,
+    ALL_THEMES.includes(poison.theme) && !poison.xss && !poison.node,
     JSON.stringify(poison));
   await page.evaluate(() => localStorage.removeItem('vynatix-theme'));
 

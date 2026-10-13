@@ -46,3 +46,21 @@ nominative use, but each client's brand guidelines and the contracts under
 which the work was done decide whether the mark may appear here at all. Get the
 client's consent before adding any further mark, and take a mark down if a
 client asks.
+
+## Fonts
+
+The faces are the Vynatix Design System's, self-hosted as woff2 subsets made
+with fontTools from the system's TTF files (see the root `AGENTS.md`):
+
+| Family | Licence | Files |
+|---|---|---|
+| Fraunces (variable, upright and italic) | SIL OFL 1.1 | `fonts/fraunces-*.woff2` |
+| Aptos (300, 400, 600, 700, italics) | Microsoft; terms to be confirmed for web use | `fonts/aptos-*.woff2` |
+| Geist (variable) | SIL OFL 1.1 | `fonts/geist-variable.woff2` |
+| Instrument Serif (regular, italic) | SIL OFL 1.1 (`fonts/licences/`) | `fonts/instrument-serif-*.woff2` |
+| JetBrains Mono (400, 500, 700, italic) | SIL OFL 1.1 (`fonts/licences/`) | `fonts/jetbrains-mono-*.woff2` |
+
+## Icons
+
+Material Symbols Outlined, Apache License 2.0 (Google), `assets/icons/LICENSE.txt`.
+The SVG files are from `@material-symbols/svg-300` 0.47.5 via the design system.

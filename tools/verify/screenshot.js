@@ -4,12 +4,11 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { PAGES, BASE, launch } = require('./_common');
+const { PAGES, BASE, THEMES, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
 const OUT = path.join(__dirname, '..', (MODE === 'compare' ? 'current' : MODE) + SUFFIX);
-const THEMES = ['light', 'dark'];
 const VIEWPORT = {
   width: Number(process.env.VW) || 1440,
   height: Number(process.env.VH) || 900,

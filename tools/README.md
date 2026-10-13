@@ -34,10 +34,10 @@ Then, from `tools/`:
 |---|---|
 | `node verify/adversarial.js` | CSP actually **blocks** injected scripts/styles/images/handlers; localStorage poisoning; URL reflection |
 | `node verify/requests.js` | **Zero** off-origin requests; self-hosted fonts resolve; no CSP violations |
-| `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in both themes, plus skip link, marquee pause control, no-JS and reduced-motion fallbacks |
+| `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test, plus skip link, the still client list, no-JS and reduced-motion fallbacks |
 | `node verify/links.js` | Every internal link, script, style and image resolves |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
-| `node verify/screenshot.js baseline` | Capture 9 pages x light/dark into `baseline/` |
+| `node verify/screenshot.js baseline` | Capture 9 pages x each theme under test into `baseline/` |
 | `node verify/screenshot.js current` | Capture into `current/` |
 | `node verify/screenshot.js compare` | Pixel-diff `current/` against `baseline/` |
 
@@ -61,3 +61,11 @@ concern and `headers.js` is where it is asserted.
 
 Other useful env vars: `VW`/`VH` set the screenshot viewport (e.g. `VW=390
 VH=844` for mobile) and `SUFFIX` writes to a separate directory set.
+
+`THEMES` picks the design-system themes the checks run in. The default is the
+Forest pair the site ships (`light,dark`); the role tokens have to hold in all
+six, so sweep them all before changing a component:
+
+```sh
+THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/a11y.js
+```

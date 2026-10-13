@@ -1,48 +1,85 @@
-// Theme toggle — light/dark, persisted, respects OS preference.
+// Theme toggle — light or dark within the page's brand direction, persisted.
+//
+// The design system has six themes over one set of colour roles: Forest
+// (light, dark), Teal (teal-light, teal-dark) and Monochrome (mono-light,
+// mono-dark). The page's <html data-theme> names the direction the site ships
+// in; this toggle only flips between that direction's light and dark theme.
+// The stored value is the full theme id, but only its light/dark half is read
+// back, so a choice made while the site was one direction still applies if
+// the site is later moved to another.
 (function () {
   var root = document.documentElement;
   var STORAGE_KEY = 'vynatix-theme';
+  var THEMES = ['light', 'dark', 'teal-light', 'teal-dark', 'mono-light', 'mono-dark'];
+  // The canvas of each theme (md-sys-color-surface), used for the browser
+  // chrome colour if the rendered background cannot be read.
+  var CANVAS = {
+    'light': '#EFE8DA', 'dark': '#1B1A16',
+    'teal-light': '#F3F0E9', 'teal-dark': '#0D2A2C',
+    'mono-light': '#F5F1EA', 'mono-dark': '#14110F'
+  };
 
-  function labelFor(theme) {
-    return theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  function isDark(theme) { return /(^|-)dark$/.test(theme); }
+  // '' for Forest, 'teal-' or 'mono-' for the other directions.
+  function direction(theme) {
+    var i = theme.indexOf('-');
+    return i < 0 ? '' : theme.slice(0, i + 1);
+  }
+  function pageDirection() {
+    var current = root.getAttribute('data-theme') || 'light';
+    return THEMES.indexOf(current) >= 0 ? direction(current) : '';
+  }
+
+  function canvasColour(theme) {
+    var bg = '';
+    try { bg = getComputedStyle(document.body).backgroundColor; } catch (e) { bg = ''; }
+    if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return bg;
+    return CANVAS[theme] || CANVAS.light;
   }
 
   function applyTheme(theme, button) {
     root.setAttribute('data-theme', theme);
     // Keep the browser chrome colour matching what is actually rendered.
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0D2A2C' : '#F3F0E9');
+    if (meta) meta.setAttribute('content', canvasColour(theme));
     if (button) {
-      button.setAttribute('aria-label', labelFor(theme));
-      button.setAttribute('aria-pressed', String(theme === 'dark'));
+      button.setAttribute('aria-label', isDark(theme) ? 'Switch to light theme' : 'Switch to dark theme');
+      button.setAttribute('aria-pressed', String(isDark(theme)));
     }
   }
 
   function preferredTheme() {
-    var stored;
+    var stored = null;
     try {
       stored = localStorage.getItem(STORAGE_KEY);
     } catch (e) {
       stored = null;
     }
-    if (stored === 'light' || stored === 'dark') return stored;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
+    var dark;
+    if (THEMES.indexOf(stored) >= 0) {
+      dark = isDark(stored);
+    } else {
+      dark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return pageDirection() + (dark ? 'dark' : 'light');
   }
 
   function init() {
     var button = document.querySelector('.theme-toggle');
     applyTheme(preferredTheme(), button);
     if (!button) return;
+    // The toggle is invisible until it can work (styles.css), the same opt-in
+    // the mobile nav uses, so it never sits dead for a no-JS visitor.
+    root.classList.add('js-theme');
 
     button.addEventListener('click', function () {
-      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      var current = root.getAttribute('data-theme') || 'light';
+      var next = direction(current) + (isDark(current) ? 'light' : 'dark');
       applyTheme(next, button);
       try {
         localStorage.setItem(STORAGE_KEY, next);
       } catch (e) {
-        /* storage unavailable — toggle still works for the session */
+        /* storage unavailable — the toggle still works for the session */
       }
     });
   }
@@ -54,7 +91,7 @@
   }
 })();
 
-// Mobile nav — toggle the menu open/closed from the hamburger button.
+// Mobile nav — toggle the menu open/closed from the menu button.
 (function () {
   function init() {
     var toggle = document.querySelector('.mobile-toggle');
@@ -62,91 +99,29 @@
     if (!toggle || !nav) return;
 
     // Opt into the collapsible mobile nav. Without this class the nav stays
-    // visible and wrapped, so a no-JS visitor on a phone still has every link.
+    // visible and wraps, so a no-JS visitor on a phone still has every link.
     document.documentElement.classList.add('js-nav');
 
-    toggle.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
+    function setOpen(open) {
+      nav.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!nav.classList.contains('open'));
     });
 
     // Close the menu after following a link.
     nav.addEventListener('click', function (e) {
-      if (e.target.closest('.site-header__link')) {
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
+      if (e.target.closest('.site-header__link')) setOpen(false);
     });
-  }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-
-// Case reel — wire the Previous/Next controls to scroll one card at a time.
-(function () {
-  function stepFor(reel) {
-    var card = reel.querySelector('.reel__card');
-    if (!card) return reel.clientWidth;
-    var gap = parseFloat(getComputedStyle(reel).columnGap || getComputedStyle(reel).gap) || 0;
-    return card.getBoundingClientRect().width + gap;
-  }
-
-  function wire(controls) {
-    var wrap = controls.closest('.reel-wrap');
-    var reel = wrap && wrap.querySelector('.reel');
-    if (!reel) return;
-
-    var buttons = controls.querySelectorAll('.reel__btn');
-    var prev = buttons[0];
-    var next = buttons[1];
-
-    function scrollByCards(dir) {
-      reel.scrollBy({ left: dir * stepFor(reel), behavior: 'smooth' });
-    }
-
-    if (prev) prev.addEventListener('click', function () { scrollByCards(-1); });
-    if (next) next.addEventListener('click', function () { scrollByCards(1); });
-
-    // The arrows are hidden in CSS until they actually work; the reel itself
-    // scrolls natively without them.
-    controls.classList.add('is-ready');
-  }
-
-  function init() {
-    var controls = document.querySelectorAll('.reel__controls');
-    for (var i = 0; i < controls.length; i++) wire(controls[i]);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-
-// Client marquee — pause/play control. WCAG 2.2.2 asks for a mechanism to stop
-// motion that starts on its own and runs for more than five seconds. The button
-// is hidden in CSS until this runs, so it never sits dead for no-JS visitors.
-(function () {
-  function init() {
-    var marquee = document.querySelector('.marquee');
-    if (!marquee) return;
-    var track = marquee.querySelector('.marquee__track');
-    var toggle = marquee.querySelector('.marquee__toggle');
-    if (!track || !toggle) return;
-
-    toggle.classList.add('is-ready');
-
-    toggle.addEventListener('click', function () {
-      var paused = track.classList.toggle('is-paused');
-      toggle.classList.toggle('is-paused', paused);
-      // aria-pressed carries the state; the label stays constant so the two
-      // never contradict each other ("Resume…, pressed" reads as nonsense).
-      toggle.setAttribute('aria-pressed', String(paused));
+    // Escape closes the menu and hands focus back to the button.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
   }
 

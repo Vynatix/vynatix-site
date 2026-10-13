@@ -37,6 +37,12 @@ highlights the things most worth keeping front-of-mind.
   across every `*.html` file** — there is no template/include system. Any nav,
   logo, footer, or contact-detail change must be made in **all** pages, and
   `aria-current="page"` set on the active link.
+- **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
+  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`), because GitHub Pages
+  serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
+  stylesheet (that is what broke iOS Chrome after the design-system migration). After
+  editing any of the four, run `cd tools && npm run stamp` and commit the pages with
+  the change; `npm run check` fails until you do.
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded — two features
   (theme draw and toggle, mobile nav) and no CDN/animation stack. Nothing on the site
   moves on its own: the system forbids auto-advancing strips and ambient loops.

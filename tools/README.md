@@ -37,6 +37,8 @@ Then, from `tools/`:
 | `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test, plus skip link, the still client list, no-JS and reduced-motion fallbacks |
 | `node verify/theme.js` | The per-visit random colour scheme: the draw is random, stable across pages, the toggle works inside it, no flash, blocked or poisoned storage survived, preloads are used |
 | `node verify/links.js` | Every internal link, script, style and image resolves |
+| `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those four files |
+| `node verify/stale-cache.js` | Self-contained: a browser holding an OLD stylesheet at the plain URL is not paired with the new pages (a control without stamps must break, the stamped pages must not) |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
 | `node verify/screenshot.js baseline` | Capture 9 pages x each theme under test into `baseline/` |
 | `node verify/screenshot.js current` | Capture into `current/` |

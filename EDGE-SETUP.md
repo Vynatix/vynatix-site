@@ -109,6 +109,17 @@ involving visitor requests — it belongs in the privacy notice, and a
 first-party Cloudflare Worker endpoint avoids that entirely. Left out of the
 baseline for that reason.
 
+### Caching
+
+Leave Cloudflare's caching on its defaults (respect the origin's headers, which
+for GitHub Pages is `Cache-Control: max-age=600`). Do not add a cache rule that
+lengthens the lifetime of the HTML pages: a visitor would then keep an old page
+for hours. The four shared files (`tokens.css`, `colors_and_type.css`,
+`styles.css`, `app.js`) are referenced with a content stamp (`?v=1a2b3c4d`, see
+`tools/stamp.js`), so a longer lifetime for those is safe, but the HTML must stay
+short-lived and a deploy that touches them must go through `npm run stamp`.
+If a longer rule is ever added, purge the zone after each deploy.
+
 ## 4. Verify
 
 From any machine, once the proxy is live:

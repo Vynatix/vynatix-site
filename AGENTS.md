@@ -49,7 +49,8 @@ _config.yml         Controls what GitHub Pages publishes (excludes dev docs)
 SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
 CODEOWNERS          Review ownership — not published
 EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
-tools/              Local verification scripts — NOT published, not part of the site
+tools/              Local verification scripts and stamp.js (writes the ?v= version
+                    stamps into the pages) — NOT published, not part of the site
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -83,6 +84,25 @@ There is no `assets/`-level JS or CSS — those folders are static files only.
   scales. New components follow the system's cards (TopAppBar, Button, Card,
   EditorialCard, MetricCard, Banner, FocusRing, Logo); the file's comments
   name which pattern each block implements.
+
+**Version stamps on the four shared files.** Every page loads `tokens.css`,
+`colors_and_type.css`, `styles.css` and `app.js` with a content hash in the URL
+(`styles.css?v=1a2b3c4d`). GitHub Pages serves each file at one fixed URL with
+`Cache-Control: max-age=600`, and nothing makes a browser refetch a stylesheet
+when the page that uses it changes, so after a redesign a phone can hold the new
+HTML beside the old stylesheet (iOS Chrome did exactly that after the
+design-system migration: icons at full width in black, default list bullets, an
+unstyled header). A changed file gets a new URL that no cache has seen, so the
+HTML always names the exact stylesheet it was written for; Pages ignores the
+query string. **After you change any of the four files, run
+`cd tools && npm run stamp` and commit the updated pages with the change.**
+`npm run check` (`node stamp.js --check`) fails until you do, and
+`verify/stale-cache.js` proves, in a browser holding an old copy under the plain
+URL, that the stamped pages still come out right. A new page must load all four
+files; the stamp check fails if it does not. Fonts and images are not stamped:
+their file names change with their content, and `app.js` preloads fonts by the
+plain URL the `@font-face` rule uses, which the two must keep identical to be
+reused.
 
 **Theming.** The design system has three brand directions, each with a light
 and a dark theme, over one set of roles: Forest Heritage (`light`, `dark`),
@@ -247,7 +267,8 @@ add third-party font/CDN requests for fonts.
   both themes. `tools/README.md` documents the repeatable checks — a visual
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
   an off-origin request check (`requests.js`), the random-scheme check
-  (`theme.js`) and the accessibility suite with its contrast sweep
+  (`theme.js`), the version-stamp check (`stamp.js --check`) and its stale-cache
+  proof (`stale-cache.js`), and the accessibility suite with its contrast sweep
   (`a11y.js`). Because every visit draws its own scheme, the checks that need a
   particular theme pin it first (`pinTheme` in `tools/verify/_common.js` sets
   both storage keys). Before changing a component, sweep all six themes:
@@ -255,8 +276,9 @@ add third-party font/CDN requests for fonts.
 - **Re-syncing the design system.** When the system changes, copy its
   `project/colors_and_type.css` over the local one as is, and its
   `project/tokens.css` over the local one keeping the local `@font-face`
-  block; then regenerate any font, icon or logo files that changed and run the
-  checks. Never edit those two files for a site-specific need: that belongs in
+  block; then regenerate any font, icon or logo files that changed, run
+  `npm run stamp` in `tools/` (the pages' version stamps follow the files) and
+  run the checks. Never edit those two files for a site-specific need: that belongs in
   `styles.css`.
 - Match the surrounding style: 2-space indentation, the existing comment voice
   (explanatory, full sentences), and the token-first approach.

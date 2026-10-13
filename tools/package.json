@@ -1,7 +1,7 @@
 {
   "name": "vynatix-site-verify",
   "private": true,
-  "description": "Local verification scripts for the Vynatix site. Not part of the site build; excluded from the published output by _config.yml.",
+  "description": "Local verification scripts and the version-stamp writer for the Vynatix site. Not part of the site build; excluded from the published output by _config.yml.",
   "scripts": {
     "check": "node stamp.js --check && node verify/links.js && node verify/requests.js && node verify/adversarial.js && node verify/theme.js && node verify/stale-cache.js && node verify/a11y.js",
     "shots": "node verify/screenshot.js current && node verify/screenshot.js compare",

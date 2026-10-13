@@ -13,8 +13,9 @@ highlights the things most worth keeping front-of-mind.
   consultancy). Nine pages. No framework, no build step, no package manager for
   the site — what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
-  docs and `tools/` are excluded. `tools/` is the one npm-using exception and is
-  local verification tooling only, never site content.
+  docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
+  verification tooling plus `stamp.js` (see the stamps bullet), never site content and
+  never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
   `colors_and_type.css` (the system's helpers and components, verbatim), then
@@ -40,9 +41,11 @@ highlights the things most worth keeping front-of-mind.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`), because GitHub Pages
   serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
-  stylesheet (that is what broke iOS Chrome after the design-system migration). After
+  stylesheet (that is what broke iOS Chrome after the design-system migration). The stamps
+  protect the visitor's browser cache; GitHub's CDN ignores the query string. After
   editing any of the four, run `cd tools && npm run stamp` and commit the pages with
-  the change; `npm run check` fails until you do.
+  the change; `npm run check` fails until you do. Fonts and images are not stamped
+  (rename one if a stale copy would show).
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded — two features
   (theme draw and toggle, mobile nav) and no CDN/animation stack. Nothing on the site
   moves on its own: the system forbids auto-advancing strips and ambient loops.

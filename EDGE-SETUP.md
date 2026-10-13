@@ -111,14 +111,22 @@ baseline for that reason.
 
 ### Caching
 
-Leave Cloudflare's caching on its defaults (respect the origin's headers, which
-for GitHub Pages is `Cache-Control: max-age=600`). Do not add a cache rule that
-lengthens the lifetime of the HTML pages: a visitor would then keep an old page
-for hours. The four shared files (`tokens.css`, `colors_and_type.css`,
-`styles.css`, `app.js`) are referenced with a content stamp (`?v=1a2b3c4d`, see
-`tools/stamp.js`), so a longer lifetime for those is safe, but the HTML must stay
-short-lived and a deploy that touches them must go through `npm run stamp`.
-If a longer rule is ever added, purge the zone after each deploy.
+Know what the proxy does to cache lifetimes before enabling it. GitHub Pages sends
+`Cache-Control: max-age=600` on every file. For the file types Cloudflare caches
+by default (stylesheets, scripts, images, fonts), its Browser Cache TTL defaults
+to 4 hours and raises a shorter origin value, while the HTML pages are not cached
+by default and keep the 600 seconds. That is the same gap that mixed new pages with
+old stylesheets for a visitor: assets outlive the page that uses them.
+
+The four shared files (`tokens.css`, `colors_and_type.css`, `styles.css`,
+`app.js`) are referenced with a content stamp (`?v=1a2b3c4d`, see `tools/stamp.js`),
+so a long lifetime is safe for them in browsers. Fonts and images are not stamped,
+so either set **Caching → Configuration → Browser Cache TTL** to *Respect Existing
+Headers* or accept that a replaced font or photo can stay stale in a browser for
+up to 4 hours. Either way, do not add a rule that lengthens the lifetime of the
+HTML pages, and purge the zone after a deploy if any caching rule is added.
+Check what a visitor receives with
+`curl -sSI https://vynatix.com/styles.css | grep -i cache-control`.
 
 ## 4. Verify
 

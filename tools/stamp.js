@@ -8,8 +8,19 @@
 // black, lists get default bullets, the header loses its layout. (That is
 // exactly what iOS Chrome showed after the design-system migration.) Putting a
 // short hash of each file's content in the URL (styles.css?v=1a2b3c4d) makes the
-// html name the exact stylesheet it was written for: a changed file is a new
-// URL, which no cache has ever seen. GitHub Pages ignores the query string.
+// html name the exact stylesheet it was written for: a changed file is a URL the
+// visitor's browser has never cached.
+//
+// What this does NOT cover. GitHub's CDN ignores the query string (it keys on the
+// path), so it can still answer a new stamp with the previous bytes until its own
+// copy is replaced; a deploy replaces it, and the html it serves is the same age.
+// And the opposite pairing, an OLD html page next to the NEW stylesheet, cannot be
+// fixed on a host that keeps one file per path. Fonts and images are not stamped
+// either: they are replaced in place under fixed names, and app.js preloads fonts
+// by the plain URL the @font-face rule uses, which the two must keep identical to
+// be reused. If a font or image ever changes in a way a stale copy would make
+// visible (glyph coverage, metrics, a different picture), give it a new file name
+// and change it in tokens.css and in app.js's DISPLAY_FACES together.
 //
 // Usage, from tools/:
 //   node stamp.js           rewrite the stamps in every root *.html page
@@ -17,10 +28,6 @@
 //
 // Run it after any change to one of the four files, then commit the pages with
 // the change. `npm run check` fails until you do.
-//
-// Fonts and images are not stamped: their file names change when their content
-// does, and app.js preloads fonts by their plain URL, which has to match the
-// @font-face URL in tokens.css exactly to be reused.
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +47,12 @@ const escaped = ASSETS.map((a) => a.replace(/\./g, '\\.')).join('|');
 // href="styles.css" or href="styles.css?v=abc123", on a <link> or a <script src>.
 const REF = new RegExp(`((?:href|src)=")(${escaped})(\\?v=[0-9a-f]*)?(")`, 'g');
 
-const check = process.argv.includes('--check');
+const args = process.argv.slice(2);
+if (args.some((a) => a !== '--check')) {
+  console.error('usage: node stamp.js [--check]');
+  process.exit(2);
+}
+const check = args.includes('--check');
 const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
 let problems = 0;
 let changed = 0;

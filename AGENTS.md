@@ -92,17 +92,28 @@ There is no `assets/`-level JS or CSS — those folders are static files only.
 when the page that uses it changes, so after a redesign a phone can hold the new
 HTML beside the old stylesheet (iOS Chrome did exactly that after the
 design-system migration: icons at full width in black, default list bullets, an
-unstyled header). A changed file gets a new URL that no cache has seen, so the
-HTML always names the exact stylesheet it was written for; Pages ignores the
-query string. **After you change any of the four files, run
-`cd tools && npm run stamp` and commit the updated pages with the change.**
-`npm run check` (`node stamp.js --check`) fails until you do, and
-`verify/stale-cache.js` proves, in a browser holding an old copy under the plain
-URL, that the stamped pages still come out right. A new page must load all four
-files; the stamp check fails if it does not. Fonts and images are not stamped:
-their file names change with their content, and `app.js` preloads fonts by the
-plain URL the `@font-face` rule uses, which the two must keep identical to be
-reused.
+unstyled header). A changed file gets a URL the visitor's browser has never
+cached, so the HTML names the exact stylesheet it was written for. **After you
+change any of the four files, run `cd tools && npm run stamp` and commit the
+updated pages with the change.** `npm run check` (`node stamp.js --check`) fails
+until you do, and `verify/stale-cache.js` proves, in a browser holding an old
+copy of all four files under the plain URLs, that the stamped pages still come
+out right (`ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the
+engine iOS Chrome uses). A new page must load all four files; the stamp check
+fails if it does not.
+
+What the stamps do not cover: GitHub's CDN ignores the query string, so it can
+answer a new stamp with the previous bytes until a deploy replaces its copy (the
+stamps protect the visitor's browser, not the CDN); and an old HTML page cached
+next to the new stylesheet cannot be helped on a host that keeps one file per
+path. Fonts and images are not stamped. They are replaced in place under fixed
+names, and `app.js` preloads fonts by the plain URL the `@font-face` rule uses,
+which the two must keep identical to be reused. If a font or image changes in a
+way a stale copy would make visible (glyph coverage, metrics, a different
+picture), give it a new file name and change it in `tokens.css` and in
+`DISPLAY_FACES` in `app.js` together. (The redesign changed Instrument Serif, the
+app icons, the favicon and the manifest in place; that was checked and is
+harmless.)
 
 **Theming.** The design system has three brand directions, each with a light
 and a dark theme, over one set of roles: Forest Heritage (`light`, `dark`),
@@ -257,10 +268,12 @@ add third-party font/CDN requests for fonts.
   (`python3 -m http.server`) so relative paths and `fetch` behave. There is no
   dev server, hot reload, or watch task.
 - **The site has no build step** — no framework, bundler, or package manager,
-  and what is in the repo ships verbatim. The one exception is `tools/`, which
-  holds optional local verification scripts (Playwright). They are developer
-  tooling only: excluded from the published output in `_config.yml`, with their
-  `node_modules/` gitignored. The site itself stays hand-written.
+  and what is in the repo ships verbatim. The one exception is `tools/`: the
+  optional local verification scripts (Playwright) and `stamp.js`, which writes
+  the version stamps into the pages and which you run before committing a change
+  to any of the four shared files. It is developer tooling only: excluded from
+  the published output in `_config.yml`, with its `node_modules/` gitignored, and
+  nothing in it runs at deploy time. The site itself stays hand-written.
 - **"Passing" means:** the pages render correctly in light and dark, nav/footer
   are consistent across pages, behaviour degrades gracefully with JS off and
   reduced motion on, and there are no console errors. Check changes visually in

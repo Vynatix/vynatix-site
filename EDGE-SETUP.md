@@ -109,6 +109,25 @@ involving visitor requests — it belongs in the privacy notice, and a
 first-party Cloudflare Worker endpoint avoids that entirely. Left out of the
 baseline for that reason.
 
+### Caching
+
+Know what the proxy does to cache lifetimes before enabling it. GitHub Pages sends
+`Cache-Control: max-age=600` on every file. For the file types Cloudflare caches
+by default (stylesheets, scripts, images, fonts), its Browser Cache TTL defaults
+to 4 hours and raises a shorter origin value, while the HTML pages are not cached
+by default and keep the 600 seconds. That is the same gap that mixed new pages with
+old stylesheets for a visitor: assets outlive the page that uses them.
+
+The four shared files (`tokens.css`, `colors_and_type.css`, `styles.css`,
+`app.js`) are referenced with a content stamp (`?v=1a2b3c4d`, see `tools/stamp.js`),
+so a long lifetime is safe for them in browsers. Fonts and images are not stamped,
+so either set **Caching → Configuration → Browser Cache TTL** to *Respect Existing
+Headers* or accept that a replaced font or photo can stay stale in a browser for
+up to 4 hours. Either way, do not add a rule that lengthens the lifetime of the
+HTML pages, and purge the zone after a deploy if any caching rule is added.
+Check what a visitor receives with
+`curl -sSI https://vynatix.com/styles.css | grep -i cache-control`.
+
 ## 4. Verify
 
 From any machine, once the proxy is live:

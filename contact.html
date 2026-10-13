@@ -11,7 +11,8 @@
 <meta name="description" content="Senior engineers, embedded when you need them. We reply to inbound within one working day. One inbox, front.disk@vynatix.com, sorted by subject line: Project or Membership.">
 <!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
      colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
-     The theme is data-theme on <html>: light or dark (Forest), teal-light/teal-dark, mono-light/mono-dark. -->
+     The markup names the Forest light theme, which is what a visitor without JavaScript
+     sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
@@ -21,10 +22,14 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
-     localStorage, not the OS preference, so a media-gated value would contradict
-     the rendered page. -->
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
 <meta name="theme-color" content="#EFE8DA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="app.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -169,6 +174,5 @@
   </footer>
 
 </div>
-<script src="app.js" defer></script>
 </body>
 </html>

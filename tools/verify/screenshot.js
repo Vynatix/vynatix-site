@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { PAGES, BASE, THEMES, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
@@ -21,10 +21,9 @@ async function capture() {
     for (const theme of THEMES) {
       const ctx = await browser.newContext({ viewport: VIEWPORT });
       const page = await ctx.newPage();
-      // Pin the theme before first paint so we never capture a mid-toggle frame.
-      await page.addInitScript((t) => {
-        try { localStorage.setItem('vynatix-theme', t); } catch (e) { /* no-op */ }
-      }, theme);
+      // Pin the theme before first paint (the site otherwise draws a colour scheme at
+      // random per visit) so every capture is the same theme, never a mid-toggle frame.
+      await page.addInitScript(pinTheme, theme);
       await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
       await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
       // Force every image to load and decode before capturing. fullPage grows the

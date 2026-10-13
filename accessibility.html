@@ -11,7 +11,8 @@
 <meta name="description" content="We aim for WCAG 2.2 Level AA on vynatix.com. What is in place, how we test it, and what we have not independently verified.">
 <!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
      colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
-     The theme is data-theme on <html>: light or dark (Forest), teal-light/teal-dark, mono-light/mono-dark. -->
+     The markup names the Forest light theme, which is what a visitor without JavaScript
+     sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
@@ -21,10 +22,14 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
-     localStorage, not the OS preference, so a media-gated value would contradict
-     the rendered page. -->
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
 <meta name="theme-color" content="#EFE8DA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="app.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -96,13 +101,13 @@
             <li>Every control is <strong>reachable and operable by keyboard</strong>, with a visible focus indicator.</li>
             <li>The client list on the home page is a <strong>plain, still list</strong>: nothing on the site moves on its own.</li>
             <li>The only motion is short transitions on hover and focus, and <strong>prefers-reduced-motion</strong> removes them.</li>
-            <li>Text meets the <strong>AA contrast ratio</strong> in both the light and dark themes.</li>
+            <li>Text meets the <strong>AA contrast ratio</strong> in every colour scheme the site can show: it draws one of three at random for each visit, and each has a light and a dark theme.</li>
             <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the two controls that need JavaScript, the menu button and the theme toggle, are hidden rather than left sitting dead. Without JavaScript the theme follows the page default.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
           </ul>
 
           <h2>How we check</h2>
-          <p>Every page is scanned with axe-core against the WCAG 2.0, 2.1 and 2.2 A and AA rule sets, in both themes, and the build is checked with JavaScript disabled and with reduced motion enabled. At the last check, all pages passed with no violations.</p>
+          <p>Every page is scanned with axe-core against the WCAG 2.0, 2.1 and 2.2 A and AA rule sets in all six themes (three colour schemes, each light and dark), every visible line of text is measured for contrast in each, and the build is checked with JavaScript disabled and with reduced motion enabled. At the last check, all pages passed with no violations.</p>
 
           <h2>What we have not verified</h2>
           <p>We want to be straightforward about the limits of that:</p>
@@ -173,6 +178,5 @@
   </footer>
 
 </div>
-<script src="app.js" defer></script>
 </body>
 </html>

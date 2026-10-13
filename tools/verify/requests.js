@@ -1,7 +1,7 @@
 // Asserts the site makes ZERO off-origin requests, that the self-hosted fonts
 // actually resolve, and that no CSP violation fires — on every page, in every
 // theme under test (THEMES, default light,dark).
-const { PAGES, BASE, THEMES, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
 
 // The faces the design system sets per direction: Forest renders in Fraunces
 // and Aptos with Geist eyebrows, Teal in Instrument Serif and Geist,
@@ -29,12 +29,12 @@ function requiredFaces(theme) {
     page.on('console', (m) => {
       if (/Content Security Policy|Refused to/i.test(m.text())) cspViolations.push(m.text());
     });
-    await page.addInitScript((t) => {
+    await page.addInitScript(() => {
       window.__csp = [];
       document.addEventListener('securitypolicyviolation',
         (e) => window.__csp.push(`${e.effectiveDirective} -> ${e.blockedURI}`));
-      try { localStorage.setItem('vynatix-theme', t); } catch (e) { /* no-op */ }
-    }, theme);
+    });
+    await page.addInitScript(pinTheme, theme);
 
     await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }).catch((e) => failed.push('goto: ' + e.message));
 

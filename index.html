@@ -11,11 +11,8 @@
 <meta name="description" content="A small team of senior engineers in Gothenburg, embedded with Volvo Trucks and Volvo Cars on in-car software, build pipelines and cloud platforms. Working since 2023.">
 <!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
      colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
-     The theme is data-theme on <html>: light or dark (Forest), teal-light/teal-dark, mono-light/mono-dark. -->
-<!-- Preload the display face and its italic: the hero headline sets a line in each, so neither
-     line is blocked on a late font fetch. -->
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-variable-latin.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-italic-variable-latin.woff2">
+     The markup names the Forest light theme, which is what a visitor without JavaScript
+     sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="colors_and_type.css">
 <link rel="stylesheet" href="styles.css">
@@ -25,10 +22,14 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<!-- Kept in sync with data-theme by app.js: the theme follows the toggle and
-     localStorage, not the OS preference, so a media-gated value would contradict
-     the rendered page. -->
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
 <meta name="theme-color" content="#EFE8DA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="app.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -408,6 +409,5 @@
   </footer>
 
 </div>
-<script src="app.js" defer></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 //
 // Framing/clickjacking is deliberately absent: `frame-ancestors` cannot be
 // expressed in a meta CSP at all, so it is an edge-layer control and is
-// asserted by headers.js instead. Two of the checks below (localStorage
+// asserted by headers.js instead. Two of the checks below (storage
 // poisoning and URL reflection) pass because app.js has no reflective sink,
 // not because the CSP blocks them — they guard against a future regression.
 const { BASE, ALL_THEMES, launch } = require('./_common');
@@ -79,18 +79,23 @@ const { BASE, ALL_THEMES, launch } = require('./_common');
   record('CSP blocks injected inline <style>', styleApplied === false,
     styleApplied ? "style-src still allows 'unsafe-inline'" : 'strict style-src active');
 
-  // 6. Poisoned theme value must be rejected, not reflected into the DOM.
-  await page.evaluate(() => localStorage.setItem('vynatix-theme', '"><img src=x onerror=window.__xss=1>'));
+  // 6. Poisoned stored values (the light/dark choice and the drawn colour scheme)
+  //    must be rejected, not reflected into the DOM.
+  await page.evaluate(() => {
+    localStorage.setItem('vynatix-theme', '"><img src=x onerror=window.__xss=1>');
+    sessionStorage.setItem('vynatix-look', '"><img src=x onerror=window.__xss=2>');
+  });
   await page.reload({ waitUntil: 'domcontentloaded' });
   const poison = await page.evaluate(() => ({
     theme: document.documentElement.getAttribute('data-theme'),
+    look: sessionStorage.getItem('vynatix-look'),
     xss: window.__xss || false,
     node: !!document.querySelector('img[src="x"]'),
   }));
-  record('localStorage poisoning rejected',
-    ALL_THEMES.includes(poison.theme) && !poison.xss && !poison.node,
+  record('storage poisoning rejected',
+    ALL_THEMES.includes(poison.theme) && ['forest', 'teal', 'mono'].includes(poison.look) && !poison.xss && !poison.node,
     JSON.stringify(poison));
-  await page.evaluate(() => localStorage.removeItem('vynatix-theme'));
+  await page.evaluate(() => { localStorage.removeItem('vynatix-theme'); sessionStorage.removeItem('vynatix-look'); });
 
   // 7. URL fragment/query payloads must never become DOM nodes.
   await page.goto(BASE + 'index.html#"><img src=x onerror=window.__u1=1>', { waitUntil: 'domcontentloaded' });

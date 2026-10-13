@@ -3,7 +3,7 @@
 // still client list, the no-JS and reduced-motion fallbacks, and an
 // independent contrast sweep.
 const fs = require('fs');
-const { PAGES, BASE, THEMES, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
 
 (async () => {
@@ -18,7 +18,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
       const ctx = await browser.newContext({ bypassCSP: true });
       const page = await ctx.newPage();
-      await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
+      await page.addInitScript(pinTheme, theme);
       await page.goto(BASE + p, { waitUntil: 'load' });
       await page.addScriptTag({ content: axeSrc });
       const res = await page.evaluate(async () => await window.axe.run(document, {
@@ -145,7 +145,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
     const failures = [];
     for (const pg of PAGES) {
       for (const theme of THEMES) {
-        await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
+        await page.addInitScript(pinTheme, theme);
         await page.goto(BASE + pg, { waitUntil: 'load' });
         const bad = await page.evaluate(() => {
           const lum = (rgb) => {

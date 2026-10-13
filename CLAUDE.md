@@ -22,17 +22,23 @@ highlights the things most worth keeping front-of-mind.
   (`var(--md-sys-color-primary)`, `var(--text-muted)`, `var(--space-6)`): no raw
   hex, no palette tokens, no `[data-theme]` selectors, so every rule holds in all
   six themes. **No inline `style=""`** — the CSP pins `style-src 'self'`.
-- **Six themes, Forest shipped.** `<html data-theme="light">`; `app.js` flips
-  light/dark within the direction and persists `vynatix-theme`. The inverse
-  bands (CTA band, editorial band, footer) are light in the dark themes by
-  design. Test changes in both Forest themes, and sweep all six before touching
-  a component (`THEMES=…` on the check scripts).
+- **Six themes, one drawn at random per visit.** `app.js` loads in the `<head>`
+  (no `defer`, so there is no flash) and draws Forest, Teal or Monochrome once
+  per visit, kept in `sessionStorage` (`vynatix-look`); light or dark follows the
+  toggle (`localStorage`, `vynatix-theme`) or the system preference, and the
+  toggle flips within the drawn direction. Blocked storage or no JS means
+  Forest. The markup's `<html data-theme="light">` is the no-JS default. The
+  inverse bands (CTA band, editorial band, footer) are light in the dark themes
+  by design. Because the theme is random, any check that needs one pins it with
+  `pinTheme` (`tools/verify/_common.js`), and a component change has to hold in
+  all six (`THEMES=…` on the check scripts). Logo files, favicon, app icons and
+  manifest colours stay Forest.
 - **Header and footer (and the inline wordmark `<symbol>`) are duplicated
   across every `*.html` file** — there is no template/include system. Any nav,
   logo, footer, or contact-detail change must be made in **all** pages, and
   `aria-current="page"` set on the active link.
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded — two features
-  (theme toggle, mobile nav) and no CDN/animation stack. Nothing on the site
+  (theme draw and toggle, mobile nav) and no CDN/animation stack. Nothing on the site
   moves on its own: the system forbids auto-advancing strips and ambient loops.
   The CSP pins `script-src 'self'`, so adding any third-party script means
   widening the CSP in **all nine pages** first.

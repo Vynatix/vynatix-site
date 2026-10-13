@@ -85,16 +85,35 @@ There is no `assets/`-level JS or CSS — those folders are static files only.
   name which pattern each block implements.
 
 **Theming.** The design system has three brand directions, each with a light
-and a dark theme, over one set of roles: Forest Heritage (`light`, `dark`,
-the default), Transformative Teal (`teal-light`, `teal-dark`) and Stockholm
-Monochrome (`mono-light`, `mono-dark`). The site ships Forest:
-`<html data-theme="light">` on every page. `app.js` flips between the light
-and dark theme of the page's direction and persists the full theme id to
-`localStorage` (`vynatix-theme`), reading back only its light/dark half. To
-move the site to another direction, change `data-theme` on `<html>` in all
-nine pages (the toggle follows), then update the static
-`<meta name="theme-color">`, `site.webmanifest` colours, the favicon and app
-icon inks, and the logo files in `assets/`, which are all Forest today.
+and a dark theme, over one set of roles: Forest Heritage (`light`, `dark`),
+Transformative Teal (`teal-light`, `teal-dark`) and Stockholm Monochrome
+(`mono-light`, `mono-dark`). **The site draws one direction at random for each
+visit.** `app.js` is loaded in the `<head>`, without `defer`, so its first
+block runs before the body exists and sets `data-theme` (and `theme-color`)
+before anything paints; the CSP rules out an inline script, so a small blocking
+first-party file is the way to avoid a flash of the wrong theme. The rules:
+
+- The draw (`forest`, `teal` or `mono`, equal odds) is kept in `sessionStorage`
+  under `vynatix-look`, so every page of the visit matches; a new tab or a
+  later visit draws again. A stored value that is not one of the three is
+  discarded.
+- Light or dark is not random. It follows the visitor's toggle choice
+  (`localStorage`, `vynatix-theme`, whose full theme id is stored but only its
+  light/dark half is read) and, without one, `prefers-color-scheme`.
+- The toggle flips light and dark inside the direction the visit drew.
+- If storage is blocked the draw cannot be kept, so the page stays on Forest
+  rather than re-drawing on every navigation. Without JavaScript the markup's
+  own `<html data-theme="light">` (Forest light) is what shows.
+- On the home page `app.js` also preloads the headline faces of the drawn
+  direction (`DISPLAY_FACES`), so the hero is not blocked on a late font fetch.
+  Other pages add no preloads.
+
+To pin the site to one direction, replace `pickLook()`'s body with
+`return 'forest';` (or `'teal'`, `'mono'`); to draw on every page load instead
+of every visit, skip the `sessionStorage` read there. Everything that is
+Forest-only stays Forest whatever is drawn: the logo files in `assets/`, the
+favicon and app icons, the manifest colours and the markup's default
+`theme-color`. The inline wordmark and every page colour follow the theme.
 Each dark theme is a parallel environment, not an inverted light one: the
 inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit
 on `md-sys-color-inverse-surface`, which is light in the dark themes.
@@ -109,9 +128,10 @@ Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
-guarded so a missing element is a no-op. Every page loads `app.js` (deferred),
-and `app.js` is the **only** script — there is no CDN or animation stack. It
-has two features: the theme toggle and the mobile nav. Nothing on the site
+guarded so a missing element is a no-op. Every page loads `app.js` from the
+`<head>`, and `app.js` is the **only** script — there is no CDN or animation stack. It
+has two features: the theme (the per-visit draw and the toggle) and the
+mobile nav. Nothing on the site
 moves on its own: the design system forbids auto-advancing strips and
 ambient loops on content surfaces, so the former client marquee is now a
 still list (`.clients__list`) and the former case reel is a grid of cards.
@@ -201,8 +221,9 @@ Forest renders in Fraunces (display, editorial), Aptos (body) and Geist
 (eyebrows, the system voice); Teal would use Instrument Serif and Geist,
 Monochrome Geist, and `code` is JetBrains Mono in every theme, so all of those
 faces ship (a browser fetches only the ones a page uses). The home page
-preloads the Fraunces upright and italic Latin files, one for each line of
-the hero headline. Instrument Serif and JetBrains
+preloads the drawn direction's display face and its italic (Fraunces for
+Forest, Instrument Serif for Teal, Geist and Fraunces italic for Monochrome),
+one for each line of the hero headline. Instrument Serif and JetBrains
 Mono are SIL Open Font License fonts (`fonts/licences/`), Fraunces and Geist
 too. **Aptos is Microsoft's typeface**: the design system itself says to check
 its terms before shipping it outside Vynatix's own documents, and that check
@@ -225,9 +246,12 @@ add third-party font/CDN requests for fonts.
   reduced motion on, and there are no console errors. Check changes visually in
   both themes. `tools/README.md` documents the repeatable checks — a visual
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
-  an off-origin request check (`requests.js`) and the accessibility suite with
-  its contrast sweep (`a11y.js`). Before changing a component, sweep all six
-  themes: `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`.
+  an off-origin request check (`requests.js`), the random-scheme check
+  (`theme.js`) and the accessibility suite with its contrast sweep
+  (`a11y.js`). Because every visit draws its own scheme, the checks that need a
+  particular theme pin it first (`pinTheme` in `tools/verify/_common.js` sets
+  both storage keys). Before changing a component, sweep all six themes:
+  `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`.
 - **Re-syncing the design system.** When the system changes, copy its
   `project/colors_and_type.css` over the local one as is, and its
   `project/tokens.css` over the local one keeping the local `@font-face`

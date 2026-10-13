@@ -18,6 +18,19 @@ for (const t of THEMES) {
   if (!ALL_THEMES.includes(t)) { console.error(`Unknown theme "${t}" (expected one of ${ALL_THEMES.join(', ')})`); process.exit(2); }
 }
 
+// The site draws one of three colour schemes at random per visit (sessionStorage
+// "vynatix-look") and takes light or dark from the visitor's choice (localStorage
+// "vynatix-theme"). A check that needs a particular theme has to set both before
+// the page loads: pass this to page.addInitScript(pinTheme, themeId). It is
+// serialised into the page, so it must stay self-contained.
+function pinTheme(theme) {
+  try {
+    var m = /^(teal|mono)-/.exec(theme);
+    localStorage.setItem('vynatix-theme', theme);
+    sessionStorage.setItem('vynatix-look', m ? m[1] : 'forest');
+  } catch (e) { /* storage blocked: the page falls back to Forest */ }
+}
+
 // Chromium lives in a versioned directory; find it rather than pinning a version.
 function chromePath() {
   if (process.env.CHROME) return process.env.CHROME;
@@ -38,4 +51,4 @@ async function launch() {
   return chromium.launch(executablePath ? { executablePath } : {});
 }
 
-module.exports = { PAGES, BASE, THEMES, ALL_THEMES, launch, chromePath };
+module.exports = { PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath };

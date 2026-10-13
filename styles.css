@@ -285,6 +285,11 @@ h1 em, h2 em {
   .site-header__list { flex-wrap: wrap; gap: var(--space-1) var(--space-5); }
 
   .js-nav .site-header__inner { flex-wrap: nowrap; }
+  /* With the menu collapsed nothing pushes the tools to the right (the nav's
+     auto margin went with it), so the bar would spread logo, tools and menu
+     button evenly and leave the theme toggle floating mid-bar. The tools take
+     the free space themselves and sit beside the menu button. */
+  .js-nav .site-header__tools { margin-inline-start: auto; }
   .js-nav .site-header__nav {
     display: none;
     order: 0;

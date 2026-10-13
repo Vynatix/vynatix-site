@@ -42,6 +42,7 @@ Then, from `tools/`:
 | `node verify/links.js` | Every internal link, script, style and image resolves |
 | `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those four files |
 | `node verify/stale-cache.js` | Self-contained: a browser holding OLD copies of the four shared files at the plain URLs is not paired with the new pages (a control without stamps must break for the intended reason, the stamped pages must fetch every file under its stamp and show nothing of the old build). `ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the engine iOS Chrome uses (needs `npx playwright install webkit`) |
+| `node verify/header.js` | Header layout at 11 widths from 320 to 1280 px: logo at the left, the tools (theme toggle, button) packed beside the menu button on narrow screens or at the right edge on wide ones, nothing floating mid-bar or overlapping |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
 | `node verify/screenshot.js baseline` | Capture 9 pages x each theme under test into `baseline/` |
 | `node verify/screenshot.js current` | Capture into `current/` |

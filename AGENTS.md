@@ -182,21 +182,27 @@ on a Forest field; `favicon.ico` is the Forest mark on transparent;
 were rendered offline through Chromium from the mark files. If the mark or the
 direction changes, regenerate all five.
 
-**Fonts** are self-hosted woff2 subsets (Latin and Latin Extended, every
-OpenType feature and variable axis kept) made from the design system's TTF
-files with fontTools:
+**Fonts** are self-hosted woff2 subsets made from the design system's TTF
+files with fontTools, every OpenType feature and variable axis kept. Each face
+is split into a Latin file (Swedish included) and a Latin Extended file,
+declared with `unicode-range` in `tokens.css`, so a page fetches the second only
+when its text needs it:
 
 ```sh
-pyftsubset Fraunces-VariableFont_SOFT_WONK_opsz_wght.ttf \
-  --unicodes="U+0000-024F,U+0259,U+0300-0301,U+0304,U+0308,U+0329,U+1E00-1EFF,U+2000-206F,U+20A0-20CF,U+2122,U+2190-2199,U+2212,U+2215,U+FEFF,U+FFFD" \
-  --layout-features='*' --flavor=woff2 --output-file=fraunces-variable.woff2
+pyftsubset Fraunces-VariableFont_SOFT_WONK_opsz_wght.ttf --layout-features='*' --flavor=woff2 \
+  --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD" \
+  --output-file=fraunces-variable-latin.woff2
+pyftsubset Fraunces-VariableFont_SOFT_WONK_opsz_wght.ttf --layout-features='*' --flavor=woff2 \
+  --unicodes="U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF" \
+  --output-file=fraunces-variable-latin-ext.woff2
 ```
 
 Forest renders in Fraunces (display, editorial), Aptos (body) and Geist
 (eyebrows, the system voice); Teal would use Instrument Serif and Geist,
 Monochrome Geist, and `code` is JetBrains Mono in every theme, so all of those
 faces ship (a browser fetches only the ones a page uses). The home page
-preloads the Fraunces upright face for the hero. Instrument Serif and JetBrains
+preloads the Fraunces upright and italic Latin files, one for each line of
+the hero headline. Instrument Serif and JetBrains
 Mono are SIL Open Font License fonts (`fonts/licences/`), Fraunces and Geist
 too. **Aptos is Microsoft's typeface**: the design system itself says to check
 its terms before shipping it outside Vynatix's own documents, and that check

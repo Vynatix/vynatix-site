@@ -42,10 +42,9 @@
     // Keep the browser chrome colour matching what is actually rendered.
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', canvasColour(theme));
-    if (button) {
-      button.setAttribute('aria-label', isDark(theme) ? 'Switch to light theme' : 'Switch to dark theme');
-      button.setAttribute('aria-pressed', String(isDark(theme)));
-    }
+    // The button keeps one name ("Dark theme") and aria-pressed carries the
+    // state, so the two never contradict each other in an announcement.
+    if (button) button.setAttribute('aria-pressed', String(isDark(theme)));
   }
 
   function preferredTheme() {

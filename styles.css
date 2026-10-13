@@ -26,7 +26,6 @@
 /* ---------------------------------------------------------------
    Document
    --------------------------------------------------------------- */
-html, body { overflow-x: hidden; }
 #app {
   min-height: 100vh;
   display: flex;
@@ -107,13 +106,16 @@ h1 em, h2 em {
 
 /* Read-more link: underlined words, then an icon (the kit's .more). */
 .more {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
+  display: inline-block;
   font-size: var(--text-body-sm);
   font-weight: 600;
   color: var(--md-sys-color-primary);
   text-decoration: none;
+}
+.more > .icon {
+  display: inline-block;
+  vertical-align: -0.15em;
+  margin-inline-start: var(--space-1);
 }
 .more > span:first-child {
   text-decoration: underline;
@@ -258,8 +260,10 @@ h1 em, h2 em {
 .theme-toggle[aria-pressed="true"] .icon--light { display: block; }
 
 /* Menu button: hidden until app.js can make it work (.js-nav), and only on
-   the narrow layout. */
-.mobile-toggle { display: none; }
+   the narrow layout. In the markup it comes right before the nav it opens, so
+   the open menu follows it in the tab order (the disclosure pattern); flex
+   order places it at the end of the bar. */
+.mobile-toggle { display: none; order: 10; }
 .mobile-toggle .icon--close { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--menu { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--close { display: block; }
@@ -270,6 +274,7 @@ h1 em, h2 em {
      own row under the bar. app.js adds .js-nav to <html> to opt into the
      collapsible menu. */
   .site-header__inner { flex-wrap: wrap; }
+  :root:not(.js-nav) .site-header { position: static; }
   .site-header__nav {
     order: 3;
     width: 100%;
@@ -521,11 +526,13 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 }
 .band--inset .section__head { margin-bottom: 0; }
 .band--inset + .band--inset { margin-top: var(--space-6); }
+.section--surface + .band--inset { margin-top: var(--space-24); }
 @media (max-width: 904px) {
   .band--inset { width: calc(100% - 2 * var(--space-4)); padding: var(--space-16) var(--space-8); }
 }
 @media (max-width: 599px) {
   .band--inset { padding: var(--space-12) var(--space-6); }
+  .section--surface + .band--inset { margin-top: var(--space-16); }
 }
 
 /* Two-up editorial: considered writing beside its evidence. */
@@ -653,7 +660,9 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   gap: var(--space-3);
   padding: var(--space-6);
 }
-.case__meta {
+.case .case__meta {
+  margin: 0;
+  max-width: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -667,6 +676,8 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   color: var(--text-accent);
 }
 .case h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: var(--text-h5);
   line-height: 1.18;
   letter-spacing: var(--tracking-headline);
@@ -722,6 +733,7 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-5);
 }
+.metrics--2 { grid-template-columns: repeat(2, 1fr); }
 .metrics--3 { grid-template-columns: repeat(3, 1fr); }
 .metric {
   padding: var(--space-6);
@@ -750,7 +762,6 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   color: var(--text-display);
   margin: var(--space-3) 0 var(--space-2);
 }
-.metric__val--sm { font-size: var(--text-h4); }
 .metric__ctx {
   margin: 0;
   max-width: none;
@@ -766,11 +777,13 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 @media (max-width: 904px) {
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .metrics--3 { grid-template-columns: 1fr; }
+  .two-up .metrics--2 { grid-template-columns: repeat(2, 1fr); }
   .two-up .metrics--3 { grid-template-columns: repeat(3, 1fr); }
   .two-up .metric__val { font-size: var(--text-h3); }
 }
 @media (max-width: 599px) {
   .metrics,
+  .two-up .metrics--2,
   .two-up .metrics--3 { grid-template-columns: 1fr; }
 }
 
@@ -903,6 +916,7 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
    the subheading size for a document rather than a landing page.
    --------------------------------------------------------------- */
 .legal { max-width: var(--container-max-content); }
+.legal ul > li { max-width: 65ch; }
 .legal h2 {
   font-size: var(--text-h4);
   line-height: var(--leading-headline);

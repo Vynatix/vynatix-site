@@ -1,48 +1,132 @@
-// Theme toggle — light/dark, persisted, respects OS preference.
+// Theme — a colour scheme picked at random for each visit, light or dark.
+//
+// The design system has six themes over one set of colour roles: three brand
+// directions (Forest, Teal, Monochrome), each with a light and a dark theme.
+// On arrival the site picks one direction at random and keeps it for the rest
+// of the visit (sessionStorage), so moving between pages never changes the
+// look; a new tab or a later visit draws again. Light or dark is not random:
+// it follows the visitor's own choice from the toggle (localStorage) and,
+// without one, their operating-system preference. The toggle flips light and
+// dark within the direction the visit drew.
+//
+// This file loads in the <head>, without defer, so the first block below sets
+// data-theme before the page paints. The CSP rules out an inline script, so a
+// small blocking file is the way to avoid a flash of the wrong theme. If
+// storage is blocked the pick cannot be kept, so the site stays on Forest
+// rather than redrawing on every page. Without JavaScript the page keeps the
+// Forest light theme its markup names.
 (function () {
   var root = document.documentElement;
-  var STORAGE_KEY = 'vynatix-theme';
+  var THEME_KEY = 'vynatix-theme';  // localStorage: the visitor's light/dark choice
+  var LOOK_KEY = 'vynatix-look';    // sessionStorage: the direction drawn for this visit
+  var THEMES = ['light', 'dark', 'teal-light', 'teal-dark', 'mono-light', 'mono-dark'];
+  var LOOKS = ['forest', 'teal', 'mono'];
+  var PREFIX = { forest: '', teal: 'teal-', mono: 'mono-' };
+  // The canvas of each theme (md-sys-color-surface), for the browser chrome
+  // colour before the body exists to be measured.
+  var CANVAS = {
+    'light': '#EFE8DA', 'dark': '#1B1A16',
+    'teal-light': '#F3F0E9', 'teal-dark': '#0D2A2C',
+    'mono-light': '#F5F1EA', 'mono-dark': '#14110F'
+  };
+  // The display face and its italic (the hero's accent line) each direction
+  // sets the headline in, in fonts/ as <name>-latin.woff2.
+  var DISPLAY_FACES = {
+    forest: ['fraunces-variable', 'fraunces-italic-variable'],
+    teal: ['instrument-serif-400', 'instrument-serif-400-italic'],
+    mono: ['geist-variable', 'fraunces-italic-variable']
+  };
 
-  function labelFor(theme) {
-    return theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  function isDark(theme) { return /(^|-)dark$/.test(theme); }
+  // '' for Forest, 'teal-' or 'mono-' for the other directions.
+  function direction(theme) {
+    var i = theme.indexOf('-');
+    return i < 0 ? '' : theme.slice(0, i + 1);
+  }
+
+  // The direction for this visit: the one already drawn, else a fresh random
+  // pick, kept for the visit. Anything stored that is not one of the three is
+  // discarded rather than trusted.
+  function pickLook() {
+    try {
+      var stored = sessionStorage.getItem(LOOK_KEY);
+      if (LOOKS.indexOf(stored) < 0) {
+        stored = LOOKS[Math.floor(Math.random() * LOOKS.length)];
+        sessionStorage.setItem(LOOK_KEY, stored);
+      }
+      return stored;
+    } catch (e) {
+      return 'forest';
+    }
+  }
+
+  function wantsDark() {
+    var stored = null;
+    try {
+      stored = localStorage.getItem(THEME_KEY);
+    } catch (e) {
+      stored = null;
+    }
+    if (THEMES.indexOf(stored) >= 0) return isDark(stored);
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  function canvasColour(theme) {
+    var bg = '';
+    try { bg = getComputedStyle(document.body).backgroundColor; } catch (e) { bg = ''; }
+    if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return bg;
+    return CANVAS[theme] || CANVAS.light;
   }
 
   function applyTheme(theme, button) {
     root.setAttribute('data-theme', theme);
     // Keep the browser chrome colour matching what is actually rendered.
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0D2A2C' : '#F3F0E9');
-    if (button) {
-      button.setAttribute('aria-label', labelFor(theme));
-      button.setAttribute('aria-pressed', String(theme === 'dark'));
-    }
+    if (meta) meta.setAttribute('content', canvasColour(theme));
+    // The button keeps one name ("Dark theme") and aria-pressed carries the
+    // state, so the two never contradict each other in an announcement.
+    if (button) button.setAttribute('aria-pressed', String(isDark(theme)));
   }
 
-  function preferredTheme() {
-    var stored;
-    try {
-      stored = localStorage.getItem(STORAGE_KEY);
-    } catch (e) {
-      stored = null;
-    }
-    if (stored === 'light' || stored === 'dark') return stored;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
+  // The home page headline is the largest text on the site and sets one line
+  // in the display face and one in its italic; fetch both for the drawn
+  // direction now rather than after the stylesheet names them.
+  function preloadHeadlineFaces(look) {
+    if (!/\/(index\.html)?$/.test(location.pathname) || !document.head) return;
+    DISPLAY_FACES[look].forEach(function (name) {
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'font';
+      link.type = 'font/woff2';
+      link.crossOrigin = 'anonymous';
+      link.href = 'fonts/' + name + '-latin.woff2';
+      document.head.appendChild(link);
+    });
   }
 
+  // First paint: draw the direction, then set the theme before anything renders.
+  var look = pickLook();
+  applyTheme(PREFIX[look] + (wantsDark() ? 'dark' : 'light'), null);
+  preloadHeadlineFaces(look);
+
+  // After the page is parsed: wire the toggle and settle the chrome colour
+  // from the rendered background.
   function init() {
     var button = document.querySelector('.theme-toggle');
-    applyTheme(preferredTheme(), button);
+    applyTheme(root.getAttribute('data-theme') || 'light', button);
     if (!button) return;
+    // The toggle is invisible until it can work (styles.css), the same opt-in
+    // the mobile nav uses, so it never sits dead for a no-JS visitor.
+    root.classList.add('js-theme');
 
     button.addEventListener('click', function () {
-      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      var current = root.getAttribute('data-theme') || 'light';
+      var next = direction(current) + (isDark(current) ? 'light' : 'dark');
       applyTheme(next, button);
       try {
-        localStorage.setItem(STORAGE_KEY, next);
+        localStorage.setItem(THEME_KEY, next);
       } catch (e) {
-        /* storage unavailable — toggle still works for the session */
+        /* storage unavailable — the toggle still works for this page */
       }
     });
   }
@@ -54,7 +138,7 @@
   }
 })();
 
-// Mobile nav — toggle the menu open/closed from the hamburger button.
+// Mobile nav — toggle the menu open/closed from the menu button.
 (function () {
   function init() {
     var toggle = document.querySelector('.mobile-toggle');
@@ -62,91 +146,29 @@
     if (!toggle || !nav) return;
 
     // Opt into the collapsible mobile nav. Without this class the nav stays
-    // visible and wrapped, so a no-JS visitor on a phone still has every link.
+    // visible and wraps, so a no-JS visitor on a phone still has every link.
     document.documentElement.classList.add('js-nav');
 
-    toggle.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
+    function setOpen(open) {
+      nav.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!nav.classList.contains('open'));
     });
 
     // Close the menu after following a link.
     nav.addEventListener('click', function (e) {
-      if (e.target.closest('.site-header__link')) {
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
+      if (e.target.closest('.site-header__link')) setOpen(false);
     });
-  }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-
-// Case reel — wire the Previous/Next controls to scroll one card at a time.
-(function () {
-  function stepFor(reel) {
-    var card = reel.querySelector('.reel__card');
-    if (!card) return reel.clientWidth;
-    var gap = parseFloat(getComputedStyle(reel).columnGap || getComputedStyle(reel).gap) || 0;
-    return card.getBoundingClientRect().width + gap;
-  }
-
-  function wire(controls) {
-    var wrap = controls.closest('.reel-wrap');
-    var reel = wrap && wrap.querySelector('.reel');
-    if (!reel) return;
-
-    var buttons = controls.querySelectorAll('.reel__btn');
-    var prev = buttons[0];
-    var next = buttons[1];
-
-    function scrollByCards(dir) {
-      reel.scrollBy({ left: dir * stepFor(reel), behavior: 'smooth' });
-    }
-
-    if (prev) prev.addEventListener('click', function () { scrollByCards(-1); });
-    if (next) next.addEventListener('click', function () { scrollByCards(1); });
-
-    // The arrows are hidden in CSS until they actually work; the reel itself
-    // scrolls natively without them.
-    controls.classList.add('is-ready');
-  }
-
-  function init() {
-    var controls = document.querySelectorAll('.reel__controls');
-    for (var i = 0; i < controls.length; i++) wire(controls[i]);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-
-// Client marquee — pause/play control. WCAG 2.2.2 asks for a mechanism to stop
-// motion that starts on its own and runs for more than five seconds. The button
-// is hidden in CSS until this runs, so it never sits dead for no-JS visitors.
-(function () {
-  function init() {
-    var marquee = document.querySelector('.marquee');
-    if (!marquee) return;
-    var track = marquee.querySelector('.marquee__track');
-    var toggle = marquee.querySelector('.marquee__toggle');
-    if (!track || !toggle) return;
-
-    toggle.classList.add('is-ready');
-
-    toggle.addEventListener('click', function () {
-      var paused = track.classList.toggle('is-paused');
-      toggle.classList.toggle('is-paused', paused);
-      // aria-pressed carries the state; the label stays constant so the two
-      // never contradict each other ("Resume…, pressed" reads as nonsense).
-      toggle.setAttribute('aria-pressed', String(paused));
+    // Escape closes the menu and hands focus back to the button.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
   }
 

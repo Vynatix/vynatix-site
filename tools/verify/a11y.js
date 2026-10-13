@@ -1,8 +1,9 @@
-// Accessibility checks: axe-core scan on every page in both themes, plus
-// functional tests for the skip link and the marquee pause control, including
-// the no-JS and reduced-motion fallbacks.
+// Accessibility checks: axe-core scan on every page in every theme under test
+// (THEMES, default light,dark), plus functional tests for the skip link, the
+// still client list, the no-JS and reduced-motion fallbacks, and an
+// independent contrast sweep.
 const fs = require('fs');
-const { PAGES, BASE, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
 
 (async () => {
@@ -12,12 +13,12 @@ const AXE = require.resolve('axe-core/axe.min.js');
 
   // --- axe scan -----------------------------------------------------------
   for (const p of PAGES) {
-    for (const theme of ['light', 'dark']) {
+    for (const theme of THEMES) {
       // bypassCSP only for the axe scan: script-src 'self' correctly refuses the
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
       const ctx = await browser.newContext({ bypassCSP: true });
       const page = await ctx.newPage();
-      await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
+      await page.addInitScript(pinTheme, theme);
       await page.goto(BASE + p, { waitUntil: 'load' });
       await page.addScriptTag({ content: axeSrc });
       const res = await page.evaluate(async () => await window.axe.run(document, {
@@ -61,81 +62,78 @@ const AXE = require.resolve('axe-core/axe.min.js');
     await page.close();
   }
 
-  // --- marquee toggle -----------------------------------------------------
+  // --- the client list: one still, labelled list ---------------------------
+  // The design system forbids ambient loops and auto-advancing strips, so the
+  // client marks are a plain list: exactly one copy, named by a visible label,
+  // every named client an off-site link that opens safely, nothing animating
+  // and no pause control left over from the old marquee.
   {
     const page = await browser.newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    const before = await page.evaluate(() => {
-      const t = document.querySelector('.marquee__toggle');
-      return { visible: getComputedStyle(t).display !== 'none',
-               pressed: t.getAttribute('aria-pressed'),
-               label: t.getAttribute('aria-label'),
-               play: getComputedStyle(document.querySelector('.marquee__track')).animationPlayState };
-    });
-    await page.click('.marquee__toggle');
-    const after = await page.evaluate(() => {
-      const t = document.querySelector('.marquee__toggle');
-      return { pressed: t.getAttribute('aria-pressed'), label: t.getAttribute('aria-label'),
-               play: getComputedStyle(document.querySelector('.marquee__track')).animationPlayState };
-    });
-    // The strip repeats the client list several times so the loop is seamless.
-    // Exactly one copy must be the real one (labelled, links in the tab order,
-    // every link off-site); every other copy must be aria-hidden with its
-    // links taken out of the tab order, or a keyboard user tabs through
-    // hidden duplicates.
-    const clients = await page.evaluate(() => {
-      const groups = [...document.querySelectorAll('.marquee__group')];
-      const real = groups.filter((g) => g.getAttribute('aria-hidden') !== 'true');
-      const decor = groups.filter((g) => g.getAttribute('aria-hidden') === 'true');
-      const links = (g) => [...g.querySelectorAll('a')];
+    const r = await page.evaluate(() => {
+      const lists = [...document.querySelectorAll('.clients__list')];
+      const list = lists[0];
+      const labelId = list && list.getAttribute('aria-labelledby');
+      const label = labelId && document.getElementById(labelId);
+      const links = list ? [...list.querySelectorAll('a')] : [];
       return {
-        groups: groups.length,
-        real: real.length,
-        label: real[0] && real[0].getAttribute('aria-label'),
-        items: real[0] ? real[0].querySelectorAll('li').length : 0,
-        realTabbable: real.every((g) => links(g).every((a) => !a.hasAttribute('tabindex'))),
-        realExternal: real.every((g) => links(g).every((a) => /^https:\/\//.test(a.getAttribute('href')) && a.getAttribute('rel') === 'noopener')),
-        decorUntabbable: decor.every((g) => links(g).every((a) => a.getAttribute('tabindex') === '-1')),
+        lists: lists.length,
+        labelled: !!(label && label.textContent.trim()),
+        items: list ? list.querySelectorAll('li').length : 0,
+        hiddenCopies: document.querySelectorAll('.clients__list[aria-hidden="true"], .marquee__group').length,
+        linksExternal: links.length >= 2 && links.every((a) => /^https:\/\//.test(a.getAttribute('href')) && a.getAttribute('rel') === 'noopener' && !a.hasAttribute('tabindex')),
+        animation: list ? getComputedStyle(list).animationName : 'missing',
+        pauseControl: !!document.querySelector('.marquee__toggle, [aria-label*="Pause" i]'),
       };
     });
-    // aria-pressed carries the state and the label stays constant, so the two
-    // can never contradict each other in an announcement.
-    const ok = before.visible && before.play === 'running' && after.play === 'paused'
-      && after.pressed === 'true' && after.label === before.label
-      && clients.groups >= 2 && clients.real === 1 && !!clients.label && clients.items >= 2
-      && clients.realTabbable && clients.realExternal && clients.decorUntabbable;
+    const ok = r.lists === 1 && r.labelled && r.items >= 2 && r.hiddenCopies === 0 && r.linksExternal && r.animation === 'none' && !r.pauseControl;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} marquee pause control + one real client list, decorative copies hidden`);
-    console.log(`       before=${JSON.stringify(before)}\n       after=${JSON.stringify(after)}\n       clients=${JSON.stringify(clients)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} client list: one still, labelled list with off-site links — ${JSON.stringify(r)}`);
     await page.close();
   }
 
-  // --- no-JS: the control must not be visible ------------------------------
+  // --- no-JS: nothing hidden, no dead control ------------------------------
+  // On a phone with JavaScript off, the nav must still be visible (it wraps
+  // under the bar), the menu button must not show (it could never open), and
+  // the theme toggle must not show either (it could never switch).
   {
-    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    const r = await page.evaluate(() => 'unused').catch(() => null);   // JS off: evaluate unavailable
-    const hidden = await page.$eval('.marquee__toggle', (el) => getComputedStyle(el).display).catch(() => 'missing');
-    // With JS disabled Playwright can still read computed style via the protocol.
-    const ok = hidden === 'none';
+    const r = await page.evaluate(() => {
+      const vis = (el) => { if (!el) return false; const cs = getComputedStyle(el); const b = el.getBoundingClientRect(); return cs.display !== 'none' && cs.visibility !== 'hidden' && b.width > 0 && b.height > 0; };
+      const links = [...document.querySelectorAll('.site-header__link')];
+      return {
+        jsNav: document.documentElement.classList.contains('js-nav'),
+        navLinks: links.length,
+        navVisible: links.length > 0 && links.every(vis),
+        menuButton: vis(document.querySelector('.mobile-toggle')),
+        themeToggle: vis(document.querySelector('.theme-toggle')),
+      };
+    });
+    const ok = !r.jsNav && r.navLinks >= 4 && r.navVisible && !r.menuButton && !r.themeToggle;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} no-JS: pause control hidden (display=${hidden})`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} no-JS: nav visible and wrapped, menu button and theme toggle not shown — ${JSON.stringify(r)}`);
     await ctx.close();
   }
 
   // --- reduced motion ------------------------------------------------------
+  // Nothing on the site moves on its own; what remains are short transitions,
+  // which the design system cuts to 0.01ms under prefers-reduced-motion.
   {
     const ctx = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    const r = await page.evaluate(() => ({
-      anim: getComputedStyle(document.querySelector('.marquee__track')).animationName,
-      toggle: getComputedStyle(document.querySelector('.marquee__toggle')).display,
-    }));
-    const ok = r.anim === 'none' && r.toggle === 'none';
+    const r = await page.evaluate(() => {
+      const running = [...document.querySelectorAll('*')].filter((el) => getComputedStyle(el).animationName !== 'none').length;
+      const card = document.querySelector('.case');
+      return { animating: running, cardTransition: card ? getComputedStyle(card).transitionDuration : 'missing' };
+    });
+    // Chrome reports the system's 0.01ms as "1e-05s"; anything under a millisecond counts as cut.
+    const cut = r.cardTransition !== 'missing' && r.cardTransition.split(',').every((d) => parseFloat(d) < 0.001);
+    const ok = r.animating === 0 && cut;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: marquee static and control hidden — ${JSON.stringify(r)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: nothing animates and transitions are cut — ${JSON.stringify(r)}`);
     await ctx.close();
   }
 
@@ -146,8 +144,8 @@ const AXE = require.resolve('axe-core/axe.min.js');
     const page = await browser.newPage();
     const failures = [];
     for (const pg of PAGES) {
-      for (const theme of ['light', 'dark']) {
-        await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
+      for (const theme of THEMES) {
+        await page.addInitScript(pinTheme, theme);
         await page.goto(BASE + pg, { waitUntil: 'load' });
         const bad = await page.evaluate(() => {
           const lum = (rgb) => {
@@ -200,8 +198,8 @@ const AXE = require.resolve('axe-core/axe.min.js');
     }
     if (failures.length) problems++;
     console.log(failures.length
-      ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 15).join('\n       ')}`
-      : 'ok   contrast sweep — every visible text node meets AA in both themes');
+      ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 30).join('\n       ')}`
+      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}`);
     await page.close();
   }
 

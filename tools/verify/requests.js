@@ -1,12 +1,22 @@
 // Asserts the site makes ZERO off-origin requests, that the self-hosted fonts
-// actually resolve, and that no CSP violation fires — on every page, in both themes.
-const { PAGES, BASE, launch } = require('./_common');
+// actually resolve, and that no CSP violation fires — on every page, in every
+// theme under test (THEMES, default light,dark).
+const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+
+// The faces the design system sets per direction: Forest renders in Fraunces
+// and Aptos with Geist eyebrows, Teal in Instrument Serif and Geist,
+// Monochrome in Geist (Fraunces only for editorial type).
+function requiredFaces(theme) {
+  if (theme.startsWith('teal')) return ['Instrument Serif', 'Geist'];
+  if (theme.startsWith('mono')) return ['Geist'];
+  return ['Fraunces', 'Aptos', 'Geist'];
+}
 
 (async () => {
   const browser = await launch();
   let failures = 0;
 
-  for (const p of PAGES) {
+  for (const p of PAGES) for (const theme of THEMES) {
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
     const offOrigin = [], cspViolations = [], failed = [];
@@ -24,29 +34,32 @@ const { PAGES, BASE, launch } = require('./_common');
       document.addEventListener('securitypolicyviolation',
         (e) => window.__csp.push(`${e.effectiveDirective} -> ${e.blockedURI}`));
     });
+    await page.addInitScript(pinTheme, theme);
 
     await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }).catch((e) => failed.push('goto: ' + e.message));
 
-    const fonts = await page.evaluate(async () => {
+    // document.fonts.check() answers true for a family that has no @font-face
+    // at all, so look at the faces that actually loaded instead.
+    const loaded = await page.evaluate(async () => {
       try { await document.fonts.ready; } catch (e) { /* no-op */ }
-      return {
-        serif: document.fonts.check('16px "Instrument Serif"'),
-        sans: document.fonts.check('16px "Geist"'),
-      };
+      const out = new Set();
+      document.fonts.forEach((f) => { if (f.status === 'loaded') out.add(f.family.replace(/^["']|["']$/g, '')); });
+      return [...out];
     });
+    const missingFaces = requiredFaces(theme).filter((f) => !loaded.includes(f));
 
-    // Flip to dark and let it settle, so theme-specific resources are exercised too.
+    // Flip the theme and let it settle, so the other theme's resources are exercised too.
     await page.evaluate(() => { const b = document.querySelector('.theme-toggle'); if (b) b.click(); });
     await page.waitForTimeout(250);
     cspViolations.push(...(await page.evaluate(() => window.__csp || [])));
 
-    const bad = offOrigin.length || cspViolations.length || failed.length || !fonts.serif || !fonts.sans;
+    const bad = offOrigin.length || cspViolations.length || failed.length || missingFaces.length;
     if (bad) failures++;
-    console.log(`${bad ? 'FAIL' : 'ok  '}  ${p}`);
+    console.log(`${bad ? 'FAIL' : 'ok  '}  ${p} [${theme}]`);
     if (offOrigin.length) console.log(`        off-origin requests: ${[...new Set(offOrigin)].join(', ')}`);
     if (cspViolations.length) console.log(`        CSP violations: ${cspViolations.join(' | ')}`);
     if (failed.length) console.log(`        failed requests: ${failed.join(' | ')}`);
-    if (!fonts.serif || !fonts.sans) console.log(`        fonts unresolved: serif=${fonts.serif} sans=${fonts.sans}`);
+    if (missingFaces.length) console.log(`        fonts unresolved: ${missingFaces.join(', ')} (loaded: ${loaded.join(', ')})`);
     await ctx.close();
   }
 

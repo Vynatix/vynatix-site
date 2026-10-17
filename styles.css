@@ -320,6 +320,16 @@ h1 em, h2 em {
     border-inline-start: 2px solid var(--indicator);
     padding-inline-start: var(--space-3);
   }
+  /* The menu's contact link is the only call to action on a phone (the header
+     button is hidden there), so it takes the button shape inside the open menu. */
+  .js-nav .site-header__nav.open .site-header__menu-cta .site-header__link {
+    display: inline-block;
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+  }
   .js-nav .mobile-toggle { display: inline-grid; }
 }
 @media (max-width: 599px) {

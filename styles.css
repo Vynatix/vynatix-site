@@ -260,10 +260,11 @@ h1 em, h2 em {
 .theme-toggle[aria-pressed="true"] .icon--light { display: block; }
 
 /* Menu button: hidden until app.js can make it work (.js-nav), and only on
-   the narrow layout. In the markup it comes right before the nav it opens, so
-   the open menu follows it in the tab order (the disclosure pattern); flex
-   order places it at the end of the bar. */
-.mobile-toggle { display: none; order: 10; }
+   the narrow layout. It stays where the markup puts it, right before the nav
+   it opens, so the tab order matches what is on screen and the open menu
+   follows the button (the disclosure pattern). Its auto start margin pushes it
+   and the theme toggle and call to action to the end of the bar. */
+.mobile-toggle { display: none; margin-inline-start: auto; }
 .mobile-toggle .icon--close { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--menu { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--close { display: block; }

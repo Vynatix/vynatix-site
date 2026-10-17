@@ -12,7 +12,7 @@ site ships:
 - `vynatix-mark-<ink>.svg` — the V mark alone
 
 Inks: `forest` (Cream and light surfaces), `cream` (reversed, on Forest and the
-dark canvas), `bronze` (print foil only, never small; 3.8:1 on Cream).
+dark canvas), `bronze` (print foil only, never small; 3.9:1 on Cream).
 
 **The pages do not use these files.** Every page inlines the wordmark once as a
 `<symbol id="vx-wordmark">` filled with `currentColor` and places it with `<use>`

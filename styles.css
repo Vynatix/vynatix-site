@@ -457,7 +457,13 @@ h1 em, h2 em {
   font-weight: 500;
   color: var(--text-muted);
 }
-a.clients__item { text-decoration: none; }
+/* Linked marks carry a resting underline, so they read as links next to the
+   plain labels; the hover state keeps the same underline in the accent colour. */
+a.clients__item {
+  text-decoration: underline;
+  text-decoration-color: var(--indicator);
+  text-underline-offset: 0.3em;
+}
 a.clients__item:hover {
   color: var(--md-sys-color-primary);
   text-decoration: underline;
@@ -671,10 +677,20 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   background: var(--md-sys-color-surface-container);
   box-shadow: var(--shadow-l2);
 }
-.case:focus-within {
+/* The card ring follows the keyboard, not the mouse: it appears only when the
+   headline link itself has keyboard focus. Browsers without :has() keep the
+   older rule, which also rings after a mouse click inside the card. */
+.case:has(h3 a:focus-visible) {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   box-shadow: 0 0 0 4px var(--md-sys-color-surface), var(--shadow-l1);
+}
+@supports not selector(:has(*)) {
+  .case:focus-within {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--md-sys-color-surface), var(--shadow-l1);
+  }
 }
 .case__img {
   aspect-ratio: 4 / 3;

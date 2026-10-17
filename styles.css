@@ -260,10 +260,11 @@ h1 em, h2 em {
 .theme-toggle[aria-pressed="true"] .icon--light { display: block; }
 
 /* Menu button: hidden until app.js can make it work (.js-nav), and only on
-   the narrow layout. In the markup it comes right before the nav it opens, so
-   the open menu follows it in the tab order (the disclosure pattern); flex
-   order places it at the end of the bar. */
-.mobile-toggle { display: none; order: 10; }
+   the narrow layout. It stays where the markup puts it, right before the nav
+   it opens, so the tab order matches what is on screen and the open menu
+   follows the button (the disclosure pattern). Its auto start margin pushes it
+   and the theme toggle and call to action to the end of the bar. */
+.mobile-toggle { display: none; margin-inline-start: auto; }
 .mobile-toggle .icon--close { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--menu { display: none; }
 .mobile-toggle[aria-expanded="true"] .icon--close { display: block; }
@@ -319,6 +320,16 @@ h1 em, h2 em {
     text-decoration: none;
     border-inline-start: 2px solid var(--indicator);
     padding-inline-start: var(--space-3);
+  }
+  /* The menu's contact link is the only call to action on a phone (the header
+     button is hidden there), so it takes the button shape inside the open menu. */
+  .js-nav .site-header__nav.open .site-header__menu-cta .site-header__link {
+    display: inline-block;
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
   }
   .js-nav .mobile-toggle { display: inline-grid; }
 }
@@ -384,6 +395,12 @@ h1 em, h2 em {
   --_bg: var(--md-sys-color-tertiary);
   --_fg: var(--md-sys-color-on-tertiary);
 }
+/* Capability columns on an inverse band (the process steps): the rule and the
+   numeral take the band's accent role, the copy its text roles. */
+.inverse .cap { border-top-color: var(--md-sys-color-inverse-primary); }
+.inverse .cap__num { color: var(--md-sys-color-inverse-primary); }
+.inverse .cap h3 { color: var(--md-sys-color-inverse-on-surface); }
+.inverse .cap p { color: var(--inverse-on-surface-variant); }
 /* A button that is a link keeps its own label colour on the band: the
    .inverse a rule above would otherwise paint it in the band's text colour
    (Cream on Bronze measures 3.9:1; the system's label pair is 4.7:1). */
@@ -441,7 +458,13 @@ h1 em, h2 em {
   font-weight: 500;
   color: var(--text-muted);
 }
-a.clients__item { text-decoration: none; }
+/* Linked marks carry a resting underline, so they read as links next to the
+   plain labels; the hover state keeps the same underline in the accent colour. */
+a.clients__item {
+  text-decoration: underline;
+  text-decoration-color: var(--indicator);
+  text-underline-offset: 0.3em;
+}
 a.clients__item:hover {
   color: var(--md-sys-color-primary);
   text-decoration: underline;
@@ -455,6 +478,39 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   height: var(--icon-size-xl);
   fill: currentColor;
 }
+/* Wordmarks for the named clients whose own logos are full colour. Each is a
+   single-colour silhouette of the logo (assets/clients/mono), filled with the
+   text colour, so it reads in all six themes. The ratio is the trimmed logo's
+   width over its height, so the mark keeps its shape at a fixed height. */
+.clients__mark {
+  flex: none;
+  display: block;
+  height: var(--icon-size-lg);
+  max-width: 10rem;
+  aspect-ratio: var(--mark-ratio);
+  background-color: currentColor;
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}
+.clients__mark--agnhaga { --mark: url("assets/clients/mono/agnhaga.png"); --mark-ratio: 1.868; }
+.clients__mark--aurobay { --mark: url("assets/clients/mono/aurobay.png"); --mark-ratio: 4.059; }
+.clients__mark--cevt { --mark: url("assets/clients/mono/cevt.png"); --mark-ratio: 5.5; }
+.clients__mark--magna { --mark: url("assets/clients/mono/magna.png"); --mark-ratio: 4.75; }
+.clients__mark--saab { --mark: url("assets/clients/mono/saab.png"); --mark-ratio: 4.375; }
+.clients__mark--scania { --mark: url("assets/clients/mono/scania.png"); --mark-ratio: 1.713; }
+.clients__mark--sony { --mark: url("assets/clients/mono/sony.png"); --mark-ratio: 5.654; }
+.clients__mark--swisslog { --mark: url("assets/clients/mono/swisslog.png"); --mark-ratio: 9; }
+.clients__mark--tele2 { --mark: url("assets/clients/mono/tele2.png"); --mark-ratio: 2.627; }
+.clients__mark--veoneer { --mark: url("assets/clients/mono/veoneer.png"); --mark-ratio: 6.846; }
+.clients__mark--volvo-buses { --mark: url("assets/clients/mono/volvo-buses.png"); --mark-ratio: 2.247; }
+.clients__mark--volvo-penta { --mark: url("assets/clients/mono/volvo-penta.png"); --mark-ratio: 4.619; }
+/* A link that is only its logo takes no underline: the mark is the link, and
+   the colour change on hover and focus is the state. The name is still read
+   out, from the screen-reader text inside the link. */
+a.clients__item:has(.clients__mark),
+a.clients__item:has(.clients__mark):hover {
+  text-decoration: none;
+}
 @media (max-width: 599px) {
   .clients { margin-top: var(--space-16); }
   .clients__list { gap: var(--space-2) var(--space-6); }
@@ -465,6 +521,8 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
    --------------------------------------------------------------- */
 .section { padding-block: var(--space-24); }
 .section--tight { padding-block: var(--space-16); }
+/* A section reached by an anchor lands below the sticky top bar, not under it. */
+.section[id] { scroll-margin-top: var(--space-24); }
 /* A tonal band: one container step off the canvas, hairlines top and bottom. */
 .section--surface {
   background: var(--md-sys-color-surface-container-low);
@@ -525,6 +583,7 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   padding: var(--space-24);
 }
 .band--inset .section__head { margin-bottom: 0; }
+.band--inset .caps { margin-top: var(--space-16); }
 .band--inset + .band--inset { margin-top: var(--space-6); }
 .section--surface + .band--inset { margin-top: var(--space-24); }
 @media (max-width: 904px) {
@@ -556,12 +615,25 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 }
 .two-up .more { margin-top: var(--space-2); }
 .two-up blockquote { margin-top: 0; }
+/* A run-in lead at the start of a paragraph: the same sentence weight as the
+   headline above it, so the reader can scan the case study for its points. */
+.lead-in {
+  font-weight: 600;
+  color: var(--text-display);
+}
 @media (max-width: 904px) {
   .two-up { grid-template-columns: 1fr; gap: var(--space-8); }
   .two-up + .two-up { margin-top: var(--space-12); }
 }
 
 /* A list panel beside the writing: a muted eyebrow, then the system's list. */
+.panel {
+  padding: var(--space-6) var(--space-8);
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: var(--radius-lg);
+}
+/* On a tonal band the panel takes the next container step, as the cards do. */
+.section--surface .panel { background: var(--md-sys-color-surface-container); }
 .panel .eyebrow { margin-bottom: var(--space-4); }
 .panel ul { margin: 0; }
 .panel ul > li { font-size: var(--text-body-md); line-height: var(--leading-normal); }
@@ -639,10 +711,20 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   background: var(--md-sys-color-surface-container);
   box-shadow: var(--shadow-l2);
 }
-.case:focus-within {
+/* The card ring follows the keyboard, not the mouse: it appears only when the
+   headline link itself has keyboard focus. Browsers without :has() keep the
+   older rule, which also rings after a mouse click inside the card. */
+.case:has(h3 a:focus-visible) {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   box-shadow: 0 0 0 4px var(--md-sys-color-surface), var(--shadow-l1);
+}
+@supports not selector(:has(*)) {
+  .case:focus-within {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--md-sys-color-surface), var(--shadow-l1);
+  }
 }
 .case__img {
   aspect-ratio: 4 / 3;

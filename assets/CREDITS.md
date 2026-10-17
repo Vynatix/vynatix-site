@@ -38,6 +38,37 @@ the text colour in both themes). It is not a separate file in `assets/`.
 |---|---|
 | Volvo iron mark | https://commons.wikimedia.org/wiki/File:Volvo-Iron-Mark-Black.svg |
 
+### Client wordmarks
+
+The client strip on the home page shows the wordmarks of the companies listed
+below. Each is shown as a single-colour silhouette, made from the logo file
+named in the table (`assets/clients/mono/<name>.png`, trimmed to its shape, with
+the original colours removed) so it takes the text colour in every theme. The
+full-colour originals are kept in `assets/clients/` for reference.
+
+Permission to name each company and show its wordmark is recorded here as the
+site owner's confirmation (Vynatix AB) at the time of the change. Each wordmark
+belongs to its company and its trademark is theirs.
+
+| Client | Original file | Downloaded from |
+|---|---|---|
+| Agnhaga | `assets/clients/agnhaga.png` | https://ultragroup.se/wp-content/uploads/2024/01/AGN_Haga.png |
+| Aurobay | `assets/clients/aurobay.png` | https://ultragroup.se/wp-content/uploads/2023/08/AUROBAY.png |
+| CEVT | `assets/clients/cevt.png` | https://ultragroup.se/wp-content/uploads/2023/09/CEVT.png |
+| Magna | `assets/clients/magna.png` | https://ultragroup.se/wp-content/uploads/2023/12/Magna.png |
+| Saab | `assets/clients/saab.png` | https://ultragroup.se/wp-content/uploads/2023/12/SAAB.png |
+| Scania | `assets/clients/scania.png` | https://ultragroup.se/wp-content/uploads/2024/07/scania.png |
+| Sony | `assets/clients/sony.png` | https://ultragroup.se/wp-content/uploads/2023/11/SONY2-e1700661614744.png |
+| Swisslog | `assets/clients/swisslog.png` | https://ultragroup.se/wp-content/uploads/2023/09/Swisslog.png |
+| Tele2 | `assets/clients/tele2.png` | https://ultragroup.se/wp-content/uploads/2023/09/Tele2.png |
+| Veoneer | `assets/clients/veoneer.png` | https://ultragroup.se/wp-content/uploads/2023/11/veoneer2-e1700125544715.png |
+| Volvo Buses | `assets/clients/volvo-buses.png` | https://ultragroup.se/wp-content/uploads/2023/12/v-buses__1_-removebg-preview.png |
+| Volvo Penta | `assets/clients/volvo-penta.png` | https://ultragroup.se/wp-content/uploads/2023/12/penta.png |
+
+The originals were taken from the logo row on the Ultra Group website, which
+lists these companies. Their source is the company's own logo file, not a
+Vynatix asset.
+
 Wikimedia Commons lists the file as public domain (the mark is too simple for
 copyright), uploaded from Volvo Group's own logotype set. Copyright is not the
 point, though: **the iron mark is a registered trademark of the Volvo

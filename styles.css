@@ -569,6 +569,13 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 }
 
 /* A list panel beside the writing: a muted eyebrow, then the system's list. */
+.panel {
+  padding: var(--space-6) var(--space-8);
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: var(--radius-lg);
+}
+/* On a tonal band the panel takes the next container step, as the cards do. */
+.section--surface .panel { background: var(--md-sys-color-surface-container); }
 .panel .eyebrow { margin-bottom: var(--space-4); }
 .panel ul { margin: 0; }
 .panel ul > li { font-size: var(--text-body-md); line-height: var(--leading-normal); }

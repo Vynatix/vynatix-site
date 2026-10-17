@@ -563,6 +563,12 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 }
 .two-up .more { margin-top: var(--space-2); }
 .two-up blockquote { margin-top: 0; }
+/* A run-in lead at the start of a paragraph: the same sentence weight as the
+   headline above it, so the reader can scan the case study for its points. */
+.lead-in {
+  font-weight: 600;
+  color: var(--text-display);
+}
 @media (max-width: 904px) {
   .two-up { grid-template-columns: 1fr; gap: var(--space-8); }
   .two-up + .two-up { margin-top: var(--space-12); }

@@ -478,6 +478,32 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   height: var(--icon-size-xl);
   fill: currentColor;
 }
+/* Wordmarks for the named clients whose own logos are full colour. Each is a
+   single-colour silhouette of the logo (assets/clients/mono), filled with the
+   text colour, so it reads in all six themes. The ratio is the trimmed logo's
+   width over its height, so the mark keeps its shape at a fixed height. */
+.clients__mark {
+  flex: none;
+  display: block;
+  height: var(--icon-size-lg);
+  max-width: 10rem;
+  aspect-ratio: var(--mark-ratio);
+  background-color: currentColor;
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}
+.clients__mark--agnhaga { --mark: url("assets/clients/mono/agnhaga.png"); --mark-ratio: 1.868; }
+.clients__mark--aurobay { --mark: url("assets/clients/mono/aurobay.png"); --mark-ratio: 4.059; }
+.clients__mark--cevt { --mark: url("assets/clients/mono/cevt.png"); --mark-ratio: 5.5; }
+.clients__mark--magna { --mark: url("assets/clients/mono/magna.png"); --mark-ratio: 4.75; }
+.clients__mark--saab { --mark: url("assets/clients/mono/saab.png"); --mark-ratio: 4.375; }
+.clients__mark--scania { --mark: url("assets/clients/mono/scania.png"); --mark-ratio: 1.713; }
+.clients__mark--sony { --mark: url("assets/clients/mono/sony.png"); --mark-ratio: 5.654; }
+.clients__mark--swisslog { --mark: url("assets/clients/mono/swisslog.png"); --mark-ratio: 9; }
+.clients__mark--tele2 { --mark: url("assets/clients/mono/tele2.png"); --mark-ratio: 2.627; }
+.clients__mark--veoneer { --mark: url("assets/clients/mono/veoneer.png"); --mark-ratio: 6.846; }
+.clients__mark--volvo-buses { --mark: url("assets/clients/mono/volvo-buses.png"); --mark-ratio: 2.247; }
+.clients__mark--volvo-penta { --mark: url("assets/clients/mono/volvo-penta.png"); --mark-ratio: 4.619; }
 @media (max-width: 599px) {
   .clients { margin-top: var(--space-16); }
   .clients__list { gap: var(--space-2) var(--space-6); }

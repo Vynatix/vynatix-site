@@ -384,6 +384,12 @@ h1 em, h2 em {
   --_bg: var(--md-sys-color-tertiary);
   --_fg: var(--md-sys-color-on-tertiary);
 }
+/* Capability columns on an inverse band (the process steps): the rule and the
+   numeral take the band's accent role, the copy its text roles. */
+.inverse .cap { border-top-color: var(--md-sys-color-inverse-primary); }
+.inverse .cap__num { color: var(--md-sys-color-inverse-primary); }
+.inverse .cap h3 { color: var(--md-sys-color-inverse-on-surface); }
+.inverse .cap p { color: var(--inverse-on-surface-variant); }
 /* A button that is a link keeps its own label colour on the band: the
    .inverse a rule above would otherwise paint it in the band's text colour
    (Cream on Bronze measures 3.9:1; the system's label pair is 4.7:1). */
@@ -525,6 +531,7 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
   padding: var(--space-24);
 }
 .band--inset .section__head { margin-bottom: 0; }
+.band--inset .caps { margin-top: var(--space-16); }
 .band--inset + .band--inset { margin-top: var(--space-6); }
 .section--surface + .band--inset { margin-top: var(--space-24); }
 @media (max-width: 904px) {

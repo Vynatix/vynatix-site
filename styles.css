@@ -471,6 +471,8 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
    --------------------------------------------------------------- */
 .section { padding-block: var(--space-24); }
 .section--tight { padding-block: var(--space-16); }
+/* A section reached by an anchor lands below the sticky top bar, not under it. */
+.section[id] { scroll-margin-top: var(--space-24); }
 /* A tonal band: one container step off the canvas, hairlines top and bottom. */
 .section--surface {
   background: var(--md-sys-color-surface-container-low);

@@ -504,6 +504,13 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 .clients__mark--veoneer { --mark: url("assets/clients/mono/veoneer.png"); --mark-ratio: 6.846; }
 .clients__mark--volvo-buses { --mark: url("assets/clients/mono/volvo-buses.png"); --mark-ratio: 2.247; }
 .clients__mark--volvo-penta { --mark: url("assets/clients/mono/volvo-penta.png"); --mark-ratio: 4.619; }
+/* A link that is only its logo takes no underline: the mark is the link, and
+   the colour change on hover and focus is the state. The name is still read
+   out, from the screen-reader text inside the link. */
+a.clients__item:has(.clients__mark),
+a.clients__item:has(.clients__mark):hover {
+  text-decoration: none;
+}
 @media (max-width: 599px) {
   .clients { margin-top: var(--space-16); }
   .clients__list { gap: var(--space-2) var(--space-6); }

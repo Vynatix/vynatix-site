@@ -39,4 +39,51 @@
     <loc>https://vynatix.com/accessibility.html</loc>
     <lastmod>2026-10-18</lastmod>
   </url>
+  <url>
+    <loc>https://vynatix.com/sv.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/sv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/"/>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/android-automotive-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/android-automotive-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/android-automotive-utveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/android-automotive-utveckling.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/android-automotive-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/android-automotive-utveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ai-engineering.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-engineering.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-utveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ai-utveckling.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-engineering.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-utveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/valja-konsultbolag.html</loc>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/platform-engineering.html</loc>
+    <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ai-assistent-interna-dokument.html</loc>
+    <lastmod>2026-10-18</lastmod>
+  </url>
 </urlset>

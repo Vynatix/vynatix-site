@@ -140,7 +140,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=92b27cbd">
+<link rel="stylesheet" href="styles.css?v=f24cdeca">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -210,7 +210,7 @@
     <section class="section">
       <div class="container">
         <div class="legal">
-          <p class="legal__meta">Last updated 13 October 2026</p>
+          <p class="legal__meta">Last updated 18 October 2026</p>
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
@@ -229,6 +229,7 @@
             <li>Text meets the <strong>AA contrast ratio</strong> in every colour scheme the site can show: it draws one of three at random for each visit, and each has a light and a dark theme.</li>
             <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the two controls that need JavaScript, the menu button and the theme toggle, are hidden rather than left sitting dead. Without JavaScript the theme follows the page default.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
+            <li>Pages in Swedish declare Swedish as their language, and the header and footer they share with the English pages declare English, so a screen reader switches voice at the right place.</li>
           </ul>
 
           <h2>How we check</h2>

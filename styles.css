@@ -1019,6 +1019,12 @@ a.clients__item:has(.clients__mark):hover {
   margin: 0 0 var(--space-6);
 }
 .legal .banner, .prose .banner { margin-bottom: var(--space-10); }
+/* Tables in long-form text keep to the column on a phone: the system's cell
+   padding plus a long Swedish compound ("Konsultmäklare") overflowed 360px. */
+@media (max-width: 599px) {
+  .prose th, .prose td { padding: var(--space-2) var(--space-2); }
+  .prose td, .prose th { hyphens: auto; overflow-wrap: break-word; }
+}
 
 /* Banner (the Banner card): a leading icon, a bold lead, then the message. */
 .banner {

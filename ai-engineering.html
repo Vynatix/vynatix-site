@@ -146,12 +146,12 @@
      "name": "What is RAG?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "RAG (retrieval-augmented generation) is a way of building an AI assistant in which the system first retrieves the relevant passages from your own documents and then has a language model write the answer from those passages, with a reference to where the answer came from. In a well-built RAG system the model's general training supplies the language, not the facts. That makes answers checkable, and you control what the assistant knows by controlling which documents go in."
+      "text": "RAG (retrieval-augmented generation) is a technique in which the system first retrieves relevant passages from a document collection, such as your own documents, and then has a language model write the answer from those passages. Because the answer is built on retrieved passages, it can cite its source. The aim is for the facts in an answer to come from the documents rather than from the model's general training. That makes answers checkable, and you control what the assistant answers from by controlling which documents go in."
      }
     },
     {
      "@type": "Question",
-     "name": "Can it run on-prem or in a sovereign cloud?",
+     "name": "Can the system run on-prem or in a sovereign cloud?",
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, as part of the AI engineering service, so the system can run where your data is allowed to be. Which model you can use then depends on what can run in that environment, and we say plainly what that choice means for quality."
@@ -162,7 +162,7 @@
      "name": "Can the assistant refuse to answer outside the approved documents?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. That is how the assistant Vynatix built for a regulated client in 2025 works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why."
+      "text": "Yes. That is how the assistant Vynatix built in 2025 for a regulated client works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why."
      }
     },
     {
@@ -170,7 +170,7 @@
      "name": "Do you build MCP servers?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface, so access is explicit and can be limited."
+      "text": "Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface. The server decides what is made available, so access is explicit and can be limited."
      }
     },
     {
@@ -226,7 +226,7 @@
       "itemOffered": {
        "@type": "Service",
        "name": "Agent and harness engineering",
-       "description": "An agent is a model that takes steps and calls tools on its own. The harness is the code around it that sets what it may do and checks the result."
+       "description": "An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result."
       }
      },
      {
@@ -352,7 +352,7 @@
       <div class="container">
         <p class="eyebrow">Services</p>
         <h1 class="page-hero__h1">AI engineering in Gothenburg, for systems that go into production.</h1>
-        <p class="page-hero__lede">Vynatix, a software consultancy in Gothenburg, builds AI systems on foundation models that run in production, with senior engineers embedded in your team. That means retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch. We say plainly what a model can and cannot do, and recommend a simpler tool when it serves you better.</p>
+        <p class="page-hero__lede">Vynatix, a software consultancy in Gothenburg, builds AI systems on foundation models for production use, with senior engineers embedded in your team. That means retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch. We say plainly what a model can and cannot do, and recommend a simpler tool when it serves you better.</p>
       </div>
     </section>
 
@@ -364,7 +364,7 @@
             <p class="eyebrow">Scope</p>
             <h2 class="section__h2">What we build</h2>
           </div>
-          <p class="section__lead">Everything below is part of one thing: production systems on foundation models, meaning software built around a large language model that real users rely on, with the engineering around the model that lets you trust the answers and see what the system does.</p>
+          <p class="section__lead">Everything below is part of one thing: production systems on foundation models, meaning software built around a large language model that is in real use, and the engineering around the model that lets you check the answers and see what the system does.</p>
         </div>
         <div class="caps">
           <div class="cap">
@@ -377,7 +377,7 @@
           </div>
           <div class="cap">
             <h3>Agent and harness engineering</h3>
-            <p>An agent is a model that takes steps and calls tools on its own. The harness is the code around it that sets what it may do and checks the result.</p>
+            <p>An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result.</p>
           </div>
           <div class="cap">
             <h3>Workflow automation</h3>
@@ -434,7 +434,7 @@
     <!-- ============================================================ Case: Regulated client -->
     <section class="section" id="case">
       <div class="container">
-        <p class="eyebrow">Regulated client · 2025</p>
+        <p class="eyebrow">Regulated client · <time datetime="2025">2025</time></p>
         <h2 class="section__h2 section__h2--wide">An assistant that answers only from approved documents.</h2>
         <div class="two-up u-mt-12">
           <div>
@@ -457,8 +457,8 @@
             <p class="eyebrow">Evaluation and observability</p>
             <h2 class="section__h2 two-up__h2">How do you know the system is right?</h2>
             <p class="two-up__body">You know because it is measured, before and after it ships: an evaluation pipeline tests every change against questions with known answers, and production observability shows what the system does with real questions.</p>
-            <p class="two-up__body"><strong class="lead-in">Before it ships.</strong> An evaluation set is a collection of representative questions with the answer the system should give, or the refusal it should make, written with the people who know the domain. The pipeline runs it automatically whenever the model, the prompts, the retrieval or the documents change, and compares the result with the previous version, so a regression shows up before release rather than in front of a user.</p>
-            <p class="two-up__body"><strong class="lead-in">After it ships.</strong> Observability means logging what each question retrieved, what the system answered and which source it cited, within your rules for data, and following refusals, wrong answers, response times and cost over time. Failures found in production go back into the evaluation set, so the same mistake is tested for from then on.</p>
+            <p class="two-up__body"><strong class="lead-in">Before it ships.</strong> An evaluation set is a collection of representative questions, each with the answer the system should give or the note that it should decline. The set is written with the people who know the domain. The pipeline runs it automatically whenever the model, the prompts, the retrieval or the documents change, and compares the result with the previous version, so a regression shows up before release rather than in front of a user.</p>
+            <p class="two-up__body"><strong class="lead-in">After it ships.</strong> Observability means logging what was retrieved for each question, what the system answered and which source it cited, within your rules for how data may be handled. It also means following refusals, wrong answers, response times and cost over time. Failures found in production go back into the evaluation set, so the same mistake is tested for from then on.</p>
             <p class="two-up__body">Neither makes a model perfect. Together they make its errors visible and measurable, which is what lets you decide where the line should sit.</p>
           </div>
           <div class="panel">
@@ -467,7 +467,7 @@
               <li>Answers are supported by the source they cite</li>
               <li>Questions outside the documents are declined</li>
               <li>Questions the documents do answer are not declined</li>
-              <li>A change to the model, prompts or documents does not make things worse</li>
+              <li>A change to the model, prompts or documents does not make results worse</li>
             </ul>
           </div>
         </div>
@@ -509,19 +509,19 @@
           <div data-faq>
             <div data-faq-item>
               <h3>What is RAG?</h3>
-              <p>RAG (retrieval-augmented generation) is a way of building an AI assistant in which the system first retrieves the relevant passages from your own documents and then has a language model write the answer from those passages, with a reference to where the answer came from. In a well-built RAG system the model's general training supplies the language, not the facts. That makes answers checkable, and you control what the assistant knows by controlling which documents go in.</p>
+              <p>RAG (retrieval-augmented generation) is a technique in which the system first retrieves relevant passages from a document collection, such as your own documents, and then has a language model write the answer from those passages. Because the answer is built on retrieved passages, it can cite its source. The aim is for the facts in an answer to come from the documents rather than from the model's general training. That makes answers checkable, and you control what the assistant answers from by controlling which documents go in.</p>
             </div>
             <div data-faq-item>
-              <h3>Can it run on-prem or in a sovereign cloud?</h3>
+              <h3>Can the system run on-prem or in a sovereign cloud?</h3>
               <p>Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, as part of the AI engineering service, so the system can run where your data is allowed to be. Which model you can use then depends on what can run in that environment, and we say plainly what that choice means for quality.</p>
             </div>
             <div data-faq-item>
               <h3>Can the assistant refuse to answer outside the approved documents?</h3>
-              <p>Yes. That is how the assistant Vynatix built for a regulated client in 2025 works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why.</p>
+              <p>Yes. That is how the assistant Vynatix built in 2025 for a regulated client works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why.</p>
             </div>
             <div data-faq-item>
               <h3>Do you build MCP servers?</h3>
-              <p>Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface, so access is explicit and can be limited.</p>
+              <p>Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface. The server decides what is made available, so access is explicit and can be limited.</p>
             </div>
             <div data-faq-item>
               <h3>How is the work billed?</h3>

@@ -146,7 +146,7 @@
      "name": "Vad är RAG?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "RAG (retrieval-augmented generation) är ett sätt att bygga en AI-assistent där systemet först hämtar de relevanta avsnitten ur era egna dokument och sedan låter en språkmodell formulera svaret utifrån just dem, med hänvisning till var svaret kommer ifrån. I en väl byggd RAG-lösning står modellens allmänna träning för språket, inte för fakta. Det gör svaren möjliga att kontrollera, och ni styr vad assistenten vet genom att styra vilka dokument som ingår."
+      "text": "RAG (retrieval-augmented generation) är en teknik där systemet först hämtar relevanta avsnitt ur en dokumentsamling, till exempel era egna dokument, och sedan låter en språkmodell formulera svaret utifrån dem. Eftersom svaret bygger på hämtade avsnitt kan det hänvisa till sin källa. Målet är att fakta i svaret ska komma från dokumenten och inte från modellens allmänna träning. Det gör svaren möjliga att kontrollera, och ni styr vilket underlag assistenten svarar utifrån genom att styra vilka dokument som ingår."
      }
     },
     {
@@ -162,7 +162,7 @@
      "name": "Kan assistenten vägra svara på frågor utanför de godkända dokumenten?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Ja. Det är så assistenten som Vynatix byggde för en kund i reglerad verksamhet 2025 fungerar: den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och en fråga som den inte kan besvara med stöd i källorna avböjer den och lämnar över till en människa. Gränsen är dragen medvetet, och vi kan visa var den går och varför."
+      "text": "Ja. Så fungerar assistenten som Vynatix byggde 2025 för en kund i reglerad verksamhet: den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och en fråga som den inte kan besvara med stöd i källorna avböjer den och lämnar över till en människa. Gränsen är dragen medvetet, och vi kan visa var den går och varför."
      }
     },
     {
@@ -170,7 +170,7 @@
      "name": "Bygger ni MCP-servrar?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Ja. Vynatix bygger MCP-servrar och integrationer som en del av AI-utvecklingen. MCP (Model Context Protocol) är ett öppet protokoll som låter en AI-assistent eller agent anropa era verktyg och läsa era data genom ett definierat gränssnitt, så att åtkomsten är uttalad och kan begränsas."
+      "text": "Ja. Vynatix bygger MCP-servrar och integrationer som en del av AI-utvecklingen. MCP (Model Context Protocol) är ett öppet protokoll som låter en AI-assistent eller agent anropa era verktyg och läsa era data genom ett definierat gränssnitt. Servern bestämmer vad som görs tillgängligt, så att åtkomsten blir tydlig och kan begränsas."
      }
     },
     {
@@ -200,7 +200,7 @@
    "provider": {
     "@id": "https://vynatix.com/#organization"
    },
-   "description": "Vynatix bygger produktionssystem på stora språkmodeller, med seniora utvecklare inbäddade i kundens team: RAG och källgrundade svar, utvärderingspipelines, driftsättning i kundens egen miljö, även on-prem och i suveränt moln, och övervakning i produktion.",
+   "description": "Vynatix bygger produktionssystem på stora språkmodeller, med seniora utvecklare inbäddade i kundens team: RAG och källförankrade svar, utvärderingspipelines, driftsättning i kundens egen miljö, även on-prem och i suveränt moln, och övervakning i produktion.",
    "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "AI-utveckling",
@@ -217,7 +217,7 @@
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "RAG och källgrundade svar",
+       "name": "RAG och källförankrade svar",
        "description": "Systemet hämtar först relevanta avsnitt ur era dokument, och modellen svarar utifrån dem med hänvisning till källan."
       }
      },
@@ -226,7 +226,7 @@
       "itemOffered": {
        "@type": "Service",
        "name": "Agenter och harness engineering",
-       "description": "En agent är en modell som själv tar steg och anropar verktyg. Harnessen är koden runt den som styr vad den får göra och kontrollerar resultatet."
+       "description": "En agent är en modell som själv väljer nästa steg och anropar verktyg. Harnessen är koden runt modellen som styr vad den får göra och kontrollerar resultatet."
       }
      },
      {
@@ -234,7 +234,7 @@
       "itemOffered": {
        "@type": "Service",
        "name": "Automatisering av arbetsflöden",
-       "description": "Manuella steg i en process, som att sortera, plocka ut uppgifter eller skriva utkast, som en modell tar hand om i ett avgränsat flöde."
+       "description": "En modell tar över manuella steg i en process, som att sortera, plocka ut uppgifter eller skriva utkast, inom ett avgränsat flöde."
       }
      },
      {
@@ -352,7 +352,7 @@
       <div class="container">
         <p class="eyebrow">Tjänster</p>
         <h1 class="page-hero__h1">AI-utveckling i Göteborg, för system som ska ut i produktion.</h1>
-        <p class="page-hero__lede">Vynatix, ett mjukvarukonsultbolag i Göteborg, bygger AI-system på stora språkmodeller som körs i produktion, med seniora utvecklare inbäddade i ert team. Det betyder RAG som hämtar rätt underlag, utvärdering som visar när modellen har fel, driftsättning i er egen miljö (även on-prem och i suveränt moln) och övervakning efter lansering. Vi säger rakt ut vad en modell kan och inte kan, och föreslår ett enklare verktyg när det fungerar bättre.</p>
+        <p class="page-hero__lede">Vynatix, ett mjukvarukonsultbolag i Göteborg, bygger AI-system på stora språkmodeller för drift i produktion, med seniora utvecklare inbäddade i ert team. Det betyder RAG som hämtar rätt underlag, utvärdering som visar när modellen har fel, driftsättning i er egen miljö (även on-prem och i suveränt moln) och övervakning efter lansering. Vi säger rakt ut vad en modell kan och inte kan, och föreslår ett enklare verktyg när det fungerar bättre.</p>
       </div>
     </section>
 
@@ -364,7 +364,7 @@
             <p class="eyebrow">Omfattning</p>
             <h2 class="section__h2">Vad vi bygger</h2>
           </div>
-          <p class="section__lead">Allt nedan är delar av samma sak: produktionssystem på foundation models, alltså programvara byggd runt en stor språkmodell som riktiga användare förlitar sig på, med det ingenjörsarbete runt modellen som gör att ni kan lita på svaren och se vad systemet gör.</p>
+          <p class="section__lead">Allt nedan hör till samma helhet: produktionssystem på grundmodeller (foundation models), det vill säga programvara byggd kring en stor språkmodell som används på riktigt, och ingenjörsarbetet runt modellen som gör att ni kan kontrollera svaren och se vad systemet gör.</p>
         </div>
         <div class="caps">
           <div class="cap">
@@ -372,16 +372,16 @@
             <p>Program där användare ställer frågor på vanligt språk och får ett svar eller hjälp med en uppgift.</p>
           </div>
           <div class="cap">
-            <h3>RAG och källgrundade svar</h3>
+            <h3>RAG och källförankrade svar</h3>
             <p>Systemet hämtar först relevanta avsnitt ur era dokument, och modellen svarar utifrån dem med hänvisning till källan.</p>
           </div>
           <div class="cap">
             <h3>Agenter och harness engineering</h3>
-            <p>En agent är en modell som själv tar steg och anropar verktyg. Harnessen är koden runt den som styr vad den får göra och kontrollerar resultatet.</p>
+            <p>En agent är en modell som själv väljer nästa steg och anropar verktyg. Harnessen är koden runt modellen som styr vad den får göra och kontrollerar resultatet.</p>
           </div>
           <div class="cap">
             <h3>Automatisering av arbetsflöden</h3>
-            <p>Manuella steg i en process, som att sortera, plocka ut uppgifter eller skriva utkast, som en modell tar hand om i ett avgränsat flöde.</p>
+            <p>En modell tar över manuella steg i en process, som att sortera, plocka ut uppgifter eller skriva utkast, inom ett avgränsat flöde.</p>
           </div>
           <div class="cap">
             <h3>MCP-servrar och integrationer</h3>
@@ -434,8 +434,8 @@
     <!-- ============================================================ Uppdrag: reglerad kund -->
     <section class="section" id="uppdrag">
       <div class="container">
-        <p class="eyebrow">Reglerad kund · 2025</p>
-        <h2 class="section__h2 section__h2--wide">En RAG-assistent som bara svarar utifrån godkända dokument.</h2>
+        <p class="eyebrow">Kund i reglerad verksamhet · <time datetime="2025">2025</time></p>
+        <h2 class="section__h2 section__h2--wide">En assistent som bara svarar utifrån godkända dokument.</h2>
         <div class="two-up u-mt-12">
           <div>
             <p class="two-up__body">För en kund i reglerad verksamhet byggde vi en assistent med ett slutet kunskapsområde som bara svarar utifrån godkända dokument. Varje svar hänvisar till sin källa. En fråga som den inte kan besvara med stöd i källorna avböjer den och lämnar över till en människa, i stället för att gissa.</p>
@@ -443,7 +443,7 @@
             <a class="more" href="work.html#regulated-client" hreflang="en"><span>Läs om uppdraget (på engelska)</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div>
-            <blockquote>Ingen språkmodell har bokstavligen noll fel. Den ärliga designen är ett system som säger nej utanför sitt område, och där ni kan se var gränsen går.</blockquote>
+            <blockquote>Ingen språkmodell är helt felfri. Det ärliga är att bygga ett system som säger nej utanför sitt område, och där ni kan se var gränsen går.</blockquote>
           </div>
         </div>
       </div>
@@ -457,9 +457,9 @@
             <p class="eyebrow">Utvärdering och övervakning</p>
             <h2 class="section__h2 two-up__h2">Hur vet ni att systemet svarar rätt?</h2>
             <p class="two-up__body">Ni vet det för att det mäts, både före och efter lansering: en utvärderingspipeline testar varje ändring mot frågor med kända svar, och övervakningen i produktion visar vad systemet gör med riktiga frågor.</p>
-            <p class="two-up__body"><strong class="lead-in">Före lansering.</strong> Ett utvärderingsset är en samling representativa frågor där det står vilket svar systemet ska ge, eller att det ska avböja, framtagna tillsammans med dem som kan området. Pipelinen kör setet automatiskt varje gång modellen, promptarna, sökningen eller dokumenten ändras och jämför resultatet med föregående version, så att en försämring syns före lansering i stället för hos en användare.</p>
-            <p class="two-up__body"><strong class="lead-in">Efter lansering.</strong> Övervakning betyder att logga vad varje fråga hämtade, vad systemet svarade och vilken källa det hänvisade till, inom ramen för era regler för hur data får hanteras, och att följa avböjda frågor, felaktiga svar, svarstider och kostnad över tid. Fel som upptäcks i produktion läggs in i utvärderingssetet, så att testerna fångar samma misstag i fortsättningen.</p>
-            <p class="two-up__body">Inget av det gör en modell felfri. Tillsammans gör de felen synliga och mätbara, och det är det som gör att ni kan bestämma var gränsen ska gå.</p>
+            <p class="two-up__body"><strong class="lead-in">Före lansering.</strong> Ett utvärderingsset är en samling representativa frågor, var och en med det svar systemet ska ge eller beskedet att det ska avböja. Setet tas fram tillsammans med dem som kan området. Pipelinen kör setet automatiskt varje gång modellen, promptarna, sökningen eller dokumenten ändras och jämför resultatet med föregående version, så att en försämring syns före lansering i stället för hos en användare.</p>
+            <p class="two-up__body"><strong class="lead-in">Efter lansering.</strong> Övervakning betyder att logga vad som hämtades för varje fråga, vad systemet svarade och vilken källa det hänvisade till, inom ramen för era regler för hur data får hanteras. Det betyder också att följa avböjda frågor, felaktiga svar, svarstider och kostnad över tid. Fel som upptäcks i produktion läggs in i utvärderingssetet, så att testerna fångar samma misstag i fortsättningen.</p>
+            <p class="two-up__body">Ingen av delarna gör en modell felfri. Tillsammans gör de felen synliga och mätbara, och det är det som gör att ni kan bestämma var gränsen ska gå.</p>
           </div>
           <div class="panel">
             <p class="eyebrow eyebrow--muted">Det utvärderingen kontrollerar</p>
@@ -467,7 +467,7 @@
               <li>Att svaren stöds av källan de hänvisar till</li>
               <li>Att frågor utanför dokumenten avböjs</li>
               <li>Att frågor som dokumenten svarar på inte avböjs</li>
-              <li>Att en ändring av modell, promptar eller dokument inte gör det sämre</li>
+              <li>Att en ändring av modell, promptar eller dokument inte försämrar resultatet</li>
             </ul>
           </div>
         </div>
@@ -509,7 +509,7 @@
           <div data-faq>
             <div data-faq-item>
               <h3>Vad är RAG?</h3>
-              <p>RAG (retrieval-augmented generation) är ett sätt att bygga en AI-assistent där systemet först hämtar de relevanta avsnitten ur era egna dokument och sedan låter en språkmodell formulera svaret utifrån just dem, med hänvisning till var svaret kommer ifrån. I en väl byggd RAG-lösning står modellens allmänna träning för språket, inte för fakta. Det gör svaren möjliga att kontrollera, och ni styr vad assistenten vet genom att styra vilka dokument som ingår.</p>
+              <p>RAG (retrieval-augmented generation) är en teknik där systemet först hämtar relevanta avsnitt ur en dokumentsamling, till exempel era egna dokument, och sedan låter en språkmodell formulera svaret utifrån dem. Eftersom svaret bygger på hämtade avsnitt kan det hänvisa till sin källa. Målet är att fakta i svaret ska komma från dokumenten och inte från modellens allmänna träning. Det gör svaren möjliga att kontrollera, och ni styr vilket underlag assistenten svarar utifrån genom att styra vilka dokument som ingår.</p>
             </div>
             <div data-faq-item>
               <h3>Kan systemet köras on-prem eller i ett suveränt moln?</h3>
@@ -517,11 +517,11 @@
             </div>
             <div data-faq-item>
               <h3>Kan assistenten vägra svara på frågor utanför de godkända dokumenten?</h3>
-              <p>Ja. Det är så assistenten som Vynatix byggde för en kund i reglerad verksamhet 2025 fungerar: den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och en fråga som den inte kan besvara med stöd i källorna avböjer den och lämnar över till en människa. Gränsen är dragen medvetet, och vi kan visa var den går och varför.</p>
+              <p>Ja. Så fungerar assistenten som Vynatix byggde 2025 för en kund i reglerad verksamhet: den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och en fråga som den inte kan besvara med stöd i källorna avböjer den och lämnar över till en människa. Gränsen är dragen medvetet, och vi kan visa var den går och varför.</p>
             </div>
             <div data-faq-item>
               <h3>Bygger ni MCP-servrar?</h3>
-              <p>Ja. Vynatix bygger MCP-servrar och integrationer som en del av AI-utvecklingen. MCP (Model Context Protocol) är ett öppet protokoll som låter en AI-assistent eller agent anropa era verktyg och läsa era data genom ett definierat gränssnitt, så att åtkomsten är uttalad och kan begränsas.</p>
+              <p>Ja. Vynatix bygger MCP-servrar och integrationer som en del av AI-utvecklingen. MCP (Model Context Protocol) är ett öppet protokoll som låter en AI-assistent eller agent anropa era verktyg och läsa era data genom ett definierat gränssnitt. Servern bestämmer vad som görs tillgängligt, så att åtkomsten blir tydlig och kan begränsas.</p>
             </div>
             <div data-faq-item>
               <h3>Hur fakturerar ni?</h3>
@@ -534,7 +534,7 @@
           </div>
 
           <h2>Läs mer</h2>
-          <p>I guiden om <a href="ai-assistent-interna-dokument.html">AI-assistenter som söker i interna dokument</a> går vi igenom hur en sådan assistent byggs och hur den avböjer frågor som dokumenten inte svarar på. I guiden om <a href="ai-konsultbolag-sverige.html">AI-konsultbolag i Sverige</a> beskriver vi hur ni jämför olika sorters leverantörer inför nästa projekt. Fler guider på svenska finns på <a href="sv.html#guider">vår svenska startsida</a>.</p>
+          <p>I guiden om <a href="ai-assistent-interna-dokument.html">AI-assistenter som söker i interna dokument</a> går vi igenom hur en sådan assistent byggs och hur den avböjer frågor som dokumenten inte svarar på. I guiden om <a href="ai-konsultbolag-sverige.html">AI-konsultbolag i Sverige</a> går vi igenom hur ni jämför leverantörer inför ett AI-projekt. Fler guider på svenska finns på <a href="sv.html#guider">vår svenska startsida</a>.</p>
         </div>
       </div>
     </section>
@@ -548,7 +548,7 @@
         </div>
         <div class="cta-band__actions">
           <p class="cta-band__lede">Berätta vad systemet ska klara och vad det inte får svara fel på. Vi svarar inom en arbetsdag.</p>
-          <a class="btn btn--lg btn--tertiary" href="contact.html">Kontakta oss <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <a class="btn btn--lg btn--tertiary" href="contact.html" hreflang="en">Kontakta oss <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <p class="cta-band__contact"><a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
         </div>
       </div>

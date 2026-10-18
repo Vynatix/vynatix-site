@@ -15,7 +15,8 @@ highlights the things most worth keeping front-of-mind.
   the site — what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
-  verification tooling plus `stamp.js` (see the stamps bullet), never site content and
+  verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
+  (Python 3; rewrites the search block, footer and sitemap), never site content and
   never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
@@ -36,9 +37,11 @@ highlights the things most worth keeping front-of-mind.
   all six (`THEMES=…` on the check scripts). Logo files, favicon, app icons and
   manifest colours stay Forest.
 - **Header and footer (and the inline wordmark `<symbol>`) are duplicated
-  across every `*.html` file** — there is no template/include system. Any nav,
-  logo, footer, or contact-detail change must be made in **all** pages, and
-  `aria-current="page"` set on the active link.
+  across every `*.html` file** — there is no include system. Any nav, logo or
+  header contact-detail change must be made in **all** pages, and
+  `aria-current="page"` set on the active link. The footer is the one exception:
+  its source is the `FOOTER` template in `tools/seo-head.py`, so a footer change
+  is made there and the script run, which writes it into every page.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`), because GitHub Pages
   serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
@@ -58,9 +61,13 @@ highlights the things most worth keeping front-of-mind.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
   canonical link, Open Graph, hreflang for the four English/Swedish pairs, and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
-  matching the footer). When page content changes, move its `dateModified` and its
-  `sitemap.xml` `<lastmod>`; a visible FAQ (`data-faq`) and its FAQPage data must
-  match word for word. `tools/verify/seo.js` enforces this. The list pages name
+  matching the footer). When page content changes, move the page's `mod` date in
+  the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;
+  it writes `dateModified`, the `article:modified_time` meta and the sitemap
+  `<lastmod>` from that one value; a visible FAQ
+  (`data-faq`) and its FAQPage data must match word for word (answers are flat `p`
+  and `li`; the FAQPage is its own graph node). `tools/verify/seo.js` enforces this.
+  The list pages name
   other firms: quote only their own sites, alphabetical, dated, with the disclosure.
   See AGENTS.md, *Search, AI engines and structured data*.
 - **Progressive enhancement and accessibility are load-bearing:** no-JS users

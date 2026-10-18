@@ -20,6 +20,8 @@
 <meta property="og:description" content="Platform engineering förklarat av Vynatix i Göteborg: vad en intern utvecklarplattform är, när den lönar sig, vad ni ska mäta och hur ni börjar.">
 <meta property="og:url" content="https://vynatix.com/platform-engineering.html">
 <meta property="og:locale" content="sv_SE">
+<meta property="article:published_time" content="2026-10-18">
+<meta property="article:modified_time" content="2026-10-18">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -116,10 +118,7 @@
    }
   },
   {
-   "@type": [
-    "WebPage",
-    "FAQPage"
-   ],
+   "@type": "WebPage",
    "@id": "https://vynatix.com/platform-engineering.html",
    "url": "https://vynatix.com/platform-engineering.html",
    "name": "Platform engineering: vad det är, när det lönar sig och hur ni börjar, Vynatix",
@@ -131,8 +130,20 @@
    "publisher": {
     "@id": "https://vynatix.com/#organization"
    },
-   "dateModified": "2026-10-18",
    "datePublished": "2026-10-18",
+   "dateModified": "2026-10-18",
+   "hasPart": {
+    "@id": "https://vynatix.com/platform-engineering.html#vanliga-fragor"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://vynatix.com/platform-engineering.html#vanliga-fragor",
+   "url": "https://vynatix.com/platform-engineering.html#vanliga-fragor",
+   "inLanguage": "sv",
+   "isPartOf": {
+    "@id": "https://vynatix.com/platform-engineering.html"
+   },
    "mainEntity": [
     {
      "@type": "Question",
@@ -204,7 +215,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=f24cdeca">
+<link rel="stylesheet" href="styles.css?v=e234c0e4">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -383,29 +394,31 @@
           <p>Vynatix arbetar med platform engineering inne i ert befintliga team, tillsammans med era utvecklare och inte vid sidan av dem. Arbetet är en del av det vi gör inom molnplattformar för reglerade branscher: GCP, AWS och hybrider med on-prem, Kubernetes och GitOps, FinOps och kostnadskontroll samt migrering från äldre system.</p>
           <p>Vi är tre seniora utvecklare och bemannar inte ett stort plattformsteam. Gränsen för uppdraget kommer vi överens om innan vi börjar, vi redovisar timmarna varje vecka och vi tackar nej till arbete vi inte kan göra bra. Målet är tråkig infrastruktur: pipelines som förblir gröna och driftsättningar som går att förstå. <a href="services.html#cloud-platforms" hreflang="en">Mer om molnplattformar (på engelska)</a>.</p>
 
-          <h2 id="vanliga-fragor">Vanliga frågor</h2>
-          <div data-faq>
-            <div data-faq-item>
-              <h3>Behöver ett litet utvecklingsteam platform engineering?</h3>
-              <p>Ett litet utvecklingsteam behöver oftast inte platform engineering som en egen funktion. Det får mer ut av en snabb och stabil byggpipeline och några gemensamma mallar, som också är den bästa grunden om en plattform behövs senare.</p>
+          <section id="vanliga-fragor" aria-labelledby="vanliga-fragor-title">
+            <h2 id="vanliga-fragor-title">Vanliga frågor</h2>
+            <div data-faq>
+              <div data-faq-item>
+                <h3>Behöver ett litet utvecklingsteam platform engineering?</h3>
+                <p>Ett litet utvecklingsteam behöver oftast inte platform engineering som en egen funktion. Det får mer ut av en snabb och stabil byggpipeline och några gemensamma mallar, som också är den bästa grunden om en plattform behövs senare.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Måste en intern utvecklarplattform bygga på Kubernetes?</h3>
+                <p>Nej, en intern utvecklarplattform behöver inte bygga på Kubernetes. Kubernetes är vanligt i plattformar med många tjänster, men en plattform kan lika gärna bygga på en molnleverantörs hanterade tjänster eller på virtuella maskiner. Välj det som era team kan driva.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Behöver vi en utvecklarportal som Backstage?</h3>
+                <p>Ni behöver sällan en utvecklarportal från början. En portal samlar dokumentation, mallar och en katalog över tjänster, men den gör nytta först när det finns en fungerande pipeline och en gyllene väg att visa upp.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Vilka nyckeltal ska vi använda för att mäta en plattform?</h3>
+                <p>Börja med de fyra nyckeltalen från DORA: ledtid för ändringar, driftsättningsfrekvens, andel misslyckade ändringar och tid till återställning. Lägg till byggtiden per commit och följ trenden över tid.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Betyder en snabbare pipeline att man testar mindre?</h3>
+                <p>En snabbare pipeline behöver inte betyda att man testar mindre. Hos Volvo Cars tog Vynatix en byggpipeline från 47 minuter till 6 med samma tester och samma täckning.</p>
+              </div>
             </div>
-            <div data-faq-item>
-              <h3>Måste en intern utvecklarplattform bygga på Kubernetes?</h3>
-              <p>Nej, en intern utvecklarplattform behöver inte bygga på Kubernetes. Kubernetes är vanligt i plattformar med många tjänster, men en plattform kan lika gärna bygga på en molnleverantörs hanterade tjänster eller på virtuella maskiner. Välj det som era team kan driva.</p>
-            </div>
-            <div data-faq-item>
-              <h3>Behöver vi en utvecklarportal som Backstage?</h3>
-              <p>Ni behöver sällan en utvecklarportal från början. En portal samlar dokumentation, mallar och en katalog över tjänster, men den gör nytta först när det finns en fungerande pipeline och en gyllene väg att visa upp.</p>
-            </div>
-            <div data-faq-item>
-              <h3>Vilka nyckeltal ska vi använda för att mäta en plattform?</h3>
-              <p>Börja med de fyra nyckeltalen från DORA: ledtid för ändringar, driftsättningsfrekvens, andel misslyckade ändringar och tid till återställning. Lägg till byggtiden per commit och följ trenden över tid.</p>
-            </div>
-            <div data-faq-item>
-              <h3>Betyder en snabbare pipeline att man testar mindre?</h3>
-              <p>En snabbare pipeline behöver inte betyda att man testar mindre. Hos Volvo Cars tog Vynatix en byggpipeline från 47 minuter till 6 med samma tester och samma täckning.</p>
-            </div>
-          </div>
+          </section>
 
           <h2>Om Vynatix</h2>
           <p>Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat 2023 och en del av Ultra Group. Tre seniora utvecklare arbetar inbäddade i kundernas team inom Android Automotive, AI och molnplattformar, med Volvo Trucks och Volvo Cars bland kunderna. Vi svarar på förfrågningar inom en arbetsdag.</p>

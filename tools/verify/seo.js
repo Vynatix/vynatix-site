@@ -3,8 +3,15 @@
 //   match the canonical, <title> and meta description; html lang is en or sv and og:locale agrees
 // - every JSON-LD block parses, carries the Organization node, and names this page with a
 //   dateModified that matches the sitemap's lastmod
-// - a page with a visible FAQ ([data-faq-item]) carries the same questions and answers as
-//   FAQPage structured data, in the same order
+// - every page carries article:published_time and article:modified_time equal to its page
+//   node's datePublished and dateModified, dateModified equals the sitemap lastmod,
+//   published <= modified, and an Article node carries the same two dates
+// - a page with a visible FAQ ([data-faq-item]) has one FAQPage node in the graph, @type the
+//   plain string, @id = canonical + '#' + the id of the FAQ container's nearest
+//   ancestor-or-self, isPartOf the page, named by the page's hasPart, whose questions and
+//   answers (p and li in order, ol items numbered) equal the visible FAQ; answers are flat
+//   (no p inside li, no nested list) and contain no element other than h3, p, ul, ol, li
+//   and inline a, strong, em, abbr, code, br, span
 // - hreflang alternates are reciprocal and point at pages that exist
 // - sitemap.xml lists exactly the pages; robots.txt names the sitemap; llms.txt links only
 //   pages in the sitemap
@@ -58,10 +65,19 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
         clone.querySelectorAll('script, style, svg, code, pre').forEach((e) => e.remove());
         return clone.textContent;
       })();
+      const faqBox = document.querySelector('[data-faq]');
+      const faqFrag = faqBox ? (faqBox.closest('[id]') || {}).id || null : null;
+      const faqNesting = document.querySelectorAll('[data-faq-item] li p, [data-faq-item] li ul, [data-faq-item] li ol, [data-faq-item] p p').length;
+      const faqStray = [...document.querySelectorAll('[data-faq-item] *')].filter((e) => !/^(H3|P|UL|OL|LI|A|STRONG|EM|ABBR|CODE|BR|SPAN)$/.test(e.tagName)).length;
       const faq = [...document.querySelectorAll('[data-faq-item]')].map((item) => ({
         q: (item.querySelector('h3') || {}).textContent || '',
-        a: [...item.querySelectorAll('p')].map((x) => x.textContent).join(' '),
+        a: [...item.querySelectorAll('p, li')].map((x) => {
+          const ol = x.tagName === 'LI' && x.parentElement.tagName === 'OL';
+          const n = ol ? [...x.parentElement.children].indexOf(x) + 1 : 0;
+          return (ol ? n + '. ' : '') + x.textContent;
+        }).join(' '),
       }));
+      const metaProp = (name) => (document.querySelector(`meta[property="${name}"]`) || {}).content;
       return {
         lang: document.documentElement.getAttribute('lang'),
         title: document.title,
@@ -75,7 +91,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
         hreflang: [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((e) => [e.hreflang, e.href]),
         ld: [...document.querySelectorAll('script[type="application/ld+json"]')].map((e) => e.textContent),
         h1: document.querySelectorAll('h1').length,
-        faq, visible,
+        faq, faqFrag, faqNesting, faqStray, visible,
+        published: metaProp('article:published_time'),
+        modified: metaProp('article:modified_time'),
       };
     });
     const issues = [];
@@ -96,15 +114,38 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     }
     const types = (n) => [].concat(n['@type'] || []);
     if (!nodes.some((n) => n['@id'] === SITE + '#organization' && types(n).includes('Organization'))) issues.push('no Organization node');
+    const ISO = /^\d{4}-\d{2}-\d{2}$/;
     const self = nodes.find((n) => n['@id'] === canon);
     if (!self) issues.push('no structured-data node for this page');
-    else if (self.dateModified !== lastmod[canon]) issues.push(`dateModified ${self.dateModified} but sitemap lastmod ${lastmod[canon]}`);
-    if (d.faq.length) {
-      const ldFaq = self && types(self).includes('FAQPage') ? self.mainEntity || [] : [];
-      const same = ldFaq.length === d.faq.length && d.faq.every((f, i) =>
-        norm(f.q) === norm(ldFaq[i].name) && norm(f.a) === norm(ldFaq[i].acceptedAnswer && ldFaq[i].acceptedAnswer.text));
-      if (!same) issues.push(`visible FAQ (${d.faq.length}) and FAQPage data (${ldFaq.length}) differ`);
+    else {
+      if (typeof self['@type'] !== 'string') issues.push('page node @type is not a plain string');
+      if (!ISO.test(self.datePublished || '')) issues.push(`datePublished ${self.datePublished} (want YYYY-MM-DD)`);
+      if (!ISO.test(self.dateModified || '')) issues.push(`dateModified ${self.dateModified} (want YYYY-MM-DD)`);
+      if (self.dateModified !== lastmod[canon]) issues.push(`dateModified ${self.dateModified} but sitemap lastmod ${lastmod[canon]}`);
+      if (d.modified !== self.dateModified) issues.push(`article:modified_time ${d.modified} but dateModified ${self.dateModified}`);
+      if (d.published !== self.datePublished) issues.push(`article:published_time ${d.published} but datePublished ${self.datePublished}`);
+      if (self.datePublished > self.dateModified) issues.push('datePublished is after dateModified');
+      const art = nodes.find((n) => n['@id'] === canon + '#article');
+      if (art && (art.datePublished !== self.datePublished || art.dateModified !== self.dateModified)) issues.push('Article node dates differ from the page node');
     }
+    const faqNodes = nodes.filter((n) => types(n).includes('FAQPage'));
+    if (d.faq.length) {
+      if (d.faqNesting) issues.push(`${d.faqNesting} nested element(s) inside a FAQ answer (answers are flat p and li)`);
+      if (d.faqStray) issues.push(`${d.faqStray} element(s) of another type inside a FAQ answer (answers are h3, p, ul, ol, li and inline text)`);
+      if (!d.faqFrag) issues.push('the [data-faq] container has no id on itself or an ancestor');
+      if (faqNodes.length !== 1) issues.push(`${faqNodes.length} FAQPage nodes (want 1)`);
+      else {
+        const fq = faqNodes[0];
+        if (fq['@type'] !== 'FAQPage') issues.push('FAQPage @type is not the plain string');
+        if (fq['@id'] !== canon + '#' + d.faqFrag) issues.push(`FAQPage @id ${fq['@id']} (want ${canon}#${d.faqFrag})`);
+        if (!fq.isPartOf || fq.isPartOf['@id'] !== canon) issues.push('FAQPage isPartOf does not name this page');
+        if (self && (!self.hasPart || self.hasPart['@id'] !== fq['@id'])) issues.push('page node hasPart does not point at the FAQPage');
+        const ldFaq = fq.mainEntity || [];
+        const same = ldFaq.length === d.faq.length && d.faq.every((f, i) =>
+          norm(f.q) === norm(ldFaq[i].name) && norm(f.a) === norm(ldFaq[i].acceptedAnswer && ldFaq[i].acceptedAnswer.text));
+        if (!same) issues.push(`visible FAQ (${d.faq.length}) and FAQPage data (${ldFaq.length}) differ`);
+      }
+    } else if (faqNodes.length) issues.push('FAQPage node without a visible FAQ');
     // Copy rules
     const copy = [];
     if (/—/.test(d.visible)) copy.push('em dash');

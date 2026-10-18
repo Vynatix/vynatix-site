@@ -1,0 +1,167 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "ItemList",
+   "@id": "https://vynatix.com/android-automotive-consultancies-gothenburg.html#firms",
+   "name": "Software consultancies in Gothenburg working on Android Automotive (2026)",
+   "itemListOrder": "https://schema.org/ItemListUnordered",
+   "numberOfItems": 17,
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "item": {
+      "@type": "Organization",
+      "name": "AFRY",
+      "url": "https://afry.com"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "item": {
+      "@type": "Organization",
+      "name": "ALTEN Sweden",
+      "url": "https://www.alten.se/en/"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "item": {
+      "@type": "Organization",
+      "name": "Bertrandt",
+      "url": "https://www.bertrandt.com/en/international/sweden"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 4,
+     "item": {
+      "@type": "Organization",
+      "name": "GlobalLogic",
+      "url": "https://www.globallogic.com/se/"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 5,
+     "item": {
+      "@type": "Organization",
+      "name": "Knightec Group",
+      "url": "https://www.knightecgroup.com"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 6,
+     "item": {
+      "@type": "Organization",
+      "name": "Knowit",
+      "url": "https://www.knowit.se"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 7,
+     "item": {
+      "@type": "Organization",
+      "name": "Luxoft",
+      "url": "https://career.luxoft.com/locations/sweden"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 8,
+     "item": {
+      "@type": "Organization",
+      "name": "MCA Sweden",
+      "url": "https://mca-groupe.com/sv-se/"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 9,
+     "item": {
+      "@type": "Organization",
+      "name": "Norvion Systems",
+      "url": "https://norviontech.com/"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 10,
+     "item": {
+      "@type": "Organization",
+      "name": "TechLisbon",
+      "url": "https://www.techlisbon.com"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 11,
+     "item": {
+      "@type": "Organization",
+      "name": "Together Tech",
+      "url": "https://www.togethertech.com"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 12,
+     "item": {
+      "@type": "Organization",
+      "@id": "https://vynatix.com/#organization",
+      "name": "Vynatix",
+      "url": "https://vynatix.com/"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 13,
+     "item": {
+      "@type": "Organization",
+      "name": "Aidoni",
+      "url": "https://aidoni.se"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 14,
+     "item": {
+      "@type": "Organization",
+      "name": "Epitome",
+      "url": "https://epitome.se"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 15,
+     "item": {
+      "@type": "Organization",
+      "name": "Infotiv",
+      "url": "https://www.infotiv.se"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 16,
+     "item": {
+      "@type": "Organization",
+      "name": "Scionova",
+      "url": "https://www.scionova.com"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 17,
+     "item": {
+      "@type": "Organization",
+      "name": "Sigma Embedded Engineering",
+      "url": "https://sigmaembeddedengineering.se/"
+     }
+    }
+   ]
+  }
+ ]
+}

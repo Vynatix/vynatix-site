@@ -266,7 +266,7 @@
       <div class="container">
         <p class="eyebrow">Guide</p>
         <h1 class="page-hero__h1">Platform engineering: vad det är, när det lönar sig och hur ni börjar</h1>
-        <p class="page-hero__lede">Platform engineering är arbetet med att bygga och driva en intern plattform som låter utvecklare ta kod till produktion utan att lösa infrastruktur, pipelines och behörigheter på nytt varje gång. Guiden är skriven av Vynatix, ett mjukvarukonsultbolag i Göteborg som bygger och driver molnplattformar för reglerade branscher, och den säger också när en snabbare byggpipeline räcker.</p>
+        <p class="page-hero__lede">Platform engineering är arbetet med att bygga och driva en intern plattform som låter utvecklare få ut kod i produktion utan att lösa infrastruktur, pipelines och behörigheter på nytt varje gång. Guiden är skriven av Vynatix, ett mjukvarukonsultbolag i Göteborg som bygger och driver molnplattformar för reglerade branscher, och den säger också när en snabbare byggpipeline räcker.</p>
       </div>
     </section>
 
@@ -275,12 +275,12 @@
       <div class="container">
         <div class="prose">
           <p class="prose__meta">Publicerad <time datetime="2026-10-18">18 oktober 2026</time> · Vynatix</p>
-          <p>Platform engineering lönar sig när väntan på byggen, miljöer och driftsättningar kostar mer än de personer som skulle sköta en gemensam plattform. Innan ni är där räcker ofta en snabbare byggpipeline och några gemensamma mallar, och det är oftast där ni bör börja.</p>
+          <p>Platform engineering lönar sig när väntan på byggen, miljöer och driftsättningar kostar mer än de personer som skulle sköta en gemensam plattform. Innan ni är där räcker ofta en snabbare byggpipeline och några gemensamma mallar, och det är där de flesta bör börja.</p>
 
           <h2>Vad är platform engineering?</h2>
           <p>Platform engineering, ibland kallat plattformsteknik på svenska, är att behandla utvecklarnas verktyg och infrastruktur som en intern produkt, med ett team som ansvarar för den och utvecklarna som användare. Målet är att det vanligaste arbetet ska gå att göra på egen hand, utan att skicka ett ärende till ett annat team. En plattform innehåller oftast:</p>
           <ul>
-            <li>byggpipelines som testar och bygger varje ändring</li>
+            <li>byggpipelines som bygger och testar varje ändring</li>
             <li>miljöer för test och produktion som skapas på samma sätt varje gång</li>
             <li>mallar för nya tjänster, där det mesta redan är på plats</li>
             <li>behörigheter och hemligheter som hanteras på ett ställe</li>
@@ -288,11 +288,11 @@
           </ul>
 
           <h2>Vad är en intern utvecklarplattform och en gyllene väg?</h2>
-          <p>En intern utvecklarplattform (internal developer platform, IDP) är summan av de verktyg, tjänster och mallar som plattformsteamet erbjuder, och en gyllene väg (golden path) är den förberedda vägen från ny kod till körande tjänst för er vanligaste typ av tjänst. Den gyllene vägen är det enklaste alternativet, inte ett tvång.</p>
+          <p>En intern utvecklarplattform (internal developer platform, IDP) är summan av de verktyg, tjänster och mallar som plattformsteamet erbjuder, och en gyllene väg (golden path) är en färdig och underhållen väg från ny kod till produktion för en vanlig typ av tjänst. Den gyllene vägen är det enklaste alternativet, inte ett tvång.</p>
           <p>Vissa plattformar har en utvecklarportal ovanpå, byggd med verktyg som Backstage, och driftsättningen sker ofta med GitOps-verktyg som Argo CD eller Flux. Det är exempel på vanliga verktyg i kategorin, inte en lista över vad ni behöver.</p>
 
           <h2>Vad är skillnaden mellan platform engineering och DevOps?</h2>
-          <p>DevOps är ett arbetssätt där samma team bygger och driver sin programvara, och platform engineering är ett sätt att få det arbetssättet att hålla när organisationen växer. När varje team själv ska sköta pipelines, Kubernetes, behörigheter och övervakning blir bördan stor och lösningarna spretiga. Ett plattformsteam tar hand om det gemensamma, så att produktteamen kan fortsätta äga sina tjänster. Plattformen ersätter alltså inte DevOps, den gör det billigare att arbeta så.</p>
+          <p>DevOps är ett arbetssätt där utveckling och drift hänger ihop, ofta så att samma team bygger och driver sin programvara, medan platform engineering är ett sätt att få det arbetssättet att hålla när organisationen växer. När varje team själv ska sköta pipelines, Kubernetes, behörigheter och övervakning blir bördan stor och lösningarna spretiga. Ett plattformsteam tar hand om det gemensamma, så att produktteamen kan fortsätta äga sina tjänster. Plattformen ersätter alltså inte DevOps utan gör det lättare att arbeta så.</p>
         </div>
       </div>
     </section>
@@ -303,7 +303,7 @@
         <div class="prose">
           <h2>När lönar sig platform engineering, och när räcker en bättre pipeline?</h2>
           <p>Platform engineering lönar sig när flera team gör samma infrastrukturarbete om och om igen, och när väntan och manuella steg kostar mer än ett team som sköter en gemensam plattform. Typiska tecken är att en ny tjänst tar veckor att sätta upp, att varje team har sin egen variant av samma pipeline och att utvecklare väntar på andra team för att få en miljö eller en behörighet.</p>
-          <p>Har ni ett fåtal team räcker det ofta med en snabbare byggpipeline och några gemensamma mallar, även om målet på sikt är en större plattform. Det finns ingen gräns i antal utvecklare som gäller överallt. Räkna hellre på väntetiden: minuter som varje utvecklare förlorar per dag på byggen, köer och manuella steg, gånger antalet utvecklare.</p>
+          <p>Har ni ett fåtal team räcker det ofta med en snabbare byggpipeline och några gemensamma mallar. Det finns ingen gräns i antal utvecklare som passar alla organisationer. Räkna hellre på väntetiden: de minuter som varje utvecklare förlorar per dag på byggen, köer och manuella steg, gånger antalet utvecklare.</p>
 
           <h2>Vad ska ni mäta?</h2>
           <p>Mät hur snabbt och hur säkert ändringar når produktion, och börja mäta innan ni ändrar något så att ni har något att jämföra med. De fyra nyckeltal som de flesta utgår från kommer från forskningsprogrammet <a href="https://dora.dev/" target="_blank" rel="noopener">DORA (DevOps Research and Assessment)<span class="sr-only"> (öppnas i en ny flik)</span></a>:</p>
@@ -323,8 +323,8 @@
       <div class="container">
         <div class="prose">
           <h2>Hur blir ni snabbare i en reglerad bransch utan att tappa spårbarheten?</h2>
-          <p>Ni blir snabbare utan att tappa spårbarheten genom att korta väntetiden i pipelinen och automatisera de manuella stegen, medan granskningen, loggarna och kopplingen mellan ändring och leverans ligger kvar. Mycket av väntetiden i en reglerad verksamhet sitter inte i reglerna, utan i långa byggen, testköer och manuella steg som ingen har ifrågasatt på länge.</p>
-          <p>GitOps passar bra här. När den önskade driftmiljön beskrivs i ett versionshanterat repo blir varje ändring en commit med en författare, en granskning och en historik. Det som behöver finnas kvar efter en snabbare pipeline är detsamma som före:</p>
+          <p>Ni blir snabbare utan att tappa spårbarheten genom att korta väntetiden i pipelinen och automatisera de manuella steg som inte behöver göras för hand, medan granskningen, loggarna och kopplingen mellan ändring och leverans ligger kvar. Ofta sitter väntetiden i en reglerad verksamhet inte i reglerna utan i långa byggen, testköer och manuella steg som ingen har ifrågasatt på länge.</p>
+          <p>GitOps passar bra här. När driftmiljöns önskade tillstånd beskrivs i ett versionshanterat repo blir varje ändring en commit: den har en författare, kan granskas innan den går ut och finns kvar i historiken. Det som behöver finnas kvar efter en snabbare pipeline är detsamma som före:</p>
           <ul>
             <li>kodgranskning innan en ändring går vidare</li>
             <li>en tydlig koppling mellan ändring, testresultat och det som driftsattes</li>
@@ -380,7 +380,8 @@
           </ol>
 
           <h2>Hur arbetar Vynatix med platform engineering?</h2>
-          <p>Vynatix arbetar med platform engineering inne i ert befintliga team, tillsammans med era utvecklare och inte vid sidan av dem. Det är en del av det vi gör inom molnplattformar för reglerade branscher: GCP, AWS och hybrider med on-prem, Kubernetes och GitOps, FinOps och kostnadskontroll samt migrering bort från äldre system. Vi kommer överens om gränsen för uppdraget innan vi börjar, redovisar timmarna varje vecka och tackar nej till arbete vi inte kan göra bra. Målet är tråkig infrastruktur: pipelines som förblir gröna och driftsättningar som går att förstå. <a href="services.html#cloud-platforms" hreflang="en">Mer om molnplattformar (på engelska)</a>.</p>
+          <p>Vynatix arbetar med platform engineering inne i ert befintliga team, tillsammans med era utvecklare och inte vid sidan av dem. Arbetet är en del av det vi gör inom molnplattformar för reglerade branscher: GCP, AWS och hybrider med on-prem, Kubernetes och GitOps, FinOps och kostnadskontroll samt migrering från äldre system.</p>
+          <p>Vi är tre seniora utvecklare och bemannar inte ett stort plattformsteam. Gränsen för uppdraget kommer vi överens om innan vi börjar, vi redovisar timmarna varje vecka och vi tackar nej till arbete vi inte kan göra bra. Målet är tråkig infrastruktur: pipelines som förblir gröna och driftsättningar som går att förstå. <a href="services.html#cloud-platforms" hreflang="en">Mer om molnplattformar (på engelska)</a>.</p>
 
           <h2 id="vanliga-fragor">Vanliga frågor</h2>
           <div data-faq>

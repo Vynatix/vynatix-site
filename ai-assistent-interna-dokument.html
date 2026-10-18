@@ -8,7 +8,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa, Vynatix</title>
-<meta name="description" content="Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar ur interna dokument med källa och lämnar över det den inte kan belägga till en människa.">
+<meta name="description" content="Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar utifrån interna dokument med källhänvisning och lämnar resten till en människa.">
 <!-- seo -->
 <!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
      structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Vynatix">
 <meta property="og:title" content="Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa, Vynatix">
-<meta property="og:description" content="Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar ur interna dokument med källa och lämnar över det den inte kan belägga till en människa.">
+<meta property="og:description" content="Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar utifrån interna dokument med källhänvisning och lämnar resten till en människa.">
 <meta property="og:url" content="https://vynatix.com/ai-assistent-interna-dokument.html">
 <meta property="og:locale" content="sv_SE">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
@@ -123,7 +123,7 @@
    "@id": "https://vynatix.com/ai-assistent-interna-dokument.html",
    "url": "https://vynatix.com/ai-assistent-interna-dokument.html",
    "name": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa, Vynatix",
-   "description": "Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar ur interna dokument med källa och lämnar över det den inte kan belägga till en människa.",
+   "description": "Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar utifrån interna dokument med källhänvisning och lämnar resten till en människa.",
    "inLanguage": "sv",
    "isPartOf": {
     "@id": "https://vynatix.com/#website"
@@ -139,12 +139,12 @@
      "name": "Vad är skillnaden mellan en RAG-assistent och en vanlig chattbot?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "En RAG-assistent hämtar först relevanta avsnitt ur era egna dokument och svarar utifrån dem, medan en vanlig chattbot svarar utifrån det som språkmodellen lärde sig under träningen. Därför kan varje svar från en RAG-assistent hänvisa till ett avsnitt som användaren kan läsa och kontrollera."
+      "text": "En RAG-assistent (retrieval-augmented generation) hämtar först relevanta avsnitt ur era egna dokument och svarar utifrån dem, medan en vanlig AI-chattbot svarar utifrån det som språkmodellen lärde sig under träningen. Därför kan varje svar från en RAG-assistent hänvisa till ett avsnitt som användaren kan läsa och kontrollera."
      }
     },
     {
      "@type": "Question",
-     "name": "Kan en AI-assistent helt sluta hitta på svar?",
+     "name": "Går det att få en AI-assistent att aldrig hitta på svar?",
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "Nej, ingen språkmodell har bokstavligen noll fel. Det som går att bygga är en assistent som bara svarar med stöd i godkända dokument, citerar källan och lämnar över resten till en människa, och vars fel mäts vid varje ändring. Då syns felen, och ni kan bestämma var gränsen ska gå."
@@ -152,18 +152,18 @@
     },
     {
      "@type": "Question",
-     "name": "Fungerar det med dokument och frågor på svenska?",
+     "name": "Fungerar en RAG-assistent med dokument och frågor på svenska?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Ja, om sökningen är byggd för svenska. Sammansatta ord och böjningar måste hanteras i nyckelordssökningen, embeddingmodellen måste klara svenska väl, och testerna ska göras med riktiga frågor formulerade så som användarna faktiskt skriver."
+      "text": "Ja, om sökningen är byggd för svenska. Nyckelordssökningen måste hantera sammansatta ord och böjningar, embeddingmodellen måste klara svenska väl, och testerna ska göras med frågor formulerade så som användarna faktiskt skriver."
      }
     },
     {
      "@type": "Question",
-     "name": "Kan assistenten köras i vår egen miljö?",
+     "name": "Kan en AI-assistent för interna dokument köras i vår egen miljö?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Ja. Vynatix driftsätter AI-system i kundens egen miljö, även on-prem och i suveränt moln, och det ingår i tjänsten. Vilken språkmodell som går att använda beror på vad som kan köras i den miljön, och vi säger rakt ut vad det betyder för kvaliteten."
+      "text": "Ja. Vynatix driftsätter AI-system i kundens egen miljö, även on-prem och i suveränt moln. Vilken språkmodell som går att använda beror på vad som kan köras där, och vi säger rakt ut vad det betyder för kvaliteten."
      }
     }
    ]
@@ -172,7 +172,7 @@
    "@type": "Article",
    "@id": "https://vynatix.com/ai-assistent-interna-dokument.html#article",
    "headline": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa",
-   "description": "Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar ur interna dokument med källa och lämnar över det den inte kan belägga till en människa.",
+   "description": "Guide från Vynatix i Göteborg: så bygger ni en AI-assistent som svarar utifrån interna dokument med källhänvisning och lämnar resten till en människa.",
    "inLanguage": "sv",
    "mainEntityOfPage": {
     "@id": "https://vynatix.com/ai-assistent-interna-dokument.html"
@@ -258,7 +258,7 @@
       <div class="container">
         <p class="eyebrow">Guide</p>
         <h1 class="page-hero__h1">Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa</h1>
-        <p class="page-hero__lede">En AI-assistent som söker i interna dokument ska bara svara när den kan peka på källan, och annars lämna över frågan till en människa. Det är hela designen. Guiden är skriven av Vynatix, ett mjukvarukonsultbolag i Göteborg som bygger AI-system i produktion, och visar hur ni bygger en sådan assistent och mäter att den avböjer rätt.</p>
+        <p class="page-hero__lede">En AI-assistent som söker i interna dokument ska bara svara när den kan peka på källan, och annars lämna över frågan till en människa. Det är hela designen. Guiden är skriven av Vynatix, ett mjukvarukonsultbolag i Göteborg som bygger AI-system i produktion, och visar hur ni bygger den och mäter att den avböjer rätt.</p>
       </div>
     </section>
 
@@ -266,8 +266,8 @@
     <section class="section" id="gransen">
       <div class="container">
         <div class="prose">
-          <p class="prose__meta">Publicerad 18 oktober 2026 · Vynatix</p>
-          <p>Bygg den så här:</p>
+          <p class="prose__meta">Publicerad <time datetime="2026-10-18">18 oktober 2026</time> · Vynatix</p>
+          <p>I korthet bygger ni den så här:</p>
           <ol>
             <li>Välj ut de dokument som faktiskt är godkända, och ge varje dokument en ägare.</li>
             <li>Dela upp dokumenten i avsnitt och indexera dem med metadata och behörigheter.</li>
@@ -275,18 +275,18 @@
             <li>Låt modellen svara enbart utifrån de avsnitten, med citat, och avböja när de inte räcker.</li>
             <li>Mät vid varje ändring hur ofta assistenten svarar fel och hur ofta den avböjer i onödan.</li>
           </ol>
-          <p>Vi byggde en sådan assistent för en kund i reglerad verksamhet 2025. Den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och frågor som den inte kan belägga i källorna avböjer den och lämnar över till en människa. Uppdraget är anonymt, så guiden beskriver arbetssättet i allmänna termer.</p>
+          <p>Vi byggde 2025 en assistent med den designen för en kund i reglerad verksamhet. Den svarar bara utifrån godkända dokument, varje svar hänvisar till sin källa, och frågor som den inte kan belägga i källorna avböjer den och lämnar över till en människa. Kunden är anonym, så guiden beskriver inte just den lösningen utan hur en sådan assistent byggs i allmänhet.</p>
 
           <h2>Varför ska assistenten vägra svara, och var går gränsen?</h2>
-          <p>Assistenten ska vägra svara när den saknar stöd i dokumenten, eftersom ett felaktigt svar som låter säkert kostar mer än ett ärligt nej. En språkmodell formulerar alltid något. Saknas underlag fyller den i med det som låter rimligt, och i en rutin eller ett avtal kan användaren inte se skillnad på ett belagt svar och en gissning. Ett avböjande är därför en funktion, och frågor som avböjs ofta visar var dokumentationen har luckor.</p>
-          <p>Gränsen går vid källan: assistenten svarar på det som står i de godkända dokumenten, men inte på det som kräver tolkning, bedömning av ett enskilt fall eller kunskap utanför dokumenten. Dra den gränsen medvetet, skriv ner den och se till att ni kan visa den. Så arbetade vi för den reglerade kunden, och vi kan visa var gränsen går och varför.</p>
+          <p>Assistenten ska vägra svara när den saknar stöd i dokumenten, eftersom ett felaktigt svar som låter säkert kostar mer än ett ärligt nej. En språkmodell är byggd för att formulera ett svar. Saknas underlag fyller den gärna i med det som låter rimligt, och när frågan gäller en rutin eller ett avtal kan användaren inte se skillnad på ett belagt svar och en gissning. Ett avböjande är därför inget fel utan en del av designen, och frågor som avböjs ofta visar var dokumentationen har luckor.</p>
+          <p>Gränsen bör gå vid källan: assistenten svarar på det som står i de godkända dokumenten, men inte på det som kräver tolkning, en bedömning av ett enskilt fall eller kunskap utanför dokumenten. Dra den medvetet och se till att ni kan visa var den går och varför, så som vi gjorde för den reglerade kunden.</p>
 
           <h2>Vilka dokument ska ingå, och vem äger dem?</h2>
-          <p>Bara dokument som är godkända för ändamålet ska ingå, och varje dokument behöver en namngiven ägare som ansvarar för att innehållet är aktuellt. Ett utkast eller en gammal version ger svar som ser lika trovärdiga ut som allt annat.</p>
+          <p>Bara dokument som är godkända för ändamålet ska ingå, och varje dokument behöver en namngiven ägare som ansvarar för att innehållet är aktuellt. Ett utkast eller en gammal version ger svar som ser lika trovärdiga ut som alla andra.</p>
           <ul>
             <li>Börja med en avgränsad samling, till exempel rutinerna inom ett område, i stället för hela intranätet.</li>
             <li>Ta bort ersatta versioner när en ny godkänns, så att två versioner aldrig konkurrerar.</li>
-            <li>Bestäm vem som tar emot de frågor assistenten lämnar över, innan den går live.</li>
+            <li>Bestäm vem som tar emot de frågor assistenten lämnar över innan den tas i bruk.</li>
           </ul>
         </div>
       </div>
@@ -299,18 +299,19 @@
           <div>
             <p class="eyebrow">Indexering</p>
             <h2 class="section__h2 two-up__h2">Hur delar ni upp och indexerar dokumenten?</h2>
-            <p class="two-up__body">Dela upp dokumenten efter deras egen struktur, rubrik för rubrik och stycke för stycke, så att varje avsnitt rymmer ett sammanhängande påstående och bär med sig metadata om var det kommer ifrån. Lägg rubrikvägen först i varje avsnitt, så att ”4.2 Undantag” fortfarande vet vilken rutin det hör till.</p>
+            <p class="two-up__body">Dela upp dokumenten efter deras egen struktur, rubrik för rubrik och stycke för stycke, så att varje avsnitt handlar om en sak och bär med sig metadata om var det kommer ifrån. Lägg dokumentets titel och de överordnade rubrikerna först i varje avsnitt, så att ”4.2 Undantag” fortfarande går att knyta till rätt rutin.</p>
             <p class="two-up__body"><strong class="lead-in">Behörigheter.</strong> Filtrera på behörighet redan i sökningen, innan modellen ser någon text. En instruktion i prompten är inget skydd.</p>
-            <p class="two-up__body"><strong class="lead-in">Svensk text.</strong> Kontrollera textextraheringen innan ni indexerar: PDF:er ger ofta avstavade ord, upprepade sidhuvuden och tabeller som blir en rad siffror. Välj en embeddingmodell som hanterar svenska väl, och testa den på era egna frågor.</p>
+            <p class="two-up__body"><strong class="lead-in">Ren text.</strong> Kontrollera den extraherade texten innan ni indexerar. PDF-filer ger ofta avstavade ord, upprepade sidhuvuden och tabeller som blir en rad siffror.</p>
+            <p class="two-up__body"><strong class="lead-in">Svensk text.</strong> Välj en embeddingmodell som hanterar svenska väl, och testa den på era egna dokument och frågor.</p>
           </div>
           <div class="panel">
             <p class="eyebrow eyebrow--muted">Följer med varje avsnitt</p>
             <ul>
-              <li>Dokumentets titel och rubrikväg</li>
-              <li>Version och datum då den började gälla</li>
+              <li>Dokumentets titel och överordnade rubriker</li>
+              <li>Version och giltighetsdatum</li>
               <li>Dokumentets ägare</li>
               <li>Vilka som får läsa avsnittet</li>
-              <li>Länk till avsnittet, för citatet</li>
+              <li>Länk till avsnittet, som citatet pekar på</li>
             </ul>
           </div>
         </div>
@@ -323,19 +324,20 @@
         <div class="prose">
           <h2>Hur hämtar ni rätt avsnitt för svenska frågor?</h2>
           <p>Använd hybridsökning, alltså nyckelordssökning och vektorsökning tillsammans, eftersom de missar olika saker. Vektorsökningen hittar avsnitt som säger samma sak med andra ord. Nyckelordssökningen hittar det exakta, som paragrafnummer, produktkoder och förkortningar.</p>
-          <p>Svenskan ställer två särskilda krav. Det första är sammansatta ord: en användare skriver ”ersättning vid semester” medan dokumentet säger ”semesterersättning”, och en sökning som bara jämför hela ord missar träffen. Dela därför upp sammansättningar i indexet. Det andra är böjningar, där ”avtal”, ”avtalet” och ”avtalen” ska räknas som samma ord. Låt sedan en reranker, en modell som sorterar om träffarna, välja ut ett fåtal avsnitt till modellen. Fler avsnitt ger inte bättre svar, bara mer att ta fel på.</p>
+          <p>I nyckelordssökningen ställer svenskan två särskilda krav. Det första är sammansatta ord: en användare skriver ”ersättning vid semester” medan dokumentet säger ”semesterersättning”, och en sökning som bara jämför hela ord missar träffen. Dela därför upp sammansatta ord i indexet. Det andra är böjningar: ”avtal”, ”avtalet” och ”avtalen” ska räknas som samma ord, vilket svensk stemming eller lemmatisering löser.</p>
+          <p>Låt en reranker, en modell som sorterar om träffarna efter relevans, välja ut ett fåtal avsnitt som språkmodellen får se. Fler avsnitt ger inte automatiskt bättre svar, men mer att ta fel på.</p>
 
           <h2>Hur tvingar ni modellen att citera källan och avböja annars?</h2>
-          <p>Ni tvingar fram citat och avböjanden genom att kontrollera dem i koden, inte bara be om dem i prompten. Modellen instrueras att svara enbart utifrån de bifogade avsnitten, ange källan för varje påstående och annars svara med ett fast avböjande. Eftersom en instruktion inte alltid följs gör systemet runt modellen tre kontroller.</p>
+          <p>Ni tvingar fram citat och avböjanden genom att kontrollera dem i koden, inte bara be om dem i prompten. Instruera modellen att svara enbart utifrån de bifogade avsnitten, ange källan för varje påstående och annars avböja med en fast formulering. Eftersom en instruktion inte alltid följs gör systemet runt modellen tre saker.</p>
           <ol>
             <li>Före modellen: hittar sökningen inget tillräckligt relevant avsnitt anropas modellen inte alls, och frågan går direkt till en människa.</li>
             <li>Efter modellen: varje citat måste peka på ett avsnitt som faktiskt hämtades. Ett svar utan giltigt citat visas inte.</li>
-            <li>Vid överlämning: frågan och det som hämtades går med till den som ska svara, så att personen inte börjar från noll.</li>
+            <li>Vid överlämning: frågan och de avsnitt som hämtades skickas med till den som ska svara, så att personen inte börjar från noll.</li>
           </ol>
-          <p>Visa citatet som en länk till rätt avsnitt. Då kan användaren kontrollera svaret själv.</p>
+          <p>Citatkontrollen visar att citatet pekar på ett verkligt avsnitt, inte att avsnittet säger det som svaret påstår. Det senare fångar utvärderingen. Visa citatet som en länk till rätt avsnitt, så kan användaren kontrollera svaret själv.</p>
 
           <h2>Hur mäter ni att assistenten avböjer rätt?</h2>
-          <p>Ni mäter det med ett utvärderingsset med både frågor som ska besvaras och frågor som ska avböjas, som körs om vid varje ändring. Ta fram setet tillsammans med dokumentägarna, eftersom de vet vad det rätta svaret är, och ta med de svåra fallen: frågor som ligger nära området men inte täcks, och frågor där bara en äldre version av dokumentet hade svaret.</p>
+          <p>Ni mäter det med ett utvärderingsset som innehåller både frågor som ska besvaras och frågor som ska avböjas, och som ni kör om varje gång modellen, promptarna, sökningen eller dokumenten ändras. Ta fram setet med dokumentägarna, som vet vad det rätta svaret är, och ta med de svåra fallen: frågor som ligger nära området men inte täcks, och frågor där bara en äldre version av dokumentet hade svaret.</p>
           <table>
             <thead>
               <tr><th scope="col">Utfall</th><th scope="col">Vad som hände</th></tr>
@@ -347,7 +349,7 @@
               <tr><td>Falskt avböjande</td><td>Dokumenten hade svaret, men assistenten avböjde.</td></tr>
             </tbody>
           </table>
-          <p>Följ båda sorternas fel. Falska svar är de dyra, men falska avböjanden får folk att sluta använda assistenten, och det ena går alltid att pressa ner genom att låta det andra växa. Bestäm i förväg vilken nivå verksamheten accepterar, kör setet när modellen, promptarna, sökningen eller dokumenten ändras, och lägg till de fel som upptäcks i produktion.</p>
+          <p>Följ båda typerna av fel. Falska svar kostar mest, men falska avböjanden får folk att sluta använda assistenten, och den ena sortens fel går alltid att pressa ner genom att låta den andra öka. Bestäm i förväg vilken nivå verksamheten accepterar, och gör varje fel som upptäcks i produktion till en ny fråga i setet.</p>
         </div>
       </div>
     </section>
@@ -357,10 +359,10 @@
       <div class="container">
         <div class="prose">
           <h2>Hur kör ni assistenten i er egen miljö?</h2>
-          <p>Ni kör den där era data redan får finnas, på egna servrar (on-prem) eller i ett suveränt moln, med modeller, index och loggar i samma miljö. Det styr valet av språkmodell, som måste gå att köra där, och valet påverkar svarskvaliteten, så mät det med samma utvärderingsset. Loggarna kan innehålla personuppgifter och behöver samma skydd och samma regler för gallring som dokumenten. Driftsättning i kundens egen miljö, även on-prem och i suveränt moln, ingår i det Vynatix gör inom AI-utveckling.</p>
+          <p>Ni kör den där era data redan får finnas, på egna servrar (on-prem) eller i ett suveränt moln, med modeller, index och loggar i samma miljö. Det styr valet av språkmodell, som måste gå att köra där och påverkar svarskvaliteten, så jämför kandidaterna med samma utvärderingsset. Loggarna kan innehålla personuppgifter och behöver samma skydd som dokumenten och tydliga regler för gallring. Driftsättning i kundens egen miljö, även on-prem och i suveränt moln, ingår i det Vynatix gör inom AI-utveckling.</p>
 
           <h2>Vad kostar det i arbete?</h2>
-          <p>Det mesta av arbetet ligger inte i modellen, utan i dokumenten, utvärderingssetet och överlämningen. Det som tar tid är att välja ut och städa dokumenten, att få tid med dem som kan området och att bestämma vem som tar emot avböjda frågor. Efter lansering tillkommer löpande arbete med dokument som ändras, utvärderingar som körs om och avböjda frågor som någon går igenom, plus kostnaden för modellanrop eller egen hårdvara. Hur stort arbetet blir beror på hur många dokument det gäller och hur ordnade de är, så ett ärligt besked kräver att någon har sett dem.</p>
+          <p>Det mesta av arbetet ligger i dokumenten, utvärderingssetet och överlämningen, inte i modellen: att välja ut och städa dokumenten, att få tid med dem som kan området och att bestämma vem som tar emot avböjda frågor. Efter lansering tillkommer löpande arbete med ändrade dokument, nya utvärderingskörningar och avböjda frågor som någon går igenom, plus kostnaden för modellanrop eller egen hårdvara. Hur mycket det blir beror på hur många dokument det gäller och hur ordnade de är, så ett ärligt besked kräver att någon har sett dem.</p>
         </div>
       </div>
     </section>
@@ -373,19 +375,19 @@
           <div data-faq>
             <div data-faq-item>
               <h3>Vad är skillnaden mellan en RAG-assistent och en vanlig chattbot?</h3>
-              <p>En RAG-assistent hämtar först relevanta avsnitt ur era egna dokument och svarar utifrån dem, medan en vanlig chattbot svarar utifrån det som språkmodellen lärde sig under träningen. Därför kan varje svar från en RAG-assistent hänvisa till ett avsnitt som användaren kan läsa och kontrollera.</p>
+              <p>En RAG-assistent (retrieval-augmented generation) hämtar först relevanta avsnitt ur era egna dokument och svarar utifrån dem, medan en vanlig AI-chattbot svarar utifrån det som språkmodellen lärde sig under träningen. Därför kan varje svar från en RAG-assistent hänvisa till ett avsnitt som användaren kan läsa och kontrollera.</p>
             </div>
             <div data-faq-item>
-              <h3>Kan en AI-assistent helt sluta hitta på svar?</h3>
+              <h3>Går det att få en AI-assistent att aldrig hitta på svar?</h3>
               <p>Nej, ingen språkmodell har bokstavligen noll fel. Det som går att bygga är en assistent som bara svarar med stöd i godkända dokument, citerar källan och lämnar över resten till en människa, och vars fel mäts vid varje ändring. Då syns felen, och ni kan bestämma var gränsen ska gå.</p>
             </div>
             <div data-faq-item>
-              <h3>Fungerar det med dokument och frågor på svenska?</h3>
-              <p>Ja, om sökningen är byggd för svenska. Sammansatta ord och böjningar måste hanteras i nyckelordssökningen, embeddingmodellen måste klara svenska väl, och testerna ska göras med riktiga frågor formulerade så som användarna faktiskt skriver.</p>
+              <h3>Fungerar en RAG-assistent med dokument och frågor på svenska?</h3>
+              <p>Ja, om sökningen är byggd för svenska. Nyckelordssökningen måste hantera sammansatta ord och böjningar, embeddingmodellen måste klara svenska väl, och testerna ska göras med frågor formulerade så som användarna faktiskt skriver.</p>
             </div>
             <div data-faq-item>
-              <h3>Kan assistenten köras i vår egen miljö?</h3>
-              <p>Ja. Vynatix driftsätter AI-system i kundens egen miljö, även on-prem och i suveränt moln, och det ingår i tjänsten. Vilken språkmodell som går att använda beror på vad som kan köras i den miljön, och vi säger rakt ut vad det betyder för kvaliteten.</p>
+              <h3>Kan en AI-assistent för interna dokument köras i vår egen miljö?</h3>
+              <p>Ja. Vynatix driftsätter AI-system i kundens egen miljö, även on-prem och i suveränt moln. Vilken språkmodell som går att använda beror på vad som kan köras där, och vi säger rakt ut vad det betyder för kvaliteten.</p>
             </div>
           </div>
 

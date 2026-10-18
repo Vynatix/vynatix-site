@@ -40,12 +40,18 @@ Then, from `tools/`:
 | `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test, plus skip link, the still client list, no-JS and reduced-motion fallbacks |
 | `node verify/theme.js` | The per-visit random colour scheme: the draw is random, stable across pages, the toggle works inside it, no flash, blocked or poisoned storage survived, preloads are used |
 | `node verify/links.js` | Every internal link, script, style and image resolves |
+| `node verify/seo.js` | Search, sharing and copy: one canonical per page matching the sitemap, Open Graph matching the title and description, every JSON-LD block parses and dates match the sitemap, the visible FAQ and its FAQPage data agree, hreflang pairs are reciprocal, robots.txt names the sitemap, llms.txt links only real pages, and no em dash, exclamation mark or ellipsis in visible text |
 | `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those four files |
 | `node verify/stale-cache.js` | Self-contained: a browser holding OLD copies of the four shared files at the plain URLs is not paired with the new pages (a control without stamps must break for the intended reason, the stamped pages must fetch every file under its stamp and show nothing of the old build). `ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the engine iOS Chrome uses (needs `npx playwright install webkit`) |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
-| `node verify/screenshot.js baseline` | Capture 9 pages x each theme under test into `baseline/` |
+| `node verify/screenshot.js baseline` | Capture every page in PAGES x each theme under test into `baseline/` |
 | `node verify/screenshot.js current` | Capture into `current/` |
 | `node verify/screenshot.js compare` | Pixel-diff `current/` against `baseline/` |
+
+`indexnow.js` is not a check: after a change is live on vynatix.com, `node indexnow.js`
+tells Bing and the other IndexNow engines which URLs changed (all of `sitemap.xml`, or the
+pages you name). It proves ownership with the key file at the site root, so it only works once
+that file is published.
 
 `screenshot.js compare` is the gate for any visual refactor: capture a baseline
 before the change, then compare after. Captures force images to decode first, so

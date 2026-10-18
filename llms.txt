@@ -1,0 +1,38 @@
+# Vynatix
+
+> Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Three senior engineers work embedded in client teams on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.
+
+> Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat 2023 och en del av Ultra Group. Tre seniora utvecklare arbetar inbäddade i kundernas team inom Android Automotive, AI och molnplattformar, med Volvo Trucks och Volvo Cars bland kunderna.
+
+- Legal name: Vynatix AB. Org.nr 559445-6542. Post: Mailbox 1611, 411 42 Gothenburg, Sweden.
+- Contact: front.disk@vynatix.com, +46 72 071 06 76. We reply within one working day.
+- How we work: senior engineers placed inside your team, hours reported every week and billed for the hours worked, every project written down.
+
+## Pages in English
+
+- [Home](https://vynatix.com/): what we do, how working with us goes, selected work, common questions
+- [Services](https://vynatix.com/services.html): application development (web, desktop, native mobile, Android Automotive, wearables, VR, enterprise integration); AI engineering (retrieval-augmented generation, evaluation pipelines, on-prem and sovereign cloud deployment, production observability); cloud platforms (GCP, AWS, on-prem hybrids, Kubernetes and GitOps, FinOps, migration off legacy)
+- [Android Automotive development in Gothenburg](https://vynatix.com/android-automotive-development.html): what we build on Android Automotive and the Volvo Trucks in-cab radio
+- [AI engineering in Gothenburg](https://vynatix.com/ai-engineering.html): retrieval, evaluation and deployment in your environment, and the closed-domain assistant
+- [Work](https://vynatix.com/work.html): Volvo Trucks, an in-cab radio rebuilt for Android Automotive and shipped across the fleet (2024); Volvo Cars, a build pipeline cut from 47 minutes to 6 (2025); a regulated client, a closed-domain assistant that answers only from approved documents and cites every answer (2025)
+- [Software consultancies in Gothenburg working on Android Automotive](https://vynatix.com/android-automotive-consultancies-gothenburg.html): an alphabetical list compiled by Vynatix, with sources
+- [About](https://vynatix.com/about.html): why we exist, how we work, what we hold to
+- [Membership](https://vynatix.com/membership.html): the collective for senior freelance engineers, with no non-competes and a transparent revenue split
+- [Contact](https://vynatix.com/contact.html): one inbox, subject line Project or Membership
+
+## Sidor på svenska
+
+- [Vynatix på svenska](https://vynatix.com/sv.html): mjukvarukonsultbolag i Göteborg med seniora utvecklare inom Android Automotive, AI och molnplattformar
+- [Android Automotive-utveckling i Göteborg](https://vynatix.com/android-automotive-utveckling.html)
+- [AI-utveckling i Göteborg](https://vynatix.com/ai-utveckling.html): RAG, utvärdering och drift i er egen miljö
+- [Konsultbolag i Göteborg som arbetar med Android Automotive](https://vynatix.com/konsultbolag-android-automotive-goteborg.html): alfabetisk lista med källor
+- [Så väljer ni konsultbolag för mjukvaruutveckling](https://vynatix.com/valja-konsultbolag.html)
+- [Platform engineering: vad det är och när det lönar sig](https://vynatix.com/platform-engineering.html)
+- [Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa](https://vynatix.com/ai-assistent-interna-dokument.html)
+- [AI-konsultbolag i Sverige: så jämför ni dem](https://vynatix.com/ai-konsultbolag-sverige.html)
+
+## Optional
+
+- [Privacy notice](https://vynatix.com/privacy.html)
+- [Terms of use](https://vynatix.com/terms.html)
+- [Accessibility statement](https://vynatix.com/accessibility.html)

@@ -5,6 +5,14 @@ const PAGES = [
   'index.html', 'about.html', 'services.html',
   'work.html', 'membership.html', 'contact.html',
   'privacy.html', 'terms.html', 'accessibility.html',
+  // English deep pages and the list page (each has a Swedish twin below)
+  'android-automotive-development.html', 'ai-engineering.html',
+  'android-automotive-consultancies-gothenburg.html',
+  // Swedish pages: the hub, the twins and the guides
+  'sv.html', 'android-automotive-utveckling.html', 'ai-utveckling.html',
+  'konsultbolag-android-automotive-goteborg.html', 'valja-konsultbolag.html',
+  'platform-engineering.html', 'ai-assistent-interna-dokument.html',
+  'ai-konsultbolag-sverige.html',
 ];
 
 const BASE = process.env.BASE || 'http://localhost:8000/';

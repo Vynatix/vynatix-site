@@ -1,0 +1,19 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/android-automotive-utveckling.html#service",
+   "name": "Android Automotive-utveckling",
+   "serviceType": "Applikationsutveckling för Android Automotive (AAOS)",
+   "description": "Appar och mediefunktioner i fordon på Android Automotive (AAOS), byggda ovanför hårdvarulagret av seniora utvecklare inbäddade i kundens team och kopplade till de bakomliggande systemen.",
+   "url": "https://vynatix.com/android-automotive-utveckling.html",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "areaServed": {
+    "@type": "City",
+    "name": "Göteborg"
+   }
+  }
+ ]
+}

@@ -5,3 +5,6 @@ package-lock.json
 baseline*/
 current*/
 diff*/
+
+# Python bytecode from importing or py_compile-ing seo-head.py (a normal run writes none).
+__pycache__/

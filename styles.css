@@ -614,6 +614,17 @@ a.clients__item:has(.clients__mark):hover {
   margin: 0 0 var(--space-5);
 }
 .two-up .more { margin-top: var(--space-2); }
+/* The three-ways list beside the company lead: the body paragraph's measure and
+   colour so it reads as part of the same text block (a bare .two-up ul rule
+   would collide with .panel ul in the same grid). */
+.two-up__list {
+  color: var(--text-body);
+  font-size: var(--text-body-md);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 var(--space-5);
+}
+.two-up__list > li { max-width: 65ch; }
+.two-up__list > li:last-child { margin-bottom: 0; }
 .two-up blockquote { margin-top: 0; }
 /* A run-in lead at the start of a paragraph: the same sentence weight as the
    headline above it, so the reader can scan the case study for its points. */
@@ -674,6 +685,19 @@ a.clients__item:has(.clients__mark):hover {
   margin: 0;
 }
 .caps--5 .cap p { font-size: var(--text-body-sm); }
+/* Lists inside a capability column (a FAQ answer with steps or billing points):
+   the same measure and colour as .cap p; no outer margin, the column's flex gap
+   spaces the blocks, and the last item drops its own margin for the same reason. */
+.cap ul, .cap ol { margin: 0; }
+.cap li {
+  font-size: var(--text-body-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-muted);
+  max-width: 65ch;
+}
+.cap li:last-child { margin-bottom: 0; }
+.inverse .cap li { color: var(--inverse-on-surface-variant); }
+.caps--5 .cap li { font-size: var(--text-body-sm); }
 @media (max-width: 1239px) {
   .caps--5 { grid-template-columns: repeat(2, 1fr); }
 }

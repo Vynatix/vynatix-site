@@ -2,7 +2,9 @@
 
 Local-only checks for the site, plus `stamp.js`, which writes the version stamps
 into the pages (run it after changing `tokens.css`, `colors_and_type.css`,
-`styles.css` or `app.js`). **None of this is part of the site build** — the site
+`styles.css` or `app.js`), and `seo-head.py`, which rewrites the search block in
+every head, the footer and `sitemap.xml` from one registry (see the table below).
+**None of this is part of the site build** — the site
 itself is hand-written static files with no build step, nothing here runs at
 deploy time, and everything in this directory is excluded from the published
 output via `_config.yml`.
@@ -18,6 +20,8 @@ npm install
 
 `package.json` lists all four dependencies (playwright, axe-core, pixelmatch,
 pngjs); installing only playwright leaves `a11y.js` and the pixel diff broken.
+
+`seo-head.py` needs Python 3 (standard library only, nothing to install).
 
 Chromium is expected at `/opt/pw-browsers/chromium-*/chrome-linux/chrome`.
 Override with `CHROME=/path/to/chrome`. Nothing here is committed except the
@@ -40,8 +44,9 @@ Then, from `tools/`:
 | `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test, plus skip link, the still client list, no-JS and reduced-motion fallbacks |
 | `node verify/theme.js` | The per-visit random colour scheme: the draw is random, stable across pages, the toggle works inside it, no flash, blocked or poisoned storage survived, preloads are used |
 | `node verify/links.js` | Every internal link, script, style and image resolves |
-| `node verify/seo.js` | Search, sharing and copy: one canonical per page matching the sitemap, Open Graph matching the title and description, every JSON-LD block parses and dates match the sitemap, the visible FAQ and its FAQPage data agree, hreflang pairs are reciprocal, robots.txt names the sitemap, llms.txt links only real pages, and no em dash, exclamation mark or ellipsis in visible text |
+| `node verify/seo.js` | Search, sharing and copy: one canonical per page matching the sitemap, Open Graph matching the title and description, every JSON-LD block parses, the page node's datePublished and dateModified equal the article:* date metas and the sitemap lastmod, the FAQPage is a graph node linked from the page by hasPart/isPartOf with a resolving @id and matches the visible FAQ (p and li, flat), hreflang pairs are reciprocal, robots.txt names the sitemap, llms.txt links only real pages, and no em dash, exclamation mark or ellipsis in visible text |
 | `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those four files |
+| `python3 seo-head.py [page.html …]` | Not a check: rewrites the generated parts of every page (or only the pages named) from one registry. The search block in the head (canonical, hreflang, Open Graph with the article:* dates, the JSON-LD graph), the footer, the header `lang` and `sitemap.xml`; nothing inside `<main>`. Python 3, standard library. A page's `pub` and `mod` dates live in its `PAGES` entry; `tools/seo/<page>.json` holds a page's extra JSON-LD nodes. Run it after editing a FAQ, moving a `mod` date or changing the footer, and run `npm run stamp` afterwards if styles or scripts changed |
 | `node verify/stale-cache.js` | Self-contained: a browser holding OLD copies of the four shared files at the plain URLs is not paired with the new pages (a control without stamps must break for the intended reason, the stamped pages must fetch every file under its stamp and show nothing of the old build). `ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the engine iOS Chrome uses (needs `npx playwright install webkit`) |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
 | `node verify/screenshot.js baseline` | Capture every page in PAGES x each theme under test into `baseline/` |

@@ -1,0 +1,73 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "ItemList",
+   "@id": "https://vynatix.com/work.html#selected-work",
+   "name": "Selected work",
+   "mainEntityOfPage": {
+    "@id": "https://vynatix.com/work.html"
+   },
+   "numberOfItems": 3,
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "item": {
+      "@type": "CreativeWork",
+      "@id": "https://vynatix.com/work.html#volvo-trucks",
+      "url": "https://vynatix.com/work.html#volvo-trucks",
+      "name": "An in-cab radio, rebuilt for Android Automotive",
+      "dateCreated": "2024",
+      "creator": {
+       "@id": "https://vynatix.com/#organization"
+      },
+      "about": {
+       "@type": "Organization",
+       "name": "Volvo Trucks",
+       "url": "https://www.volvotrucks.com/"
+      },
+      "keywords": "Android Automotive (AAOS), in-cab media player",
+      "description": "Vynatix rebuilt the in-cab radio and media player for Volvo Trucks on Android Automotive, and shipped it to production across the fleet."
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "item": {
+      "@type": "CreativeWork",
+      "@id": "https://vynatix.com/work.html#volvo-cars",
+      "url": "https://vynatix.com/work.html#volvo-cars",
+      "name": "A build pipeline cut from 47 minutes to 6",
+      "dateCreated": "2025",
+      "creator": {
+       "@id": "https://vynatix.com/#organization"
+      },
+      "about": {
+       "@type": "Organization",
+       "name": "Volvo Cars",
+       "url": "https://www.volvocars.com/"
+      },
+      "keywords": "Build pipeline, 87% shorter build time",
+      "description": "Vynatix took a Volvo Cars build pipeline from a 47 minute wait to 6."
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "item": {
+      "@type": "CreativeWork",
+      "@id": "https://vynatix.com/work.html#regulated-client",
+      "url": "https://vynatix.com/work.html#regulated-client",
+      "name": "A closed-domain assistant that refuses to guess",
+      "dateCreated": "2025",
+      "creator": {
+       "@id": "https://vynatix.com/#organization"
+      },
+      "keywords": "Closed-domain AI assistant, grounded answers, citations",
+      "description": "For a regulated client, Vynatix built an assistant that answers inside a defined domain and hands everything else to a person, on purpose. It declines questions it cannot ground in source, rather than inventing an answer."
+     }
+    }
+   ]
+  }
+ ]
+}

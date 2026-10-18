@@ -1,0 +1,19 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/android-automotive-development.html#service",
+   "name": "Android Automotive development",
+   "serviceType": "Android Automotive (AAOS) application development",
+   "description": "In-car apps and media on Android Automotive (AAOS), built above the vehicle hardware layer by senior engineers embedded in the client's team, and wired into the systems behind them.",
+   "url": "https://vynatix.com/android-automotive-development.html",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "areaServed": {
+    "@type": "City",
+    "name": "Gothenburg"
+   }
+  }
+ ]
+}

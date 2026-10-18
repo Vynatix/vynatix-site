@@ -1,0 +1,93 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/ai-engineering.html#service",
+   "url": "https://vynatix.com/ai-engineering.html",
+   "name": "AI engineering",
+   "serviceType": "AI engineering",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "description": "Vynatix builds production systems on foundation models, with senior engineers embedded in the client's team: retrieval and grounded answers, evaluation pipelines, deployment into the client's environment including on-prem and sovereign cloud, and production observability.",
+   "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "AI engineering",
+    "itemListElement": [
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Chatbots and assistants",
+       "description": "Software people talk to in plain language to get an answer or get a task done."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Retrieval and grounded answers (RAG)",
+       "description": "The system first looks up the relevant passages in your documents, and the model answers from those, citing the source."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Agent and harness engineering",
+       "description": "An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Workflow automation",
+       "description": "Manual steps in a process, such as sorting, extracting details or drafting, handled by a model inside a defined flow."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "MCP servers and integrations",
+       "description": "Model Context Protocol servers that give an assistant defined, limited access to your systems and data, and connections to what you already run."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "SDKs and developer tooling",
+       "description": "Libraries and tools that let your own developers build on the system, test it and extend it."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Evaluation pipelines",
+       "description": "Automated tests that run the system against questions with known answers, so you can see whether a change made it better or worse."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Deployment into your environment",
+       "description": "The system runs where your data is allowed to be: in your own environment, including on-prem on your own servers or in a sovereign cloud."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Production observability",
+       "description": "Logging and monitoring of what the system does with real questions, so errors, refusals, response times and cost are visible after launch."
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

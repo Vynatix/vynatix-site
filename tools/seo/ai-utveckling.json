@@ -1,0 +1,93 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/ai-utveckling.html#service",
+   "url": "https://vynatix.com/ai-utveckling.html",
+   "name": "AI-utveckling",
+   "serviceType": "AI engineering",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "description": "Vynatix bygger produktionssystem på stora språkmodeller, med seniora utvecklare inbäddade i kundens team: RAG och källförankrade svar, utvärderingspipelines, driftsättning i kundens egen miljö, även on-prem och i suveränt moln, och övervakning i produktion.",
+   "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "AI-utveckling",
+    "itemListElement": [
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Chattbotar och assistenter",
+       "description": "Program där användare ställer frågor på vanligt språk och får ett svar eller hjälp med en uppgift."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "RAG och källförankrade svar",
+       "description": "Systemet hämtar först relevanta avsnitt ur era dokument, och modellen svarar utifrån dem med hänvisning till källan."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Agenter och harness engineering",
+       "description": "En agent är en modell som själv väljer nästa steg och anropar verktyg. Harnessen är koden runt modellen som styr vad den får göra och kontrollerar resultatet."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Automatisering av arbetsflöden",
+       "description": "En modell tar över manuella steg i en process, som att sortera, plocka ut uppgifter eller skriva utkast, inom ett avgränsat flöde."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "MCP-servrar och integrationer",
+       "description": "Servrar för Model Context Protocol som ger en assistent avgränsad åtkomst till era system och data, och kopplingar mot det ni redan kör."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "SDK:er och utvecklarverktyg",
+       "description": "Bibliotek och verktyg som låter era egna utvecklare bygga vidare på systemet, testa det och utöka det."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Utvärderingspipelines",
+       "description": "Automatiska tester som kör systemet mot frågor med kända svar, så att ni ser om en ändring gjorde det bättre eller sämre."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Driftsättning i er egen miljö",
+       "description": "Systemet körs där era data får finnas: i er egen miljö, även on-prem på era egna servrar eller i ett suveränt moln."
+      }
+     },
+     {
+      "@type": "Offer",
+      "itemOffered": {
+       "@type": "Service",
+       "name": "Övervakning i produktion",
+       "description": "Loggning och mätning av vad systemet gör med riktiga frågor, så att fel, avböjda frågor, svarstider och kostnad syns efter lansering."
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

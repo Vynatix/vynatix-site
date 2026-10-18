@@ -1,0 +1,51 @@
+# vynatix.com
+# Everything published here may be crawled, indexed and quoted, including by
+# AI search engines and assistants. Developer docs are never published
+# (_config.yml), so there is nothing to disallow.
+
+# Search and answer engines, so the site can be found and cited.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Training crawlers, allowed on purpose: this keeps the site's long-standing
+# default (no robots.txt meant everything was allowed). Disallow them here if
+# that decision changes. Google-Extended only governs Gemini training and
+# grounding and has no effect on inclusion in Google Search. anthropic-ai is a
+# legacy name kept for completeness.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://vynatix.com/sitemap.xml

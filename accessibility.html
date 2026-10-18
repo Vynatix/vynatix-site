@@ -9,13 +9,138 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Accessibility statement, Vynatix</title>
 <meta name="description" content="We aim for WCAG 2.2 Level AA on vynatix.com. What is in place, how we test it, and what we have not independently verified.">
+<!-- seo -->
+<!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
+     structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
+<link rel="canonical" href="https://vynatix.com/accessibility.html">
+<meta name="author" content="Vynatix AB">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vynatix">
+<meta property="og:title" content="Accessibility statement, Vynatix">
+<meta property="og:description" content="We aim for WCAG 2.2 Level AA on vynatix.com. What is in place, how we test it, and what we have not independently verified.">
+<meta property="og:url" content="https://vynatix.com/accessibility.html">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="The Vynatix mark">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://vynatix.com/#organization",
+   "name": "Vynatix",
+   "legalName": "Vynatix AB",
+   "alternateName": "Vynatix AB",
+   "url": "https://vynatix.com/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://vynatix.com/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "description": "Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Three senior engineers work embedded in client teams on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.",
+   "slogan": "We own the outcome. You own the code.",
+   "foundingDate": "2023",
+   "foundingLocation": {
+    "@type": "Place",
+    "name": "Gothenburg, Sweden"
+   },
+   "memberOf": {
+    "@type": "Organization",
+    "name": "Ultra Group",
+    "url": "https://ultragroup.se/"
+   },
+   "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "Swedish organisationsnummer",
+    "value": "559445-6542"
+   },
+   "numberOfEmployees": {
+    "@type": "QuantitativeValue",
+    "value": 3
+   },
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mailbox 1611",
+    "postalCode": "411 42",
+    "addressLocality": "Gothenburg",
+    "addressCountry": "SE"
+   },
+   "email": "front.disk@vynatix.com",
+   "telephone": "+46720710676",
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Projects and membership",
+    "email": "front.disk@vynatix.com",
+    "telephone": "+46720710676"
+   },
+   "knowsAbout": [
+    "Android Automotive (AAOS)",
+    "In-car software",
+    "Native mobile development for iOS and Android",
+    "Web and desktop applications",
+    "Enterprise integration and SaaS",
+    "AI engineering",
+    "Retrieval-augmented generation",
+    "LLM evaluation pipelines",
+    "MCP servers and integrations",
+    "Agent and harness engineering",
+    "On-prem and sovereign cloud deployment",
+    "Cloud platforms on GCP and AWS",
+    "Kubernetes and GitOps",
+    "Platform engineering",
+    "Build pipelines",
+    "FinOps and cost control",
+    "Migration off legacy systems"
+   ],
+   "sameAs": [
+    "https://www.linkedin.com/company/vynatix",
+    "https://github.com/Vynatix"
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://vynatix.com/#website",
+   "url": "https://vynatix.com/",
+   "name": "Vynatix",
+   "inLanguage": [
+    "en",
+    "sv"
+   ],
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://vynatix.com/accessibility.html",
+   "url": "https://vynatix.com/accessibility.html",
+   "name": "Accessibility statement, Vynatix",
+   "description": "We aim for WCAG 2.2 Level AA on vynatix.com. What is in place, how we test it, and what we have not independently verified.",
+   "inLanguage": "en",
+   "isPartOf": {
+    "@id": "https://vynatix.com/#website"
+   },
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "dateModified": "2026-10-18"
+  }
+ ]
+}
+</script>
+<!-- /seo -->
 <!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
      colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
      The markup names the Forest light theme, which is what a visitor without JavaScript
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=86ee7111">
+<link rel="stylesheet" href="styles.css?v=92b27cbd">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -43,7 +168,7 @@
   </svg>
 
   <!-- ============================================================ Header -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" lang="en">
     <div class="site-header__inner">
       <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
         <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
@@ -129,7 +254,7 @@
   </main>
 
   <!-- ============================================================ Footer -->
-  <footer class="site-footer inverse">
+  <footer class="site-footer inverse" lang="en">
     <div class="container">
       <div class="site-footer__grid">
         <div class="site-footer__brand">
@@ -141,7 +266,7 @@
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a><br>
             Mailbox 1611, 411 42 Gothenburg<br>
-            Org.nr 559445-6542 · Part of Ultra Group
+            Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Part of Ultra Group</a>
           </address>
         </div>
         <div>
@@ -159,6 +284,15 @@
             <li><a href="work.html">Work</a></li>
             <li><a href="membership.html">Membership</a></li>
             <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div lang="sv">
+          <h2 class="site-footer__h">På svenska</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
+            <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
+            <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
+            <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
           </ul>
         </div>
         <div>

@@ -993,25 +993,32 @@ a.clients__item:has(.clients__mark):hover {
 }
 
 /* ---------------------------------------------------------------
-   Long-form pages (privacy, terms, accessibility)
+   Long-form pages (privacy, terms, accessibility) and the guides
    The system's prose helpers do the work; this keeps the measure and sets
-   the subheading size for a document rather than a landing page.
+   the subheading sizes for a document rather than a landing page. .prose is
+   the same layout for articles and guides; .legal stays for the legal pages.
    --------------------------------------------------------------- */
-.legal { max-width: var(--container-max-content); }
-.legal ul > li { max-width: 65ch; }
-.legal h2 {
+.legal, .prose { max-width: var(--container-max-content); }
+.legal ul > li, .prose ul > li, .prose ol > li { max-width: 65ch; }
+.legal h2, .prose h2 {
   font-size: var(--text-h4);
   line-height: var(--leading-headline);
   letter-spacing: var(--tracking-headline);
   margin: var(--space-12) 0 var(--space-4);
 }
-.legal__meta {
+.prose h3 {
+  font-size: var(--text-h6);
+  line-height: var(--leading-headline);
+  margin: var(--space-8) 0 var(--space-3);
+}
+.prose > :first-child { margin-top: 0; }
+.legal__meta, .prose__meta {
   font-size: var(--text-caption);
   line-height: var(--leading-loose);
   color: var(--text-muted);
   margin: 0 0 var(--space-6);
 }
-.legal .banner { margin-bottom: var(--space-10); }
+.legal .banner, .prose .banner { margin-bottom: var(--space-10); }
 
 /* Banner (the Banner card): a leading icon, a bold lead, then the message. */
 .banner {
@@ -1041,7 +1048,7 @@ a.clients__item:has(.clients__mark):hover {
 }
 .site-footer__grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: var(--space-12);
 }
 .site-footer__logo {

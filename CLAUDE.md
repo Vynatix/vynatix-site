@@ -10,7 +10,8 @@ highlights the things most worth keeping front-of-mind.
 ## The short version
 
 - **Static, hand-written marketing site** for Vynatix (a Nordic software
-  consultancy). Nine pages. No framework, no build step, no package manager for
+  consultancy). Twenty pages: nine core English pages, three English deep pages,
+  and eight Swedish pages (`sv.html` is the Swedish hub). No framework, no build step, no package manager for
   the site — what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
@@ -50,10 +51,18 @@ highlights the things most worth keeping front-of-mind.
   (theme draw and toggle, mobile nav) and no CDN/animation stack. Nothing on the site
   moves on its own: the system forbids auto-advancing strips and ambient loops.
   The CSP pins `script-src 'self'`, so adding any third-party script means
-  widening the CSP in **all nine pages** first.
+  widening the CSP in **every page** first.
 - **Icons are inline SVG** from the system's Material Symbols files in
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
+- **Every page is written to be quoted by AI search engines.** Each `<head>` has a
+  canonical link, Open Graph, hreflang for the four English/Swedish pairs, and one
+  JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
+  matching the footer). When page content changes, move its `dateModified` and its
+  `sitemap.xml` `<lastmod>`; a visible FAQ (`data-faq`) and its FAQPage data must
+  match word for word. `tools/verify/seo.js` enforces this. The list pages name
+  other firms: quote only their own sites, alphabetical, dated, with the disclosure.
+  See AGENTS.md, *Search, AI engines and structured data*.
 - **Progressive enhancement and accessibility are load-bearing:** no-JS users
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,

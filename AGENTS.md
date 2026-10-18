@@ -29,7 +29,21 @@ membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
 privacy.html        Privacy notice (GDPR Art. 13)
 terms.html          Website terms of use
-accessibility.html  Accessibility statement — nine pages in total
+accessibility.html  Accessibility statement
+android-automotive-development.html   Android Automotive in Gothenburg (English twin of
+                    android-automotive-utveckling.html)
+ai-engineering.html AI engineering in Gothenburg (English twin of ai-utveckling.html)
+android-automotive-consultancies-gothenburg.html  Alphabetical, sourced list of Gothenburg
+                    consultancies working on Android Automotive (English twin)
+sv.html             Swedish home and hub for the Swedish pages (twin of index.html)
+android-automotive-utveckling.html, ai-utveckling.html,
+konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
+valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
+ai-konsultbolag-sverige.html   Swedish guides — twenty pages in total
+robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
+sitemap.xml         Every page, its lastmod and its hreflang pair (hand-maintained)
+llms.txt            A plain-text summary of the company and every page, in both languages
+<32 hex>.txt        The IndexNow key file (tools/indexnow.js proves ownership with it)
 tokens.css          Design system layer 1: the tokens, generated from the system's
                     tokens.json (colour roles for six themes, spacing, radii, type
                     scale, @font-face). Only the @font-face src lines are the site's.
@@ -170,7 +184,7 @@ still list (`.clients__list`) and the former case reel is a grid of cards.
 The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
 `script-src 'self'`, `style-src 'self'` and `font-src 'self'`, so **any
 third-party script, inline style or font CDN is blocked by default**. Adding
-one means deliberately widening the CSP on **all nine pages** (and the header
+one means deliberately widening the CSP on **every page** (and the header
 copy in `EDGE-SETUP.md`), and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
@@ -193,6 +207,62 @@ afterthought — preserve it:
 - `accessibility.html` states the target as "we aim to meet WCAG 2.2 Level AA"
   and lists what has not been independently verified — keep that page honest
   rather than upgrading the claim.
+
+**Search, AI engines and structured data.** The site is written to be found and
+quoted by search engines and AI assistants (ChatGPT, Perplexity, Claude, Google AI
+Overviews and AI Mode, Microsoft Copilot), and every page carries the same
+machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
+
+- one `<link rel="canonical">` (`https://vynatix.com/` for the home page, otherwise
+  `https://vynatix.com/<file>.html`, the form the internal links use), and Open
+  Graph and `twitter:card` tags whose title, description and URL repeat the page's
+  own `<title>`, meta description and canonical;
+- for a page with a twin in the other language, `hreflang` links to both versions
+  and `x-default` to the English one, reciprocal on both pages and mirrored in
+  `sitemap.xml`;
+- one JSON-LD block (`<script type="application/ld+json">`: a data block, never
+  executed, so `script-src 'self'` does not apply and the CSP needs no change)
+  holding a `@graph` with the full Organization node (`@id`
+  `https://vynatix.com/#organization`), the WebSite node, the page itself with its
+  `dateModified`, and page-specific nodes (Service, ItemList, Article).
+  **Keep the Organization node identical on every page** and true to the site:
+  the relationship to Ultra Group is `memberOf`, matching the footer's "Part of
+  Ultra Group"; do not change it to `parentOrganization` unless Bolagsverket shows
+  Vynatix AB in an Ultra Group koncern.
+- **When you change a page's content, move its `dateModified` and its
+  `<lastmod>` in `sitemap.xml` to the date of the change.** Guides also carry a
+  visible "Publicerad"/"Senast uppdaterad" line; keep it in step.
+- A visible FAQ is marked up with `data-faq` on its container and `data-faq-item`
+  on each question (one `<h3>`, then the answer in `<p>` elements); the FAQPage in
+  the JSON-LD repeats those questions and answers word for word. Edit both
+  together.
+- `tools/verify/seo.js` (part of `npm run check`) enforces all of the above, plus
+  the copy rules below on visible text.
+
+**One sentence about the company**, used verbatim wherever a page introduces it and
+in the JSON-LD description, so every source an engine reads agrees: "Vynatix AB is
+a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra
+Group. Three senior engineers work embedded in client teams on Android Automotive,
+AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our
+clients." (Swedish: "Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat
+2023 och en del av Ultra Group. Tre seniora utvecklare arbetar inbäddade i
+kundernas team inom Android Automotive, AI och molnplattformar, med Volvo Trucks
+och Volvo Cars bland kunderna.") If a fact in it changes, change it everywhere,
+including LinkedIn, the registries and `llms.txt`.
+
+**Swedish pages** set `<html lang="sv">` and keep the shared English header and
+footer, which carry `lang="en"` so screen readers switch voice; only the skip link
+is translated. The footer's "På svenska" column (`lang="sv"`) links the Swedish
+hub (`sv.html`), which links every Swedish page in its `#guider` section. Write
+Swedish as Swedish (the reader is "ni"), not a translation of the English page.
+
+**The list pages** (`konsultbolag-android-automotive-goteborg.html` and its English
+twin) name other companies. Every entry quotes the firm's own website or a job ad
+it posted, with the source linked and the date it was checked; the order is
+alphabetical; a disclosure says Vynatix compiled the list and is on it. Re-check
+every entry at least twice a year, update the "Kontrollerad" dates and
+`dateModified`, and act on corrections sent to front.disk@vynatix.com. Never rank,
+rate or describe a competitor beyond what its own site says.
 
 **Copy** follows the system's content fundamentals: sentence case, no em
 dashes (use a comma, a colon, parentheses or a new sentence), no exclamation
@@ -271,7 +341,8 @@ add third-party font/CDN requests for fonts.
   and what is in the repo ships verbatim. The one exception is `tools/`: the
   optional local verification scripts (Playwright) and `stamp.js`, which writes
   the version stamps into the pages and which you run before committing a change
-  to any of the four shared files. It is developer tooling only: excluded from
+  to any of the four shared files, and `indexnow.js`, which tells Bing and the
+  other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from
   the published output in `_config.yml`, with its `node_modules/` gitignored, and
   nothing in it runs at deploy time. The site itself stays hand-written.
 - **"Passing" means:** the pages render correctly in light and dark, nav/footer
@@ -281,8 +352,10 @@ add third-party font/CDN requests for fonts.
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
   an off-origin request check (`requests.js`), the random-scheme check
   (`theme.js`), the version-stamp check (`stamp.js --check`) and its stale-cache
-  proof (`stale-cache.js`), and the accessibility suite with its contrast sweep
-  (`a11y.js`). Because every visit draws its own scheme, the checks that need a
+  proof (`stale-cache.js`), the search, structured-data and copy check
+  (`seo.js`), and the accessibility suite with its contrast sweep (`a11y.js`).
+  A new page also goes into `PAGES` in `tools/verify/_common.js` and into
+  `sitemap.xml`. Because every visit draws its own scheme, the checks that need a
   particular theme pin it first (`pinTheme` in `tools/verify/_common.js` sets
   both storage keys). Before changing a component, sweep all six themes:
   `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`.
@@ -336,5 +409,5 @@ admin rights on the repository:
 - **Footer VAT number.** Swedish e-handelslag expects the
   `momsregistreringsnummer` alongside the company identification already in the
   footer. It is not added here because it is a legal identifier that must be
-  confirmed rather than derived; add it to the footer on all nine pages once
+  confirmed rather than derived; add it to the footer on every page once
   known.

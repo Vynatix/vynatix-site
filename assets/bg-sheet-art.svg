@@ -1,0 +1,48 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='-60 0 1400 800' width='1400' height='800' fill='none' stroke='currentColor' stroke-width='1.5'>
+<defs>
+ <linearGradient id='fxB' gradientUnits='userSpaceOnUse' x1='870' x2='1340' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='0.3'/><stop offset='0.8'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <linearGradient id='fxA' gradientUnits='userSpaceOnUse' x1='1040' x2='1340' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='0.3'/><stop offset='0.7'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <linearGradient id='fyB' gradientUnits='userSpaceOnUse' x1='0' x2='0' y1='300' y2='735'><stop offset='0' stop-opacity='0'/><stop offset='0.2'/><stop offset='0.8'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <linearGradient id='fyA' gradientUnits='userSpaceOnUse' x1='0' x2='0' y1='60' y2='735'><stop offset='0' stop-opacity='0'/><stop offset='0.1'/><stop offset='0.9'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <linearGradient id='fd' gradientUnits='userSpaceOnUse' x1='780' x2='1340' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='.2'/><stop offset='.85'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <linearGradient id='fa' gradientUnits='userSpaceOnUse' x1='838' x2='1340' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='.1'/><stop offset='.7'/><stop offset='1' stop-opacity='0'/></linearGradient>
+ <pattern id='hatch' width='8' height='8' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><path d='M0 .5H8' stroke-width='1' stroke-opacity='0.6'/></pattern>
+</defs>
+<g stroke-width='1'>
+ <path d='M888.5 300V735' stroke='url(#fyB)' stroke-opacity='0'/>
+ <path d='M912.5 300V735' stroke='url(#fyB)' stroke-opacity='0.1'/>
+ <path d='M936.5 300V735' stroke='url(#fyB)' stroke-opacity='0.1'/>
+ <path d='M960.5 300V735' stroke='url(#fyB)' stroke-opacity='0.2'/>
+ <path d='M984.5 300V735' stroke='url(#fyB)' stroke-opacity='0.2'/>
+ <path d='M1008.5 300V735M1032.5 300V735' stroke='url(#fyB)' stroke-opacity='0.2'/>
+ <path d='M1056.5 60V735M1104.5 60V735M1128.5 60V735M1152.5 60V735M1176.5 60V735M1224.5 60V735M1248.5 60V735' stroke='url(#fyA)' stroke-opacity='0.2'/>
+ <path d='M1080.5 60V735M1200.5 60V735' stroke='url(#fyA)' stroke-opacity='0.3'/>
+ <path d='M1272.5 60V735' stroke='url(#fyA)' stroke-opacity='0.2'/>
+ <path d='M1296.5 60V735' stroke='url(#fyA)' stroke-opacity='0.1'/>
+ <path d='M1320.5 60V735' stroke='url(#fyA)' stroke-opacity='0.1'/>
+ <path d='M1040 84.5H1340' stroke='url(#fxA)' stroke-opacity='0.1'/>
+ <path d='M1040 108.5H1340' stroke='url(#fxA)' stroke-opacity='0.2'/>
+ <path d='M1040 132.5H1340' stroke='url(#fxA)' stroke-opacity='0.2'/>
+ <path d='M1040 156.5H1340M1040 180.5H1340M1040 204.5H1340M1040 252.5H1340M1040 276.5H1340' stroke='url(#fxA)' stroke-opacity='0.2'/>
+ <path d='M1040 228.5H1340' stroke='url(#fxA)' stroke-opacity='0.3'/>
+ <path d='M870 324.5H1340' stroke='url(#fxB)' stroke-opacity='0.1'/>
+ <path d='M870 348.5H1340' stroke='url(#fxB)' stroke-opacity='0.2'/>
+ <path d='M870 372.5H1340' stroke='url(#fxB)' stroke-opacity='0.2'/>
+ <path d='M870 396.5H1340M870 420.5H1340M870 444.5H1340M870 492.5H1340M870 516.5H1340M870 540.5H1340M870 564.5H1340M870 612.5H1340M870 636.5H1340' stroke='url(#fxB)' stroke-opacity='0.2'/>
+ <path d='M870 468.5H1340M870 588.5H1340' stroke='url(#fxB)' stroke-opacity='0.3'/>
+ <path d='M870 660.5H1340' stroke='url(#fxB)' stroke-opacity='0.2'/>
+ <path d='M870 684.5H1340' stroke='url(#fxB)' stroke-opacity='0.1'/>
+ <path d='M870 708.5H1340' stroke='url(#fxB)' stroke-opacity='0.1'/>
+</g>
+<g stroke='none'>
+ <path d='M868 708L979 433.7L1090 708Z' fill='currentColor' fill-opacity='0.035'/>
+ <path d='M850 708L1005 325L979 433.7L868 708Z' fill='currentColor' fill-opacity='0.07'/>
+ <path d='M1005 325L1160 708H1090L979 433.7Z' fill='currentColor' fill-opacity='0.14'/>
+ <path d='M1005 325L1160 708H1090L979 433.7Z' fill='url(#hatch)'/>
+</g>
+<path d='M850 708L1005 325L1160 708H1090L979 433.7L868 708Z' stroke-width='2.5' stroke-linejoin='miter'/>
+<path d='M923 409.9A118 118 0 0 0 1087 409.9M855.6 479.7A215 215 0 0 0 1154.4 479.7M838 588.5A312 312 0 0 0 1221.7 549.4' stroke='url(#fa)' stroke-width='1.6' stroke-opacity='0.9'/>
+<path d='M780 708H1340' stroke='url(#fd)' stroke-width='1.5'/>
+<path d='M1005 295V732' stroke-dasharray='34 7 5 7' stroke-opacity='.8' stroke-width='1'/>
+<path d='M834 708H866M850 692V724M857 708A7 7 0 1 1 843 708A7 7 0 1 1 857 708M1144 708H1176M1160 692V724M1167 708A7 7 0 1 1 1153 708A7 7 0 1 1 1167 708' stroke-opacity='.9'/>
+</svg>

@@ -312,6 +312,31 @@
              consent (assets/CREDITS.md); the rest are described. Each named client links
              to its own site. -->
         <div class="clients">
+          <!-- bg-iris:begin (decorative art for the iris background: styles.css draws and places it, app.js times its one opening) -->
+          <div class="iris" aria-hidden="true">
+            <svg class="iris__still" viewBox="-1000 -1000 2000 2000" focusable="false">
+              <defs><linearGradient id="iris-lit" gradientUnits="userSpaceOnUse" x1="-625" y1="694.1" x2="-839.5" y2="-409.4"><stop class="iris__stop iris__stop--0" offset="0"/><stop class="iris__stop iris__stop--1" offset="0.42"/><stop class="iris__stop iris__stop--2" offset="0.7"/><stop class="iris__stop iris__stop--3" offset="1"/></linearGradient></defs>
+              <circle class="iris__outer" r="1000"/>
+              <circle class="iris__disc" r="934"/>
+              <circle class="iris__band" r="840.6" stroke-width="186.8"/>
+              <circle class="iris__line iris__line--a" r="934"/>
+              <circle class="iris__line iris__line--b" r="1000"/>
+              <circle class="iris__line iris__line--c" r="747.2"/>
+              <circle class="iris__ticks iris__ticks--minor" r="911.5" stroke-width="25" pathLength="360" stroke-dasharray="0.32 4.7" stroke-dashoffset="0.2" transform="rotate(-90)"/>
+              <circle class="iris__ticks iris__ticks--major" r="896.5" stroke-width="55" pathLength="360" stroke-dasharray="0.42 29.6" stroke-dashoffset="0.2" transform="rotate(-90)"/>
+              <path class="iris__arc iris__arc--still" d="M-625 694.1A934 934 0 0 1 -839.5 -409.4" stroke="url(#iris-lit)"/>
+              <path class="iris__index" d="M-772.1 -376.6L-859.2 -419.1"/>
+            </svg>
+            <svg class="iris__dial" viewBox="-1000 -1000 2000 2000" focusable="false">
+              <defs><linearGradient id="iris-sweep" gradientUnits="userSpaceOnUse" x1="-91" y1="647.4" x2="-587.6" y2="-286.6"><stop class="iris__stop iris__stop--0" offset="0"/><stop class="iris__stop iris__stop--1" offset="0.4"/><stop class="iris__stop iris__stop--2" offset="0.72"/><stop class="iris__stop iris__stop--3" offset="1"/></linearGradient></defs>
+              <circle class="iris__pupil" r="149.4"/>
+              <circle class="iris__line iris__line--d" r="149.4"/>
+              <circle class="iris__ticks iris__ticks--dial" r="467" stroke-width="22" pathLength="360" stroke-dasharray="0.3 5.7" stroke-dashoffset="0.1" transform="rotate(-90)"/>
+              <circle class="iris__line iris__line--f" r="541.7"/>
+              <path class="iris__arc iris__arc--sweep" d="M-91 647.4A653.8 653.8 0 0 1 -587.6 -286.6" stroke="url(#iris-sweep)"/>
+            </svg>
+          </div>
+          <!-- bg-iris:end -->
           <p class="eyebrow eyebrow--muted" id="clients-label">Clients we have worked with</p>
           <ul class="clients__list list-reset" aria-labelledby="clients-label">
             <li>

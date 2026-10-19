@@ -84,6 +84,7 @@ re-checked every quarter (section 11).
     (the list pages name other firms; an outbound-click event would record which
     one a visitor followed). The events that remain are written down, which
     answers the matching marker in the notices.
+  - [ ] A lookup and a deletion by client ID (the value of a `_ga` cookie) has been tried in the property and the procedure written down, because both notices promise it
   - [ ] An internal-traffic filter, or an Exclude hostname filter for `localhost`,
     so developer and test visits do not count.
   - [ ] **No** Include hostname filter until it has been tested in DebugView.

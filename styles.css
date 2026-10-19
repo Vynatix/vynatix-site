@@ -1181,8 +1181,12 @@ a.clients__item:has(.clients__mark):hover {
 .consent__btn { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
 .consent__link { border-radius: var(--radius-xs); }
 @media (min-width: 600px) {
+  .consent { inset-inline: var(--space-6); }
+}
+/* The text beside the buttons starts at 700px: at 600px the two buttons leave
+   the Swedish text too narrow a column and it jumps from two lines to five. */
+@media (min-width: 700px) {
   .consent {
-    inset-inline: var(--space-6);
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-areas: "text actions" "status actions";
@@ -1190,6 +1194,9 @@ a.clients__item:has(.clients__mark):hover {
     gap: 0 var(--space-8);
     padding: var(--space-4) var(--space-6);
   }
+  /* Without a status line there is no second row to reserve, so the single
+     line of text centres on the buttons. */
+  .consent:not(:has(.consent__status)) { grid-template-areas: "text actions"; }
   .consent__text { grid-area: text; }
   .consent__status { grid-area: status; margin-top: var(--space-1); }
   .consent__actions { grid-area: actions; }
@@ -1197,16 +1204,24 @@ a.clients__item:has(.clients__mark):hover {
 }
 
 /* WCAG 2.4.11: a focused control must not end up hidden behind the bar. The
-   reserve covers the tallest the bar gets, which is the reopened bar on a
-   320px phone (its status line adds one row to the first-visit height, which
-   is 158px in English and Swedish) plus the 16px it floats above the edge:
-   measured at 199px, so 208px. The browser's scroll-into-view keeps that much
-   clear at the bottom, and the footer takes the same reserve as padding while
-   the bar is up, so its last links (Legal, Cookie settings) can be scrolled
-   clear. Both are plain CSS: no script measures the bar. */
+   browser's scroll-into-view keeps this much clear at the bottom, and the
+   footer takes the same reserve as padding while the bar is up, so its last
+   links (Legal, Cookie settings) can be scrolled clear. Both are plain CSS: no
+   script measures the bar.
+   The reserve is in rem, the one length here that is not on the px spacing
+   scale, because the bar grows with the text size (Firefox's text-only zoom,
+   Android's font scale) and a px reserve would not. On a phone the tallest bar
+   is the reopened one (183px at 320px wide, plus the 16px it floats above the
+   edge, and taller with the text-spacing overrides of SC 1.4.12), so 20rem
+   (320px at the default size); from 700px the bar sits beside its buttons and
+   12rem is enough. */
 @media not all and (max-height: 520px) {
-  html.consent-open { scroll-padding-bottom: calc(var(--space-40) + var(--space-12)); }
-  .consent-open .site-footer { padding-bottom: calc(var(--space-40) + var(--space-12)); }
+  html.consent-open { scroll-padding-bottom: 20rem; }
+  .consent-open .site-footer { padding-bottom: 20rem; }
+  @media (min-width: 700px) {
+    html.consent-open { scroll-padding-bottom: 12rem; }
+    .consent-open .site-footer { padding-bottom: 12rem; }
+  }
 }
 
 /* A viewport this short (a 1280 by 1024 desktop at 400% zoom is 320 by 256)

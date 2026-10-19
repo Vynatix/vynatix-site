@@ -212,7 +212,6 @@
 // pinned to /gtag/js, and connect-src for the beacons); see EDGE-SETUP.md.
 (function () {
   var GA_ID = 'G-XXXXXXXXXX';
-  var PLACEHOLDER = 'G-XXXXXXXXXX';
   var CONSENT_KEY = 'vynatix-consent';  // localStorage: v1:granted:YYYY-MM-DD or v1:denied:YYYY-MM-DD
   var POLICY_VERSION = 'v1';            // bump when the wording of the choice changes, so old answers lapse
   var CONSENT_MAX_DAYS = 365;           // how long an answer is kept before the bar asks again
@@ -244,7 +243,7 @@
       undecided: 'Your choice has not been made yet.',
       liveOn: 'Analytics turned on.',
       liveOff: 'Analytics turned off.',
-      saveFail: 'Your choice could not be saved, so analytics stays off.',
+      saveFail: 'Your choice could not be saved, so analytics stays off on this page.',
       footer: 'Cookie settings'
     },
     sv: {
@@ -261,14 +260,14 @@
       undecided: 'Ni har inte gjort något val än.',
       liveOn: 'Statistik slogs på.',
       liveOff: 'Statistik stängdes av.',
-      saveFail: 'Ert val kunde inte sparas, så statistiken förblir avstängd.',
+      saveFail: 'Ert val kunde inte sparas, så statistiken förblir avstängd på den här sidan.',
       footer: 'Cookie-inställningar'
     }
   };
 
   // Inert: with the placeholder (or anything that is not a GA4 ID) there is no
   // markup, no storage access, no listener and no class on <html>.
-  if (GA_ID === PLACEHOLDER || !/^G-[A-Z0-9]{6,12}$/.test(GA_ID)) return;
+  if (/^G-X+$/.test(GA_ID) || !/^G-[A-Z0-9]{6,12}$/.test(GA_ID)) return;
 
   var root = document.documentElement;
   var DISABLE_FLAG = 'ga-disable-' + GA_ID;   // Google's own off switch, read by gtag.js
@@ -316,8 +315,8 @@
   // Writes the choice with today's UTC date and reads it back, because some
   // browsers accept a write they then drop. Returns whether it stuck.
   function store(choice) {
-    var value = POLICY_VERSION + ':' + choice + ':' + new Date().toISOString().slice(0, 10);
     try {
+      var value = POLICY_VERSION + ':' + choice + ':' + new Date().toISOString().slice(0, 10);
       localStorage.setItem(CONSENT_KEY, value);
       if (localStorage.getItem(CONSENT_KEY) === value) return true;
     } catch (e) {
@@ -418,10 +417,12 @@
     };
   }
 
-  // Runs only while the off switch is still set, so a visitor who declines and
-  // then accepts again within the second is not stripped of the new cookies.
+  // Runs only while this page's off switch is still set and the stored choice
+  // is still not a grant. A visitor who declines and then accepts again within
+  // the second keeps the new cookies, and so does one who accepted in another
+  // tab: a stale tab closing must not wipe the cookies a granted tab is using.
   function purgeIfOff() {
-    if (window[DISABLE_FLAG] === true) purgeCookies();
+    if (window[DISABLE_FLAG] === true && readStored().choice !== 'granted') purgeCookies();
   }
 
   // Stops measuring: Decline, withdrawal, a refusal made in another tab, or a
@@ -522,7 +523,7 @@
   // visitor asked for it.
   function showBar(isReopen) {
     reopened = isReopen;
-    bar = buildBar(isReopen && current !== null);
+    bar = buildBar(isReopen);
     var skip = document.querySelector('.skip-link');
     var before = skip && skip.parentNode === document.body ? skip.nextSibling : document.body.firstChild;
     document.body.insertBefore(bar, before);
@@ -552,6 +553,9 @@
     current = stored.choice;
     opener = link;
     if (bar) {
+      // Already up (a first-visit bar): it now counts as asked for, so Escape
+      // puts it away and focus goes back to the link.
+      reopened = true;
       firstButton().focus();
     } else {
       showBar(true);
@@ -605,7 +609,11 @@
     var saved = store(choice);
     // A choice that cannot be remembered is not acted on as consent.
     current = saved ? choice : 'denied';
-    if (current === 'granted') loadAnalytics(); else revoke();
+    try {
+      if (current === 'granted') loadAnalytics(); else revoke();
+    } catch (e) {
+      /* the bar still has to close and the choice still be announced */
+    }
     var hadFocus = bar && bar.contains(document.activeElement);
     var wasReopen = reopened;
     hideBar();
@@ -645,7 +653,18 @@
     if (button) choose(button.getAttribute('data-consent-choice'));
   }
 
+  // Holding Enter on the footer link opens the bar and moves focus to Decline;
+  // the key's auto-repeat would then press it. A choice needs a deliberate press.
+  function onKeydown(e) {
+    if (e.repeat && e.key === 'Enter' && e.target && e.target.closest && e.target.closest('[data-consent-choice]')) {
+      e.preventDefault();
+    }
+  }
+
   function init() {
+    // A second copy of this script on the page would double the bar and the
+    // beacons; the class from the first copy is the sign it already ran.
+    if (root.classList.contains('js-consent')) return;
     root.classList.add('js-consent');
     relabelOpeners();
     live = make('p', 'sr-only');
@@ -663,6 +682,7 @@
       if (current === null) showBar(false);
       renderPanels();
       document.addEventListener('click', onClick);
+      document.addEventListener('keydown', onKeydown, true);
     }
     window.addEventListener('storage', function (e) {
       if (e.key === null || e.key === CONSENT_KEY) recheck();

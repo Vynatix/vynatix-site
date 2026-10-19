@@ -1,0 +1,210 @@
+{
+  "note": "Hashes of the consent text: the COPY strings in app.js and the #cookies section of each notice page. Written by node verify/consent.js --update. consent.js fails when the text changes and POLICY_VERSION does not.",
+  "policyVersion": "v1",
+  "copy": {
+    "en.label": "3e157596e926",
+    "en.text": "5e0cd8eb7b3c",
+    "en.notice": "c385c3440806",
+    "en.noticeHref": "cd47b9969a55",
+    "en.decline": "a2d285b35287",
+    "en.accept": "89713b9c9c1b",
+    "en.declineLabel": "2117fd9049f7",
+    "en.acceptLabel": "3f37ecd928ef",
+    "en.on": "70513114dae6",
+    "en.off": "e51f2cc8e8f2",
+    "en.undecided": "b8665de89300",
+    "en.liveOn": "16e6a7f8eb25",
+    "en.liveOff": "bfb15557e1b1",
+    "en.saveFail": "ee4eee018dae",
+    "en.footer": "df9b9219f0e5",
+    "sv.label": "b0b6ee408aa4",
+    "sv.text": "fc6ffca1bae3",
+    "sv.notice": "f33631122c2c",
+    "sv.noticeHref": "12b4d86b6696",
+    "sv.decline": "e42f151a2800",
+    "sv.accept": "a23a38ecb958",
+    "sv.declineLabel": "0958df1aaf58",
+    "sv.acceptLabel": "50dfc0050bda",
+    "sv.on": "faf85e4f7438",
+    "sv.off": "a63dc3116e67",
+    "sv.undecided": "6de660812a70",
+    "sv.liveOn": "f3fa8f42d40c",
+    "sv.liveOff": "4b6bebeb166a",
+    "sv.saveFail": "2bca8d837870",
+    "sv.footer": "f62280d6bf0a"
+  },
+  "sections": {
+    "privacy.html#cookies": [
+      {
+        "h": "eb395f75d775",
+        "t": "Analytics and cookies"
+      },
+      {
+        "h": "17774ec6b0a1",
+        "t": "If you accept, we use Google Analytics 4 to count visits and"
+      },
+      {
+        "h": "489fabfb4f6c",
+        "t": "Our legal basis is your consent under Article 6(1)(a) of the"
+      },
+      {
+        "h": "46d5d3cbc963",
+        "t": "When you accept, your browser sends Google the address of th"
+      },
+      {
+        "h": "a28f767a94fa",
+        "t": "If you accept, Google Analytics sets two cookies in your bro"
+      },
+      {
+        "h": "d1b8366bd1dd",
+        "t": "Cookies set by Google Analytics after you accept"
+      },
+      {
+        "h": "45823eaac0c8",
+        "t": "Cookie"
+      },
+      {
+        "h": "fcbe15a78550",
+        "t": "What it is for, and how long it lasts"
+      },
+      {
+        "h": "3fc3ff042a3d",
+        "t": "_ga"
+      },
+      {
+        "h": "ffb8f868e684",
+        "t": "Holds the random identifier that tells one browser's visits "
+      },
+      {
+        "h": "5a45d5219d80",
+        "t": "_ga_<property id>"
+      },
+      {
+        "h": "1b457b0c0583",
+        "t": "Keeps track of the visit you are in now. Lasts up to 12 mont"
+      },
+      {
+        "h": "7853031f70d3",
+        "t": "The cookie names and lifetimes above are taken from Google's"
+      },
+      {
+        "h": "9a1fb56b8afb",
+        "t": "Because these are first-party cookies, your browser sends th"
+      },
+      {
+        "h": "0dea12ca51d8",
+        "t": "We have set our Google Analytics property to keep event data"
+      },
+      {
+        "h": "95fb32f87086",
+        "t": "Page views are recorded. Outbound-link clicks and file downl"
+      },
+      {
+        "h": "9538b3ec033e",
+        "t": "Google Signals and ad personalisation are switched off. The "
+      },
+      {
+        "h": "fd5a7ca814d1",
+        "t": "Google is the recipient of this data and may process it in t"
+      },
+      {
+        "h": "d85c47c3f445",
+        "t": "Your answer is saved in your browser, as described under Wha"
+      },
+      {
+        "h": "90cefb4200a6",
+        "t": "If you have accepted, you can withdraw at any time. Use the "
+      },
+      {
+        "h": "d78fd2650f25",
+        "t": "Without JavaScript nothing is measured and there is nothing "
+      }
+    ],
+    "integritet.html#cookies": [
+      {
+        "h": "7514cc039706",
+        "t": "Statistik och cookies"
+      },
+      {
+        "h": "0a7eaee427a7",
+        "t": "Om ni godkänner använder vi Google Analytics 4 för att räkna"
+      },
+      {
+        "h": "f8aa48671567",
+        "t": "Vår rättsliga grund är ert samtycke enligt artikel 6.1 a i G"
+      },
+      {
+        "h": "83668335d2b4",
+        "t": "När ni godkänner skickar er webbläsare till Google adressen "
+      },
+      {
+        "h": "80f233cad93a",
+        "t": "Om ni godkänner sätter Google Analytics två cookies i er web"
+      },
+      {
+        "h": "799863db4af7",
+        "t": "Cookies som Google Analytics sätter efter att ni har godkänt"
+      },
+      {
+        "h": "45823eaac0c8",
+        "t": "Cookie"
+      },
+      {
+        "h": "deecc3b42823",
+        "t": "Vad den används till och hur länge den finns kvar"
+      },
+      {
+        "h": "3fc3ff042a3d",
+        "t": "_ga"
+      },
+      {
+        "h": "a0250e64c98b",
+        "t": "Innehåller det slumpmässiga id som skiljer en webbläsares be"
+      },
+      {
+        "h": "73c533ed038c",
+        "t": "_ga_<egenskaps-id>"
+      },
+      {
+        "h": "9c7662f33004",
+        "t": "Håller reda på besöket som pågår just nu. Finns kvar i upp t"
+      },
+      {
+        "h": "b768528cd19f",
+        "t": "Cookienamnen och livslängderna ovan är hämtade från Googles "
+      },
+      {
+        "h": "4f1fef4b931e",
+        "t": "Eftersom det är förstapartscookies skickar er webbläsare dem"
+      },
+      {
+        "h": "86dc46ddf061",
+        "t": "Vi har ställt in vår Google Analytics-egenskap så att händel"
+      },
+      {
+        "h": "4df218a5bdfe",
+        "t": "Sidvisningar registreras. Klick på utgående länkar och nedla"
+      },
+      {
+        "h": "8f00da5f7d63",
+        "t": "Google Signals och annonspersonalisering är avstängda. Koden"
+      },
+      {
+        "h": "1e504edfb2c7",
+        "t": "Google är mottagare av uppgifterna och kan behandla dem i US"
+      },
+      {
+        "h": "8c7a99341494",
+        "t": "Ert svar sparas i er webbläsare, som beskrivs under Vad som "
+      },
+      {
+        "h": "d8be2ddae71a",
+        "t": "Om ni har godkänt kan ni när som helst återkalla det. Använd"
+      },
+      {
+        "h": "d80ed2f2e87f",
+        "t": "Utan JavaScript mäts ingenting och det finns inget att ändra"
+      }
+    ]
+  }
+}

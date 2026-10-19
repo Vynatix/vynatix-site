@@ -27,7 +27,8 @@ services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
-privacy.html        Privacy notice (GDPR Art. 13)
+privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
+                    section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
 accessibility.html  Accessibility statement
 android-automotive-development.html   Android Automotive in Gothenburg (English twin of
@@ -39,7 +40,10 @@ sv.html             Swedish home and hub for the Swedish pages (twin of index.ht
 android-automotive-utveckling.html, ai-utveckling.html,
 konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
 valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
-ai-konsultbolag-sverige.html   Swedish guides — twenty pages in total
+ai-konsultbolag-sverige.html   Swedish guides
+integritet.html     Swedish privacy notice, the twin of privacy.html (the fifth
+                    English/Swedish pair); the Swedish consent bar links to it.
+                    Twenty-one pages in total
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (hand-maintained)
 llms.txt            A plain-text summary of the company and every page, in both languages
@@ -50,7 +54,8 @@ tokens.css          Design system layer 1: the tokens, generated from the system
 colors_and_type.css Design system layer 2, verbatim: reset, semantic helpers,
                     .eyebrow, .btn, .card, .glass, .container, per-theme typefaces
 styles.css          Layer 3, the site's own: page chrome and components on the roles
-app.js              All client behaviour (vanilla JS, IIFEs, no modules)
+app.js              All client behaviour (vanilla JS, IIFEs, no modules): the theme,
+                    the mobile nav, and analytics consent (see Analytics)
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted case
                     photos (jpg + webp), app icons
 fonts/              Self-hosted woff2 subsets of the system's faces, plus licences
@@ -66,6 +71,7 @@ EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not publ
 tools/              Local verification scripts, stamp.js (writes the ?v= version
                     stamps into the pages) and seo-head.py (rewrites the search
                     block, footer and sitemap) — NOT published, not part of the site
+tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -150,6 +156,15 @@ first-party file is the way to avoid a flash of the wrong theme. The rules:
 - If storage is blocked the draw cannot be kept, so the page stays on Forest
   rather than re-drawing on every navigation. Without JavaScript the markup's
   own `<html data-theme="light">` (Forest light) is what shows.
+
+The site writes three keys in the visitor's own browser, and none is sent
+anywhere: `vynatix-look` (`sessionStorage`, the direction drawn for the visit,
+written without any click), `vynatix-theme` (`localStorage`, light or dark,
+written when the toggle is pressed) and `vynatix-consent` (`localStorage`, the
+analytics choice, written when Decline or Accept is pressed; see *Analytics*).
+Whether the first two need mention in the bar or the notices is a decision for
+counsel, listed in `tools/PRE-FLIP-CHECKLIST.md`. The one-line fallback, if the
+random draw has to go, is to pin `pickLook()` as described below.
 - On the home page `app.js` also preloads the headline faces of the drawn
   direction (`DISPLAY_FACES`), so the hero is not blocked on a late font fetch.
   Other pages add no preloads.
@@ -170,25 +185,49 @@ both of them place with `<use>`) are copy-pasted into every page. **A change
 to nav links, the logo, or the header's contact details or addresses must be
 applied to all `*.html` files.** The footer's source is the `FOOTER` template
 in `tools/seo-head.py`: a footer change is made there and the script run, which
-writes it into every page, not made by hand in twenty files. Set
-`aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
+writes it into every page, not made by hand in twenty-one files. The Legal list
+in it carries the "Cookie settings" link (`data-consent-open`), which reopens the
+consent bar. Set `aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
-`<head>`, and `app.js` is the **only** script — there is no CDN or animation stack. It
-has two features: the theme (the per-visit draw and the toggle) and the
-mobile nav. Nothing on the site
+`<head>`, and `app.js` is the **only** script the pages load: there is no CDN or
+animation stack. It has three features: the theme (the per-visit draw and the
+toggle), the mobile nav, and consent for Google Analytics (see *Analytics*). The
+one other script that can ever run is Google's `gtag.js`, which the third feature
+injects itself, only after a visitor presses Accept and only once a real
+Measurement ID has been set. Nothing on the site
 moves on its own: the design system forbids auto-advancing strips and
 ambient loops on content surfaces, so the former client marquee is now a
 still list (`.clients__list`) and the former case reel is a grid of cards.
 
 The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
-`script-src 'self'`, `style-src 'self'` and `font-src 'self'`, so **any
-third-party script, inline style or font CDN is blocked by default**. Adding
-one means deliberately widening the CSP on **every page** (and the header
-copy in `EDGE-SETUP.md`), and updating this file.
+`script-src` to `'self'` plus the single path `https://www.googletagmanager.com/gtag/js`,
+`connect-src` to `'self'` plus three Google analytics hosts, and `style-src`,
+`font-src` and `img-src` to `'self'` (and `data:` for images), so **any other
+third-party script, inline style or font CDN is still blocked by default**. The
+exact string is in `EDGE-SETUP.md`, section 3.
+
+**The Google entries are a recorded security downgrade** from the earlier
+`'self'`-only policy. The owner accepted it for Google Analytics behind consent,
+and `SECURITY-ASSESSMENT.md` (Round 6) records what it costs: the wildcard
+`connect-src` hosts are a generic exfiltration channel to any Google Analytics
+property, and, because a `<meta>` policy cannot depend on consent, the policy
+reaches every visitor whether or not they accept. Do not widen it further to make
+a measurement work. A violation names the one host that is missing; add that host
+by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
+
+**The policy lives in three places that change together:** the `<meta>` tag on
+all 21 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
+**first**: the browser enforces the meta and the header independently, so a
+narrower header silently blocks Google Analytics, while a wider one is bounded
+by the meta. `tools/verify/csp.js` keeps the pages and `EDGE-SETUP.md` in step
+(and allows Google hosts only from its list); `headers.js` checks the live
+header. Any new third-party script, or any other host, still means widening the
+CSP deliberately on **every page** and in `EDGE-SETUP.md`, and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
 afterthought — preserve it:
@@ -197,7 +236,14 @@ afterthought — preserve it:
   hide them in CSS and let `app.js` opt in by adding a class to `<html>`:
   `.js-nav` for the collapsible mobile nav (without it the nav stays visible
   and wraps under the bar) and `.js-theme` for the theme toggle (it keeps its
-  place but is invisible until it can work).
+  place but is invisible until it can work). The consent module follows the same
+  rule by building its markup only when it can work: the bar and the in-page
+  panel do not exist without JavaScript, with blocked storage, or while the ID is
+  the placeholder, and the footer's "Cookie settings" link is then a plain link to
+  the notice. It adds `js-consent` to `<html>` once active (a test hook and a
+  guard against a second copy of the script; no CSS depends on it) and
+  `consent-open` while the bar is on screen (the bottom reserve in `styles.css`
+  depends on that one).
 - The only motion is short transitions on hover and focus; the system's
   `prefers-reduced-motion` rule cuts them to 0.01ms.
 - Keep `aria-label` / `aria-expanded` / `aria-pressed` / `aria-current` and
@@ -272,7 +318,13 @@ including LinkedIn, the registries and `llms.txt`.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
-is translated. The footer's "På svenska" column (`lang="sv"`) links the Swedish
+is translated, and, while the consent module is active, the footer's "Cookie
+settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and a
+link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
+`sv`. Without JavaScript, or while the module is inert, the English link to
+`privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
+`privacy.html`, the fifth English/Swedish pair, and the Swedish consent bar links
+to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish page in its `#guider` section. The
 two home pages are not mirror images: the "three ways" list in Who we are and
 the Further reading section exist only on the English home page (sv.html has the
@@ -302,6 +354,114 @@ the glyph files in `assets/icons/`, which are copies of the system's
 `light_mode` (the theme toggle) are not in the system's approved catalogue;
 they were drawn from the same package at the same settings and should be added
 to the catalogue. Never draw an icon by hand, and never use `.ms`.
+
+## Analytics
+
+Google Analytics 4 is built into the site, off by default and behind consent.
+This section holds the working rules. The reasoning and the cost are in
+`SECURITY-ASSESSMENT.md` (Round 6); the hard gate for switching it on is
+`tools/PRE-FLIP-CHECKLIST.md`.
+
+**What exists.** The third IIFE in `app.js`, after the theme and the mobile nav.
+When active it shows a compact, non-modal bar fixed to the bottom of the viewport
+on a first visit (`#consent-bar`: two buttons with the identical class string,
+Decline then Accept, so neither is favoured); reopens it from the footer's
+"Cookie settings" link (`data-consent-open`); and fills the in-page panel on the
+two privacy notices (`[data-consent-panel]` inside `#cookies`) with the same two
+buttons. The wording is the `COPY` object in `app.js`, in English and Swedish,
+and has to stand on its own (a cached notice can sit beside a newer bar for
+minutes) while still naming Google, the cookies, who is counted and how to change
+the choice. The styles are the *Consent* section of `styles.css`; its bottom
+reserve is in `rem` so it grows with the text size, the one length there that is
+not on the spacing scale.
+
+**One constant: `GA_ID`.** `var GA_ID = 'G-XXXXXXXXXX';` is the first line of that
+IIFE and the only place the Measurement ID exists (it must stay a single match in
+`app.js`; the tests rewrite it by pattern and fail on none or on two). While it
+is the placeholder, any run of X characters after `G-`, or anything that is not
+`G-` plus 6 to 12 capitals or digits, the block returns before doing anything: no
+markup, no storage read or write, no listener, no class on `<html>`, no cookie
+deletion, and the footer link stays a plain link. Shipping with the placeholder
+is the normal state of the branch. The ID is public by construction, so it may be
+committed.
+
+**Flipping it on.** Edit only that line, then `cd tools && npm run stamp` (`app.js`
+changed, so every page's stamp moves), then `node verify/release-gate.js`, then
+`npm run check`. The flip is the last commit of the one PR and changes nothing but
+that line and the stamps. It is made only when `tools/PRE-FLIP-CHECKLIST.md` is
+complete. `release-gate.js` fails while `GA_ID` is the placeholder, or while any
+claim, marker or placeholder text on the pages would contradict going live. It is
+deliberately **not** part of `npm run check`, which stays green with the
+placeholder. Switching it off again is the same line the other way and the same
+stamp; the exit runbook is in the checklist.
+
+**Google is never requested before consent.** No script, `preconnect`,
+`dns-prefetch`, `preload`, `prefetch`, image, font or beacon to a Google host, in
+markup or from script, until the stored choice is `granted` or the visitor has
+just pressed Accept. This is Consent Mode "basic": nothing is sent before the
+choice, not even a default consent state. After Accept the module sends the
+consent default (all four consent parameters denied), injects the one
+`gtag.js?id=<GA_ID>` element, sends `js`, updates `analytics_storage` to granted
+and runs `config` with Google Signals and ad personalisation off and
+`cookie_expires` of 365 days. Do not add a Google host to any `<link>` anywhere
+in the pages, and do not set `anonymize_ip` or `client_storage`.
+
+**The stored choice.** `vynatix-consent` in `localStorage`, beside `vynatix-theme`
+and `vynatix-look`, holds one plain string, `v1:granted:YYYY-MM-DD` or
+`v1:denied:YYYY-MM-DD` (the UTC date of the click). It is valid for 365 days, then
+the bar asks again. It is parsed with an exact pattern and must be a real date,
+not in the future and not expired; anything else (a wrong version, an impossible
+date, `__proto__`, markup) counts as no choice, which fails closed. Nothing writes
+the key except a click on Decline or Accept, and browsing is never consent. If
+storage cannot be read there is no bar and no analytics, and if a write does not
+stick the choice is treated as denied. Bump `POLICY_VERSION` when the wording of
+the choice changes in a way that should lapse old answers.
+
+**Cookies and withdrawal.** Google sets `_ga` and `_ga_<id>`. `cookie_expires` is
+365 days (`COOKIE_MAX_AGE`) and must never be longer than `CONSENT_MAX_DAYS`.
+Decline and withdrawal set Google's own `ga-disable-<ID>` flag, send
+`analytics_storage: denied`, and delete every cookie named `_ga` or starting
+`_ga_` for the host and every parent domain, at once, a second later and on
+`pagehide`. A load with no choice or a denied one deletes them too. No other
+cookie is touched. The stored choice is read again on `pageshow` after a
+back/forward-cache restore, on `visibilitychange` and on `storage`, so a restored
+page or another tab follows a withdrawal. A bare revert on the server cannot reach a
+tab that has already loaded `gtag.js`; it measures until it is reloaded or until
+`PURGE_ONLY` is set to `true`, which measures nothing for anyone, deletes the `_ga`
+cookies on every load and removes the stored choice, so the `storage` event stops
+open tabs too (the exit runbook in `tools/PRE-FLIP-CHECKLIST.md`). Reverting `GA_ID`
+to the placeholder only makes the block inert; it does not clean up.
+
+**Property settings that live outside the repo.** Nothing in the repo can see
+these, they can drift, and each is evidenced in the checklist and re-checked every
+quarter: Google Signals off; ad personalisation and Google data sharing off; event
+data retention 2 months; Enhanced Measurement decided, with outbound clicks and
+file downloads off (the list pages name other firms, and an outbound-click event
+would record which one a visitor followed); an internal-traffic or Exclude
+hostname filter so local and developer visits do not count, and **no** Include
+hostname filter until it has been tested in DebugView (Google's release note of
+2026-09-21 says Include filters block events with an empty hostname, and the
+effect on web streams is unclear).
+
+**Facts only a human can supply.** The notices carry visible `[[CONFIRM: what is
+needed]]` markers: Google's contracting entity, the observed cookie names and
+lifetimes, which Enhanced Measurement events remain, the Data Privacy Framework
+listing check. Never fill one in from memory or from this file. Resolve it from
+evidence; the release gate refuses to pass while any remains. The legal text is a
+draft for counsel and says so on the page.
+
+**Checks.** `csp.js` (the CSP is identical on all 21 pages, matches
+`EDGE-SETUP.md`, and names only the allow-listed Google hosts), `consent.js`
+(behaviour: nothing before consent, accept, decline, withdrawal, poisoned and
+blocked storage, no-JS, Swedish), `consent-layout.js` (bar size, the open menu
+over the bar, focus never hidden behind the bar, six themes), `release-gate.js`
+(above) and `consent-live.js` (opt-in; real network; the dummy ID `G-TEST000000`,
+never a real property). In `tools/verify/_common.js`: `pinConsent` pins a stored
+choice the way `pinTheme` pins a theme, `armGa` arms a page so the module is
+active under test (the placeholder is inert, so without it the axe, contrast,
+theme and screenshot checks would audit a page with no bar), and `rewriteGaId`
+rewrites the `GA_ID` line by pattern and fails loudly on no match or more than
+one. A pass with the dummy ID is not a pass with the real one; see the checklist.
 
 ## Assets
 
@@ -380,11 +540,17 @@ add third-party font/CDN requests for fonts.
   an off-origin request check (`requests.js`), the random-scheme check
   (`theme.js`), the version-stamp check (`stamp.js --check`) and its stale-cache
   proof (`stale-cache.js`), the search, structured-data and copy check
-  (`seo.js`), and the accessibility suite with its contrast sweep (`a11y.js`).
+  (`seo.js`), the accessibility suite with its contrast sweep (`a11y.js`), the
+  static CSP sync (`csp.js`) and the consent behaviour and layout checks
+  (`consent.js`, `consent-layout.js`). Two more sit outside `npm run check`: the
+  release gate (`release-gate.js`, which must fail until analytics is switched on
+  for real) and the opt-in live test (`consent-live.js`); see *Analytics*.
   A new page also goes into `PAGES` in `tools/verify/_common.js` and into
   `sitemap.xml`. Because every visit draws its own scheme, the checks that need a
   particular theme pin it first (`pinTheme` in `tools/verify/_common.js` sets
-  both storage keys). Before changing a component, sweep all six themes:
+  both storage keys; `pinConsent` pins the analytics choice, and `armGa` arms the
+  consent module for checks that audit the bar). Before changing a component,
+  sweep all six themes:
   `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`.
 - **Re-syncing the design system.** When the system changes, copy its
   `project/colors_and_type.css` over the local one as is, and its

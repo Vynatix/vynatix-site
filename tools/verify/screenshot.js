@@ -1,14 +1,24 @@
 // Visual-regression gate. Capture a baseline before a refactor, then compare after.
 //   node verify/screenshot.js baseline | current | compare
+//   node verify/screenshot.js bar
 // Animations are disabled during capture so the marquee cannot cause false diffs.
+//
+// The pages are captured armed (armGa, so nothing real is contacted) with the consent answer pinned to denied:
+// the consent bar never enters the baseline, so a diff is a change to the page, not to whether a bar happens to
+// be up. The footer's Cookie settings link is part of the page and does show.
+//
+// `bar` is a separate mode for looking at the bar itself, viewport only (not full page), in each theme under
+// test: first visit, the bar reopened from the footer, and a first visit scrolled to the end of the page (the
+// footer against the bar). Pages index.html and sv.html at 390x844 and 1440x900, or VW x VH. It writes to
+// current-bar/ for review by eye and is not part of `compare`.
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, pinConsent, armGa, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
-const OUT = path.join(__dirname, '..', (MODE === 'compare' ? 'current' : MODE) + SUFFIX);
+const OUT = path.join(__dirname, '..', (MODE === 'compare' ? 'current' : MODE === 'bar' ? 'current-bar' : MODE) + SUFFIX);
 const VIEWPORT = {
   width: Number(process.env.VW) || 1440,
   height: Number(process.env.VH) || 900,
@@ -20,12 +30,19 @@ async function capture() {
   for (const p of PAGES) {
     for (const theme of THEMES) {
       const ctx = await browser.newContext({ viewport: VIEWPORT });
+      await armGa(ctx);
       const page = await ctx.newPage();
       // Pin the theme before first paint (the site otherwise draws a colour scheme at
       // random per visit) so every capture is the same theme, never a mid-toggle frame.
       await page.addInitScript(pinTheme, theme);
+      await page.addInitScript(pinConsent, 'denied');
       await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
       await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
+      // The pinned answer is what keeps the bar out of the baseline; if the pin stops working (the stored format
+      // changed), say so rather than capture a bar and call every page changed.
+      if (await page.evaluate(() => !!document.getElementById('consent-bar'))) {
+        throw new Error(`${p} [${theme}]: the consent bar is up although the answer is pinned to denied; check pinConsent in _common.js against app.js`);
+      }
       // Force every image to load and decode before capturing. fullPage grows the
       // viewport after this point, so loading="lazy" covers would otherwise still
       // be racing the screenshot and produce false diffs on an unchanged page.
@@ -44,6 +61,39 @@ async function capture() {
   }
   await browser.close();
   console.log(`\n${PAGES.length * THEMES.length} screenshots written to ${OUT}`);
+}
+
+// The bar itself, viewport only: first visit, reopened, and a first visit scrolled to the end of the page.
+async function captureBar() {
+  fs.mkdirSync(OUT, { recursive: true });
+  const browser = await launch();
+  const viewports = process.env.VW || process.env.VH ? [[VIEWPORT.width, VIEWPORT.height]] : [[390, 844], [1440, 900]];
+  let n = 0;
+  for (const p of ['index.html', 'sv.html']) for (const theme of THEMES) for (const [w, h] of viewports) {
+    for (const state of ['first', 'reopened', 'first-end']) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+      await armGa(ctx);
+      const page = await ctx.newPage();
+      await page.addInitScript(pinTheme, theme);
+      if (state === 'reopened') await page.addInitScript(pinConsent, 'denied');
+      await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
+      await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
+      if (state === 'reopened') {
+        await page.evaluate(() => document.querySelector('[data-consent-open]').scrollIntoView({ block: 'center' }));
+        await page.click('[data-consent-open]');
+        await page.evaluate(() => scrollTo(0, 0));
+      }
+      if (state === 'first-end') await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(250);
+      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}-${w}x${h}-${state}.png`);
+      await page.screenshot({ path: file, fullPage: false, animations: 'disabled', caret: 'hide' });
+      console.log(`  captured ${path.basename(file)}`);
+      n++;
+      await ctx.close();
+    }
+  }
+  await browser.close();
+  console.log(`\n${n} bar screenshots written to ${OUT}`);
 }
 
 function sha(file) {
@@ -97,5 +147,6 @@ function compare() {
 
 (async () => {
   if (MODE === 'compare') compare();
+  else if (MODE === 'bar') await captureBar();
   else await capture();
 })().catch((e) => { console.error(e); process.exit(1); });

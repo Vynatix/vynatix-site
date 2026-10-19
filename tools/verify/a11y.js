@@ -2,9 +2,26 @@
 // (THEMES, default light,dark), plus functional tests for the skip link, the
 // still client list, the no-JS and reduced-motion fallbacks, and an
 // independent contrast sweep.
+//
+// Every page is audited the way a first-time visitor meets it: with the consent module armed (armGa, the dummy
+// ID, Google stubbed) and no answer stored, so the bar is up and is part of what axe and the contrast sweep
+// see. The axe scan and the contrast sweep then run a second time with the answer pinned to denied, which is
+// the page every returning visitor who declined sees, bar-less. consent-layout.js adds the bar-specific
+// checks (size, focus not obscured, target size, forced colours).
 const fs = require('fs');
-const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, pinConsent, armGa, launch, pool } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
+
+// The two ways a page is met: first visit (no answer stored, bar up) and after a decline (bar gone).
+const PASSES = [['', undefined], [', consent pinned denied', 'denied']];
+
+// A context with the consent module armed; pass an answer to pin it, or none for a first visit.
+async function armed(browser, opts = {}, answer) {
+  const ctx = await browser.newContext(opts);
+  await armGa(ctx);
+  if (answer) await ctx.addInitScript(pinConsent, answer);
+  return ctx;
+}
 
 (async () => {
   const browser = await launch();
@@ -12,33 +29,45 @@ const AXE = require.resolve('axe-core/axe.min.js');
   let problems = 0;
 
   // --- axe scan -----------------------------------------------------------
-  for (const p of PAGES) {
-    for (const theme of THEMES) {
+  {
+    const jobs = [];
+    for (const [label, answer] of PASSES) for (const p of PAGES) for (const theme of THEMES) jobs.push({ label, answer, p, theme });
+    const scans = await pool(jobs, 3, async (j) => {
       // bypassCSP only for the axe scan: script-src 'self' correctly refuses the
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
-      const ctx = await browser.newContext({ bypassCSP: true });
+      const ctx = await armed(browser, { bypassCSP: true }, j.answer);
       const page = await ctx.newPage();
-      await page.addInitScript(pinTheme, theme);
-      await page.goto(BASE + p, { waitUntil: 'load' });
+      await page.addInitScript(pinTheme, j.theme);
+      await page.goto(BASE + j.p, { waitUntil: 'load' });
       await page.addScriptTag({ content: axeSrc });
       const res = await page.evaluate(async () => await window.axe.run(document, {
         runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
       }));
-      const v = res.violations;
+      const bar = await page.evaluate(() => !!document.getElementById('consent-bar'));
+      await ctx.close();
+      return { ...j, violations: res.violations, bar };
+    });
+    for (const sc of scans) {
+      const v = sc.violations;
+      const tag = `${sc.p} [${sc.theme}${sc.label}]`;
       if (v.length) {
         problems += v.length;
-        console.log(`FAIL ${p} [${theme}] — ${v.length} violation(s)`);
+        console.log(`FAIL ${tag} — ${v.length} violation(s)`);
         v.forEach((x) => console.log(`       ${x.impact}: ${x.id} — ${x.help} (${x.nodes.length} node(s))\n         e.g. ${x.nodes[0].target.join(' ')}`));
       } else {
-        console.log(`ok   ${p} [${theme}] — 0 axe violations`);
+        console.log(`ok   ${tag} — 0 axe violations`);
       }
-      await ctx.close();
+      // The first-visit pass is only worth anything if the bar was really up, and the pinned pass if it was really gone.
+      if (sc.bar !== !sc.answer) {
+        problems++;
+        console.log(`FAIL ${tag} — ${sc.answer ? 'the bar is up although the answer is pinned' : 'no consent bar on a first visit, so the scan did not cover it'}`);
+      }
     }
   }
 
   // --- skip link, on every page --------------------------------------------
   {
-    const page = await browser.newPage();
+    const page = await (await armed(browser)).newPage();
     const bad = [];
     for (const pg of PAGES) {
       await page.goto(BASE + pg, { waitUntil: 'load' });
@@ -68,7 +97,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // every named client an off-site link that opens safely, nothing animating
   // and no pause control left over from the old marquee.
   {
-    const page = await browser.newPage();
+    const page = await (await armed(browser)).newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const r = await page.evaluate(() => {
       const lists = [...document.querySelectorAll('.clients__list')];
@@ -97,7 +126,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // under the bar), the menu button must not show (it could never open), and
   // the theme toggle must not show either (it could never switch).
   {
-    const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const ctx = await armed(browser, { javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const r = await page.evaluate(() => {
@@ -109,11 +138,12 @@ const AXE = require.resolve('axe-core/axe.min.js');
         navVisible: links.length > 0 && links.every(vis),
         menuButton: vis(document.querySelector('.mobile-toggle')),
         themeToggle: vis(document.querySelector('.theme-toggle')),
+        consentBar: document.querySelectorAll('.consent').length,
       };
     });
-    const ok = !r.jsNav && r.navLinks >= 4 && r.navVisible && !r.menuButton && !r.themeToggle;
+    const ok = !r.jsNav && r.navLinks >= 4 && r.navVisible && !r.menuButton && !r.themeToggle && r.consentBar === 0;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} no-JS: nav visible and wrapped, menu button and theme toggle not shown — ${JSON.stringify(r)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} no-JS: nav visible and wrapped, menu button, theme toggle and consent bar not shown — ${JSON.stringify(r)}`);
     await ctx.close();
   }
 
@@ -121,7 +151,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // Nothing on the site moves on its own; what remains are short transitions,
   // which the design system cuts to 0.01ms under prefers-reduced-motion.
   {
-    const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+    const ctx = await armed(browser, { reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const r = await page.evaluate(() => {
@@ -140,67 +170,75 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // --- independent contrast sweep -----------------------------------------
   // axe skips nodes whose background it cannot resolve, and it missed a 66px
   // accent at 1.75:1 outright. Compute every visible text node ourselves.
+  // Inside the consent bar and the in-page panel a background that cannot be resolved is reported, never skipped.
   {
-    const page = await browser.newPage();
     const failures = [];
-    for (const pg of PAGES) {
-      for (const theme of THEMES) {
-        await page.addInitScript(pinTheme, theme);
-        await page.goto(BASE + pg, { waitUntil: 'load' });
-        const bad = await page.evaluate(() => {
-          const lum = (rgb) => {
-            const c = rgb.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
-            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-          };
-          const nums = (str) => { const m = str.match(/[\d.]+/g); return m ? m.map(Number) : null; };
-          const out = [];
-          document.querySelectorAll('*').forEach((el) => {
-            const ownText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-            if (!ownText) return;
-            const cs = getComputedStyle(el);
-            if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) return;
-            const box = el.getBoundingClientRect();
-            if (!box.width || !box.height) return;
-            if (el.closest('[aria-hidden="true"]')) return;
-            const fgAll = nums(cs.color);
-            if (!fgAll) return;
-            const fg = fgAll.slice(0, 3);
-            let bg = null, n = el, bailed = false;
-            while (n) {
-              const ncs = getComputedStyle(n);
-              if (ncs.backgroundImage !== 'none') { bailed = true; break; }
-              const c = ncs.backgroundColor;
-              const parts = nums(c);
-              if (parts && (parts.length < 4 || parts[3] === 1) && c !== 'rgba(0, 0, 0, 0)') {
-                bg = parts.slice(0, 3);
-                break;
-              }
-              n = n.parentElement;
+    const jobs = [];
+    for (const [label, answer] of PASSES) for (const pg of PAGES) for (const theme of THEMES) jobs.push({ label, answer, pg, theme });
+    const swept = await pool(jobs, 3, async (j) => {
+      const ctx = await armed(browser, {}, j.answer);
+      const page = await ctx.newPage();
+      await page.addInitScript(pinTheme, j.theme);
+      await page.goto(BASE + j.pg, { waitUntil: 'load' });
+      const bad = await page.evaluate(() => {
+        const lum = (rgb) => {
+          const c = rgb.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+          return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        };
+        const nums = (str) => { const m = str.match(/[\d.]+/g); return m ? m.map(Number) : null; };
+        const out = [];
+        document.querySelectorAll('*').forEach((el) => {
+          const ownText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+          if (!ownText) return;
+          const cs = getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) return;
+          const box = el.getBoundingClientRect();
+          if (!box.width || !box.height) return;
+          if (el.closest('[aria-hidden="true"]')) return;
+          const sel = el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : '');
+          const consent = !!el.closest('.consent, .consent-panel');
+          const fgAll = nums(cs.color);
+          if (!fgAll) { if (consent) out.push({ sel, text: el.textContent.trim().slice(0, 24), unresolved: 'text colour' }); return; }
+          const fg = fgAll.slice(0, 3);
+          let bg = null, n = el, bailed = false;
+          while (n) {
+            const ncs = getComputedStyle(n);
+            if (ncs.backgroundImage !== 'none') { bailed = true; break; }
+            const c = ncs.backgroundColor;
+            const parts = nums(c);
+            if (parts && (parts.length < 4 || parts[3] === 1) && c !== 'rgba(0, 0, 0, 0)') {
+              bg = parts.slice(0, 3);
+              break;
             }
-            if (bailed || !bg) return;
-            const L1 = lum(fg), L2 = lum(bg);
-            const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
-            const px = parseFloat(cs.fontSize);
-            const large = px >= 24 || (px >= 18.66 && Number(cs.fontWeight) >= 700);
-            const need = large ? 3 : 4.5;
-            if (ratio < need) {
-              out.push({
-                sel: el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''),
-                text: el.textContent.trim().slice(0, 24),
-                ratio: Math.round(ratio * 100) / 100, need, px: Math.round(px),
-              });
-            }
-          });
-          return out;
+            n = n.parentElement;
+          }
+          if (bailed || !bg) {
+            if (consent) out.push({ sel, text: el.textContent.trim().slice(0, 24), unresolved: bailed ? 'background is an image or gradient' : 'no opaque background' });
+            return;
+          }
+          const L1 = lum(fg), L2 = lum(bg);
+          const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+          const px = parseFloat(cs.fontSize);
+          const large = px >= 24 || (px >= 18.66 && Number(cs.fontWeight) >= 700);
+          const need = large ? 3 : 4.5;
+          if (ratio < need) {
+            out.push({ sel, text: el.textContent.trim().slice(0, 24), ratio: Math.round(ratio * 100) / 100, need, px: Math.round(px) });
+          }
         });
-        bad.forEach((b) => failures.push(`${pg} [${theme}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
-      }
+        return out;
+      });
+      await ctx.close();
+      return { ...j, bad };
+    });
+    for (const w of swept) {
+      w.bad.forEach((b) => failures.push(b.unresolved
+        ? `${w.pg} [${w.theme}${w.label}] ${b.sel} "${b.text}" background cannot be resolved (${b.unresolved})`
+        : `${w.pg} [${w.theme}${w.label}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
     }
     if (failures.length) problems++;
     console.log(failures.length
       ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 30).join('\n       ')}`
-      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}`);
-    await page.close();
+      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}, with the consent bar up and after a decline`);
   }
 
   console.log(problems === 0 ? '\nPASS — no accessibility problems found'

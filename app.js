@@ -212,6 +212,13 @@
 // pinned to /gtag/js, and connect-src for the beacons); see EDGE-SETUP.md.
 (function () {
   var GA_ID = 'G-XXXXXXXXXX';
+  // The emergency stop. Setting the ID back to the placeholder only makes this
+  // block inert, which leaves the _ga cookies of everyone who accepted in their
+  // browsers. With PURGE_ONLY true (and the real ID still in place) the block
+  // measures nothing for anyone, shows no bar, deletes the _ga cookies on every
+  // page load and removes the stored choice, which also stops tabs that are
+  // already open.
+  var PURGE_ONLY = false;
   var CONSENT_KEY = 'vynatix-consent';  // localStorage: v1:granted:YYYY-MM-DD or v1:denied:YYYY-MM-DD
   var POLICY_VERSION = 'v1';            // bump when the wording of the choice changes, so old answers lapse
   var CONSENT_MAX_DAYS = 365;           // how long an answer is kept before the bar asks again
@@ -665,6 +672,12 @@
     // A second copy of this script on the page would double the bar and the
     // beacons; the class from the first copy is the sign it already ran.
     if (root.classList.contains('js-consent')) return;
+    if (PURGE_ONLY) {
+      window[DISABLE_FLAG] = true;
+      purgeCookies();
+      try { localStorage.removeItem(CONSENT_KEY); } catch (e) { /* nothing stored that could be read back */ }
+      return;
+    }
     root.classList.add('js-consent');
     relabelOpeners();
     live = make('p', 'sr-only');

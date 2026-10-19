@@ -17,9 +17,11 @@
 //   pages in the sitemap
 // - copy rules on visible text: no em dash, no en dash used as punctuation, no exclamation
 //   mark, no ellipsis
+// The pages are loaded armed (armGa) on a first visit, so the consent bar's own text is part of the visible
+// text the copy rules and the FAQ comparison see.
 const fs = require('fs');
 const path = require('path');
-const { PAGES, BASE, launch } = require('./_common');
+const { PAGES, BASE, armGa, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
@@ -54,7 +56,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 
   // Pages
   const browser = await launch();
-  const page = await browser.newPage();
+  const ctx = await browser.newContext();
+  await armGa(ctx);
+  const page = await ctx.newPage();
   const alternates = {};
   for (const p of PAGES) {
     await page.goto(BASE + p, { waitUntil: 'domcontentloaded' });

@@ -29,7 +29,10 @@
   </url>
   <url>
     <loc>https://vynatix.com/privacy.html</loc>
-    <lastmod>2026-10-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/integritet.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/privacy.html"/>
+    <lastmod>2026-10-19</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/terms.html</loc>
@@ -37,7 +40,7 @@
   </url>
   <url>
     <loc>https://vynatix.com/accessibility.html</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/sv.html</loc>
@@ -103,5 +106,12 @@
   <url>
     <loc>https://vynatix.com/ai-konsultbolag-sverige.html</loc>
     <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/integritet.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/integritet.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/privacy.html"/>
+    <lastmod>2026-10-19</lastmod>
   </url>
 </urlset>

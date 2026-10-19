@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rewrites the generated parts of the twenty pages from one registry, so every page agrees
+"""Rewrites the generated parts of the twenty-one pages from one registry, so every page agrees
 with the others and with sitemap.xml. Python 3, standard library only; run it from anywhere:
 
     python3 tools/seo-head.py [page.html ...]      (no arguments: every page in PAGES)
@@ -12,7 +12,7 @@ What it rewrites, on every page it is given:
   [data-faq] and [data-faq-item]; an Article node for the guides; and the page's extra nodes
   from tools/seo/<page>.json, when that file exists);
 - the footer, from the FOOTER template below (a footer change is made there, then this is run;
-  it is not edited in twenty files);
+  it is not edited in twenty-one files);
 - lang="en" on the site header, which stays English on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language pairs.
 
@@ -51,9 +51,9 @@ PAGES = {
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-18'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
-  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-13'),
+  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
-  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-18'),
+  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'android-automotive-development.html'}),
@@ -65,6 +65,7 @@ PAGES = {
   'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
   'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
+  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-10-19', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False)
@@ -272,12 +273,14 @@ FOOTER = '''  <!-- ============================================================ 
             <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
           </ul>

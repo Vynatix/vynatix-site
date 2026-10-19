@@ -1141,6 +1141,114 @@ a.clients__item:has(.clients__mark):hover {
 }
 
 /* ---------------------------------------------------------------
+   Consent: the analytics bar, and the same two buttons in place on the
+   privacy pages
+   app.js builds the bar only on a first visit and when the footer's "Cookie
+   settings" link reopens it, so a visitor without JavaScript never sees a
+   bar or a dead button. It is a compact, solid, non-modal bar fixed to the
+   bottom of the viewport: no backdrop, no focus trap, no animation. Decline
+   and Accept carry the same class and size, so neither is favoured.
+   The bar sits at z-index 40, under the sticky header (50) so an open mobile
+   menu overlays it, and under the skip link (100).
+   --------------------------------------------------------------- */
+.consent {
+  position: fixed;
+  inset-inline: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 40;
+  max-width: var(--container-max-laptop);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--text-body);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-l3);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+}
+.consent p {
+  margin: 0;
+  max-width: none;
+  line-height: inherit;
+}
+.consent__status { font-weight: 600; }
+.consent__actions { display: flex; gap: var(--space-2); }
+/* Equal width on a phone, whatever the two labels are. */
+.consent__btn { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
+.consent__link { border-radius: var(--radius-xs); }
+@media (min-width: 600px) {
+  .consent {
+    inset-inline: var(--space-6);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "text actions" "status actions";
+    align-items: center;
+    gap: 0 var(--space-8);
+    padding: var(--space-4) var(--space-6);
+  }
+  .consent__text { grid-area: text; }
+  .consent__status { grid-area: status; margin-top: var(--space-1); }
+  .consent__actions { grid-area: actions; }
+  .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
+}
+
+/* WCAG 2.4.11: a focused control must not end up hidden behind the bar. The
+   reserve covers the tallest the bar gets, which is the reopened bar on a
+   320px phone (its status line adds one row to the first-visit height, which
+   is 158px in English and Swedish) plus the 16px it floats above the edge:
+   measured at 199px, so 208px. The browser's scroll-into-view keeps that much
+   clear at the bottom, and the footer takes the same reserve as padding while
+   the bar is up, so its last links (Legal, Cookie settings) can be scrolled
+   clear. Both are plain CSS: no script measures the bar. */
+@media not all and (max-height: 520px) {
+  html.consent-open { scroll-padding-bottom: calc(var(--space-40) + var(--space-12)); }
+  .consent-open .site-footer { padding-bottom: calc(var(--space-40) + var(--space-12)); }
+}
+
+/* A viewport this short (a 1280 by 1024 desktop at 400% zoom is 320 by 256)
+   has no room for a fixed bar over the page. There it sits at the top of the
+   page, in the flow, and scrolls away with it; the reserve above does not
+   apply. */
+@media (max-height: 520px) {
+  .consent {
+    position: static;
+    width: calc(100% - 2 * var(--space-4));
+    margin: var(--space-4) auto 0;
+  }
+}
+@media (max-height: 520px) and (min-width: 600px) {
+  .consent { width: calc(100% - 2 * var(--space-6)); }
+}
+@media print {
+  .consent { display: none; }
+}
+
+/* The in-page panel on the privacy pages: a status line and the same two
+   buttons. It stays empty, and so takes no room, until app.js fills it. */
+.consent-panel {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+  padding: var(--space-5) var(--space-6);
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-lg);
+}
+.consent-panel:empty { display: none; }
+.consent-panel p {
+  margin: 0;
+  max-width: none;
+  font-weight: 600;
+}
+.consent-panel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.consent-panel .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
+
+/* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything
    with colour, type or background belongs in a named component above.
    --------------------------------------------------------------- */

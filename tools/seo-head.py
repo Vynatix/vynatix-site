@@ -45,7 +45,7 @@ WEBSITE_ID = SITE + '#website'
 # alt: the twin in the other language (hreflang). article: the page also carries an Article node.
 # The order here is the order of sitemap.xml.
 PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-18', alt={'sv': 'sv.html'}),
+  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-19', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-18'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-18'),
@@ -54,7 +54,7 @@ PAGES = {
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19'),
-  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'index.html'}),
+  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'android-automotive-development.html'}),
   'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'ai-utveckling.html'}),
@@ -76,8 +76,8 @@ def url_of(f):
 
 # ---------------------------------------------------------------- shared nodes
 COMPANY_SENTENCE = ("Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of "
-    "Ultra Group. Three senior engineers work embedded in client teams on Android Automotive, AI engineering "
-    "and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.")
+    "Ultra Group. Its senior engineers work as part of client organisations on Android Automotive, AI engineering "
+    "and cloud platforms, with Volvo Trucks and Volvo Cars among its clients.")
 
 ORGANIZATION = {
   "@type": "Organization",

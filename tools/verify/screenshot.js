@@ -35,6 +35,16 @@ async function capture() {
         imgs.forEach((img) => { img.loading = 'eager'; });
         await Promise.all(imgs.map((img) => img.decode().catch(() => {})));
       });
+      // Show every section in full. styles.css lets the browser skip the sections below
+      // the home pages' hero (content-visibility: auto), and a skipped section has only a
+      // placeholder height until it has been shown, then a remembered height that can sit
+      // a fraction of a pixel off the laid-out one. A capture would record either, and this
+      // gate compares the design, not the browser's bookkeeping. (CSSOM, not markup, so
+      // style-src 'self' allows it.) That rule's own rendering is checked by hand: scroll
+      // the page and confirm the sections look the same as with the rule off.
+      await page.evaluate(() => {
+        document.querySelectorAll('main > section').forEach((s) => s.style.setProperty('content-visibility', 'visible'));
+      });
       await page.waitForTimeout(300);
       const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}.png`);
       await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });

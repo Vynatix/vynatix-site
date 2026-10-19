@@ -85,8 +85,11 @@ const CSP_RECORDER = `(function () {
 //   o.viewport, reducedMotion, forcedColors, colorScheme, javaScriptEnabled, bypassCSP, deviceScaleFactor: context options
 //   o.theme: pinTheme id   o.consent: 'granted' | 'denied' | 'undecided' pins the answer on every load
 //   o.arm: armGa options   o.spy: install SPY_JS   o.init: extra init scripts [[fn, arg], ...]
+//   o.ignoreHTTPSErrors: certificate errors are ignored unless the run is a live one (o.arm.live: Google is
+//   really contacted, so a certificate that does not verify must fail the run, not be waved through)
 async function armedContext(browser, o = {}) {
-  const ctxOpts = { viewport: o.viewport || { width: 1280, height: 800 }, ignoreHTTPSErrors: true, serviceWorkers: 'block' };
+  const live = !!(o.arm && o.arm.live);
+  const ctxOpts = { viewport: o.viewport || { width: 1280, height: 800 }, ignoreHTTPSErrors: o.ignoreHTTPSErrors !== undefined ? !!o.ignoreHTTPSErrors : !live, serviceWorkers: 'block' };
   for (const k of ['reducedMotion', 'forcedColors', 'colorScheme', 'javaScriptEnabled', 'bypassCSP', 'deviceScaleFactor']) {
     if (o[k] !== undefined) ctxOpts[k] = o[k];
   }
@@ -138,7 +141,7 @@ function snap(page) {
       stub: window.__gaStub ? { cmds: window.__gaStub.cmds, sent: window.__gaStub.sent.length, blocked: window.__gaStub.blocked.length, failed: window.__gaStub.failed.length } : null,
       active: ae ? (ae === document.body ? 'body' : (ae.id ? '#' + ae.id : ae.tagName.toLowerCase() + (ae.getAttribute('data-consent-choice') ? '[' + ae.getAttribute('data-consent-choice') + ']' : '') + (ae.hasAttribute('data-consent-open') ? '[open]' : ''))) : null,
       footerLink: link ? { text: link.textContent.trim(), href: link.getAttribute('href'), lang: link.getAttribute('lang') } : null,
-      panel: panel ? { text: panel.textContent.trim().replace(/\s+/g, ' '), buttons: panel.querySelectorAll('button').length, status: (panel.querySelector('.consent-panel__status') || {}).textContent || null } : null,
+      panel: panel ? { text: panel.textContent.trim().replace(/\s+/g, ' '), children: panel.childNodes.length, buttons: panel.querySelectorAll('button').length, status: (panel.querySelector('.consent-panel__status') || {}).textContent || null } : null,
     };
   }, ['vynatix-consent', DISABLE_FLAG]);
 }
@@ -174,26 +177,29 @@ function sectionBlocks(html) {
 }
 
 // What a visitor is shown when asked for consent: the COPY strings in app.js and the #cookies section of each notice page.
-function consentDigest(root = ROOT) {
-  const app = readApp(root);
+// files: { 'app.js': text, 'privacy.html': text, ... } replaces what is read from disk (release-gate.js --self-test).
+function consentDigest(root = ROOT, files = {}) {
+  const app = readApp(root, files['app.js']);
   const copy = {};
   for (const lang of Object.keys(app.copy || {})) for (const [k, v] of Object.entries(app.copy[lang])) copy[`${lang}.${k}`] = h12(String(v));
   const sections = {};
   for (const page of Object.values(NOTICE_PAGES)) {
     let blocks = null;
-    try { blocks = sectionBlocks(readPage(page, root)); } catch (e) { blocks = null; }
+    try { blocks = sectionBlocks(files[page] !== undefined ? files[page] : readPage(page, root)); } catch (e) { blocks = null; }
     sections[`${page}#cookies`] = blocks ? blocks.map((b) => ({ h: h12(b), t: b.slice(0, 60) })) : null;
   }
   return { policyVersion: app.policyVersion, copy, sections };
 }
 
-// Compares the current digest with the checked-in snapshot.
-// Returns { ok, note, detail }: ok is false when the consent text moved while POLICY_VERSION did not.
-function compareSnapshot(cur, snapPath = SNAPSHOT) {
+// How the current digest differs from the checked-in snapshot: { exists, changes, bumped, from }.
+// snapText replaces the file's content (release-gate.js --self-test); null means "there is no snapshot".
+function snapshotDiff(cur, snapPath = SNAPSHOT, snapText) {
   let snapDoc;
-  try { snapDoc = JSON.parse(fs.readFileSync(snapPath, 'utf8')); } catch (e) {
-    return { ok: false, detail: `no snapshot at ${path.relative(ROOT, snapPath)}. Review the consent text, then run: node verify/consent.js --update` };
-  }
+  try {
+    const text = snapText !== undefined ? snapText : fs.readFileSync(snapPath, 'utf8');
+    snapDoc = text === null ? null : JSON.parse(text);
+  } catch (e) { snapDoc = null; }
+  if (!snapDoc || typeof snapDoc !== 'object') return { exists: false, changes: [], bumped: false, from: null };
   const changes = [];
   for (const k of new Set([...Object.keys(snapDoc.copy || {}), ...Object.keys(cur.copy)])) {
     if ((snapDoc.copy || {})[k] !== cur.copy[k]) changes.push(`app.js COPY ${k}`);
@@ -206,29 +212,42 @@ function compareSnapshot(cur, snapPath = SNAPSHOT) {
     if (a === null || a === undefined) changes.push(`${k}: not in the snapshot`);
     else if (added.length || removed.length) changes.push(`${k}: ${added.length} block(s) new or changed${added.length ? ' (e.g. "' + added[0].t + '")' : ''}, ${removed.length} removed`);
   }
-  if (!changes.length) return { ok: true };
-  const bumped = snapDoc.policyVersion !== cur.policyVersion;
-  if (bumped) {
-    return { ok: true, note: `consent text changed and POLICY_VERSION moved ${snapDoc.policyVersion} -> ${cur.policyVersion}; re-baseline with: node verify/consent.js --update` };
+  return { exists: true, changes, bumped: snapDoc.policyVersion !== cur.policyVersion, from: snapDoc.policyVersion };
+}
+
+// Compares the current digest with the checked-in snapshot.
+// Returns { ok, note, detail, changes }: ok is false when the consent text moved while POLICY_VERSION did not.
+function compareSnapshot(cur, snapPath = SNAPSHOT, snapText) {
+  const d = snapshotDiff(cur, snapPath, snapText);
+  if (!d.exists) {
+    return { ok: false, changes: [], detail: `no snapshot at ${path.relative(ROOT, snapPath)}. Review the consent text, then take the first snapshot with: node verify/consent.js --update` };
   }
-  const missing = changes.some((c) => /section not found/.test(c));
+  if (!d.changes.length) return { ok: true, changes: [] };
+  if (d.bumped) {
+    return { ok: true, changes: d.changes, note: `consent text changed and POLICY_VERSION moved ${d.from} -> ${cur.policyVersion}; take the snapshot with: node verify/consent.js --update` };
+  }
+  const missing = d.changes.some((c) => /section not found/.test(c));
   return {
     ok: false,
-    detail: `${changes.join('; ')}. ${missing ? '' : 'The text a visitor consents to changed but POLICY_VERSION in app.js is still ' + cur.policyVersion + '. If the change alters what the visitor agrees to, bump POLICY_VERSION so old answers lapse (and pinConsent in _common.js), then '}run: node verify/consent.js --update${missing ? ' once every notice page exists' : ''}`,
+    changes: d.changes,
+    detail: `${d.changes.join('; ')}. ${missing ? '' : 'Review the consent text diff (git diff). Bump POLICY_VERSION in app.js (and in _common.js) if the change alters what a visitor agrees to, so old answers lapse; it is still ' + cur.policyVersion + '. Take the snapshot with node verify/consent.js --update (plus --same-version when the wording changed and POLICY_VERSION stays) only after that review'}${missing ? 'Run node verify/consent.js --update once every notice page has its #cookies section' : ''}`,
   };
 }
 
-function writeSnapshot(cur, snapPath = SNAPSHOT) {
-  const doc = {
-    note: 'Hashes of the consent text: the COPY strings in app.js and the #cookies section of each notice page. Written by node verify/consent.js --update. consent.js fails when the text changes and POLICY_VERSION does not.',
+function snapshotDoc(cur) {
+  return {
+    note: 'Hashes of the consent text: the COPY strings in app.js and the #cookies section of each notice page. Written by node verify/consent.js --update, which refuses when the text changed and POLICY_VERSION did not (unless --same-version). consent.js fails when the text changes and POLICY_VERSION does not.',
     policyVersion: cur.policyVersion,
     copy: cur.copy,
     sections: cur.sections,
   };
-  fs.writeFileSync(snapPath, JSON.stringify(doc, null, 2) + '\n');
+}
+
+function writeSnapshot(cur, snapPath = SNAPSHOT) {
+  fs.writeFileSync(snapPath, JSON.stringify(snapshotDoc(cur), null, 2) + '\n');
 }
 
 module.exports = {
   sleep, until, reporter, SPY_JS, CSP_RECORDER, armedContext, open, gaCookies, allCookies, barButton, snap, copyIssues,
-  DISABLE_FLAG, SNAPSHOT, sectionBlocks, consentDigest, compareSnapshot, writeSnapshot, pageLang, NOTICE_PAGES,
+  DISABLE_FLAG, SNAPSHOT, sectionBlocks, consentDigest, snapshotDiff, compareSnapshot, snapshotDoc, writeSnapshot, pageLang, NOTICE_PAGES,
 };

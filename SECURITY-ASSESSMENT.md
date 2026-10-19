@@ -183,6 +183,11 @@ expected, header-only limitation of GitHub Pages).
 | Reflected XSS via URL `#fragment` and `?query` | **No effect** — payload never became a DOM node | Nothing reads/echoes URL input |
 | Frame the site from an attacker page | **Framed successfully** | No clickjacking protection (see finding 4) |
 
+> **Historical since Round 6.** The `script-src 'self'` rows above describe the
+> Round 2 policy. Inline script is still blocked, but `script-src` now also names
+> one Google path (`/gtag/js`), and an off-origin script from any other host is
+> still refused.
+
 ## Structural non-exploitability of XSS
 
 Beyond the CSP, the app is XSS-resistant *by construction*: a full sweep found
@@ -417,6 +422,10 @@ second-order: self-hosting the Unsplash images (needs network), the
 legal/privacy-page and marquee-accessibility gaps (team decisions), and the
 header-only controls that GitHub Pages structurally cannot provide.
 
+> **Historical since Round 6.** "A CSP that is nearly third-party-free" described
+> the Round 3 policy. Round 4 made it `'self'`-only and Round 6 then added Google's
+> analytics hosts; the current policy is graded in Round 6.
+
 ---
 
 # Round 4 — full fortification
@@ -444,6 +453,11 @@ Nothing was changed until there was a way to prove the change was safe.
 | `a11y.js` | axe-core WCAG 2.0/2.1/2.2 A+AA **and an independent contrast sweep**, plus skip link, marquee, no-JS and reduced-motion behaviour |
 | `links.js` | every internal link, script, style and image resolves |
 | `headers.js` | the response headers from `EDGE-SETUP.md` |
+
+> **Historical since Round 6.** The `requests.js` row ("zero off-origin requests")
+> was measured against the Round 4 policy. It still holds for a visitor who has not
+> accepted analytics, which is what `requests.js` measures, and is not true after
+> Accept.
 
 The screenshot gate needed two fixes before it could be trusted. `pixelmatch` v7
 ships as ESM, so `require()` returned a namespace object rather than the
@@ -671,8 +685,8 @@ made and are no longer true of the current site; the earlier text carries a note
 at the point where it is affected.
 
 - Round 4: the policy is `'self'`-only, "with no third-party origin at all".
-- Round 4 verdict and Round 3 grade: "a CSP with no third-party origin", "nearly
-  third-party-free".
+- Round 4 verdict and Round 3 verdict: "a CSP with no third-party origin", "nearly
+  third-party-free". (The Round 3 CSP grade carries its own note.)
 - Round 4: "zero off-origin requests". Still true for a visitor who has not
   accepted, which is what `requests.js` measures. Not true after Accept.
 - Round 2: the table row "`script-src 'self'` with no `'unsafe-inline'` holds".
@@ -708,9 +722,10 @@ at the point where it is affected.
 - **Checks and helpers** (see "How it was tested").
 
 Decisions the owner took: event data retention 2 months; Google Signals and ad
-personalisation off; the `_ga` cookie lifetime 365 days, never longer than the
-consent record; outbound-click and download events switched off in the property;
-Consent Mode basic.
+personalisation off; the `_ga` cookie lifetime set to 365 days, the length of the
+consent record (this site's setting, not Google's default of two years);
+outbound-click and download events switched off in the property; Consent Mode
+basic.
 
 ## The downgrade, host by host
 
@@ -770,7 +785,9 @@ today, so the consent gate has to live in `app.js`.
 ## How it was tested
 
 Core build and its two reviews (Chromium, stubbed `gtag.js`, every non-local
-origin aborted):
+origin aborted). The counts in this list come from the build probes run during the
+round, not from the checks shipped in `tools/verify/`, which cover the same
+behaviours with smaller sets; do not read them as what `npm run check` runs:
 
 - **Nothing before consent.** On an undecided visit, and on a denied one: zero
   requests off the origin, no `<script>` for Google, no preconnect, prefetch or
@@ -798,17 +815,22 @@ origin aborted):
 - **Accepted, with the reason**: the reopened bar (first-visit text plus a status
   line) is 183px tall at 320px wide, above the 160px aimed for, because no copy
   that keeps Google, cookies, who counts and how to change it fits in less. The
-  first-visit bar is 158px. Both are under half the viewport.
+  first-visit bar is 158px. Both are under half the viewport. These heights were
+  measured in the build probes; the shipped `consent-layout.js` holds only that the
+  first-visit bar at 320px wide is at most 160px tall and that the bar, first visit
+  or reopened, is at most half the viewport, so the 183px reopened height is a
+  measurement and not a limit any check enforces.
 
 New checks in `tools/verify/` and helpers in `_common.js`. The names and one-line
 purposes below come from the build contract:
 
 | Name | Purpose |
 |---|---|
-| `csp.js` | Static: the meta CSP is identical on all 21 pages, matches `EDGE-SETUP.md`, and names only the allow-listed Google hosts. |
-| `consent.js` | Behaviour: nothing before consent, accept, decline, withdrawal, poisoned storage, no-JS, blocked storage, Swedish. |
+| `csp.js` | Static: the meta CSP is identical on all 21 pages, matches `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any `<link>` or `<script>` on any page is found whatever the quoting. |
+| `publish.js` | Static, "what ships": every root `*.html` is in `PAGES`; every other root file is a listed asset type or is named in `_config.yml` `exclude`; every footer carries the Cookie settings link; the notice link in `COPY` points at the right page; both notices name the three storage keys; the site's style rules are linted; `llms.txt` links every URL in `sitemap.xml`. |
+| `consent.js` | Behaviour: nothing before consent, accept, decline, withdrawal, poisoned storage, no-JS, blocked storage, Swedish, and the `PURGE_ONLY` build. |
 | `consent-layout.js` | Bar size, the open menu over the bar, focus never hidden behind the bar, in six themes. |
-| `release-gate.js` | Fails while `GA_ID` is the placeholder, or while any claim, marker or placeholder text would contradict going live. Not part of `npm run check`. |
+| `release-gate.js` | The flip gate. Fails on a placeholder or malformed ID, any `[[CONFIRM` marker, a surviving draft banner, a marker without a banner, an unticked box in sections 1 to 9 of the checklist or a blank sign-off field, `PURGE_ONLY` not `false`, a wrong policy constant, notices without "12 months" and the three storage keys, a stale notice date, a missing footer link, a CSP that differs, and any stale "no analytics" sentence. When it passes it prints `scripted gates pass, N human gates open`. Its full run is not part of `npm run check`; its `--self-test` is. |
 | `consent-live.js` | Opt-in. Real network, the dummy ID `G-TEST000000`, never a real property. |
 | `pinConsent`, `armGa`, `rewriteGaId` | Helpers: pin a stored choice, arm a page so the module is active under test, and rewrite the `GA_ID` line by pattern, failing loudly on no match or more than one. |
 
@@ -828,8 +850,10 @@ run with the module active, and one unarmed run proves the inert state.
 - **Real `gtag.js` on withdrawal.** The stub emulates Google's documented
   behaviour only. Whether the real script re-reads `ga-disable-<ID>` at hit time,
   writes a cookie after `analytics_storage: denied`, or sends cookieless pings
-  under denial is unproven. The cookie names, domain and lifetime come from
-  Google's help page, not from observation.
+  under denial is unproven. The cookie names come from Google's documentation, not
+  from observation. The 12-month lifetime is this site's own setting
+  (`cookie_expires`), not Google's, whose default is two years; the domain, and
+  whether a later hit moves the expiry, are unobserved.
 - **Firefox and WebKit.** Layout, CSP, storage and back/forward-cache behaviour
   were exercised in Chromium only. Safari's Intelligent Tracking Prevention can
   cap script-written storage at seven days, which would make the stored choice
@@ -844,7 +868,10 @@ run with the module active, and one unarmed run proves the inert state.
   summarising tools, not primary texts: the state of the EU-US Data Privacy
   Framework listing and of the pending appeal in C-703/25 P, the Swedish
   regulator's cookie guidance, and the text of the Swedish electronic
-  communications act. The notices are drafts for counsel and say so.
+  communications act. The notices are drafts for counsel and say so, and the
+  checklist asks counsel to confirm the text of the Swedish act from the primary
+  source (1.4) and the Data Privacy Framework listings of Google, GitHub and
+  Cloudflare (1.2).
 - **The new checks themselves.** A check that has only ever passed proves little
   (Round 5's lesson). Each of the checks above should be shown to fail when the
   behaviour it guards is broken: request `gtag.js` before consent, add a Google
@@ -858,8 +885,12 @@ on the page, or by an auto-dismiss extension, records a choice; the stored choic
 is per origin, so `www.vynatix.com` and `vynatix.com` do not share it; the
 cookie purge covers every parent domain by design, so another Google property on
 a sibling subdomain would lose its `_ga` cookies on a visit that has not accepted;
-a visitor who accepts and never returns keeps a `_ga` cookie that gtag renews on
-each hit, up to a year past the consent record, and the next visit deletes it;
+a visitor who accepts and never returns keeps the `_ga` cookie, which is
+configured to expire at most 365 days after the last hit (whether a later hit moves
+the expiry is unobserved, and if it does the cookie can outlive the consent record
+by up to a year), and a later visit deletes it only while the module is active, so
+after `GA_ID` is reverted to the placeholder the next visit deletes nothing (that
+is what `PURGE_ONLY` is for);
 and a bare revert of `GA_ID` cannot reach a tab that already loaded `gtag.js`,
 which keeps measuring until it is reloaded or until a purge-mode build clears the
 stored choice (the re-read of the stored choice covers a visitor's own withdrawal,
@@ -879,7 +910,8 @@ to ship ahead of the evidence.
 
 What remains is the checklist: the facts only the company can supply, the real
 property and the other two engines, the people who have to look at it, and the
-edge, if it is live by then. The exit is rehearsed in the same document: the first
-action is the one-line revert of `GA_ID`, and the realistic tail is 10 to 20
-minutes on GitHub Pages and longer behind Cloudflare unless Browser Cache TTL
-respects the origin's headers.
+edge, if it is live by then. The exit is rehearsed in the same document (section
+10 of `tools/PRE-FLIP-CHECKLIST.md`): the first action is `PURGE_ONLY` set to
+`true`, the revert of `GA_ID` comes last because on its own it cleans nothing up,
+and the realistic tail is 10 to 20 minutes on GitHub Pages and longer behind
+Cloudflare unless Browser Cache TTL respects the origin's headers.

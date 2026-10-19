@@ -1,5 +1,5 @@
 {
-  "note": "Hashes of the consent text: the COPY strings in app.js and the #cookies section of each notice page. Written by node verify/consent.js --update. consent.js fails when the text changes and POLICY_VERSION does not.",
+  "note": "Hashes of the consent text: the COPY strings in app.js and the #cookies section of each notice page. Written by node verify/consent.js --update, which refuses when the text changed and POLICY_VERSION did not (unless --same-version). consent.js fails when the text changes and POLICY_VERSION does not.",
   "policyVersion": "v1",
   "copy": {
     "en.label": "3e157596e926",
@@ -44,7 +44,7 @@
         "t": "If you accept, we use Google Analytics 4 to count visits and"
       },
       {
-        "h": "489fabfb4f6c",
+        "h": "1c2bd47feb8f",
         "t": "Our legal basis is your consent under Article 6(1)(a) of the"
       },
       {
@@ -72,20 +72,20 @@
         "t": "_ga"
       },
       {
-        "h": "ffb8f868e684",
+        "h": "9ff08afab0b3",
         "t": "Holds the random identifier that tells one browser's visits "
       },
       {
-        "h": "5a45d5219d80",
-        "t": "_ga_<property id>"
+        "h": "91b2d01a362d",
+        "t": "_ga_<container-id>"
       },
       {
-        "h": "1b457b0c0583",
+        "h": "203c3918451e",
         "t": "Keeps track of the visit you are in now. Lasts up to 12 mont"
       },
       {
-        "h": "7853031f70d3",
-        "t": "The cookie names and lifetimes above are taken from Google's"
+        "h": "68cbfa091e27",
+        "t": "The cookie names are taken from Google's documentation. In t"
       },
       {
         "h": "9a1fb56b8afb",
@@ -130,7 +130,7 @@
         "t": "Om ni godkänner använder vi Google Analytics 4 för att räkna"
       },
       {
-        "h": "f8aa48671567",
+        "h": "405c2accdafc",
         "t": "Vår rättsliga grund är ert samtycke enligt artikel 6.1 a i G"
       },
       {
@@ -158,20 +158,20 @@
         "t": "_ga"
       },
       {
-        "h": "a0250e64c98b",
+        "h": "0878bc1cede4",
         "t": "Innehåller det slumpmässiga id som skiljer en webbläsares be"
       },
       {
-        "h": "73c533ed038c",
-        "t": "_ga_<egenskaps-id>"
+        "h": "91b2d01a362d",
+        "t": "_ga_<container-id>"
       },
       {
-        "h": "9c7662f33004",
+        "h": "e7de40019838",
         "t": "Håller reda på besöket som pågår just nu. Finns kvar i upp t"
       },
       {
-        "h": "b768528cd19f",
-        "t": "Cookienamnen och livslängderna ovan är hämtade från Googles "
+        "h": "22333ab6f20e",
+        "t": "Cookienamnen är hämtade från Googles dokumentation. I det an"
       },
       {
         "h": "4f1fef4b931e",
@@ -186,7 +186,7 @@
         "t": "Sidvisningar registreras. Klick på utgående länkar och nedla"
       },
       {
-        "h": "8f00da5f7d63",
+        "h": "43ef75d008e5",
         "t": "Google Signals och annonspersonalisering är avstängda. Koden"
       },
       {
@@ -194,8 +194,8 @@
         "t": "Google är mottagare av uppgifterna och kan behandla dem i US"
       },
       {
-        "h": "8c7a99341494",
-        "t": "Ert svar sparas i er webbläsare, som beskrivs under Vad som "
+        "h": "c233bdf660de",
+        "t": "Ert svar sparas i er webbläsare, vilket beskrivs under Vad s"
       },
       {
         "h": "d8be2ddae71a",

@@ -12,10 +12,13 @@
 //  - the directives that were not widened (default-src, base-uri, object-src, img-src, style-src, font-src,
 //    form-action) are what they were before Google Analytics, and no other directive appears;
 //  - the comment above the policy no longer describes a 'self'-only policy;
-//  - no page markup hints at a Google host (preconnect, dns-prefetch, preload, prefetch, prerender, modulepreload).
-// Exports run() for release-gate.js.
+//  - no page markup hints at a Google host (preconnect, dns-prefetch, preload, prefetch, prerender, modulepreload),
+//    loads a script from one, or names one anywhere else outside the policy meta. <link> and <script> tags are read
+//    with a quote-agnostic attribute parser (double, single or no quotes, any attribute order), so a pasted Google
+//    snippet cannot hide behind the way it is written.
+// Exports run() for release-gate.js and publish.js.
 const {
-  PAGES, ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp,
+  PAGES, ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp, parseTags,
 } = require('./_common');
 
 // The directives Google Analytics did not touch, as they were on every page before it.
@@ -36,16 +39,28 @@ const HINT_REL = /^(preconnect|dns-prefetch|preload|prefetch|prerender|modulepre
 const sameList = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
 const fmt = (list) => (list || []).join(' ') || '(none)';
 
+const hostOf = (href) => { try { return new URL(href, 'https://vynatix.com/').hostname; } catch (e) { return null; } };
+
 // Every Google hint link in a page's markup: <link rel="..."> whose href names a Google host.
 function googleHintLinks(html) {
   const out = [];
-  for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
-    const rel = (/\brel\s*=\s*"([^"]*)"/i.exec(m[0]) || [])[1] || '';
-    const href = (/\bhref\s*=\s*"([^"]*)"/i.exec(m[0]) || [])[1] || '';
+  for (const t of parseTags(html, 'link')) {
+    const rel = t.attrs.rel || '';
+    const href = (t.attrs.href || '').trim();
     if (!rel.split(/\s+/).some((r) => HINT_REL.test(r))) continue;
-    let host = null;
-    try { host = new URL(href, 'https://vynatix.com/').hostname; } catch (e) { host = null; }
+    const host = hostOf(href);
     if (host && isGoogleHost(host)) out.push(`${rel} ${href}`);
+  }
+  return out;
+}
+
+// Every <script src> in a page's markup that names a Google host (the gtag loader is injected by app.js, never by markup).
+function googleScriptTags(html) {
+  const out = [];
+  for (const t of parseTags(html, 'script')) {
+    const src = (t.attrs.src || '').trim();
+    const host = src ? hostOf(src) : null;
+    if (host && isGoogleHost(host)) out.push(`script ${src}`);
   }
   return out;
 }
@@ -170,19 +185,23 @@ function run(root = ROOT, pages = PAGES) {
   }
   add(stale.length === 0, 'the comment above the policy names the Google Analytics exception (not stale)', stale.slice(0, 3).join(' | ') + (stale.length > 3 ? ` (+${stale.length - 3} more)` : ''));
 
-  // --- hints in markup
-  const hints = [];
+  // --- hints, scripts and mentions in markup
+  const hints = [], scripts = [], mentions = [];
   for (const p of pages) {
     let html;
     try { html = readPage(p, root); } catch (e) { continue; }
     for (const h of googleHintLinks(html)) hints.push(`${p}: ${h}`);
+    for (const h of googleScriptTags(html)) scripts.push(`${p}: ${h}`);
+    for (const h of googleHostMentions(html)) mentions.push(`${p}: ${h}`);
   }
   add(hints.length === 0, 'no page hints at a Google host (preconnect, dns-prefetch, preload, prefetch, prerender, modulepreload)', hints.join(' | '));
+  add(scripts.length === 0, 'no page loads a script from a Google host by markup (app.js injects the one gtag.js, after consent)', scripts.join(' | '));
+  add(mentions.length === 0, 'no page names a Google host anywhere in its markup outside the policy meta', mentions.slice(0, 6).join(' | ') + (mentions.length > 6 ? ` (+${mentions.length - 6} more)` : ''));
 
   return results;
 }
 
-module.exports = { run, googleHintLinks, googleHostMentions, commentAbove };
+module.exports = { run, googleHintLinks, googleScriptTags, googleHostMentions, commentAbove };
 
 if (require.main === module) {
   const results = run();

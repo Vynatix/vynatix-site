@@ -197,19 +197,22 @@
 // visitor whose storage is blocked gets no bar and no analytics rather than a
 // button that could not remember its answer.
 //
-// Withdrawing is as easy as agreeing: the footer's "Cookie settings" link
-// reopens the same bar, and the privacy pages carry the same two buttons in
-// place. Declining or withdrawing turns Google's own switch off, tells gtag the
-// storage is denied, and deletes the _ga cookies for the host and for every
+// Withdrawing is one link away on every page: the footer's "Cookie settings"
+// link reopens the same bar, and the privacy pages carry the same two buttons
+// in place. Declining or withdrawing turns Google's own switch off, tells gtag
+// the storage is denied, and deletes the _ga cookies for the host and for every
 // parent domain. Because a page can sit in the back/forward cache or in another
 // tab, the stored choice is read again when a tab is restored, becomes visible
 // again, or another tab writes it.
 //
 // While GA_ID below is the placeholder this block returns before doing
-// anything, so the site ships with analytics fully off. To switch it on, put
-// the real measurement ID in the first line and nothing else. The Content
-// Security Policy on every page has to name the hosts gtag needs (script-src
-// pinned to /gtag/js, and connect-src for the beacons); see EDGE-SETUP.md.
+// anything, so the site ships with analytics fully off. Switching it on is a
+// procedure, not an edit: tools/PRE-FLIP-CHECKLIST.md says what must be true
+// first (the notices, the property, the paperwork) and the release gate
+// refuses until it is. PURGE_ONLY, just below, is the emergency stop and has to
+// be false for analytics to run. The Content Security Policy on every page has
+// to name the hosts gtag needs (script-src pinned to /gtag/js, and connect-src
+// for the beacons); see EDGE-SETUP.md.
 (function () {
   var GA_ID = 'G-XXXXXXXXXX';
   // The emergency stop. Setting the ID back to the placeholder only makes this
@@ -222,7 +225,10 @@
   var CONSENT_KEY = 'vynatix-consent';  // localStorage: v1:granted:YYYY-MM-DD or v1:denied:YYYY-MM-DD
   var POLICY_VERSION = 'v1';            // bump when the wording of the choice changes, so old answers lapse
   var CONSENT_MAX_DAYS = 365;           // how long an answer is kept before the bar asks again
-  var COOKIE_MAX_AGE = 31536000;        // the _ga cookie lifetime, 365 days in seconds, never past the consent period
+  // cookie_expires for the _ga cookies: configured to expire at most 365 days
+  // after the last hit. A renewal can carry it past the consent record, and the
+  // next visit then purges it.
+  var COOKIE_MAX_AGE = 31536000;        // 365 days in seconds
   var DAY_MS = 86400000;
   var GTAG_SRC = 'https://www.googletagmanager.com/gtag/js?id=';
   // Both buttons share this one class string. Decline and Accept must look

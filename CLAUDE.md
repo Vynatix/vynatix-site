@@ -59,13 +59,26 @@ highlights the things most worth keeping front-of-mind.
   pins `script-src` to `'self'` plus one Google path, so adding any other
   third-party script means widening the CSP first (see the analytics bullet).
 - **Analytics is Google Analytics 4 behind opt-in consent, and it is off.**
-  `var GA_ID = 'G-XXXXXXXXXX';` in the third IIFE of `app.js` is the one constant
-  and an inert placeholder: no bar, no storage, no request. Google is never
-  requested, and no cookie set, before the visitor presses Accept. To switch it
-  on, edit only that line (the last commit of the one PR), run
-  `cd tools && npm run stamp` and `node verify/release-gate.js`, and only when
-  `tools/PRE-FLIP-CHECKLIST.md` is complete. The CSP names Google's hosts, **a
-  recorded security downgrade** from the `'self'`-only policy: the meta on all 21
+  `var GA_ID = 'G-XXXXXXXXXX';` in the third IIFE of `app.js` is an inert
+  placeholder: no bar, no storage, no request. Beside it, `PURGE_ONLY` is the
+  emergency stop, `false` except during an exit. Google is never requested, and
+  no cookie set, before the visitor has accepted (a stored Accept from an earlier
+  visit counts until it lapses). To switch it on, only when
+  `tools/PRE-FLIP-CHECKLIST.md` is complete: set the notices' visible "Last
+  updated" lines and their `mod` in `tools/seo-head.py` to the day of the flip, run
+  `python3 tools/seo-head.py`, then edit the `GA_ID` line (after an exit, also set
+  `PURGE_ONLY` back to `false`), run `cd tools && npm run stamp` and
+  `node verify/release-gate.js`. That is the last commit of the one PR and it
+  changes `GA_ID`, those dates (visible and `mod`), the files `seo-head.py` writes
+  from them and the stamps, nothing else.
+  The gate fails on a placeholder or malformed ID, any `[[CONFIRM` marker, a
+  surviving draft banner (removed only on counsel's written sign-off), an unticked
+  box in sections 1 to 9 of the checklist, `PURGE_ONLY` not `false`, a wrong policy
+  constant or a stale notice date, among others (AGENTS.md, *Analytics*), and it
+  prints `scripted gates pass, N human gates open` when it passes. Switching off
+  again starts with `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last
+  (checklist, section 10). The CSP names Google's hosts, **a recorded security
+  downgrade** from the `'self'`-only policy: the meta on all 21
   pages, `EDGE-SETUP.md` and the Cloudflare dashboard rule change together
   (dashboard first if the edge is live), and a missing host is added by name,
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
@@ -98,8 +111,10 @@ highlights the things most worth keeping front-of-mind.
 There is no lint step, but there *is* a check suite: see `tools/README.md`
 (`cd tools && npm install`, then `npm run check`). It covers broken links,
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
-and layout (`consent.js`, `consent-layout.js`), accessibility including a
-contrast sweep, and a screenshot diff. `release-gate.js` and the opt-in
+and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
+registered, new root files excluded, footer link, storage keys named, the site's
+style rules), accessibility including a contrast sweep, and a screenshot diff.
+`release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
 (`python3 -m http.server 8000`).
 

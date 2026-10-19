@@ -1,19 +1,23 @@
 // Behaviour of the consent module in app.js, in a real browser, with every Google request stubbed.
-//   node verify/consent.js            about a minute and a half
+//   node verify/consent.js            about two minutes
 //   FULL=1 node verify/consent.js     the whole table of damaged stored answers
-//   node verify/consent.js --update   re-take the consent-text snapshot (see the last check) and stop
+//   node verify/consent.js --update   re-take the consent-text snapshot (see the last check) and stop. It refuses
+//                                     (exit 2) when the consent text changed and POLICY_VERSION did not: review the diff,
+//                                     bump POLICY_VERSION if the change alters what a visitor agrees to, or pass
+//                                     --same-version to say the wording changed and the version stays
 //
 // Every scenario runs armed (armGa in _common.js): app.js is served with the dummy Measurement ID
 // G-TEST000000, gtag.js is a stand-in that writes the _ga cookies and sends a collect hit, collect hits are
 // answered 204, and any other request that leaves the site is aborted and counted. So nothing real is
 // contacted, and a page that reaches for any other host fails the scenario. The pages are armed with the
-// widened Content-Security-Policy and the footer link only if they do not carry them yet.
+// widened Content-Security-Policy and the footer link only if they do not carry them yet, and the run fails if
+// any page needed either (the shipped tree carries both on every page).
 //
 // What this proves, and what it cannot: the stand-in behaves as Google documents gtag, nothing more. Real
 // gtag cookie and network behaviour is covered only by consent-live.js and the pre-flip checklist.
 const {
   PAGES, BASE, TEST_ID, PLACEHOLDER_ID, CONSENT_KEY, POLICY_VERSION, NOTICE_PAGES, launch, pool, pinConsent,
-  readApp, rewriteGaIdSource, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
+  readApp, rewriteGaIdSource, normalisePurgeOnly, PURGE_DECL, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
 } = require('./_common');
 const C = require('./_consent');
 const { googleHostMentions } = require('./csp');
@@ -30,6 +34,15 @@ const ck = rep.check;
 
 if (process.argv.includes('--update')) {
   const cur = C.consentDigest();
+  const d = C.snapshotDiff(cur);
+  if (d.exists && d.changes.length && !d.bumped && !process.argv.includes('--same-version')) {
+    console.error(`REFUSED: the consent text changed and POLICY_VERSION is still ${cur.policyVersion}, so the snapshot was not taken.
+  changed: ${d.changes.join('; ')}
+  Review the consent text diff first (git diff). If the change alters what a visitor agrees to, bump POLICY_VERSION in app.js
+  (and in _common.js) so old answers lapse, then run --update again. If the wording changed and the version should stay,
+  say so: node verify/consent.js --update --same-version`);
+    process.exit(2);
+  }
   C.writeSnapshot(cur);
   const missing = Object.entries(cur.sections).filter(([, v]) => !v).map(([k]) => k);
   console.log(`snapshot written: POLICY_VERSION ${cur.policyVersion}, ${Object.keys(cur.copy).length} COPY strings, ${Object.entries(cur.sections).filter(([, v]) => v).map(([k, v]) => `${k} (${v.length} blocks)`).join(', ') || 'no notice section'}`);
@@ -44,6 +57,7 @@ const dAgo = (n) => { const d = new Date(); return new Date(Date.UTC(d.getUTCFul
 
 const rendered = [];                 // every string the module showed, for the copy rules
 const armNotes = { csp: {}, footer: {} };
+const synthetic = [];                // scenarios that fell back to a synthetic event because the real one did not happen here
 const noteArming = (ga) => ga.pages.forEach((n) => { armNotes.csp[n.csp] = (armNotes.csp[n.csp] || 0) + 1; armNotes.footer[n.footer] = (armNotes.footer[n.footer] || 0) + 1; });
 
 // Common closing assertions for a scenario's environment: nothing off-origin, no violation, no error.
@@ -77,6 +91,15 @@ function clean(env, name) {
     threw = false;
     try { rewriteGaIdSource(app.src + "\nvar GA_ID = 'G-AAAAAA';", TEST_ID); } catch (e) { threw = /found 2/.test(e.message); }
     ck(threw, 'rewriteGaId fails loudly when app.js has two GA_ID lines');
+    threw = false;
+    try { rewriteGaIdSource(app.src.replace(PURGE_DECL, ''), TEST_ID); } catch (e) { threw = /PURGE_ONLY/.test(e.message) && /found 0/.test(e.message); }
+    ck(threw, 'rewriteGaId fails loudly when app.js has no PURGE_ONLY declaration');
+    threw = false;
+    try { rewriteGaIdSource(app.src.replace(PURGE_DECL, (m, indent) => `${m}\n${indent}var PURGE_ONLY = false;`), TEST_ID); } catch (e) { threw = /PURGE_ONLY/.test(e.message) && /found 2/.test(e.message); }
+    ck(threw, 'rewriteGaId fails loudly when app.js has two PURGE_ONLY declarations');
+    const exitState = app.src.replace(PURGE_DECL, (m, indent) => `${indent}var PURGE_ONLY = true;`);
+    ck(/var PURGE_ONLY = false;/.test(rewriteGaIdSource(exitState, TEST_ID)) && !/var PURGE_ONLY = true;/.test(rewriteGaIdSource(exitState, TEST_ID)),
+      'rewriteGaId serves PURGE_ONLY false even when the file ships true (the exit state), so the whole suite still passes there');
     ck(app.gaLines === 1, "app.js has exactly one var GA_ID = '...'; line", `${app.gaLines}`);
     ck(readApp(undefined, rewriteGaIdSource(app.src, TEST_ID)).gaId === TEST_ID, `rewriteGaId yields the dummy ID ${TEST_ID}`);
     ck(app.policyVersion === POLICY_VERSION && app.consentKey === CONSENT_KEY,
@@ -117,7 +140,7 @@ function clean(env, name) {
       if (strip) await env.ctx.route((u) => u.pathname.endsWith('/app.js'), (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: stripped }));
       await env.ctx.addCookies([{ name: '_ga', value: 'keep', url: BASE }, { name: '_ga_TEST000000', value: 'keep', url: BASE }]);
       const page = await open(env.ctx, rel);
-      await sleep(1300);                                     // past the module's one-second timer, if it had one
+      await sleep(2000);                                     // well past the module's one-second timer, if it had one
       const spy = await page.evaluate(() => window.__spy);
       const s = await snap(page);
       const fp = {
@@ -240,6 +263,9 @@ function clean(env, name) {
     }
     const kept = armNotes.csp.kept || 0, rewritten = armNotes.csp.rewritten || 0, present = armNotes.footer.present || 0, inserted = armNotes.footer.inserted || 0;
     console.log(`note  armed pages: policy already widened on ${kept}, rewritten on ${rewritten}; footer link already present on ${present}, inserted on ${inserted}`);
+    ck(inserted === 0 && rewritten === 0 && present === PAGES.length && kept === PAGES.length,
+      'the armed run did not have to repair any page: every page already carries the widened policy and the Cookie settings link (the harness inserts them only into a tree that lacks them)',
+      `policy kept on ${kept} of ${PAGES.length}, rewritten on ${rewritten}; footer link present on ${present}, inserted on ${inserted}`);
     // Three navigations without choosing: still nothing.
     const env = await armedContext(browser);
     for (const p of ['index.html', 'about.html', 'contact.html']) { await open(env.ctx, p); await sleep(200); }
@@ -330,7 +356,7 @@ function clean(env, name) {
     const last = s.dl[s.dl.length - 1];
     ck(canon(last) === canon(['consent', 'update', { analytics_storage: 'denied' }]), 'gtag is told analytics_storage is denied', canon(last));
     ck((await gaCookies(env.ctx)).length === 0, 'the _ga cookies are gone at once');
-    await sleep(1300);                                     // the stand-in writes them once more at 300 ms; the second purge is at 1000 ms
+    await sleep(2000);                                     // the stand-in writes them once more at 300 ms; the second purge is at 1000 ms
     ck((await gaCookies(env.ctx)).length === 0, 'and stay gone after gtag writes them once more (second purge)');
     await page.evaluate(() => window.__gaStub.send('scroll'));
     await sleep(300);
@@ -404,14 +430,14 @@ function clean(env, name) {
     env = await armedContext(browser);
     const stale = await open(env.ctx, 'index.html');
     await stale.click(btn('denied'));
-    await sleep(1500);
+    await sleep(2000);                                      // past this tab's own second purge at 1000 ms
     const live = await open(env.ctx, 'about.html');
     await live.click('[data-consent-open]');
     await live.click(btn('granted'));
     await until(() => env.ga.collect.length >= 1);
     const have = (await gaCookies(env.ctx)).length;
     await stale.close();
-    await sleep(500);
+    await sleep(2500);                                      // the closed tab's pagehide purge has run, and a late one would have shown
     ck(have >= 2 && (await gaCookies(env.ctx)).length === have, 'closing a stale tab does not delete the cookies of a tab that is granted', `${have} before, ${(await gaCookies(env.ctx)).length} after`);
     clean(env, 'tabs');
     await env.close();
@@ -431,7 +457,7 @@ function clean(env, name) {
     await page.keyboard.press('Tab');                       // Decline -> Accept, then press it with the keyboard
     await page.keyboard.press('Enter');
     ck(await until(() => env.ga.collect.length > c2), 'Accept after Decline in the same page sends a hit again (keyboard)', `hits ${c1} -> ${c2} -> ${env.ga.collect.length}`);
-    await sleep(1500);                                      // the first Decline's second purge must not wipe the fresh cookies
+    await sleep(2000);                                      // the first Decline's second purge must not wipe the fresh cookies
     const s = await snap(page);
     ck(c1 === 1 && c2 === 1 && env.ga.collect.length === 2, 'collect hits count 1, 1, 2 across Accept, Decline, Accept', `${c1}, ${c2}, ${env.ga.collect.length}`);
     ck(env.ga.gtag.length === 1 && s.scripts.length === 1 && s.flag === false, 'the script is not loaded twice and the off switch is cleared');
@@ -457,6 +483,8 @@ function clean(env, name) {
     await sleep(700);
     const real = (await A.evaluate(() => window.__marker)) === 'alive';
     if (!real) {
+      synthetic.push('back/forward cache restore');
+      console.log('note  the back/forward cache did not engage here (route interception can keep it out), so this restore is a synthetic pageshow event on the same document, not a real cache restore');
       // The cache did not engage under route interception here: grant again, then write the refusal into the same
       // document (no storage event) and fire the event the browser would fire on a restore.
       await A.evaluate(([k, v]) => localStorage.setItem(k, v), [CONSENT_KEY, `${POLICY_VERSION}:granted:${today}`]);
@@ -689,7 +717,7 @@ function clean(env, name) {
         document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         (document.querySelector('.consent__text') || document.body).dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
-      await sleep(1200);
+      await sleep(2500);                                    // past the one-second purge timer and the pagehide purge
       const writes = (await page.evaluate(() => window.__spy.storage)).filter((x) => x.includes(CONSENT_KEY) && /setItem|removeItem|clear/.test(x));
       ck(writes.length === 0, `${seed}: events other than a click on a choice never write the answer`, writes.join(','));
       await env.close();
@@ -730,7 +758,7 @@ function clean(env, name) {
     const withDomain = (await parentCookies()).length;
     await page.click('[data-consent-open]');
     await page.click(btn('denied'));
-    await sleep(1300);
+    await sleep(2000);
     left = fmt(await env.ctx.cookies());
     if (!withDomain && process.env.ENGINE && process.env.ENGINE !== 'chromium') console.log(`note  ${process.env.ENGINE} stored no parent-domain cookie for the made-up host, so deleting one is not exercised here`);
     else ck(withDomain > 0 && gaNames(left).filter((c) => !c.includes('other.')).length === 0 && survive.every((c) => left.includes(c)), 'Accept then Decline removes the cookies gtag wrote for the parent domain too', `${withDomain} written, left ${left.join(', ')}`);
@@ -747,13 +775,15 @@ function clean(env, name) {
   });
 
   // ---------------------------------------------------------------------------------------------
-  await scenario('PURGE_ONLY: the emergency stop measures nothing, shows no bar and leaves nothing behind', async () => {
-    const PURGE_RE = /var PURGE_ONLY = (false|true);/g;
-    ck((app.src.match(PURGE_RE) || []).length === 1 && /var PURGE_ONLY = false;/.test(app.src), 'app.js ships with exactly one "var PURGE_ONLY = false;" line');
+  await scenario('PURGE_ONLY: the emergency stop measures nothing, shows no bar, fills no panel and leaves nothing behind', async () => {
+    // The module is run with PURGE_ONLY false for every other scenario, whatever the file ships (rewriteGaIdSource
+    // normalises it), so this suite also passes in the exit state where the file ships true. What ships is
+    // release-gate.js's to check; here the build with the stop on is made from the normalised one.
+    ck((app.src.match(PURGE_DECL) || []).length === 1, 'app.js declares PURGE_ONLY on exactly one line (var PURGE_ONLY = true|false;)');
     const env = await armedContext(browser, { theme: 'light', consent: 'granted' });
     const base = rewriteGaIdSource(await (await env.ctx.request.get(BASE + 'app.js')).text(), TEST_ID);
-    const purgeBody = base.replace(PURGE_RE, 'var PURGE_ONLY = true;');
-    ck(purgeBody !== base && /var PURGE_ONLY = true;/.test(purgeBody), 'the harness could switch PURGE_ONLY on');
+    const purgeBody = normalisePurgeOnly(base, true);
+    ck(/var PURGE_ONLY = false;/.test(base) && /var PURGE_ONLY = true;/.test(purgeBody) && !/var PURGE_ONLY = false;/.test(purgeBody), 'the harness can serve the module with PURGE_ONLY false (every normal run) and true (the stop)');
     let purge = false;                                      // the route serves either build, so one browser profile sees both
     await env.ctx.route((u) => u.pathname.endsWith('/app.js'), (r) =>
       r.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', headers: { 'cache-control': 'no-store' }, body: purge ? purgeBody : base }));
@@ -764,6 +794,12 @@ function clean(env, name) {
     await sleep(400);
     const before = await snap(open1);
     ck(before.ls && /granted/.test(before.ls) && env.ga.gtag.length === 1, 'baseline: with the normal build the granted tab loads gtag', `${before.ls} gtag ${env.ga.gtag.length}`);
+    // Control for the panel check below: with the normal build the notice page's panel is filled.
+    const ctl = await open(env.ctx, 'privacy.html');
+    await sleep(400);
+    const sc = await snap(ctl);
+    ck(sc.panel && sc.panel.children > 0 && sc.panel.buttons === 2, 'control: with the normal build the panel on privacy.html is filled (status and two buttons)', JSON.stringify(sc.panel));
+    await ctl.close();
     env.ga.reset();
     await env.ctx.addCookies([{ name: '_ga', value: 'x', url: BASE }, { name: '_ga_TEST000000', value: 'x', url: BASE }]);
 
@@ -777,7 +813,12 @@ function clean(env, name) {
     ck(!names.includes('_ga') && !names.includes('_ga_TEST000000') && names.includes('other'), 'purge mode deletes the _ga cookies and nothing else', names.join(', '));
     ck(s.flag === true && env.ga.google().length === 0, 'purge mode sets Google\'s off switch and requests nothing', `flag ${s.flag} google ${env.ga.google().length}`);
     ck(s.footerLink && s.footerLink.href.endsWith('privacy.html#cookies') && s.footerLink.text === 'Cookie settings', 'purge mode leaves the footer link as the plain English link (no relabel, no handler)', JSON.stringify(s.footerLink));
-    ck(!s.panel || !s.panel.html, 'purge mode fills no panel');
+    // The notice page has the panel; in purge mode its buttons would be dead, so the panel must stay empty.
+    const pp = await open(env.ctx, 'privacy.html');
+    await sleep(500);
+    const sp = await snap(pp);
+    ck(sp.panel !== null && sp.panel.children === 0, 'purge mode fills no panel: [data-consent-panel] on privacy.html exists and has no child nodes', JSON.stringify(sp.panel));
+    await pp.close();
 
     // The tab that was measuring hears the removal through the storage event and stops.
     await sleep(500);
@@ -804,7 +845,7 @@ function clean(env, name) {
       await page.click(btn('denied'));
       s = await snap(page);
       rendered.push([`${rel} live off`, s.live]);
-      ck(s.live === L.liveOn || s.live === L.liveOff, `${rel}: the announcement is one of the two strings`, s.live);
+      ck(s.live === L.liveOff, `${rel}: Decline announces "${L.liveOff}" (not the other string)`, s.live);
       await page.click('[data-consent-open]');
       s = await snap(page);
       rendered.push([`${rel} reopened off`, s.status]);
@@ -827,6 +868,12 @@ function clean(env, name) {
 
   // ---------------------------------------------------------------------------------------------
   await scenario('SNAPSHOT: the consent text only changes with a POLICY_VERSION decision', async () => {
+    // The notice link in each language leads to that language's notice. Checked before the snapshot, because a wrong
+    // link is not a wording change a re-taken snapshot should be able to wave through.
+    for (const [lang, page] of Object.entries(NOTICE_PAGES)) {
+      const href = copy[lang] && copy[lang].noticeHref;
+      ck(typeof href === 'string' && href.split('#')[0] === page, `COPY.${lang}.noticeHref leads to the ${lang} notice, ${page}`, String(href));
+    }
     const cur = C.consentDigest();
     const r = C.compareSnapshot(cur);
     ck(r.ok, 'the COPY strings and the #cookies section of each notice page equal the checked-in snapshot, or POLICY_VERSION moved', r.detail || '');
@@ -838,8 +885,9 @@ function clean(env, name) {
   await browser.close();
   const total = (Date.now() - t0) / 1000;
   console.log('\ntimings: ' + timings.map(([n, s]) => `${n.split(':')[0]} ${s.toFixed(0)}s`).join(', ') + `; total ${total.toFixed(0)}s`);
+  if (synthetic.length) console.log(`note  synthetic fallback used (the real event did not happen here): ${synthetic.join(', ')}`);
   const problems = rep.problems;
-  console.log(problems === 0 ? '\nPASS — the consent module is silent before a choice, honours Accept, Decline and withdrawal, and fails closed'
+  console.log(problems === 0 ? '\nPASS — the consent module is silent before a choice, honours Accept, Decline and withdrawal, and fails closed' + (synthetic.length ? ` (with a synthetic fallback for: ${synthetic.join(', ')})` : '')
                              : `\nFAIL — ${problems} problem(s)`);
   process.exit(problems === 0 ? 0 : 1);
 })().catch((e) => { console.error(e); process.exit(1); });

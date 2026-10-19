@@ -1,9 +1,9 @@
 // The one check that talks to Google for real. Everything else stubs Google; this proves what the stubs only
 // imitate, with the dummy Measurement ID G-TEST000000 and nothing else.
-//   LIVE=1 node verify/consent-live.js            (npm run consent-live)
+//   node verify/consent-live.js --live            (npm run consent-live; LIVE=1 does the same where the shell allows it)
 //   ENGINES=chromium,firefox,webkit               which browsers (default all three; one that is not installed or
 //                                                 cannot start in this environment is reported and skipped)
-// Without LIVE=1 it prints this and exits 0: it is not part of `npm run check`, which must never need the network.
+// Without --live (or LIVE=1) it prints this and exits 0: it is not part of `npm run check`, which must never need the network.
 //
 // The pages are served from the local server (BASE, localhost only) with app.js rewritten to the dummy ID (the
 // same rewriteGaId armGa uses), and the policy and footer link added if the tree does not carry them yet. Google
@@ -26,12 +26,15 @@ const {
 } = require('./_common');
 const C = require('./_consent');
 
-if (process.env.LIVE !== '1') {
+if (process.env.LIVE !== '1' && !process.argv.includes('--live')) {
   console.log(`consent-live.js uses the real network: it loads gtag.js and sends collect hits to Google with the dummy ID ${TEST_ID}.
 It only runs when asked:
 
-  LIVE=1 node verify/consent-live.js        (or: cd tools && npm run consent-live)
-  LIVE=1 ENGINES=chromium node verify/consent-live.js
+  node verify/consent-live.js --live        (or: cd tools && npm run consent-live; LIVE=1 does the same)
+  ENGINES=chromium node verify/consent-live.js --live
+
+Certificate errors are NOT ignored in this run (the other checks ignore them, because nothing real is contacted): behind a
+proxy that re-signs HTTPS, the proxy's CA must be trusted by the browser, or the run fails on the first Google request.
 
 Serve the repo first (python3 -m http.server 8000). Firefox and WebKit need: npx playwright install firefox webkit
 It is not part of npm run check. Nothing was run.`);

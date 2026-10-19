@@ -1,7 +1,7 @@
 // Layout and accessibility of the consent bar, measured in a real browser with the module armed
 // (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted).
-//   node verify/consent-layout.js                 about a minute and a half, themes light,dark,teal-light,teal-dark
-//   THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/consent-layout.js   every theme
+//   node verify/consent-layout.js                 about two minutes, every theme: light,dark,teal-light,teal-dark,mono-light,mono-dark
+//   THEMES=light,dark node verify/consent-layout.js   only the themes named
 //   FULL=1 node verify/consent-layout.js          more viewports, pages and Tab sweeps
 //
 // The bar is fixed to the bottom of the viewport, so the numbers that matter are measured, never assumed:
@@ -18,13 +18,13 @@
 const fs = require('fs');
 const { PNG } = require('pngjs');
 const {
-  PLACEHOLDER_ID, THEMES: ENV_THEMES, launch, pool,
+  PLACEHOLDER_ID, THEMES: ENV_THEMES, ALL_THEMES, launch, pool,
 } = require('./_common');
 const C = require('./_consent');
 
 const { sleep, snap, armedContext, open, barButton: btn } = C;
 const FULL = !!process.env.FULL;
-const THEMES = process.env.THEMES ? ENV_THEMES : ['light', 'dark', 'teal-light', 'teal-dark'];
+const THEMES = process.env.THEMES ? ENV_THEMES : ALL_THEMES;           // the role tokens have to hold in all six; THEMES= narrows it
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const PAGES_L = FULL ? ['index.html', 'sv.html', 'android-automotive-consultancies-gothenburg.html'] : ['index.html', 'sv.html'];
 const VIEWPORTS = [[320, 568], [360, 640], [390, 844], [768, 1024], [1440, 900], [320, 256]];
@@ -282,7 +282,7 @@ async function reopen(page) {
     const gaps = rows2.map((x) => x.r.legalMin).filter((g) => g !== null);
     ck(!bad2.length, `at the end of the page every footer link, the Legal list and Cookie settings are clear of the bar (${rows2.length} runs; smallest gap above the bar ${gaps.length ? Math.round(Math.min(...gaps)) : 'n/a'}px)`, fail(bad2));
     const fine = rows2.filter((x) => x.r.fine).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}`);
-    if (fine.length) console.log(`note  the copyright line (not a control) ends under the bar in ${fine.length} run(s): ${fail(fine, 3)}`);
+    if (fine.length) console.log(`note  the copyright line (not a control) ends under the bar in ${fine.length} run(s), informational and not the same on every run: ${fail(fine, 3)}`);
   });
 
   // -------------------------------------------------------------------------------------------------

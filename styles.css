@@ -1044,11 +1044,15 @@ a.clients__item:has(.clients__mark):hover {
 }
 .legal .banner, .prose .banner { margin-bottom: var(--space-10); }
 /* Tables in long-form text keep to the column on a phone: the system's cell
-   padding plus a long Swedish compound ("Konsultmäklare") overflowed 360px. */
+   padding plus a long Swedish compound ("Konsultmäklare") overflowed 360px.
+   The legal pages' cookie table gets the same rules. */
 @media (max-width: 599px) {
-  .prose th, .prose td { padding: var(--space-2) var(--space-2); }
-  .prose td, .prose th { hyphens: auto; overflow-wrap: break-word; }
+  .legal th, .legal td, .prose th, .prose td { padding: var(--space-2) var(--space-2); }
+  .legal td, .legal th, .prose td, .prose th { hyphens: auto; overflow-wrap: break-word; }
 }
+/* A cookie name in the first column is a token to copy, so it never breaks
+   across lines; the second column takes the remaining width. */
+.legal td:first-child > code { white-space: nowrap; }
 
 /* Banner (the Banner card): a leading icon, a bold lead, then the message. */
 .banner {
@@ -1068,6 +1072,20 @@ a.clients__item:has(.clients__mark):hover {
 .banner--info > .icon { color: var(--info); }
 .banner--warning { background: var(--warning-container); color: var(--on-warning-container); }
 .banner--warning > .icon { color: var(--warning); }
+
+/* A detail in a draft notice that only a person can confirm. The marked text
+   stays in the markup in double square brackets (the release gate looks for
+   it); this makes it stand out on screen. It takes the warning pair the Banner
+   uses, which holds 4.5:1 or better in all six themes. */
+.draft-marker {
+  background: var(--warning-container);
+  color: var(--on-warning-container);
+  font-weight: 600;
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-xs);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
 
 /* ---------------------------------------------------------------
    Footer — an inverse band
@@ -1208,13 +1226,15 @@ a.clients__item:has(.clients__mark):hover {
    footer takes the same reserve as padding while the bar is up, so its last
    links (Legal, Cookie settings) can be scrolled clear. Both are plain CSS: no
    script measures the bar.
-   The reserve is in rem, the one length here that is not on the px spacing
-   scale, because the bar grows with the text size (Firefox's text-only zoom,
-   Android's font scale) and a px reserve would not. On a phone the tallest bar
-   is the reopened one (183px at 320px wide, plus the 16px it floats above the
-   edge, and taller with the text-spacing overrides of SC 1.4.12), so 20rem
-   (320px at the default size); from 700px the bar sits beside its buttons and
-   12rem is enough. */
+   The reserve is in rem, as is the 7rem button minimum: the two lengths here
+   that are not on the px spacing scale. The reserve is in rem because the bar
+   grows with the text size (Firefox's text-only zoom, Android's font scale)
+   and a px reserve would not. On a phone the tallest bar is the reopened one
+   (the first-visit bar plus one status line, the 16px it floats above the
+   edge, and taller still with the text-spacing overrides of SC 1.4.12), so
+   20rem (320px at the default size); from 700px the bar sits beside its
+   buttons and 12rem is enough. tools/verify/consent-layout.js holds the
+   numbers: it sweeps focus against the bar's real rectangle. */
 @media not all and (max-height: 520px) {
   html.consent-open { scroll-padding-bottom: 20rem; }
   .consent-open .site-footer { padding-bottom: 20rem; }

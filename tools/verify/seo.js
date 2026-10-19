@@ -12,7 +12,8 @@
 //   answers (p and li in order, ol items numbered) equal the visible FAQ; answers are flat
 //   (no p inside li, no nested list) and contain no element other than h3, p, ul, ol, li
 //   and inline a, strong, em, abbr, code, br, span
-// - hreflang alternates are reciprocal and point at pages that exist
+// - hreflang alternates are reciprocal and point at pages that exist: the page a language entry points at must
+//   link back with an entry in the linking page's own language (x-default does not count as the way back)
 // - sitemap.xml lists exactly the pages; robots.txt names the sitemap; llms.txt links only
 //   pages in the sitemap
 // - copy rules on visible text: no em dash, no en dash used as punctuation, no exclamation
@@ -60,6 +61,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
   await armGa(ctx);
   const page = await ctx.newPage();
   const alternates = {};
+  const langOf = {};
   for (const p of PAGES) {
     await page.goto(BASE + p, { waitUntil: 'domcontentloaded' });
     const d = await page.evaluate(() => {
@@ -158,6 +160,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     if (/…|\.\.\./.test(d.visible)) copy.push('ellipsis');
     if (copy.length) issues.push('copy: ' + copy.join(', '));
     alternates[p] = d.hreflang;
+    langOf[p] = d.lang;
     if (issues.length) fail(`${p}: ${issues.join('; ')}`);
     else ok(`${p} (${d.lang}${d.faq.length ? `, ${d.faq.length} FAQ` : ''}${d.hreflang.length ? ', hreflang' : ''})`);
   }
@@ -172,7 +175,8 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     for (const [lang, href] of alts) {
       const target = fileOf(href);
       if (!PAGES.includes(target)) { fail(`${p}: hreflang ${lang} points at ${href}, not a page`); continue; }
-      if (lang !== 'x-default' && !(alternates[target] || []).some((a) => fileOf(a[1]) === p)) fail(`${p}: ${target} does not link back`);
+      // The way back is an entry in this page's own language that points here; an x-default entry is not one.
+      if (lang !== 'x-default' && !(alternates[target] || []).some((a) => a[0] !== 'x-default' && a[0] === langOf[p] && fileOf(a[1]) === p)) fail(`${p}: ${target} does not link back with an hreflang="${langOf[p]}" entry`);
     }
   }
   console.log(bad ? `\nFAIL — ${bad} problem(s)` : '\nPASS — search, sharing and copy checks');

@@ -31,6 +31,17 @@ const isDark = (theme) => /dark$/.test(theme);
     pressed: document.querySelector('.theme-toggle') && document.querySelector('.theme-toggle').getAttribute('aria-pressed'),
   }));
 
+  // 0. The armed module is really up: a first visit shows exactly one consent bar. Without this, a module that
+  // died on load (a syntax error, a wrong ID rewrite) would leave every test below passing on a page with no bar.
+  {
+    const ctx = await armed();
+    const page = await ctx.newPage();
+    await page.goto(url('index'), { waitUntil: 'load' });
+    const bars = await page.evaluate(() => ({ bar: document.querySelectorAll('#consent-bar').length, cls: document.documentElement.className }));
+    check(bars.bar === 1 && /js-consent/.test(bars.cls), 'the armed consent module is up: a first visit shows one #consent-bar, so the tests below run with the bar in the page', `bars ${bars.bar}, html class "${bars.cls}"`);
+    await ctx.close();
+  }
+
   // 1. Every fresh visit draws a direction; across many visits all three appear.
   {
     const ctx = await armed();

@@ -10,6 +10,8 @@
 //   - armed and with the answer pinned to denied.
 // In the armed runs the Google stand-ins are in place, but a request to them still counts as off-origin here:
 // before an answer, the page must not even try. The single exception to "zero" is the live mode below.
+// The armed runs also assert that the consent module is really up (undecided: one #consent-bar; denied: js-consent
+// on <html> and no bar), so that a module which died on load cannot pass as "nothing leaves".
 //
 //   CONSENT=undecided|denied  run only that armed state
 //   CONSENT=granted BASE=https://vynatix.com/ node verify/requests.js
@@ -80,6 +82,16 @@ async function visit(browser, p, theme, state) {
   await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }).catch((e) => failed.push('goto: ' + e.message));
   if (state === 'granted') await page.waitForTimeout(3000);       // let gtag.js load and send its first hit
 
+  // In the armed runs the module must really be up, or "nothing leaves" is proved of a page that never asked: a first
+  // visit (undecided) shows the bar; a stored denial shows none but leaves the module's class on <html>.
+  let moduleProblem = '';
+  if (state === 'undecided' || state === 'denied') {
+    const m = await page.evaluate(() => ({ bar: document.querySelectorAll('#consent-bar').length, on: document.documentElement.classList.contains('js-consent') }));
+    if (!m.on) moduleProblem = 'the consent module is not running (no js-consent class on <html>)';
+    else if (state === 'undecided' && m.bar !== 1) moduleProblem = `a first visit shows ${m.bar} #consent-bar elements (want 1)`;
+    else if (state === 'denied' && m.bar !== 0) moduleProblem = `a stored denial still shows ${m.bar} #consent-bar element(s)`;
+  }
+
   // document.fonts.check() answers true for a family that has no @font-face
   // at all, so look at the faces that actually loaded instead.
   const loaded = await page.evaluate(async () => {
@@ -96,7 +108,7 @@ async function visit(browser, p, theme, state) {
   cspViolations.push(...(await page.evaluate(() => window.__csp || [])));
   if (ctx.__ga && ctx.__ga.errors.length) failed.push(...ctx.__ga.errors);
   await ctx.close();
-  return { p, theme, state, offOrigin, cspViolations, failed, missingFaces, loaded, contacted: [...contacted] };
+  return { p, theme, state, offOrigin, cspViolations, failed, missingFaces, loaded, contacted: [...contacted], moduleProblem };
 }
 
 (async () => {
@@ -108,7 +120,7 @@ async function visit(browser, p, theme, state) {
   const hosts = new Set();
 
   for (const r of results) {
-    const bad = r.offOrigin.length || r.cspViolations.length || r.failed.length || r.missingFaces.length;
+    const bad = r.offOrigin.length || r.cspViolations.length || r.failed.length || r.missingFaces.length || r.moduleProblem;
     if (bad) failures++;
     r.contacted.forEach((h) => hosts.add(h));
     const label = r.state === 'plain' ? '' : r.state === 'granted' ? ' (live, answer granted)' : ` (armed, ${r.state})`;
@@ -116,6 +128,7 @@ async function visit(browser, p, theme, state) {
     if (r.offOrigin.length) console.log(`        off-origin requests: ${[...new Set(r.offOrigin)].map(redact).join(', ')}`);
     if (r.cspViolations.length) console.log(`        CSP violations: ${r.cspViolations.map(redact).join(' | ')}`);
     if (r.failed.length) console.log(`        failed requests: ${r.failed.map(redact).join(' | ')}`);
+    if (r.moduleProblem) console.log(`        module: ${r.moduleProblem}`);
     if (r.missingFaces.length) console.log(`        fonts unresolved: ${r.missingFaces.join(', ')} (loaded: ${r.loaded.join(', ')})`);
   }
   if (LIVE) console.log(`Google hosts contacted (all in the CSP: ${GOOGLE_HOSTS.join(' ')}, script ${GTAG_SCRIPT}): ${[...hosts].sort().join(', ') || 'none'}`);

@@ -12,7 +12,7 @@
 // asserted by headers.js instead. Two of the checks below (storage
 // poisoning and URL reflection) pass because app.js has no reflective sink,
 // not because the CSP blocks them — they guard against a future regression.
-const { BASE, ALL_THEMES, TEST_ID, GTAG_SCRIPT, armGa, launch } = require('./_common');
+const { BASE, ALL_THEMES, NOTICE_PAGES, TEST_ID, GTAG_SCRIPT, armGa, launch } = require('./_common');
 
 // A 1x1 transparent PNG, so an image from the attacker's host is a real image if it is ever allowed through.
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
@@ -25,6 +25,9 @@ async function routeAttacker(ctx) {
     if (u.pathname.endsWith('.png')) return route.fulfill({ status: 200, contentType: 'image/png', body: PNG });
     return route.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: 'ok' });
   });
+  // A pixel on an analytics host. armGa answers every google-analytics.com request with an empty 204, which an <img> cannot
+  // decode, so without this route the image would fail with or without the policy and the bypass control could never load.
+  await ctx.route('https://www.google-analytics.com/pixel.png', (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
   // Tag Manager's container loader and a Google host the policy does not name: both answer 200, so only the policy can refuse them.
   await ctx.route('https://www.googletagmanager.com/gtm.js**', (route) =>
     route.fulfill({ status: 200, contentType: 'text/javascript', body: 'window.__gtm = true;' }));
@@ -100,6 +103,15 @@ async function routeAttacker(ctx) {
   record('CSP blocks off-allowlist image', img !== 'LOADED' && mentions(v3, 'img-src', 'evil.example'), `result=${img}, violation=${v3.filter((v) => /img-src/.test(v)).join(';') || 'none'}`);
   record('negative control is real: the same image loads when the CSP is bypassed', imgControl === 'LOADED', `result=${imgControl}`);
 
+  // 3b. img-src was not widened for Google: a pixel from an analytics host is refused (the hits go out by fetch, to connect-src).
+  const GA_PIXEL = 'https://www.google-analytics.com/pixel.png';
+  const gaImg = await page.evaluate(loadImage, GA_PIXEL);
+  const gaImgControl = await control.page.evaluate(loadImage, GA_PIXEL);
+  const v3b = await violations(page);
+  record('CSP blocks an image from an analytics host (img-src is not widened for www.google-analytics.com)', gaImg !== 'LOADED' && mentions(v3b, 'img-src', 'google-analytics.com'),
+    `result=${gaImg}, violation=${v3b.filter((v) => /img-src/.test(v) && /google-analytics/.test(v)).join(';') || 'none'}`);
+  record('negative control is real: the same analytics-host image loads when the CSP is bypassed', gaImgControl === 'LOADED', `result=${gaImgControl}`);
+
   // 4. Inline event handler must not fire (script-src has no 'unsafe-inline').
   const handlerRan = await page.evaluate(() => {
     window.__click = false;
@@ -111,8 +123,9 @@ async function routeAttacker(ctx) {
   });
   record('CSP blocks inline event handler', handlerRan === false, `ran=${handlerRan}`);
 
-  // 5. Injected inline STYLE — only blocked once style-src drops 'unsafe-inline'.
-  const styleApplied = await page.evaluate(() => {
+  // 5. Injected inline STYLE — only blocked once style-src drops 'unsafe-inline'. Tried on the home page and on the
+  //    notice page, which carries its own copy of the policy and the consent panel, with a bypass control on each.
+  const injectStyle = () => {
     const d = document.createElement('div');
     d.id = '__probe';
     document.body.appendChild(d);
@@ -120,9 +133,19 @@ async function routeAttacker(ctx) {
     st.textContent = '#__probe { position: fixed; }';
     document.head.appendChild(st);
     return getComputedStyle(d).position === 'fixed';
-  });
+  };
+  const styleApplied = await page.evaluate(injectStyle);
   record('CSP blocks injected inline <style>', styleApplied === false,
     styleApplied ? "style-src still allows 'unsafe-inline'" : 'strict style-src active');
+  await page.goto(BASE + NOTICE_PAGES.en, { waitUntil: 'domcontentloaded' });
+  await control.page.goto(BASE + NOTICE_PAGES.en, { waitUntil: 'domcontentloaded' });
+  const noticeStyle = await page.evaluate(injectStyle);
+  const noticeStyleControl = await control.page.evaluate(injectStyle);
+  record(`CSP blocks injected inline <style> on ${NOTICE_PAGES.en} too (its own policy)`, noticeStyle === false,
+    noticeStyle ? "style-src on the notice page still allows 'unsafe-inline'" : 'strict style-src active');
+  record(`negative control is real: the same <style> applies on ${NOTICE_PAGES.en} when the CSP is bypassed`, noticeStyleControl === true, `applied=${noticeStyleControl}`);
+  await page.goto(BASE + 'index.html', { waitUntil: 'domcontentloaded' });         // back to the page under test
+  await control.page.goto(BASE + 'index.html', { waitUntil: 'domcontentloaded' });
 
   // 6. A request to an attacker's host must not leave the page: fetch, XHR and a form target (connect-src, form-action).
   const connect = async (url) => {

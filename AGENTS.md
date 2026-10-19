@@ -162,9 +162,10 @@ anywhere: `vynatix-look` (`sessionStorage`, the direction drawn for the visit,
 written without any click), `vynatix-theme` (`localStorage`, light or dark,
 written when the toggle is pressed) and `vynatix-consent` (`localStorage`, the
 analytics choice, written when Decline or Accept is pressed; see *Analytics*).
-Whether the first two need mention in the bar or the notices is a decision for
-counsel, listed in `tools/PRE-FLIP-CHECKLIST.md`. The one-line fallback, if the
-random draw has to go, is to pin `pickLook()` as described below.
+Both notices already name all three keys and call the first two display
+preferences; whether that description is right, and whether the bar has to mention
+them, is for counsel to confirm (`tools/PRE-FLIP-CHECKLIST.md`, 4.2). The one-line
+fallback, if the random draw has to go, is to pin `pickLook()` as described below.
 - On the home page `app.js` also preloads the headline faces of the drawn
   direction (`DISPLAY_FACES`), so the hero is not blocked on a late font fetch.
   Other pages add no preloads.
@@ -197,8 +198,9 @@ guarded so a missing element is a no-op. Every page loads `app.js` from the
 animation stack. It has three features: the theme (the per-visit draw and the
 toggle), the mobile nav, and consent for Google Analytics (see *Analytics*). The
 one other script that can ever run is Google's `gtag.js`, which the third feature
-injects itself, only after a visitor presses Accept and only once a real
-Measurement ID has been set. Nothing on the site
+injects itself, only once a real Measurement ID has been set and only for a
+visitor whose answer is Accept: on the press, or on a later page load while a
+stored `granted` answer is still valid. Nothing on the site
 moves on its own: the design system forbids auto-advancing strips and
 ambient loops on content surfaces, so the former client marquee is now a
 still list (`.clients__list`) and the former case reel is a grid of cards.
@@ -325,7 +327,13 @@ link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
 `privacy.html`, the fifth English/Swedish pair, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
-hub (`sv.html`), which links every Swedish page in its `#guider` section. The
+hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
+`integritet.html`, which is a notice and not a guide and so is linked from that
+footer column (and by the Swedish consent bar), not from `#guider`. On a Swedish
+page the footer's Legal column therefore deliberately holds one Swedish item, the
+relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
+"Accessibility"); the shared footer is English by design, and the link has to match
+the Swedish bar and notice. Without JavaScript it reverts to English. The
 two home pages are not mirror images: the "three ways" list in Who we are and
 the Further reading section exist only on the English home page (sv.html has the
 Guider section instead). The Further reading items on index.html repeat the
@@ -367,33 +375,64 @@ When active it shows a compact, non-modal bar fixed to the bottom of the viewpor
 on a first visit (`#consent-bar`: two buttons with the identical class string,
 Decline then Accept, so neither is favoured); reopens it from the footer's
 "Cookie settings" link (`data-consent-open`); and fills the in-page panel on the
-two privacy notices (`[data-consent-panel]` inside `#cookies`) with the same two
-buttons. The wording is the `COPY` object in `app.js`, in English and Swedish,
-and has to stand on its own (a cached notice can sit beside a newer bar for
-minutes) while still naming Google, the cookies, who is counted and how to change
-the choice. The styles are the *Consent* section of `styles.css`; its bottom
-reserve is in `rem` so it grows with the text size, the one length there that is
-not on the spacing scale.
+two privacy notices (`[data-consent-panel]`, a later sibling of the `#cookies`
+heading in the same section) with the same two buttons. The wording is the `COPY`
+object in `app.js`, in English and Swedish, and has to stand on its own (a cached
+notice can sit beside a newer bar for minutes) while still naming Google, the
+cookies, who is counted and how to change the choice. The styles are the *Consent* section of `styles.css`; its bottom
+reserve is in `rem` so it grows with the text size, and that reserve and the
+buttons' `7rem` minimum width are the lengths there that are not on the spacing
+scale.
 
-**One constant: `GA_ID`.** `var GA_ID = 'G-XXXXXXXXXX';` is the first line of that
-IIFE and the only place the Measurement ID exists (it must stay a single match in
-`app.js`; the tests rewrite it by pattern and fail on none or on two). While it
-is the placeholder, any run of X characters after `G-`, or anything that is not
-`G-` plus 6 to 12 capitals or digits, the block returns before doing anything: no
-markup, no storage read or write, no listener, no class on `<html>`, no cookie
-deletion, and the footer link stays a plain link. Shipping with the placeholder
-is the normal state of the branch. The ID is public by construction, so it may be
-committed.
+**Two switches: `GA_ID` and `PURGE_ONLY`.** `var GA_ID = 'G-XXXXXXXXXX';` is the
+first line of that IIFE and the only place the Measurement ID exists (it must stay
+a single match in `app.js`; the tests rewrite it by pattern and fail on none or on
+two). While it is the placeholder, any run of X characters after `G-`, or anything
+that is not `G-` plus 6 to 12 capitals or digits, the block returns before doing
+anything: no markup, no storage read or write, no listener, no class on `<html>`,
+no cookie deletion, and the footer link stays a plain link. Shipping with the
+placeholder is the normal state of the branch. The ID is public by construction,
+so it may be committed. `var PURGE_ONLY = false;` sits beside it, the emergency
+stop described under *Cookies and withdrawal*. It is `false` in every state except
+an exit in progress, and it too is a single match in `app.js`: the tests normalise
+it by pattern, so the suite passes in the exit state, and the release gate refuses
+to pass unless it is `false`.
 
-**Flipping it on.** Edit only that line, then `cd tools && npm run stamp` (`app.js`
-changed, so every page's stamp moves), then `node verify/release-gate.js`, then
-`npm run check`. The flip is the last commit of the one PR and changes nothing but
-that line and the stamps. It is made only when `tools/PRE-FLIP-CHECKLIST.md` is
-complete. `release-gate.js` fails while `GA_ID` is the placeholder, or while any
-claim, marker or placeholder text on the pages would contradict going live. It is
-deliberately **not** part of `npm run check`, which stays green with the
-placeholder. Switching it off again is the same line the other way and the same
-stamp; the exit runbook is in the checklist.
+**Flipping it on.** On the day of the flip, set the visible "Last updated" line in
+`privacy.html` and the "Senast uppdaterad" line in `integritet.html` to that day,
+set their `mod` in the `PAGES` registry of `tools/seo-head.py` to the same day, and
+run `python3 tools/seo-head.py`. Then edit the `GA_ID` line (a re-flip after an
+exit also sets `PURGE_ONLY` back to `false` in the same commit), run
+`cd tools && npm run stamp` (`app.js` changed, so every page's stamp moves), then
+`node verify/release-gate.js`, then `npm run check`. The flip is the last commit of
+the one PR. It changes the `GA_ID` line (and, on a re-flip, `PURGE_ONLY`), those two
+dates (the visible lines and `mod` in `tools/seo-head.py`), the files `seo-head.py`
+writes from them (the notices' `dateModified` and `article:modified_time`, two
+sitemap `<lastmod>` lines) and the stamps, and nothing else. It is made only when
+`tools/PRE-FLIP-CHECKLIST.md` is complete.
+
+**The release gate.** `release-gate.js` fails on: a placeholder or malformed ID;
+any `[[CONFIRM` marker on a notice; a draft banner that is still on a notice (it is
+removed only on counsel's written sign-off); a marker on a page that no longer has
+a banner; an unticked box in sections 1 to 9 of the checklist, or a blank field in
+its header block or sign-off block; `PURGE_ONLY` anything but `false`; a policy
+constant that is not the documented one (`COOKIE_MAX_AGE` 31536000,
+`CONSENT_MAX_DAYS` 365); notices that do not say "12 months" / "12 månader" or do
+not name the three storage keys in `<code>`; a notice date that is not fresh (the
+visible "Last updated" date must equal `mod` in `tools/seo-head.py`, and that date
+must be at most 14 days old); a page without the Cookie settings link in its
+footer; a CSP that differs between pages or from `EDGE-SETUP.md`; and any sentence
+that still says the site has no analytics or no cookies. When every scripted gate
+holds it prints `scripted gates pass, N human gates open` and exits 0, never a bare
+PASS: N is the number of gates it lists that only a person can pass, which the
+checklist's boxes cover with evidence. It is deliberately **not** part of
+`npm run check` (which stays green with the placeholder, and in the exit state),
+but its `--self-test` is, and so is `publish.js`.
+
+**Switching it off again** is not the reverse of the flip. The first action of an
+exit is `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last, once the purge
+has run. The exit runbook is section 10 of `tools/PRE-FLIP-CHECKLIST.md`, and every
+other document points there instead of repeating the steps.
 
 **Google is never requested before consent.** No script, `preconnect`,
 `dns-prefetch`, `preload`, `prefetch`, image, font or beacon to a Google host, in
@@ -403,8 +442,10 @@ choice, not even a default consent state. After Accept the module sends the
 consent default (all four consent parameters denied), injects the one
 `gtag.js?id=<GA_ID>` element, sends `js`, updates `analytics_storage` to granted
 and runs `config` with Google Signals and ad personalisation off and
-`cookie_expires` of 365 days. Do not add a Google host to any `<link>` anywhere
-in the pages, and do not set `anonymize_ip` or `client_storage`.
+`cookie_expires` of 365 days (this site's own setting, not Google's default of two
+years). A returning visitor whose stored answer is still `granted` gets the same
+sequence on page load, without a press. Do not add a Google host to any `<link>`
+anywhere in the pages, and do not set `anonymize_ip` or `client_storage`.
 
 **The stored choice.** `vynatix-consent` in `localStorage`, beside `vynatix-theme`
 and `vynatix-look`, holds one plain string, `v1:granted:YYYY-MM-DD` or
@@ -417,11 +458,16 @@ storage cannot be read there is no bar and no analytics, and if a write does not
 stick the choice is treated as denied. Bump `POLICY_VERSION` when the wording of
 the choice changes in a way that should lapse old answers.
 
-**Cookies and withdrawal.** Google sets `_ga` and `_ga_<id>`. `cookie_expires` is
-365 days (`COOKIE_MAX_AGE`) and must never be longer than `CONSENT_MAX_DAYS`.
-Decline and withdrawal set Google's own `ga-disable-<ID>` flag, send
-`analytics_storage: denied`, and delete every cookie named `_ga` or starting
-`_ga_` for the host and every parent domain, at once, a second later and on
+**Cookies and withdrawal.** Google sets `_ga` and `_ga_<container-id>` (the suffix
+is the property's Measurement ID without `G-`). `cookie_expires` is configured to
+expire the cookie at most 365 days after the last hit (`COOKIE_MAX_AGE`, which
+equals `CONSENT_MAX_DAYS` in days). Whether a later hit moves the expiry is an
+observed fact the checklist asks for (3.4); if it does, a visitor who accepts and
+never returns can hold the cookie up to a year past the consent record, and a later
+visit deletes it only while the module is active. Decline and withdrawal set
+Google's own `ga-disable-<ID>` flag, send `analytics_storage: denied`, and delete
+every cookie named `_ga` or starting `_ga_` for the host and every parent domain at
+once and, while the page is still not granted, again a second later and on
 `pagehide`. A load with no choice or a denied one deletes them too. No other
 cookie is touched. The stored choice is read again on `pageshow` after a
 back/forward-cache restore, on `visibilitychange` and on `storage`, so a restored
@@ -429,8 +475,9 @@ page or another tab follows a withdrawal. A bare revert on the server cannot rea
 tab that has already loaded `gtag.js`; it measures until it is reloaded or until
 `PURGE_ONLY` is set to `true`, which measures nothing for anyone, deletes the `_ga`
 cookies on every load and removes the stored choice, so the `storage` event stops
-open tabs too (the exit runbook in `tools/PRE-FLIP-CHECKLIST.md`). Reverting `GA_ID`
-to the placeholder only makes the block inert; it does not clean up.
+open tabs too (the exit runbook, section 10 of `tools/PRE-FLIP-CHECKLIST.md`).
+Reverting `GA_ID` to the placeholder only makes the block inert; it does not clean
+up, which is why it is the last step of an exit and never the first.
 
 **Property settings that live outside the repo.** Nothing in the repo can see
 these, they can drift, and each is evidenced in the checklist and re-checked every
@@ -441,25 +488,41 @@ would record which one a visitor followed); an internal-traffic or Exclude
 hostname filter so local and developer visits do not count, and **no** Include
 hostname filter until it has been tested in DebugView (Google's release note of
 2026-09-21 says Include filters block events with an empty hostname, and the
-effect on web streams is unclear).
+effect on web streams is unclear); and a lookup and a deletion by client ID tried
+in the property with the procedure written down, because both notices promise it.
 
-**Facts only a human can supply.** The notices carry visible `[[CONFIRM: what is
-needed]]` markers: Google's contracting entity, the observed cookie names and
-lifetimes, which Enhanced Measurement events remain, the Data Privacy Framework
-listing check. Never fill one in from memory or from this file. Resolve it from
-evidence; the release gate refuses to pass while any remains. The legal text is a
-draft for counsel and says so on the page.
+**Facts only a human can supply.** The notices carry five visible `[[CONFIRM: what
+is needed]]` markers each, each wrapped in `<mark class="draft-marker">` so it
+shows on screen (the literal text is unchanged, so the gate's pattern still
+matches): the observed cookie names, domain and lifetime; the retention setting in
+the property; which Enhanced Measurement events remain; Google's contracting
+entity, the entity that receives the data in the United States and its Data Privacy
+Framework listing check; and the client-ID lookup test. Never fill one in from
+memory or from this file. Resolve it from evidence; the release gate refuses to
+pass while any remains. The legal text is a draft for counsel and says so on the
+page; the banner stays until counsel's written sign-off.
 
 **Checks.** `csp.js` (the CSP is identical on all 21 pages, matches
-`EDGE-SETUP.md`, and names only the allow-listed Google hosts), `consent.js`
+`EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
+`<link>` or `<script>` on any page is found whatever the quoting or attribute
+order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every
+`PAGES` entry exists; every other root file that is not a page or a listed asset
+type, and every directory other than the known ones, is named in `_config.yml`'s
+`exclude` or flagged; every footer carries the Cookie settings link with
+`data-consent-open` and `href="privacy.html#cookies"`; the notice link in `COPY`
+points at the right notice page; both notices name the three storage keys in
+`<code>`; the site's style rules are linted (role tokens only: no colour literal in
+`styles.css` outside the token files, and no inline style in a page or from
+`app.js`); and `llms.txt` links every URL in `sitemap.xml`), `consent.js`
 (behaviour: nothing before consent, accept, decline, withdrawal, poisoned and
-blocked storage, no-JS, Swedish), `consent-layout.js` (bar size, the open menu
-over the bar, focus never hidden behind the bar, six themes), `release-gate.js`
-(above) and `consent-live.js` (opt-in; real network; the dummy ID `G-TEST000000`,
-never a real property). In `tools/verify/_common.js`: `pinConsent` pins a stored
-choice the way `pinTheme` pins a theme, `armGa` arms a page so the module is
-active under test (the placeholder is inert, so without it the axe, contrast,
-theme and screenshot checks would audit a page with no bar), and `rewriteGaId`
+blocked storage, no-JS, Swedish, and the `PURGE_ONLY` build), `consent-layout.js`
+(bar size, the open menu over the bar, focus never hidden behind the bar, six
+themes), `release-gate.js` (above) and `consent-live.js` (opt-in; real network;
+the dummy ID `G-TEST000000`, never a real property). In
+`tools/verify/_common.js`: `pinConsent` pins a stored choice the way `pinTheme` pins
+a theme, `armGa` arms a page so the module is active under test (the placeholder is
+inert, so without it the axe, contrast, theme and screenshot checks would audit a
+page with no bar; it also normalises `PURGE_ONLY` to `false`), and `rewriteGaId`
 rewrites the `GA_ID` line by pattern and fails loudly on no match or more than
 one. A pass with the dummy ID is not a pass with the real one; see the checklist.
 
@@ -541,12 +604,14 @@ add third-party font/CDN requests for fonts.
   (`theme.js`), the version-stamp check (`stamp.js --check`) and its stale-cache
   proof (`stale-cache.js`), the search, structured-data and copy check
   (`seo.js`), the accessibility suite with its contrast sweep (`a11y.js`), the
-  static CSP sync (`csp.js`) and the consent behaviour and layout checks
-  (`consent.js`, `consent-layout.js`). Two more sit outside `npm run check`: the
-  release gate (`release-gate.js`, which must fail until analytics is switched on
-  for real) and the opt-in live test (`consent-live.js`); see *Analytics*.
+  static CSP sync (`csp.js`), the "what ships" check (`publish.js`) and the consent
+  behaviour and layout checks (`consent.js`, `consent-layout.js`). Two more run
+  outside `npm run check`: the release gate (`release-gate.js`, which must fail
+  until analytics is switched on for real; only its `--self-test` is in the chain)
+  and the opt-in live test (`consent-live.js`); see *Analytics*.
   A new page also goes into `PAGES` in `tools/verify/_common.js` and into
-  `sitemap.xml`. Because every visit draws its own scheme, the checks that need a
+  `sitemap.xml`; `publish.js` fails if a root `*.html` is missing from `PAGES`.
+  Because every visit draws its own scheme, the checks that need a
   particular theme pin it first (`pinTheme` in `tools/verify/_common.js` sets
   both storage keys; `pinConsent` pins the analytics choice, and `armGa` arms the
   consent module for checks that audit the bar). Before changing a component,
@@ -580,8 +645,9 @@ add third-party font/CDN requests for fonts.
   `CLAUDE.md`, `SECURITY.md`, `CODEOWNERS`, the security assessment) and
   `tools/` are excluded, so they stay in the repo but are never served from
   `vynatix.com`. **Anything new that is documentation rather than site content
-  must be added to that exclude list.** (The font and icon licence texts are
-  published on purpose: they have to travel with the files.)
+  must be added to that exclude list**, and `publish.js` fails when it is not. (The
+  font and icon licence texts are published on purpose: they have to travel with the
+  files.)
 
 ### Repository hardening (set once, in GitHub settings)
 

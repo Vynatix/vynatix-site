@@ -150,7 +150,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=ce7600db">
+<link rel="stylesheet" href="styles.css?v=f328e8b7">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -164,7 +164,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=3797cc88"></script>
+<script src="app.js?v=7578b743"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Hoppa till innehållet</a>
@@ -224,7 +224,7 @@
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
-            <div class="banner__text"><b>Utkast i väntan på juridisk granskning.</b> Det här meddelandet har skrivits utifrån vad webbplatsen verifierbart gör. Det har ännu inte granskats av en jurist, och avsnittet om hosting beskriver ett upplägg som fortfarande är under uppbyggnad. Avsnittet om statistik är också en del av utkastet, och uppgifter i det som ännu inte är bekräftade är markerade inom hakparenteser. Betrakta det som ett arbetsutkast.</div>
+            <div class="banner__text"><b>Utkast i väntan på juridisk granskning.</b> Det här meddelandet har skrivits utifrån vad webbplatsen verifierbart gör. Det har ännu inte granskats av en jurist, och avsnittet om hosting beskriver ett upplägg som fortfarande är under uppbyggnad. Avsnittet om statistik är också en del av utkastet, och uppgifter i det som ännu inte är bekräftade är markerade inom dubbla hakparenteser och färgmarkerade. Betrakta det som ett arbetsutkast.</div>
           </div>
 
           <h2>Vem som är ansvarig</h2>
@@ -234,11 +234,11 @@
           <h2>Vad webbplatsen gör och inte gör</h2>
           <p>Kortversionen:</p>
           <ul>
-            <li>Statistik är <strong>avstängd om ni inte godkänner den</strong>. Om ni godkänner använder vi Google Analytics för att räkna besök och se vilka sidor som läses, som beskrivs under <a href="#cookies">Statistik och cookies</a> nedan. Det finns ingen annan statistik och ingen räkning av sidvisningar på serversidan som vi styr.</li>
+            <li>Statistik är <strong>avstängd om ni inte godkänner den</strong>. Om ni godkänner använder vi Google Analytics för att räkna besök och se vilka sidor som läses, vilket beskrivs under <a href="#cookies">Statistik och cookies</a> nedan. Det finns ingen annan statistik och ingen räkning av sidvisningar på serversidan som vi styr.</li>
             <li><strong>Inga cookies sätts förrän ni godkänner statistik.</strong> Om ni godkänner sätter Google Analytics de cookies som anges under <a href="#cookies">Statistik och cookies</a>. Om ni avböjer, eller om JavaScript eller webbläsarens lagring inte är tillgänglig, sätts inga. (När det Cloudflare-lager som beskrivs nedan är i drift kan det sätta en egen säkerhetscookie som är strikt nödvändig. Vi anger den här när det blir aktuellt.)</li>
             <li>Det finns <strong>inga spårningspixlar</strong>, annonstaggar, sociala widgetar eller inbäddat innehåll från tredje part. Det enda skriptet från tredje part är Google Analytics, som läses in först när ni har godkänt, med Google Signals och annonspersonalisering avstängda.</li>
             <li>Det finns <strong>inget kontaktformulär</strong>. Ni når oss genom att mejla eller ringa direkt.</li>
-            <li>Typsnitt och bilder <strong>levereras från den här domänen</strong>. Inget hämtas från ett typsnitts-CDN eller en bildtjänst, så när en sida läses in lämnas er IP-adress inte ut till någon tredje part för innehåll. Om ni godkänner statistik får Google den, som beskrivs under <a href="#cookies">Statistik och cookies</a>.</li>
+            <li>Typsnitt och bilder <strong>levereras från den här domänen</strong>. Inget hämtas från ett typsnitts-CDN eller en bildtjänst, så när en sida läses in lämnas er IP-adress inte ut till någon tredje part för innehåll. Om ni godkänner statistik får Google den, vilket beskrivs under <a href="#cookies">Statistik och cookies</a>.</li>
           </ul>
 
           <h2 id="storage">Vad som sparas i er webbläsare</h2>
@@ -250,7 +250,7 @@
 
           <h2 id="cookies">Statistik och cookies</h2>
           <p>Om ni godkänner använder vi Google Analytics 4 för att räkna besök och se vilka sidor som läses. Om ni avböjer, eller aldrig väljer, skickas ingenting till Google och ingen cookie för statistik sätts. Webbplatsen fungerar likadant oavsett vad ni väljer.</p>
-          <p>Vår rättsliga grund är ert samtycke enligt artikel 6.1 a i GDPR. Svensk lag om elektronisk kommunikation kräver dessutom ert samtycke innan cookies för statistik sätts på er enhet, så vi frågar först. Ni kan när som helst återkalla ert samtycke.</p>
+          <p>Vår rättsliga grund är ert samtycke enligt artikel 6.1 a i GDPR. Vi frågar efter ert samtycke innan någon cookie för statistik sätts på er enhet. Ni kan när som helst återkalla ert samtycke.</p>
           <p>När ni godkänner skickar er webbläsare till Google adressen till sidan ni läser, sidan ni kom från, uppgifter om webbläsare och enhet samt ett slumpmässigt id som Google Analytics lagrar i de cookies som anges nedan. Er IP-adress når också Googles servrar, eftersom den ingår i varje förfrågan som er webbläsare gör. Google uppger att Analytics 4 inte loggar eller lagrar IP-adresser.</p>
           <p>Om ni godkänner sätter Google Analytics två cookies i er webbläsare. Båda är förstapartscookies: de tillhör den här webbplatsens domän, inte en domän som Google äger.</p>
           <table>
@@ -259,17 +259,17 @@
               <tr><th scope="col">Cookie</th><th scope="col">Vad den används till och hur länge den finns kvar</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>_ga</code></td><td>Innehåller det slumpmässiga id som skiljer en webbläsares besök från en annans. Finns kvar i upp till 12 månader och förnyas så länge ni har statistiken påslagen.</td></tr>
-              <tr><td><code>_ga_&lt;egenskaps-id&gt;</code></td><td>Håller reda på besöket som pågår just nu. Finns kvar i upp till 12 månader och förnyas så länge ni har statistiken påslagen.</td></tr>
+              <tr><td><code>_ga</code></td><td>Innehåller det slumpmässiga id som skiljer en webbläsares besök från en annans. Finns kvar i upp till 12 månader.</td></tr>
+              <tr><td><code>_ga_&lt;container-id&gt;</code></td><td>Håller reda på besöket som pågår just nu. Finns kvar i upp till 12 månader.</td></tr>
             </tbody>
           </table>
-          <p>Cookienamnen och livslängderna ovan är hämtade från Googles dokumentation. [[CONFIRM: observerade cookienamn, domän och livslängd efter ett test med godkännande]]</p>
+          <p>Cookienamnen är hämtade från Googles dokumentation. I det andra namnet är delen efter <code>_ga_</code> vår egenskaps mätnings-ID utan inledande <code>G-</code>. Livslängden på 12 månader är den som den här webbplatsen själv ställer in, i stället för Googles standardvärde på två år. <mark class="draft-marker">[[CONFIRM: observerade cookienamn, domän och livslängd efter ett test med godkännande]]</mark></p>
           <p>Eftersom det är förstapartscookies skickar er webbläsare dem till den här domänen vid varje förfrågan, vare sig det gäller en sida, en bild eller en fil. Det betyder att de når vår hostingleverantör i förfrågan. Vi tar inte emot eller använder den kopian.</p>
-          <p>Vi har ställt in vår Google Analytics-egenskap så att händelsedata sparas i 2 månader. [[CONFIRM: lagringstiden är inställd på 2 månader i egenskapen]]</p>
-          <p>Sidvisningar registreras. Klick på utgående länkar och nedladdningar av filer registreras inte. Andra händelser registreras bara där vår egenskap har dem påslagna. [[CONFIRM: vilka händelser i Förbättrad mätning som är kvar påslagna i egenskapen; utgående klick och nedladdningar är avstängda]]</p>
-          <p>Google Signals och annonspersonalisering är avstängda. Koden som läser in Google Analytics stänger av båda och talar om för Google att lagring och användning av data för annonsering är nekad.</p>
+          <p>Vi har ställt in vår Google Analytics-egenskap så att händelsedata sparas i 2 månader. <mark class="draft-marker">[[CONFIRM: lagringstiden är inställd på 2 månader i egenskapen]]</mark></p>
+          <p>Sidvisningar registreras. Klick på utgående länkar och nedladdningar av filer registreras inte. Andra händelser registreras bara där vår egenskap har dem påslagna. <mark class="draft-marker">[[CONFIRM: vilka händelser i Förbättrad mätning som är kvar påslagna i egenskapen; utgående klick och nedladdningar är avstängda]]</mark></p>
+          <p>Google Signals och annonspersonalisering är avstängda. Koden som läser in Google Analytics stänger av båda och talar om för Google att lagring och användning av data för annonsering nekas.</p>
           <p>Google är mottagare av uppgifterna och kan behandla dem i USA, utanför EU/EES. För den överföringen förlitar vi oss på Europeiska kommissionens beslut om adekvat skyddsnivå för ramverket EU&ndash;US Data Privacy Framework (dataskyddsramverket mellan EU och USA), och om den skyddsnivån inte längre gäller stänger vi av statistiken. Detaljerna finns under <a href="#hosting">Hosting, överföringar och serverloggar</a> nedan.</p>
-          <p>Ert svar sparas i er webbläsare, som beskrivs under <a href="#storage">Vad som sparas i er webbläsare</a>. Om webbläsaren blockerar webbplatsens lagring kan webbplatsen inte komma ihåg ett svar, så den frågar inte och statistiken förblir avstängd. När ni avböjer, eller inte har valt, raderar webbplatsen också de Google Analytics-cookies den hittar för den här domänen.</p>
+          <p>Ert svar sparas i er webbläsare, vilket beskrivs under <a href="#storage">Vad som sparas i er webbläsare</a>. Om webbläsaren blockerar webbplatsens lagring kan webbplatsen inte komma ihåg ett svar, så den frågar inte och statistiken förblir avstängd. När ni avböjer, eller inte har valt, raderar webbplatsen också de Google Analytics-cookies den hittar för den här domänen.</p>
           <p>Om ni har godkänt kan ni när som helst återkalla det. Använd länken <strong>Cookie-inställningar</strong> i sidfoten på varje sida (utan JavaScript står den på engelska, <span lang="en">Cookie settings</span>) eller, där valet erbjuds i er webbläsare, knapparna i slutet av det här avsnittet. Ett återkallande påverkar inte den behandling som skedde innan. När ni återkallar slutar webbplatsen att mäta, talar om för Google att lagring för statistik är nekad och raderar de Google Analytics-cookies den hittar för den här domänen. Ni kan också radera cookies själva i webbläsarens inställningar.</p>
           <p>Utan JavaScript mäts ingenting och det finns inget att ändra. Där valet erbjuds visas ert nuvarande svar och knapparna för att ändra det precis nedanför.</p>
           <div class="consent-panel" data-consent-panel></div>
@@ -279,7 +279,7 @@
           <p>Vi är också på väg att sätta <strong>Cloudflare, Inc.</strong> (USA) framför webbplatsen som ett lager för säkerhet och leverans. När det är i drift passerar samma förfrågningsdata via Cloudflare, som behandlar den för att leverera sidan, tillämpa säkerhetsrubriker och motverka missbruk. Den här sidan uppdateras då med datumet för när det började gälla.</p>
           <p>Statistiken, om ni godkänner den, är separat från detta och beskrivs under <a href="#cookies">Statistik och cookies</a> ovan. Om ni godkänner skickar er webbläsare också data till Google.</p>
           <p>Båda hostingleverantörerna finns utanför EU/EES, så detta innebär en överföring till tredjeland. Båda omfattas av EU&ndash;US Data Privacy Framework, och Europeiska kommissionens beslut om adekvat skyddsnivå för det ramverket är grunden för överföringen.</p>
-          <p>Om ni godkänner statistik kan Google dessutom behandla era uppgifter i USA. Grunden för den överföringen är samma beslut om adekvat skyddsnivå, som bara gäller en mottagare som är listad under ramverket. Vår avtalspart för Google Analytics är [[CONFIRM: Googles avtalspart för Google Analytics och dess listning på dataprivacyframework.gov med datum för kontrollen]]. Om beslutet om adekvat skyddsnivå, eller den listningen, inte längre gäller stänger vi av statistiken. Vill ni veta mer om de skyddsåtgärder som finns, fråga oss.</p>
+          <p>Om ni godkänner statistik kan Google dessutom behandla era uppgifter i USA. Grunden för den överföringen är samma beslut om adekvat skyddsnivå, som bara gäller en mottagare som är listad under ramverket. Vår avtalspart för Google Analytics är <mark class="draft-marker">[[CONFIRM: Googles avtalspart för Google Analytics, det Google-bolag som tar emot uppgifterna i USA och dess listning på dataprivacyframework.gov med datum för kontrollen]]</mark>. Om beslutet om adekvat skyddsnivå, eller den listningen, inte längre gäller stänger vi av statistiken. Vill ni veta mer om de skyddsåtgärder som finns, fråga oss.</p>
 
           <h2>Om ni mejlar eller ringer oss</h2>
           <p>När ni kontaktar oss behandlar vi det ni skickar (ert namn, er adress och det som står i meddelandet) för att svara er och, om det leder till uppdrag, för att hantera samarbetet. Grunden är vårt berättigade intresse av att besvara förfrågningar, eller att vidta åtgärder inför ett avtal.</p>
@@ -288,12 +288,12 @@
           <h2>Era rättigheter</h2>
           <p>Enligt GDPR kan ni be oss bekräfta vilka uppgifter vi har om er och ge er en kopia, rätta dem, radera dem, begränsa eller invända mot hur vi använder dem, eller få dem i ett portabelt format. Fråga på <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> så svarar vi inom en månad.</p>
           <p>Där vi förlitar oss på ert samtycke, som vi gör för statistiken, kan ni återkalla det när som helst. Ett återkallande påverkar inte den behandling som skedde innan.</p>
-          <p>Statistikdata kopplas bara till det slumpmässiga id som finns i er <code>_ga</code>-cookie, inte till ert namn eller er e-postadress, och vi kan inte på annat sätt knyta den till er. Om ni begär tillgång till eller radering av statistikdata, skicka oss värdet på er <code>_ga</code>-cookie, som webbläsarens utvecklarverktyg visar, så använder vi det för att leta efter era data. [[CONFIRM: att Google Analytics låter oss slå upp och radera data via klient-id i vår egenskap, och hur det går till]] Utan det värdet kan vi inte avgöra vilka data som är era. Om ni redan har raderat cookien kan vi inte hitta dem, och de raderas när lagringstiden ovan löper ut.</p>
+          <p>Statistikdata kopplas till det slumpmässiga id som finns i er <code>_ga</code>-cookie, tillsammans med de uppgifter om sidan, sidan ni kom från, webbläsare och enhet som beskrivs ovan, och inte till ert namn eller er e-postadress. Vi kan inte på annat sätt knyta den till er. Om ni begär tillgång till eller radering av statistikdata, skicka oss värdet på er <code>_ga</code>-cookie, som webbläsarens utvecklarverktyg visar, så använder vi det för att leta efter era data. <mark class="draft-marker">[[CONFIRM: att Google Analytics låter oss slå upp och radera data via klient-id i vår egenskap, och hur det går till]]</mark> Utan det värdet kan vi inte avgöra vilka data som är era. Om ni redan har raderat cookien kan vi inte hitta dem.</p>
           <p>Om ni anser att vi har hanterat era uppgifter felaktigt kan ni klaga hos Integritetsskyddsmyndigheten (IMY), Box 8114, 104 20 Stockholm.</p>
 
           <h2>Ändringar</h2>
           <p>Om det här meddelandet ändras uppdaterar vi datumet överst. Väsentliga ändringar beskriver vi öppet i stället för att tyst arbeta in dem.</p>
-          <p>Det svenska meddelandet publicerades den 19 oktober 2026, samma dag som vi utökade meddelandet med valfri statistik via Google Analytics, som bara körs om ni godkänner. Dessförinnan fanns meddelandet bara på engelska, och webbplatsen använde ingen statistik och satte inga cookies.</p>
+          <p>Det svenska meddelandet publicerades samtidigt som meddelandet utökades med valfri statistik via Google Analytics. Dessförinnan fanns meddelandet bara på engelska, och webbplatsen använde ingen statistik och satte inga cookies.</p>
         </div>
       </div>
     </section>

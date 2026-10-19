@@ -202,12 +202,14 @@ site is HTTPS-only regardless, but it is the reason not to add `preload` early.
 
 Going back to DNS-only does not take Google out of the policy, because the pages'
 meta tag names the same hosts, and it does not switch analytics off. Analytics is
-switched off by the `GA_ID` line in `app.js` (section 6).
+switched off in the repository, in the order given by the exit runbook (section 10
+of `tools/PRE-FLIP-CHECKLIST.md`; section 6 below has the edge's part of it).
 
 ## 6. Google Analytics
 
 `app.js` can load Google Analytics 4, but only once `GA_ID` holds a real
-Measurement ID and only after a visitor presses Accept on the consent bar. The
+Measurement ID and only for a visitor who has accepted on the consent bar (on the
+press, or on a later visit while the stored Accept is still valid). The
 site ships with the inert placeholder, so none of this applies until someone
 flips it. The flip itself, and everything that has to be true before it, is in
 `tools/PRE-FLIP-CHECKLIST.md`. This section is what the edge adds to that.
@@ -219,14 +221,16 @@ Is the edge live? On 2026-10-19 the answer was no: `server: GitHub.com` and no
 curl -sSI https://vynatix.com/ | grep -iE '^(server|content-security-policy)'
 ```
 
-If it is live, or going live around the flip, work through the steps below in
-order. If it is not, the only edge-side work is keeping the string in section 3
-correct, so that it is right on the day the edge does go live.
+If it is live when the PR is merged, work through the steps below in order, before
+the merge. If it is not, the only edge-side work now is keeping the string in
+section 3 correct, and *If the edge goes live later* (below) is the procedure for
+the day it does.
 
 ### Widen the dashboard rule first
 
 Edit the `Content-Security-Policy` value of the Transform Rule to the string in
-section 3 **before** any page carries the widened meta. That order is safe: the
+section 3 **before** any page carries the widened meta, that is, before the PR is
+merged. That order is safe: the
 meta still bounds what the wider header allows. The reverse order is not. A
 header narrower than the meta blocks the Google script and the beacons for every
 visitor, with no violation report to tell you, and the failure looks like a
@@ -279,12 +283,13 @@ Depending on the features switched on, Cloudflare can set cookies of its own (bo
 and challenge features are the usual source). They are not analytics cookies and
 they are not covered by the analytics choice, but the privacy notices must not
 deny them. `privacy.html` already says the Cloudflare layer may set a cookie and
-will be named, and the Swedish notice, `integritet.html`, needs the same update.
-When the edge goes live, open the site in a clean browser profile, read the cookies
-`vynatix.com` receives (DevTools → Application → Cookies), and write exactly
-those names and lifetimes into both notices. Do not copy names from a list.
+will be named, and `integritet.html` says the same in Swedish. Counsel confirms
+that sentence (checklist 5.2). When the edge goes live, open the site in a clean
+browser profile, read the cookies `vynatix.com` receives (DevTools → Application →
+Cookies), and write exactly those names and lifetimes into both notices. Do not copy
+names from a list.
 
-### Run the live checks before and after the flip
+### Run the live checks once, immediately after the merge deploys
 
 ```sh
 cd tools
@@ -292,22 +297,41 @@ BASE=https://vynatix.com/ node verify/headers.js
 BASE=https://vynatix.com/ node verify/requests.js
 ```
 
-Run both against the live origin once the widened pages are deployed (before the
-flip) and again after the flip, and keep the output. `headers.js` fails if the
-header and the meta differ by anything other than `frame-ancestors 'none'`, which
-is how a half-done widening shows up; it will also say so in the short window
-after the dashboard rule is widened and before the pages are. Both checks run in the undecided state (nobody presses Accept), so a
-pass after the flip shows that the edge and the consent gate hold, not that
-analytics works. That is the real-ID test in the checklist.
+The PR is merged whole, so the widened pages and the flip arrive together and there
+is no live state in between to run them against. Run both against the live origin
+immediately after the merge deploys, once, and keep the output. `headers.js` fails
+if the header and the meta differ by anything other than `frame-ancestors 'none'`,
+which is how a half-done widening shows up; it will also say so in the short window
+after the dashboard rule is widened and before the merge deploys. Both checks run in
+the undecided state (nobody presses Accept), so a pass shows that the edge and the
+consent gate hold, not that analytics works. That is the real-ID test in the
+checklist.
+
+### If the edge goes live later
+
+When analytics is already on and the pages already carry the widened meta, the
+checklist's *If the edge goes live later* (section 8) is the procedure. In short, and
+in this order: create the Transform Rule with the section 3 string as it stands
+before the proxy is switched on (a header narrower than the meta blocks Google
+silently); set Browser Cache TTL and check the features listed above are off; switch
+the proxy on and prove the edge serves the repository's HTML unchanged; observe and
+name Cloudflare's cookies in both notices; then run `headers.js` and `requests.js`
+against the live origin immediately and keep the output.
 
 ### Switching it off again
 
-The first action is always the repository: `GA_ID` back to the placeholder, then
-`npm run stamp` (exit runbook in the checklist). If the edge is live there is a
-faster stopgap for new page loads: narrow the dashboard rule to the previous
-`'self'`-only value. That should stop a freshly loaded page from reaching Google
-much sooner than a deploy can (confirm with `headers.js`), but a page that is
-already open keeps the policy it loaded with. It leaves cookies already set, and
-it leaves the header out of step with the meta until the repository change lands,
-so `headers.js` will say so. Treat it as a stopgap in addition to the revert,
-never instead of it.
+The exit order is the checklist's, section 10, and it starts in the repository:
+`PURGE_ONLY` is set to `true` first and the `GA_ID` revert comes last. A bare revert
+of `GA_ID` makes the block inert and cleans nothing up, so it is never the first
+action. The edge's part is the stopgap, step 2 there: if the edge is live, narrow
+the dashboard rule to the section 3 policy without its Google entries (the
+`script-src` directive back to `'self'` alone, no `connect-src` directive so that it
+falls back to `default-src 'self'`, every other directive, and the header's
+`frame-ancestors 'none'`, unchanged; that is the `'self'`-only policy printed under
+Round 4 in `SECURITY-ASSESSMENT.md`, plus `frame-ancestors 'none'`). That should stop a freshly loaded page from
+reaching Google much sooner than a deploy can (confirm with `headers.js`), but a page
+that is already open keeps the policy it loaded with. It leaves cookies already set,
+and it leaves the header out of step with the meta until the repository change
+lands, so `headers.js` will say so. Treat it as a stopgap in addition to the
+repository's `PURGE_ONLY` commit, never instead of it. When analytics is switched on
+again, widen the dashboard rule first.

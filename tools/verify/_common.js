@@ -55,6 +55,9 @@ function pinTheme(theme) {
 // POLICY_VERSION and CONSENT_KEY below still equal the ones in app.js.
 const CONSENT_KEY = 'vynatix-consent';
 const POLICY_VERSION = 'v1';
+// The other two keys the site writes (the theme IIFE in app.js). Both notices name all three in <code>.
+const THEME_KEY = 'vynatix-theme';
+const LOOK_KEY = 'vynatix-look';
 
 // The Measurement ID every browser check runs with, and the shape app.js treats as "not set yet".
 const TEST_ID = 'G-TEST000000';
@@ -132,13 +135,137 @@ function readApp(root = ROOT, source) {
 // A Measurement ID the module would act on: GA4 shape and not the placeholder.
 const isActiveShape = (id) => typeof id === 'string' && /^G-[A-Z0-9]{6,12}$/.test(id) && !/^G-X+$/.test(id);
 
-// Replaces the one `var GA_ID = '...';` line. Fails loudly (and never prints the line) if the file has none or several.
+// The one `var PURGE_ONLY = true|false;` declaration, at the start of a line (a comment that mentions it does not
+// count). The tests run the module with PURGE_ONLY false whatever the file ships, so that the whole suite also
+// passes in the exit state where the file ships true; release-gate.js owns the value that ships.
+const PURGE_DECL = /^([ \t]*)var PURGE_ONLY = (true|false);/gm;
+
+// Replaces the one `var GA_ID = '...';` line, and normalises the one PURGE_ONLY declaration to false (the module the
+// browser checks run is the live one, whatever the exit switch says in the tree). Fails loudly (and never prints
+// the line) if the file has none or several of either.
 function rewriteGaIdSource(src, id) {
   const re = /var GA_ID = '[^']*';/g;
   const n = (src.match(re) || []).length;
   if (n !== 1) throw new Error(`rewriteGaId: expected exactly one "var GA_ID = '...';" line in app.js, found ${n}. Refusing to run.`);
   const out = src.replace(re, () => `var GA_ID = '${id}';`);
   if ((out.match(re) || []).length !== 1 || !out.includes(`var GA_ID = '${id}';`)) throw new Error('rewriteGaId: the rewrite did not produce the expected line');
+  return normalisePurgeOnly(out, false);
+}
+// Sets the one PURGE_ONLY declaration to `value` (default false). Throws unless there is exactly one.
+function normalisePurgeOnly(src, value = false) {
+  const n = (src.match(PURGE_DECL) || []).length;
+  if (n !== 1) throw new Error(`rewriteGaId: expected exactly one "var PURGE_ONLY = true|false;" line in app.js, found ${n}. Refusing to run.`);
+  return src.replace(PURGE_DECL, (m, indent) => `${indent}var PURGE_ONLY = ${value ? 'true' : 'false'};`);
+}
+
+// JavaScript with its comments blanked (line structure kept), so a rule can look at code only. Strings, template
+// literals and regular expression literals are skipped over, not mistaken for comments. Enough for app.js, which
+// is ES5; it is not a parser.
+function stripJsComments(src) {
+  const KEYWORDS = /^(return|typeof|instanceof|in|of|new|delete|void|throw|case|do|else)$/;
+  let out = '';
+  let i = 0;
+  let prev = '';                     // last significant character
+  let word = '';                     // the identifier that ended just before
+  const n = src.length;
+  const skipQuoted = (at) => {
+    const q = src[at];
+    let j = at + 1;
+    while (j < n && src[j] !== q) { if (src[j] === '\\') j++; j++; }
+    return j;
+  };
+  while (i < n) {
+    const c = src[i], d = src[i + 1];
+    if (c === '/' && d === '/') { const from = i; while (i < n && src[i] !== '\n') i++; out += ' '.repeat(i - from); continue; }
+    if (c === '/' && d === '*') {
+      const e = src.indexOf('*/', i + 2);
+      const end = e < 0 ? n : e + 2;
+      out += src.slice(i, end).replace(/[^\n]/g, ' ');
+      i = end;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === '`') {
+      const j = skipQuoted(i);
+      out += src.slice(i, j + 1);
+      prev = c; word = ''; i = j + 1;
+      continue;
+    }
+    if (c === '/' && (prev === '' || /[(,=:\[!&|?{};+\-*%<>~^]/.test(prev) || KEYWORDS.test(word))) {
+      let j = i + 1, inClass = false;
+      while (j < n && src[j] !== '\n') {
+        if (src[j] === '\\') { j += 2; continue; }
+        if (src[j] === '[') inClass = true;
+        else if (src[j] === ']') inClass = false;
+        else if (src[j] === '/' && !inClass) break;
+        j++;
+      }
+      out += src.slice(i, j + 1);
+      prev = '/'; word = ''; i = j + 1;
+      continue;
+    }
+    out += c;
+    if (/[A-Za-z0-9_$]/.test(c)) word += c; else if (!/\s/.test(c)) word = '';
+    if (!/\s/.test(c)) prev = c;
+    i++;
+  }
+  return out;
+}
+
+// Where and how app.js assigns PURGE_ONLY, comments excluded: { assignments, falseDecls }.
+function purgeOnlyState(src) {
+  const code = stripJsComments(src);
+  return {
+    assignments: (code.match(/\bPURGE_ONLY\s*=(?!=)/g) || []).length,
+    falseDecls: (code.match(/var PURGE_ONLY = false;/g) || []).length,
+  };
+}
+
+// The tags named `name` in a page, with their attributes: quote-agnostic (double, single or no quotes, any
+// attribute order, a `>` inside a quoted value), HTML comments ignored. Returns [{ attrs: { lower-case name: value },
+// raw, index }]. A regex over `rel="..."` misses `rel=preconnect` and `href='...'`; this does not.
+function parseTags(html, name) {
+  const src = String(html).replace(/<!--[\s\S]*?-->/g, (m) => ' '.repeat(m.length));
+  const open = new RegExp('<' + name + '(?=[\\s/>])', 'gi');
+  const out = [];
+  let m;
+  while ((m = open.exec(src))) {
+    const start = m.index;
+    let pos = start + m[0].length;
+    const attrs = {};
+    for (;;) {
+      while (pos < src.length && /[\s/]/.test(src[pos])) pos++;
+      if (pos >= src.length || src[pos] === '>') break;
+      const nm = /[^\s"'<>\/=]+/y;
+      nm.lastIndex = pos;
+      const a = nm.exec(src);
+      if (!a) { pos++; continue; }
+      pos += a[0].length;
+      while (pos < src.length && /\s/.test(src[pos])) pos++;
+      let value = '';
+      if (src[pos] === '=') {
+        pos++;
+        while (pos < src.length && /\s/.test(src[pos])) pos++;
+        if (src[pos] === '"' || src[pos] === "'") {
+          const q = src[pos];
+          const e = src.indexOf(q, pos + 1);
+          value = src.slice(pos + 1, e < 0 ? src.length : e);
+          pos = e < 0 ? src.length : e + 1;
+        } else {
+          const v = /[^\s>]*/y;
+          v.lastIndex = pos;
+          value = v.exec(src)[0];
+          pos += value.length;
+        }
+      }
+      if (!(a[0].toLowerCase() in attrs)) attrs[a[0].toLowerCase()] = value;
+    }
+    out.push({ attrs, raw: src.slice(start, pos + 1), index: start });
+    open.lastIndex = Math.max(open.lastIndex, pos);
+    if (/^(script|style)$/i.test(name)) {                  // raw-text elements: what is inside is not markup
+      const close = src.toLowerCase().indexOf('</' + name.toLowerCase(), pos);
+      if (close > 0) open.lastIndex = close;
+    }
+  }
   return out;
 }
 
@@ -258,7 +385,8 @@ const FOOTER_LINK = '\n            <li><a href="privacy.html#cookies" data-conse
 
 // The one arming every browser check uses. It makes the consent module active and every Google request
 // harmless, without needing the tree to be integrated yet:
-//  - serves app.js with the Measurement ID replaced by the dummy G-TEST000000 (rewriteGaId; fails loudly);
+//  - serves app.js with the Measurement ID replaced by the dummy G-TEST000000 and the exit switch PURGE_ONLY set to
+//    false, whatever the file ships (rewriteGaId; fails loudly unless there is exactly one of each line);
 //  - rewrites the page's Content-Security-Policy meta to the one in EDGE-SETUP.md, and inserts the footer
 //    "Cookie settings" link, each only when the served page does not already carry it;
 //  - answers www.googletagmanager.com/gtag/js with the stub above and collect hits on *.google-analytics.com
@@ -403,7 +531,7 @@ async function launch(opts = {}) {
 
 module.exports = {
   ROOT, PAGES, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool,
-  CONSENT_KEY, POLICY_VERSION, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
+  CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
   parseCsp, CSP_META_RE, readPage, pageLang, edgeCsp,

@@ -74,7 +74,7 @@ highlights the things most worth keeping front-of-mind.
   the site moves on its own, with one exception: the iris background (a quarter of
   visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
   ends it.** The dial background answers the pointer (and sweeps once, for half a
-  second, when the theme toggles); reduced motion removes all of it. The system
+  second, when the theme toggles with a mouse or trackpad); reduced motion removes all of it. The system
   forbids auto-advancing strips and ambient loops, so the client list is still and
   the iris is a single event, an owner decision whose limits must not be loosened.
   The CSP pins `script-src 'self'`, so adding any third-party script means

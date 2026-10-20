@@ -127,10 +127,11 @@ THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark BGS=weave,sheet,dial
 `npm run check:bg` runs the five background scripts alone (`bg-draw.js` and the four guards);
 `npm run check` runs them in the middle of the rest. The guards drive Chromium through many
 frames (widths, text-only zoom emulated through the CSSOM, pointer states, scroll offsets) and
-take minutes: `npm run check` as a whole took about ten minutes (629 s) on a four-core machine in
-the default configuration (the Forest pair of themes, all four backgrounds), and `bg-draw.js` about
-two minutes of that; with all six themes, the four guards run side by side on four cores took 175 s
-(weave), 295 s (sheet), 613 s (dial) and 431 s (iris). Narrow a guard with its own variables
+take minutes: `npm run check` as a whole took 10 to 14 minutes (629 s alone, 811 s with other jobs
+running) on a four-core machine in the default configuration (the Forest pair of themes, all four
+backgrounds), and `bg-draw.js` about two minutes of that; with all six themes, the four guards run
+side by side on four cores took between 3 and 13 minutes each (175, 295, 613 and 431 s for weave,
+sheet, dial and iris alone; 309, 514, 770 and 635 s under load). Narrow a guard with its own variables
 (`ZOOMS=1,1.5 WIDTHS=1440 node verify/bg-sheet.js`) while iterating; the defaults are the ones
 to pass before committing.
 

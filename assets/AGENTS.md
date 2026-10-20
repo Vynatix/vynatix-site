@@ -37,8 +37,9 @@ approved catalogue.
 alpha-only masks for two of the four home hero backgrounds (the sheet's A-frame, arcs
 and grid, and its bronze edge; the dial's two gratings of scale marks). `styles.css`
 uses each as a CSS `mask-image` over a role-token colour, so one file recolours itself in
-all six themes; the strokes are `#000` because only their alpha counts, which is why they
-are not a colour in the sense the root rules ban. They are requested only when their
+all six themes; the dial's strokes are `#000` and the sheet's use `currentColor` and
+gradients, because only alpha counts in a mask, which is why none of them is a colour in
+the sense the root rules ban. They are requested only when their
 background is drawn (the sheet from 75rem, the dial from 1200px), and the weave and the
 iris have no file here at all (the weave's tile is generated in `app.js`, the iris is
 inline SVG in `index.html`).

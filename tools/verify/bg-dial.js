@@ -19,7 +19,7 @@
 //      states. The header, which the arc passes under once the page has scrolled, keeps 4.5:1 and either
 //      its own contrast without the arc (within 0.1) or 7:1, at four scroll positions and five angles of B.
 //   M  Motion. Still at idle; the pointer turns B by -GAIN to +GAIN and no further (6px at the bezel); it is
-//      left alone under the header; the theme toggle fires one sweep that ends where it began; the angle
+//      left alone under the header; the theme toggle fires one sweep that ends where it began, at the pointer's speed limit, not for touch or under the header; the angle
 //      survives a resize and print; reduced motion, touch, forced colours, more contrast, reduced
 //      transparency and print leave a still or absent dial.
 //
@@ -409,6 +409,41 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     const after = await angle(page);
     const left = await page.evaluate(dialAnims);
     check(during === 1 && Math.abs(midAngle - before) > 0.05 && Math.abs(after - before) < 0.005 && left === 0, 'M  toggle: one sweep on ::after, away from the resting angle, back to it after 500ms, nothing left running', `running ${during}, angle ${before} then ${midAngle} then ${after}, still running ${left}`);
+    await ctx.close();
+  }
+  {
+    // The sweep keeps the pointer's speed limit, from an edge too (the longest swing), per 60 Hz frame.
+    const { ctx, page } = await open(T, 1440);
+    await toK(page, 1440, -1);
+    const samples = await page.evaluate(() => new Promise((resolve) => {
+      const el = document.querySelector('.hero__h1');
+      const read = () => parseFloat(getComputedStyle(el, '::after').rotate) || 0;
+      const out = [[performance.now(), read()]]; let n = 0;
+      document.querySelector('.theme-toggle').click();
+      const tick = () => { out.push([performance.now(), read()]); if (++n < 45) requestAnimationFrame(tick); else resolve(out); };
+      requestAnimationFrame(tick);
+    }));
+    let step = 0;
+    for (let i = 1; i < samples.length; i++) { const dt = samples[i][0] - samples[i - 1][0]; if (dt > 0) step = Math.max(step, Math.abs(samples[i][1] - samples[i - 1][1]) * 16.667 / dt); }
+    check(step <= 0.35 * GAIN + 0.01, 'M  toggle: the sweep moves B by at most 0.35 of its travel per 60 Hz frame, from an edge too', `largest step ${step.toFixed(3)} degrees (${(step * Math.PI / 180 * BEZEL).toFixed(2)}px at the bezel), limit ${(0.35 * GAIN).toFixed(3)}`);
+    await ctx.close();
+  }
+  {
+    // Like the pointer, the toggle does nothing for touch (a mobile-emulated context: hover none, pointer coarse).
+    const { ctx, page } = await open(T, 1366, { height: 1024, touch: true });
+    const fine = await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches);
+    await page.tap('.theme-toggle'); await page.waitForTimeout(120);
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && x.playState === 'running').length);
+    check(fine === false && anims === 0, 'M  touch: tapping the theme toggle does not turn the dial', `fine pointer ${fine}, animations ${anims}`);
+    await ctx.close();
+  }
+  {
+    // ... nor while the arc is under the glass header.
+    const { ctx, page } = await open(T, 1440);
+    await page.evaluate(() => scrollTo(0, 500)); await settle(page, 250);
+    await page.evaluate(() => document.querySelector('.theme-toggle').click()); await page.waitForTimeout(120);
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && x.playState === 'running').length);
+    check(anims === 0, 'M  toggle while the arc is under the header: B is left alone', `animations ${anims}`);
     await ctx.close();
   }
   {

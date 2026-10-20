@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://vynatix.com/accessibility.html">
 <meta property="og:locale" content="en_GB">
 <meta property="article:published_time" content="2026-08-19">
-<meta property="article:modified_time" content="2026-10-19">
+<meta property="article:modified_time" content="2026-10-20">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -131,7 +131,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-08-19",
-   "dateModified": "2026-10-19"
+   "dateModified": "2026-10-20"
   }
  ]
 }
@@ -143,7 +143,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=449c6b02">
+<link rel="stylesheet" href="styles.css?v=689f256b">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -157,7 +157,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=57426172"></script>
+<script src="app.js?v=338b2210"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -213,7 +213,7 @@
     <section class="section">
       <div class="container">
         <div class="legal">
-          <p class="legal__meta">Last updated 19 October 2026</p>
+          <p class="legal__meta">Last updated 20 October 2026</p>
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
@@ -241,7 +241,7 @@
           <ul>
             <li><strong>Woven cloth.</strong> A still, woven pattern in the column beside the opening paragraph. It never moves. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1100 pixels.</li>
             <li><strong>Drafting sheet.</strong> Still ruled lines behind the headline, a scale under the header and, from 1200 pixels wide, a drawing of an A-shaped frame with compass arcs and a grid. It never moves. It is removed under forced colours, increased contrast and print. Below 1200 pixels the drawing is left out and the ruled lines and the scale stay; below 600 pixels the dashed lines are left out as well.</li>
-            <li><strong>Dial.</strong> An arc of fine scale marks at the right of the opening section. With a mouse or trackpad it answers the pointer: one of its two layers of marks turns by at most 1.4 degrees (6 pixels at the edge of the dial), moving at most about 2 pixels of mark a frame and never flashing. Pressing the theme button also turns it once, over half a second. It never moves by itself, a touch does not turn it, and with reduced motion on nothing moves it. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1200 pixels.</li>
+            <li><strong>Dial.</strong> An arc of fine scale marks at the right of the opening section. With a mouse or trackpad it answers the pointer: one of its two layers of marks turns by at most 1.4 degrees (6 pixels at the edge of the dial), moving at most about 2 pixels of mark a frame and never flashing. With a mouse or trackpad, pressing the theme button also turns it once, over half a second and no faster than the pointer does. It never moves by itself, a touch does not turn it (a tap on the theme button included), and with reduced motion on nothing moves it. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1200 pixels.</li>
             <li><strong>Iris.</strong> A large dial at the right of the opening section, drawn as an inline image that screen readers skip. After 20 seconds without any key, pointer, scroll or touch input an inner dial opens inside it once, in 3.6 seconds, and then stays; that is the one movement on the site that starts by itself. Any input ends the opening at once, a hidden tab or an off-screen page holds it, and with reduced motion on it never plays and the inner dial is simply shown. It runs for less than five seconds and stops on any input, so WCAG 2.2.2 does not ask for a pause control. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1280 pixels.</li>
           </ul>
 

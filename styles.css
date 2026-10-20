@@ -1487,11 +1487,14 @@ a.clients__item:has(.clients__mark):hover {
   }
 }
 
-/* Forced colours, higher contrast and print: the sheet is decoration, so it goes. */
+/* Forced colours, higher contrast and print: the sheet is decoration, so it goes, and its art files are
+   not asked for either (a pseudo-element with no content still resolves its mask-image). */
 @media (forced-colors: active), (prefers-contrast: more), print {
   :root:is(:not([data-bg]), [data-bg="sheet"]) :is(.hero, .hero__h1):lang(en)::before,
   :root:is(:not([data-bg]), [data-bg="sheet"]) :is(.hero, .hero__h1):lang(en)::after,
   :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before { content: none; }
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-art-img: none; }
 }
 /* bg:sheet:end */
 

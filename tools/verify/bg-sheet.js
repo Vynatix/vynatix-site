@@ -297,6 +297,22 @@ async function open(browser, theme, width, zoom) {
       await ctx.close();
     }
   }
+  // ---- Q: forced colours and higher contrast remove the sheet; its art files must not be requested either ----
+  for (const [name, o] of [['forced colours', { forcedColors: 'active' }], ['higher contrast', { contrast: 'more' }]]) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: HEIGHT }, ...o });
+    const page = await ctx.newPage();
+    const asked = [];
+    page.on('request', (r) => { if (/bg-sheet-(art|edge)\.svg/.test(r.url())) asked.push(r.url()); });
+    await page.addInitScript(pinTheme, { theme: THEMES[0], bg: 'sheet' });
+    await page.goto(BASE + 'index.html', { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts && document.fonts.ready);
+    await page.waitForTimeout(300);
+    const content = await page.evaluate(() => getComputedStyle(document.querySelector('.hero'), '::before').content);
+    if (content !== 'none') fail(`${name}: the sheet is still drawn (content ${content})`);
+    if (asked.length) fail(`${name}: the sheet is removed but its art files were requested: ${asked.join(', ')}`);
+    else console.log(`${name}: sheet removed, no art file requested`);
+    await ctx.close();
+  }
   await browser.close();
   if (failures.length) { console.log(`\nbg-sheet: ${failures.length} failure(s)`); process.exit(1); }
   console.log('\nbg-sheet: ok');

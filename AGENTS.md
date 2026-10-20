@@ -266,7 +266,8 @@ degrees (`GAIN` = 6 / 252 rad, 6px of rim travel; `SLEW` 0.35 of the travel per 
 through one paused Web Animation scrubbed with `currentTime`, so the beat slides about
 51 times as far. A pointer move schedules a frame; nothing loops, nothing runs at rest;
 touch, reduced motion and the arc being under the glass header leave B alone. The
-theme toggle fires one 500 ms sweep. Placement comes from the layout: the registered
+theme toggle fires one 500 ms sweep on the same terms (a mouse or trackpad, not under the
+header): out to the far end in 150 ms at no more than the pointer's per-frame limit, then back. Placement comes from the layout: the registered
 `--dial-lh` (`1lh` on the headline) gives `top: 1.12lh + 24px`, and
 `left: max(56ch + 24px, content - 186px + 4px)` in the lede's font; no keep-out
 constant. Off under forced colours, more contrast, reduced transparency and print, and
@@ -342,6 +343,21 @@ lit arc and an index mark; the weave's ink is `tertiary` mixed 45% into the ink,
 rather than solid Bronze. The owner accepted this. If one Bronze moment per hero is wanted
 instead, the dial's fallback is B in the muted colour at another alpha with the index alone
 in bronze (its bands then read by density only); then re-run the guards.
+
+**Measured costs and known limits** (an independent verification of the four draws together;
+Chromium only, no Safari, Firefox or real devices). Every draw is pixel-identical to a build
+with the other three removed, and the other 19 pages are unchanged. The price: the four
+backgrounds add about 14.5 KB gzip (8.0 in `styles.css`, 6.5 in `app.js`) to every page, 19 of
+which show none; on a cold cache over slow 4G with the CPU throttled 4x, the first and
+largest paint of a page other than the home page rose by 64 to 100 ms, about half from the
+render-blocking CSS and half from the script, and the home page pays a further 50 to 95 ms on a
+desktop at 4x CPU in the two draws that fetch masks (sheet and dial). Where art passes under the
+glass header on scroll, a single link or button can lose up to 3.7:1 of contrast (the weave:
+13.35 to 9.64), never below 5.35:1. With web fonts delayed by 2.5 s the weave and the iris raise
+cumulative layout shift by about 0.01 (0.036 to 0.050 and 0.047), because both are placed from
+text metrics. The dial's and the iris's animation layers re-rasterise the unrelated client
+logos by one anti-aliasing step, which cannot be seen. The sheet's headline guides come within
+about 30px of the lede at the nearest row guide, and its art within 41.5px of any text.
 
 **Adding or removing one.** To add: give it an id and copy the pattern above: a `bg:<id>`
 block in `styles.css` before the utilities and one in `app.js`, assets named

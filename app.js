@@ -340,7 +340,8 @@
 // or custom property write does. No loop, no timer: a pointer move schedules a frame, and a few more
 // follow only while B catches up with a pointer that jumped (at most 0.35 of its travel a frame). The
 // theme toggle fires one sweep. It does nothing for any other draw, off the English home page, for
-// touch, under prefers-reduced-motion or below 1200px; then the dial is the still scale.
+// touch, under prefers-reduced-motion, below 1200px or while the arc is under the glass header; then the
+// dial is the still scale.
 (function () {
   if (document.documentElement.getAttribute('data-bg') !== 'dial') return;
   // The home page only, the same test as the headline preload above: no listener on any other page.
@@ -437,16 +438,24 @@
     schedule();
   }
 
-  // One sweep when the theme flips: a second animation over the first, from
-  // the far end of B's travel (away from where it rests) back to where it
-  // was, so there is no class to flip and no layout to force.
+  // One sweep when the theme flips: a second animation over the first, out from where B rests to the far
+  // end of its travel (away from where it rests) and back, so there is no class to flip and no layout to
+  // force. It keeps the pointer's rules: nothing for touch, nothing while the arc is under the glass
+  // header, and never faster than the slew limit. The way out is the first 150ms of the 500 and linear,
+  // so even from an edge (a 12px swing at the bezel) B moves about 1.3px a frame, under the 2.1px the
+  // pointer is held to; the way back eases in and out and stays under it too.
   function onToggle() {
-    if (still.matches || document.hidden || !wide.matches || !getAnim()) return;
+    if (!fine.matches || still.matches || document.hidden || !wide.matches || !getAnim() || underHeader()) return;
     var done = function () { sweeping = false; if (cur !== target) schedule(); };
+    var rest = cur * GAIN + 'deg';
     sweeping = true;
     el.animate(
-      [{ rotate: (cur > 0 ? -GAIN : GAIN) + 'deg' }, { rotate: cur * GAIN + 'deg' }],
-      { duration: 500, easing: 'cubic-bezier(0.2, 0, 0, 1)', pseudoElement: '::after' }
+      [
+        { rotate: rest, offset: 0, easing: 'linear' },
+        { rotate: (cur > 0 ? -GAIN : GAIN) + 'deg', offset: 0.3, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+        { rotate: rest, offset: 1 }
+      ],
+      { duration: 500, easing: 'linear', pseudoElement: '::after' }
     ).finished.then(done, done);
   }
 

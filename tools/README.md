@@ -71,7 +71,10 @@ that file is published.
 
 `screenshot.js compare` is the gate for any visual refactor: capture a baseline
 before the change, then compare after. Captures force images to decode first, so
-a lazy-loaded cover cannot race the screenshot and produce a false diff.
+a lazy-loaded cover cannot race the screenshot and produce a false diff. They also
+set `content-visibility: visible` on every `main` section, so the home-page sections
+that `styles.css` lets the browser skip are compared as designed, not at a placeholder
+or remembered height.
 
 `csp.js` and `publish.js` are first in `npm run check`, then `release-gate.js --self-test`;
 `consent.js` and `consent-layout.js` come before `a11y.js`. The consent checks arm a page that

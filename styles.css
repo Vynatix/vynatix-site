@@ -1260,6 +1260,16 @@ a.clients__item:has(.clients__mark):hover {
   }
 }
 
+/* The home pages skip the rendering of every section after the hero until it
+   nears the viewport (content-visibility: auto, in the home-page block above).
+   While the bar is up that is switched off. A skipped section has a guessed
+   height until it is shown, so when keyboard focus moves into one, it renders,
+   the page shifts, and the focused link can end up under the bar (found at 320px
+   wide with the text scaled 1.5 times), and axe-core misreads the text in skipped
+   sections as failing contrast. The bar is up only until the visitor has chosen,
+   so the optimisation still holds for every visit after that. */
+html.consent-open .hero ~ section { content-visibility: visible; }
+
 /* A viewport this short (a 1280 by 1024 desktop at 400% zoom is 320 by 256)
    has no room for a fixed bar over the page. There it sits at the top of the
    page, in the flow, and scrolls away with it; the reserve above does not

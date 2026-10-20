@@ -541,6 +541,22 @@ a.clients__item:has(.clients__mark):hover {
   .section { padding-block: var(--space-16); }
   .section--tight { padding-block: var(--space-12); }
 }
+/* On the two home pages every section after the hero is skipped by the first
+   style, layout and paint pass until it nears the viewport, so the hero text (the
+   largest contentful paint) is not delayed by the rest of a long page: about 100ms
+   sooner on a throttled phone. The content stays in the accessibility tree, in
+   find-in-page and in anchor jumps. Once a section has been shown the browser
+   remembers its real height (auto); the 1000px is only the first guess, near the
+   median section height.
+   Only the home pages: on the longer inner pages axe-core (so Lighthouse's
+   accessibility audit and tools/verify/a11y.js) misreads the background behind
+   text in a skipped section and reports contrast failures that are not on screen,
+   which takes those pages from 100 to 92-96. Check a11y.js in all six themes
+   (THEMES=...) and Lighthouse accessibility before widening this selector. */
+.hero ~ section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
 
 .section__head {
   display: grid;

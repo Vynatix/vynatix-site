@@ -630,17 +630,6 @@ a.clients__item:has(.clients__mark):hover {
   margin: 0 0 var(--space-5);
 }
 .two-up .more { margin-top: var(--space-2); }
-/* The three-ways list beside the company lead: the body paragraph's measure and
-   colour so it reads as part of the same text block (a bare .two-up ul rule
-   would collide with .panel ul in the same grid). */
-.two-up__list {
-  color: var(--text-body);
-  font-size: var(--text-body-md);
-  line-height: var(--leading-relaxed);
-  margin: 0 0 var(--space-5);
-}
-.two-up__list > li { max-width: 65ch; }
-.two-up__list > li:last-child { margin-bottom: 0; }
 .two-up blockquote { margin-top: 0; }
 /* A run-in lead at the start of a paragraph: the same sentence weight as the
    headline above it, so the reader can scan the case study for its points. */
@@ -1101,6 +1090,144 @@ a.clients__item:has(.clients__mark):hover {
   border-radius: var(--radius-xs);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+
+/* ---------------------------------------------------------------
+   Home page, content structure pass
+   Markup changes made so an engine (and a screen reader) can read the page as
+   an outline: the four steps are an ordered list, the panel lead-ins are h4
+   headings, the metrics are a description list, the case cards carry short
+   evidence bullets (one or two each) and Who we are is a comparison table. Each
+   rule below keeps the look of the element it replaces, except .case__points
+   and .compare, which are new elements.
+   --------------------------------------------------------------- */
+
+/* How we work: ol.list-reset zeroes the step's padding (a selector of higher
+   weight than .cap), which would drop the gap under the top rule, and the
+   global ol sets its own line height. Put both back, as the old div had them. */
+ol.caps { line-height: inherit; }
+ol.caps > li.cap { padding-top: var(--space-6); }
+
+/* Panel lead-ins are h4 headings that run in with the sentence: inline, and
+   the same type as the strong they replace (the global h4 rules set the family,
+   size, line height, tracking, variation settings and text-wrap, so each is
+   handed back to the list item). Scoped to the h4, so strong.lead-in on the
+   work page is untouched. */
+.panel h4.lead-in {
+  display: inline;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: inherit;
+  font-variation-settings: inherit;
+  text-wrap: inherit;
+  color: var(--text-display);
+}
+
+/* At a glance: a dl, so the browser's list margin goes. The label, value and
+   context classes already set their own margins, which beat the dd and dt
+   defaults, so the dt and dd reset is kept at no weight and cannot undo them. */
+dl.metrics { margin: 0; }
+:where(.metrics) :where(dt, dd) { margin: 0; }
+
+/* Case cards: short evidence bullets from the work page. The global list
+   gives each item position: relative, which would paint it above the card's
+   stretched headline link; lifting that link's overlay keeps the whole card
+   clickable. The bullets sit before the metric, which pins itself to the foot. */
+.case h3 a::after { z-index: 1; }
+.case__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.case__points > li { margin: 0 0 var(--space-2); }
+.case__points > li:last-child { margin-bottom: 0; }
+
+/* Who we are: a three-column comparison table. The caption is a visible title
+   above it; the first and last columns drop their outer padding so the text
+   lines up with the paragraphs around it; the row headers read as labels, not
+   as the small capitals of the column headers. */
+.compare {
+  margin: 0 0 var(--space-5);
+  line-height: var(--leading-normal);
+}
+.compare caption {
+  caption-side: top;
+  padding: 0 0 var(--space-3);
+  text-align: left;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--text-display);
+}
+.compare th:first-child,
+.compare td:first-child { padding-left: 0; }
+.compare th:last-child,
+.compare td:last-child { padding-right: 0; }
+.compare tbody th {
+  width: 26%;
+  font-size: var(--text-body-sm);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-display);
+  border-bottom-color: var(--md-sys-color-outline-variant);
+}
+.compare td { color: var(--text-body); }
+.compare td:nth-of-type(1) { color: var(--text-muted); }
+/* On a phone the rows stack: the row header, then each answer under the name
+   of its column (from the cell's data-label), so nothing needs to scroll
+   sideways. The column header row stays for screen readers only. */
+@media (max-width: 599px) {
+  .compare,
+  .compare caption,
+  .compare tbody,
+  .compare tr,
+  .compare th,
+  .compare td { display: block; }
+  .compare thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .compare tbody tr {
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .compare tbody tr:first-child { border-top: 1px solid var(--md-sys-color-outline-variant); }
+  .compare tbody th,
+  .compare td {
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+  .compare tbody th { padding-bottom: var(--space-2); }
+  .compare td + td { padding-top: var(--space-2); }
+  .compare td::before {
+    content: attr(data-label);
+    content: attr(data-label) / "";
+    display: block;
+    font-size: var(--text-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    line-height: var(--leading-loose);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+}
+
+/* Reduced motion: list markers take no transition at all. Their 0.01ms
+   transitions keep running inside the content-visibility-skipped sections,
+   which the dial guard counts. */
+@media (prefers-reduced-motion: reduce) {
+  ul > li::before { transition-property: none; }
 }
 
 /* ---------------------------------------------------------------

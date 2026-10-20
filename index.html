@@ -17,6 +17,7 @@
 <link rel="alternate" hreflang="sv" href="https://vynatix.com/sv.html">
 <link rel="alternate" hreflang="x-default" href="https://vynatix.com/">
 <meta name="author" content="Vynatix AB">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vynatix">
 <meta property="og:title" content="Vynatix, a Nordic software consultancy in Gothenburg">
@@ -31,6 +32,8 @@
 <meta property="og:image:height" content="512">
 <meta property="og:image:alt" content="The Vynatix mark">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vynatix, a Nordic software consultancy in Gothenburg">
+<meta name="twitter:description" content="A software consultancy in Gothenburg: senior engineers on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars as clients.">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -48,7 +51,7 @@
     "width": 512,
     "height": 512
    },
-   "description": "Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Its senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among its clients.",
+   "description": "Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.",
    "slogan": "We own the outcome. You own the code.",
    "foundingDate": "2023",
    "foundingLocation": {
@@ -64,10 +67,6 @@
     "@type": "PropertyValue",
     "propertyID": "Swedish organisationsnummer",
     "value": "559445-6542"
-   },
-   "numberOfEmployees": {
-    "@type": "QuantitativeValue",
-    "value": 3
    },
    "address": {
     "@type": "PostalAddress",
@@ -160,7 +159,7 @@
      "name": "What does Vynatix do?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Vynatix is a software consultancy in Gothenburg, Sweden, that does three things: application development, AI engineering and cloud platforms. Application development is the largest share, from web and native mobile to Android Automotive, wearables and VR. AI engineering means production systems built on foundation models, and the cloud work is platforms on GCP, AWS and on-prem hybrids for regulated industries. Anything outside those three we decline, and we point you to someone better. We take on new work only when we have the capacity to do it well."
+      "text": "Vynatix is a software consultancy in Gothenburg, Sweden, that does three things: application development, AI engineering and cloud platforms. What sets the work apart is that our engineers sit inside your team, with no account layer between you and them, and you own the code we write. Application development, the largest share: web and native mobile, Android Automotive, wearables and VR. AI engineering: production systems built on foundation models. Cloud platforms: built on GCP, AWS and on-prem hybrids for regulated industries. Anything outside those three we decline, and we point you to someone better. We take on new work only when we have the capacity to do it well."
      }
     },
     {
@@ -213,6 +212,14 @@
     },
     {
      "@type": "Question",
+     "name": "How does Vynatix differ from a typical consultancy?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Our senior engineers work inside your organisation, so decisions about the work are made by the people doing it. Every project leaves a written record an engineer can read, and you own the code we write. If you are comparing consultancies in Gothenburg that work on Android Automotive, the list of consultancies names the Gothenburg firms in alphabetical order, with the source for each entry, and says that Vynatix compiled it and is on it."
+     }
+    },
+    {
+     "@type": "Question",
      "name": "How do we start a project with Vynatix?",
      "acceptedAnswer": {
       "@type": "Answer",
@@ -220,6 +227,39 @@
      }
     }
    ]
+  },
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/services.html#application-development",
+   "url": "https://vynatix.com/services.html#application-development",
+   "name": "Application development",
+   "serviceType": "Software development",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "description": "Application development is the largest share of what we do. We build software for the surface it actually runs on, native mobile, web and desktop, automotive and Android Automotive, wearables, and VR, and we wire it into the enterprise systems and SaaS behind it."
+  },
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/services.html#ai-engineering",
+   "url": "https://vynatix.com/services.html#ai-engineering",
+   "name": "AI engineering",
+   "serviceType": "AI engineering",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "description": "We build production systems on foundation models, not slideware. That means retrieval that returns the right context, evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability so you can see what the system is doing after it ships."
+  },
+  {
+   "@type": "Service",
+   "@id": "https://vynatix.com/services.html#cloud-platforms",
+   "url": "https://vynatix.com/services.html#cloud-platforms",
+   "name": "Cloud platforms",
+   "serviceType": "Cloud platform engineering",
+   "provider": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "description": "We build and run cloud platforms for regulated industries, on GCP, AWS, and on-prem hybrids. The goal is boring infrastructure: pipelines that stay green, deployments you can reason about, and a bill that matches what you actually use."
   }
  ]
 }
@@ -231,7 +271,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=b990f5e5">
+<link rel="stylesheet" href="styles.css?v=26c0662c">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
 <link rel="stylesheet" href="hero-bg.css?v=ebac486b">
@@ -444,11 +484,11 @@
           <div class="panel">
             <p class="eyebrow eyebrow--muted">What we build</p>
             <ul>
-              <li><strong class="lead-in">Web, desktop and SaaS.</strong> Browser and desktop applications, and the SaaS products behind them.</li>
-              <li><strong class="lead-in">Native mobile, iOS and Android.</strong> Apps built natively for each platform.</li>
-              <li><strong class="lead-in">Automotive and embedded systems.</strong> In-car software on Android Automotive (AAOS) and other embedded targets.</li>
-              <li><strong class="lead-in">Wearables and VR.</strong> Applications for wearable devices and VR headsets.</li>
-              <li><strong class="lead-in">Enterprise platforms and integrations.</strong> Wiring the application into the enterprise systems and SaaS behind it.</li>
+              <li><h4 class="lead-in">Web, desktop and SaaS.</h4> Browser and desktop applications, and the SaaS products behind them.</li>
+              <li><h4 class="lead-in">Native mobile, iOS and Android.</h4> Apps built natively for each platform.</li>
+              <li><h4 class="lead-in">Automotive and embedded systems.</h4> In-car software on <a href="https://source.android.com/docs/automotive">Android Automotive</a> (AAOS) and other embedded targets.</li>
+              <li><h4 class="lead-in">Wearables and VR.</h4> Applications for wearable devices and VR headsets.</li>
+              <li><h4 class="lead-in">Enterprise platforms and integrations.</h4> Wiring the application into the enterprise systems and SaaS behind it.</li>
             </ul>
           </div>
         </div>
@@ -458,21 +498,20 @@
           <div>
             <p class="eyebrow">AI engineering</p>
             <h3 class="two-up__h3">AI systems built for production, not demos</h3>
-            <p class="two-up__body">Vynatix builds AI systems on foundation models to run in production, the same way it builds everything else, and says plainly what a model can and cannot do.</p>
-            <p class="two-up__body">That includes closed-domain assistants that answer only from approved documents, cite the source of every answer, and hand anything they cannot ground to a person.</p>
-            <p class="two-up__body">We can take something from a rough first prototype all the way to a tool your team uses every day, and we work in the open so you always know how it reaches its answers. Vynatix deploys these systems into your own environment, including on-prem and sovereign cloud.</p>
+            <p class="two-up__body">Vynatix builds production AI systems on foundation models, and says plainly what a model can and cannot do. That includes closed-domain assistants that answer only from approved documents, cite the source of every answer, and hand anything they cannot ground to a person.</p>
+            <p class="two-up__body">We take a system from a rough first prototype to a tool your team uses every day, and we work in the open so you always know how it reaches its answers. Vynatix deploys these systems into your own environment, including on-prem and sovereign cloud.</p>
             <a class="more" href="ai-engineering.html"><span>AI engineering in Gothenburg</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="panel">
             <p class="eyebrow eyebrow--muted">What we build</p>
             <ul>
-              <li><strong class="lead-in">Chatbots and assistants.</strong> Conversational assistants built on foundation models, for production use.</li>
-              <li><strong class="lead-in">Retrieval and grounded answers.</strong> Retrieval-augmented generation (RAG) that finds the right passages in your own documents and grounds each answer in them.</li>
-              <li><strong class="lead-in">Agent and harness engineering.</strong> The scaffolding around a model that lets it take actions and be tested, built to run in production.</li>
-              <li><strong class="lead-in">Workflow automation.</strong> Model-driven steps inside the workflows your team already runs.</li>
-              <li><strong class="lead-in">MCP servers and integrations.</strong> Model Context Protocol servers that let an assistant read from, and act on, your own systems.</li>
-              <li><strong class="lead-in">SDKs and developer tooling.</strong> Libraries and tools so your own engineers can build on what we deliver.</li>
-              <li><strong class="lead-in">Evaluation, deployment and monitoring.</strong> Evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability after it ships.</li>
+              <li><h4 class="lead-in">Chatbots and assistants.</h4> Conversational assistants built on foundation models, for production use.</li>
+              <li><h4 class="lead-in">Retrieval and grounded answers.</h4> Retrieval-augmented generation (RAG) that finds the right passages in your own documents and grounds each answer in them.</li>
+              <li><h4 class="lead-in">Agent and harness engineering.</h4> The scaffolding around a model that lets it take actions and be tested, built to run in production.</li>
+              <li><h4 class="lead-in">Workflow automation.</h4> Model-driven steps inside the workflows your team already runs.</li>
+              <li><h4 class="lead-in">MCP servers and integrations.</h4> <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> servers that let an assistant read from, and act on, your own systems.</li>
+              <li><h4 class="lead-in">SDKs and developer tooling.</h4> Libraries and tools so your own engineers can build on what we deliver.</li>
+              <li><h4 class="lead-in">Evaluation, deployment and monitoring.</h4> Evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability after it ships.</li>
             </ul>
           </div>
         </div>
@@ -487,10 +526,10 @@
           <div class="panel">
             <p class="eyebrow eyebrow--muted">What we build</p>
             <ul>
-              <li><strong class="lead-in">Platform engineering.</strong> The shared build and deployment platform your teams work on, with deployments you can reason about.</li>
-              <li><strong class="lead-in">Kubernetes and GitOps.</strong> Clusters and deployments declared in Git and reconciled automatically.</li>
-              <li><strong class="lead-in">FinOps and cost control.</strong> A cloud bill that matches what you actually use.</li>
-              <li><strong class="lead-in">Moving off legacy.</strong> Migration off legacy systems and onto the new platform.</li>
+              <li><h4 class="lead-in">Platform engineering.</h4> The shared build and deployment platform your teams work on, with deployments you can reason about.</li>
+              <li><h4 class="lead-in">Kubernetes and GitOps.</h4> Clusters and deployments declared in Git and reconciled automatically.</li>
+              <li><h4 class="lead-in">FinOps and cost control.</h4> A cloud bill that matches what you actually use.</li>
+              <li><h4 class="lead-in">Moving off legacy.</h4> Migration off legacy systems and onto the new platform.</li>
             </ul>
           </div>
         </div>
@@ -506,30 +545,30 @@
           <p class="eyebrow">How we work</p>
           <h2 class="section__h2" id="how-it-goes">One team, from day one</h2>
         </div>
-        <p class="section__lead">We keep things simple and honest, from the first conversation to the last week of the assignment.</p>
+        <p class="section__lead">Vynatix works as one team with you from day one: we usually meet in person first, our senior engineers join your organisation, we report every engineer's hours each week, and we stay as long as the assignment needs us.</p>
       </div>
-      <div class="caps caps--2">
-        <div class="cap">
+      <ol class="caps caps--2 list-reset">
+        <li class="cap">
           <span class="cap__num">01</span>
           <h3>We start with your goals, in person</h3>
           <p>The first conversation is usually in Gothenburg, face to face.</p>
-        </div>
-        <div class="cap">
+        </li>
+        <li class="cap">
           <span class="cap__num">02</span>
           <h3>Our engineers become part of your organisation</h3>
           <p>Senior engineers, placed inside the team rather than managed from outside it.</p>
-        </div>
-        <div class="cap">
+        </li>
+        <li class="cap">
           <span class="cap__num">03</span>
           <h3>Full transparency on time and cost, every week</h3>
           <p>Vynatix reports every engineer's hours to you each week and bills for the hours worked. No black box, no surprise invoice.</p>
-        </div>
-        <div class="cap">
+        </li>
+        <li class="cap">
           <span class="cap__num">04</span>
           <h3>We stay for the long run, not just the launch</h3>
           <p>Our engineers stay in your team for as long as the work needs them.</p>
-        </div>
-      </div>
+        </li>
+      </ol>
     </section>
 
     <!-- ============================================================ A few recent projects -->
@@ -556,6 +595,9 @@
               <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">An in-cab radio, rebuilt for Android Automotive.</a></h3>
               <p>A full in-cab media player, rebuilt above the vehicle hardware layer and shipped to production across the fleet.</p>
+              <ul class="case__points">
+                <li>The scope was agreed before the first line of code.</li>
+              </ul>
             </div>
           </article>
           <article class="case">
@@ -569,6 +611,10 @@
               <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">A build pipeline cut from 47 minutes to 6.</a></h3>
               <p>Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
+              <ul class="case__points">
+                <li>Vynatix was scoped to the pipeline, not the build targets, and that boundary was agreed up front.</li>
+                <li>The shorter build applies on every commit, for the whole team.</li>
+              </ul>
               <p class="case__metric">87% shorter</p>
             </div>
           </article>
@@ -583,6 +629,9 @@
               <p class="case__meta"><span>Regulated client · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#regulated-client">A closed-domain assistant that refuses to guess.</a></h3>
               <p>For a regulated client, Vynatix built an assistant that answers only from approved documents and hands anything it cannot ground to a person.</p>
+              <ul class="case__points">
+                <li>The line between what it answers and what goes to a person was set deliberately, and we can show you exactly where it sits and why.</li>
+              </ul>
               <p class="case__metric case__metric--text">Every answer cites its source</p>
             </div>
           </article>
@@ -605,12 +654,19 @@
 
         <div class="two-up">
           <div>
-            <p class="two-up__body">Vynatix differs from a typical consultancy in three ways.</p>
-            <ul class="two-up__list">
-              <li>There is no account layer between our engineers and your team, so decisions about the work are made with the people doing it.</li>
-              <li>Every project leaves a written record an engineer can read.</li>
-              <li>You own the code we write.</li>
-            </ul>
+            <p class="two-up__body">Vynatix differs from a typical consultancy in the ways below.</p>
+            <table class="compare">
+              <caption>How a typical consultancy works, next to Vynatix</caption>
+              <thead>
+                <tr><th scope="col">Topic</th><th scope="col">A typical consultancy</th><th scope="col">Vynatix</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Who makes the decisions</th><td data-label="A typical consultancy">Often an account layer sits between you and the engineers.</td><td data-label="Vynatix">The engineers doing the work, inside your team.</td></tr>
+                <tr><th scope="row">Written record</th><td data-label="A typical consultancy">Depends on the firm and the project.</td><td data-label="Vynatix">Every project leaves a written record an engineer can read.</td></tr>
+                <tr><th scope="row">Code</th><td data-label="A typical consultancy">Depends on the contract.</td><td data-label="Vynatix">You own the code we write.</td></tr>
+                <tr><th scope="row">Hours</th><td data-label="A typical consultancy">Depends on the contract.</td><td data-label="Vynatix">We report every engineer's hours to you each week and bill for the hours worked.</td></tr>
+              </tbody>
+            </table>
             <p class="two-up__body">We take on new work only when we have the capacity to do it well.</p>
             <p class="two-up__body">We are based in Gothenburg and work alongside the client teams we build for. Most of that work happens in writing, which keeps everyone clear on what was agreed.</p>
             <a class="more" href="about.html"><span>More about us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
@@ -632,28 +688,28 @@
           </div>
           <p class="section__lead">Four facts we would put first in any conversation about working with us.</p>
         </div>
-        <div class="metrics">
+        <dl class="metrics">
           <div class="metric">
-            <p class="metric__lbl">Founded</p>
-            <p class="metric__val">2023</p>
-            <p class="metric__ctx">In Gothenburg, part of Ultra Group.</p>
+            <dt class="metric__lbl">Founded</dt>
+            <dd class="metric__val">2023</dd>
+            <dd class="metric__ctx">In Gothenburg, part of Ultra Group.</dd>
           </div>
           <div class="metric">
-            <p class="metric__lbl">Volvo companies</p>
-            <p class="metric__val">2</p>
-            <p class="metric__ctx">Volvo Trucks and Volvo Cars.</p>
+            <dt class="metric__lbl">Volvo companies</dt>
+            <dd class="metric__val">2</dd>
+            <dd class="metric__ctx">Volvo Trucks and Volvo Cars.</dd>
           </div>
           <div class="metric">
-            <p class="metric__lbl">Code ownership</p>
-            <p class="metric__val">100%</p>
-            <p class="metric__ctx">You own every line we write.</p>
+            <dt class="metric__lbl">Code ownership</dt>
+            <dd class="metric__val">100%</dd>
+            <dd class="metric__ctx">You own every line we write.</dd>
           </div>
           <div class="metric">
-            <p class="metric__lbl">Reply time</p>
-            <p class="metric__val">1</p>
-            <p class="metric__ctx">Working day, our typical reply time.</p>
+            <dt class="metric__lbl">Reply time</dt>
+            <dd class="metric__val">1</dd>
+            <dd class="metric__ctx">Working day, our typical reply time.</dd>
           </div>
-        </div>
+        </dl>
       </div>
     </section>
 
@@ -674,7 +730,13 @@
           <div class="cap" data-faq-item>
             <h3>What does Vynatix do?</h3>
             <p>Vynatix is a software consultancy in Gothenburg, Sweden, that does three things: application development, AI engineering and cloud platforms.</p>
-            <p>Application development is the largest share, from web and native mobile to Android Automotive, wearables and VR. AI engineering means production systems built on foundation models, and the cloud work is platforms on GCP, AWS and on-prem hybrids for regulated industries. Anything outside those three we decline, and we point you to someone better. We take on new work only when we have the capacity to do it well.</p>
+            <p>What sets the work apart is that our engineers sit inside your team, with no account layer between you and them, and you own the code we write.</p>
+            <ul>
+              <li>Application development, the largest share: web and native mobile, Android Automotive, wearables and VR.</li>
+              <li>AI engineering: production systems built on foundation models.</li>
+              <li>Cloud platforms: built on GCP, AWS and on-prem hybrids for regulated industries.</li>
+            </ul>
+            <p>Anything outside those three we decline, and we point you to someone better. We take on new work only when we have the capacity to do it well.</p>
           </div>
           <div class="cap" data-faq-item>
             <h3>Where is Vynatix based?</h3>
@@ -682,9 +744,8 @@
           </div>
           <div class="cap" data-faq-item>
             <h3>Does Vynatix do Android Automotive development?</h3>
-            <p>Yes.</p>
+            <p>Yes. Vynatix builds in-car software on <a href="android-automotive-development.html">Android Automotive (AAOS)</a>.</p>
             <ul>
-              <li>Vynatix builds in-car software on <a href="android-automotive-development.html">Android Automotive (AAOS)</a>.</li>
               <li>Many of the team come from years of automotive and embedded work.</li>
               <li>For Volvo Trucks in 2024, Vynatix rebuilt the in-cab radio and media player on Android Automotive and shipped it to production across the fleet.</li>
             </ul>
@@ -718,6 +779,11 @@
             <p>Vynatix is part of Ultra Group. The company itself is Vynatix AB, org.nr 559445-6542, a software consultancy in Gothenburg, Sweden.</p>
           </div>
           <div class="cap" data-faq-item>
+            <h3>How does Vynatix differ from a typical consultancy?</h3>
+            <p>Our senior engineers work inside your organisation, so decisions about the work are made by the people doing it. Every project leaves a written record an engineer can read, and you own the code we write.</p>
+            <p>If you are comparing consultancies in Gothenburg that work on Android Automotive, the <a href="android-automotive-consultancies-gothenburg.html">list of consultancies</a> names the Gothenburg firms in alphabetical order, with the source for each entry, and says that Vynatix compiled it and is on it.</p>
+          </div>
+          <div class="cap" data-faq-item>
             <h3>How do we start a project with Vynatix?</h3>
             <p>Email Vynatix at <a href="mailto:front.disk@vynatix.com?subject=Project">front.disk@vynatix.com</a> or call <a href="tel:+46720710676">+46&nbsp;72&nbsp;071&nbsp;06&nbsp;76</a>. Start the subject line with Project so we can route it, and tell us what you are trying to build or which team needs a senior engineer. We usually reply within one working day.</p>
           </div>
@@ -733,7 +799,7 @@
             <p class="eyebrow">Read on</p>
             <h2 class="section__h2" id="further-reading-title">Further reading</h2>
           </div>
-          <p class="section__lead">Longer pages for buyers comparing consultancies in Gothenburg or planning a project on Android Automotive or AI.</p>
+          <p class="section__lead">Longer pages for buyers comparing consultancies in Gothenburg or planning a project on Android Automotive or AI. The consultancies list names the Gothenburg firms that work on Android Automotive, with the source for each entry.</p>
         </div>
         <div class="prose">
           <ul>
@@ -773,7 +839,9 @@
           <a class="btn btn--lg btn--tertiary" href="contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <p class="cta-band__contact">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
-            <a href="tel:+46720710676">+46 72 071 06 76</a>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Vynatix AB, Mailbox 1611, 411 42 Gothenburg<br>
+            <a href="privacy.html">Privacy notice</a>
           </p>
         </div>
       </div>

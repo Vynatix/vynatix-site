@@ -1,8 +1,8 @@
 # Vynatix
 
-> Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Three senior engineers work embedded in client teams on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.
+> Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.
 
-> Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat 2023 och en del av Ultra Group. Tre seniora utvecklare arbetar inbäddade i kundernas team inom Android Automotive, AI och molnplattformar, med Volvo Trucks och Volvo Cars bland kunderna.
+> Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat 2023 och en del av Ultra Group. Våra seniora utvecklare arbetar som en del av kundernas organisationer inom Android Automotive, AI och molnplattformar, med Volvo Trucks och Volvo Cars bland kunderna.
 
 - Legal name: Vynatix AB. Org.nr 559445-6542. Post: Mailbox 1611, 411 42 Gothenburg, Sweden.
 - Contact: front.disk@vynatix.com, +46 72 071 06 76. We reply within one working day.
@@ -10,7 +10,7 @@
 
 ## Pages in English
 
-- [Home](https://vynatix.com/): what we do, how working with us goes, selected work, common questions
+- [Home](https://vynatix.com/): what we do, how working with us goes, selected work, who we are, common questions
 - [Services](https://vynatix.com/services.html): application development (web, desktop, native mobile, Android Automotive, wearables, VR, enterprise integration); AI engineering (retrieval-augmented generation, evaluation pipelines, on-prem and sovereign cloud deployment, production observability); cloud platforms (GCP, AWS, on-prem hybrids, Kubernetes and GitOps, FinOps, migration off legacy)
 - [Android Automotive development in Gothenburg](https://vynatix.com/android-automotive-development.html): what we build on Android Automotive and the Volvo Trucks in-cab radio
 - [AI engineering in Gothenburg](https://vynatix.com/ai-engineering.html): retrieval, evaluation and deployment in your environment, and the closed-domain assistant

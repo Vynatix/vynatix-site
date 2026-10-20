@@ -4,7 +4,7 @@
 // It does NOT check that the _config.yml exclusions hold — those are applied by
 // Jekyll at publish time, and the local server serves every file raw. Verify
 // them against the live origin instead; EDGE-SETUP.md section 4 has the loop.
-const { PAGES, BASE, pinBg, launch } = require('./_common');
+const { PAGES, BASE, NOTICE_PAGES, readApp, pinBg, launch } = require('./_common');
 
 (async () => {
   const browser = await launch();
@@ -56,6 +56,48 @@ const { PAGES, BASE, pinBg, launch } = require('./_common');
       }
     }
   }
+  // Fragments. The loop above checks the page a link names; this checks that a #fragment names an element that
+  // exists: every cross-page link on every page (the footer's privacy.html#cookies on all of them), same-page
+  // anchors, and the notice links the consent module writes into the page from its COPY strings in app.js.
+  const idsOf = new Map();
+  const ids = async (file) => {
+    if (!idsOf.has(file)) {
+      const r = await page.request.get(BASE + file);
+      idsOf.set(file, r.status() < 400 ? new Set([...(await r.text()).matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])) : null);
+    }
+    return idsOf.get(file);
+  };
+  const fragmentsChecked = new Set();
+  const checkFragment = async (from, href, always) => {
+    const [file, frag] = href.split('#');
+    const target = file || from;
+    const key = `${target}#${frag}`;
+    if (fragmentsChecked.has(key) && !always) return;
+    fragmentsChecked.add(key);
+    const have = await ids(target);
+    if (!have) { bad++; console.log(`FAIL ${href} -> ${target} not found (linked from ${from})`); }
+    else if (!have.has(decodeURIComponent(frag))) { bad++; console.log(`FAIL ${href} -> no element with id="${frag}" in ${target} (linked from ${from})`); }
+  };
+  for (const p of PAGES) {
+    await page.goto(BASE + p, { waitUntil: 'load' });
+    const frags = await page.evaluate(() => [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && h.includes('#') && !/^(mailto:|tel:|https?:)/.test(h) && h !== '#'));
+    for (const h of [...new Set(frags)]) await checkFragment(p, h);
+  }
+  const app = readApp();
+  const copyHrefs = [];
+  for (const lang of Object.keys(app.copy || {})) for (const [k, v] of Object.entries(app.copy[lang])) if (/Href$/.test(k)) copyHrefs.push([`app.js COPY.${lang}.${k}`, v]);
+  if (!copyHrefs.length) { bad++; console.log('FAIL app.js COPY has no notice link to check'); }
+  for (const [where, href] of copyHrefs) {
+    const file = href.split('#')[0];
+    if (!PAGES.includes(file)) { bad++; console.log(`FAIL ${where} -> ${href}: ${file} is not a page in PAGES`); continue; }
+    if (!href.includes('#')) continue;
+    await checkFragment(where, href, true);
+  }
+  for (const [lang, file] of Object.entries(NOTICE_PAGES)) {
+    const have = await ids(file);
+    if (!have || !have.has('cookies')) { bad++; console.log(`FAIL ${file} (${lang} notice) has no element with id="cookies"`); }
+  }
+  console.log(`checked ${fragmentsChecked.size} unique fragment targets, ${copyHrefs.length} notice links in app.js COPY`);
   console.log(`checked ${seen.size} unique internal targets across ${PAGES.length} pages, ${bad} broken`);
   await browser.close();
   process.exit(bad === 0 ? 0 : 1);

@@ -30,6 +30,7 @@
 - [Platform engineering: vad det är och när det lönar sig](https://vynatix.com/platform-engineering.html)
 - [Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa](https://vynatix.com/ai-assistent-interna-dokument.html)
 - [AI-konsultbolag i Sverige: så jämför ni dem](https://vynatix.com/ai-konsultbolag-sverige.html)
+- [Integritetsmeddelande](https://vynatix.com/integritet.html): vad webbplatsen sparar, att statistik med Google Analytics bara mäts om ni godkänner, och hur ni utövar era rättigheter
 
 ## Optional
 

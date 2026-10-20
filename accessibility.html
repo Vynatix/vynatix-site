@@ -2,9 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
-     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Accessibility statement, Vynatix</title>
@@ -143,7 +143,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=4042eccc">
+<link rel="stylesheet" href="styles.css?v=b990f5e5">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -157,7 +157,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=d40c4121"></script>
+<script src="app.js?v=d187b8ce"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -231,7 +231,7 @@
             <li>The English home page opens with <strong>one of four decorative backgrounds</strong>, drawn at random for each visit and described in the next section. Screen readers skip them, they cannot take focus or catch a click, and they never lower the text below the AA contrast ratio.</li>
             <li>Nothing on the site moves on its own, with <strong>one exception</strong>: the iris, one of those four backgrounds, opens an inner dial once per visit after 20 seconds without any input, and any input ends it at once. Everything else that moves answers you: short transitions on hover and focus, and the dial background, which follows the pointer. <strong>prefers-reduced-motion</strong> removes all of it.</li>
             <li>Text meets the <strong>AA contrast ratio</strong> in every colour scheme the site can show: it draws one of three at random for each visit, and each has a light and a dark theme.</li>
-            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the two controls that need JavaScript, the menu button and the theme toggle, are hidden rather than left sitting dead. Without JavaScript the theme follows the page default and the home page shows the still drafting-sheet background.</li>
+            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the three things that need JavaScript, the menu button, the theme toggle and the analytics consent bar, are hidden or not shown rather than left sitting dead. Without JavaScript the theme follows the page default, analytics is off, the home page shows the still drafting-sheet background, and the Cookie settings link in the footer opens the privacy notice.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
             <li>Pages in Swedish declare Swedish as their language, and the header and footer they share with the English pages declare English, so a screen reader switches voice at the right place.</li>
           </ul>
@@ -253,6 +253,7 @@
           <ul>
             <li>Automated tools catch roughly half of the WCAG criteria. <strong>No external audit</strong> has been carried out.</li>
             <li>We have <strong>not tested with screen-reader users</strong>, or with voice control, switch access or magnification software.</li>
+            <li>For the analytics consent bar, we have not verified how screen readers announce the bar and its status messages, how it behaves in Firefox and WebKit, or how it holds up with text-only zoom.</li>
             <li>Cognitive and plain-language criteria have not been formally assessed.</li>
             <li>Documents and photography supplied by third parties may not meet the same standard.</li>
           </ul>
@@ -307,12 +308,14 @@
             <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
           </ul>

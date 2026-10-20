@@ -2,9 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
-     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vynatix, a Nordic software consultancy in Gothenburg</title>
@@ -231,7 +231,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=4042eccc">
+<link rel="stylesheet" href="styles.css?v=b990f5e5">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
 <link rel="stylesheet" href="hero-bg.css?v=ebac486b">
@@ -248,7 +248,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=d40c4121"></script>
+<script src="app.js?v=d187b8ce"></script>
 <!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
      tile and the iris's arming must be in place before the first paint. -->
 <script src="hero-bg.js?v=d28eff84"></script>
@@ -821,12 +821,14 @@
             <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
           </ul>

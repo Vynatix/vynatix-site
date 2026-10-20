@@ -365,7 +365,11 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     const appjs = (await (await ctx.request.get(BASE + 'app.js')).text()) + '\n' + (await (await ctx.request.get(BASE + 'hero-bg.js')).text());   // the draw is in app.js, the backgrounds' scripts in hero-bg.js
     await ctx.close();
     const documented = [...new Set([...privacy.matchAll(/<code>(vynatix-[a-z-]+)<\/code>/g)].map((m) => m[1]))].sort();
-    const written = Object.keys(KEYS).map((k) => k.split(' ')[1]).sort();
+    // The analytics answer is written when the visitor presses Decline or Accept, which this script never does (the
+    // consent module is inert in the shipped file), so it is not among the keys the home page writes on its own. It is
+    // still a key the site writes, and privacy.html has to list it.
+    const ANSWERED = ['vynatix-consent'];
+    const written = Object.keys(KEYS).map((k) => k.split(' ')[1]).concat(ANSWERED).sort();
     check(JSON.stringify(documented) === JSON.stringify(written), 'privacy.html lists exactly the keys the site writes', `listed [${documented.join(', ')}]; written [${written.join(', ')}]`);
     // The code, not its comments (a comment may name a key in quotes).
     const code = appjs.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[ \t])\/\/ .*$/gm, '$1');

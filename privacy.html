@@ -2,24 +2,28 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts are self-hosted and
-     there are no inline styles, so no font CDN and no 'unsafe-inline' appear here. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy notice, Vynatix</title>
-<meta name="description" content="No analytics, no cookies, no third-party content. What Vynatix AB does and does not process when you visit vynatix.com, and how to exercise your GDPR rights.">
+<meta name="description" content="Analytics runs only if you accept it. What Vynatix AB processes when you visit vynatix.com, what Google Analytics adds if you consent, and how to exercise your GDPR rights.">
 <!-- seo -->
 <!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
      structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
 <link rel="canonical" href="https://vynatix.com/privacy.html">
+<link rel="alternate" hreflang="en" href="https://vynatix.com/privacy.html">
+<link rel="alternate" hreflang="sv" href="https://vynatix.com/integritet.html">
+<link rel="alternate" hreflang="x-default" href="https://vynatix.com/privacy.html">
 <meta name="author" content="Vynatix AB">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vynatix">
 <meta property="og:title" content="Privacy notice, Vynatix">
-<meta property="og:description" content="No analytics, no cookies, no third-party content. What Vynatix AB does and does not process when you visit vynatix.com, and how to exercise your GDPR rights.">
+<meta property="og:description" content="Analytics runs only if you accept it. What Vynatix AB processes when you visit vynatix.com, what Google Analytics adds if you consent, and how to exercise your GDPR rights.">
 <meta property="og:url" content="https://vynatix.com/privacy.html">
 <meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="sv_SE">
 <meta property="article:published_time" content="2026-08-19">
 <meta property="article:modified_time" content="2026-10-20">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
@@ -122,7 +126,7 @@
    "@id": "https://vynatix.com/privacy.html",
    "url": "https://vynatix.com/privacy.html",
    "name": "Privacy notice, Vynatix",
-   "description": "No analytics, no cookies, no third-party content. What Vynatix AB does and does not process when you visit vynatix.com, and how to exercise your GDPR rights.",
+   "description": "Analytics runs only if you accept it. What Vynatix AB processes when you visit vynatix.com, what Google Analytics adds if you consent, and how to exercise your GDPR rights.",
    "inLanguage": "en",
    "isPartOf": {
     "@id": "https://vynatix.com/#website"
@@ -131,7 +135,10 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-08-19",
-   "dateModified": "2026-10-20"
+   "dateModified": "2026-10-20",
+   "workTranslation": {
+    "@id": "https://vynatix.com/integritet.html"
+   }
   }
  ]
 }
@@ -143,7 +150,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=4042eccc">
+<link rel="stylesheet" href="styles.css?v=b990f5e5">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -157,7 +164,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=d40c4121"></script>
+<script src="app.js?v=d187b8ce"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -205,7 +212,7 @@
       <div class="container">
         <p class="eyebrow">Legal</p>
         <h1 class="page-hero__h1">Privacy notice</h1>
-        <p class="page-hero__lede">This site collects no analytics, sets no cookies, and loads nothing from a third party. This page explains the little that does happen.</p>
+        <p class="page-hero__lede">This site measures visits with Google Analytics only if you accept it. Until you choose, and if you decline, nothing is sent to Google and no analytics cookies are set. This page explains what happens.</p>
       </div>
     </section>
 
@@ -217,33 +224,63 @@
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
-            <div class="banner__text"><b>Draft pending legal review.</b> This notice was written from what the site verifiably does. It has not yet been reviewed by counsel, and the hosting section describes an arrangement that is still being put in place. Treat it as a working draft.</div>
+            <div class="banner__text"><b>Draft pending legal review.</b> This notice was written from what the site verifiably does. It has not yet been reviewed by counsel, and the hosting section describes an arrangement that is still being put in place. The analytics section is part of the draft too, and details in it that are not yet confirmed are marked in double square brackets and highlighted. Treat it as a working draft.</div>
           </div>
 
           <h2>Who is responsible</h2>
           <p>Vynatix AB (org.nr 559445-6542), Mailbox 1611, 411 42 Gothenburg, Sweden, is the controller for personal data processed through this website.</p>
           <p>For anything on this page, write to <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> or call +46 72 071 06 76.</p>
 
-          <h2>What this site does not do</h2>
-          <p>It is worth stating plainly, because it is unusual:</p>
+          <h2>What this site does and does not do</h2>
+          <p>The short version:</p>
           <ul>
-            <li>There is <strong>no analytics</strong> of any kind. No Google Analytics, no Plausible, no server-side page counting we control.</li>
-            <li>There are <strong>no cookies</strong>. We set none, so there is no consent banner to click. (Once the Cloudflare layer described below is live it may set its own strictly-necessary security cookie; we will name it here when that happens.)</li>
-            <li>There are <strong>no tracking pixels</strong>, advertising tags, social widgets or embedded third-party content.</li>
+            <li>Analytics is <strong>off unless you accept it</strong>. If you accept, we use Google Analytics to count visits and see which pages are read, as described under <a href="#cookies">Analytics and cookies</a> below. There is no other analytics, and no server-side page counting we control.</li>
+            <li><strong>No cookies are set until you accept analytics.</strong> If you accept, Google Analytics sets the cookies named under <a href="#cookies">Analytics and cookies</a>. If you decline, or if JavaScript or browser storage is unavailable, none are set. (Once the Cloudflare layer described below is live it may set its own strictly-necessary security cookie; we will name it here when that happens.)</li>
+            <li>There are <strong>no tracking pixels</strong>, advertising tags, social widgets or embedded third-party content. The one third-party script is Google Analytics, which loads only after you accept, with Google Signals and ad personalisation switched off.</li>
             <li>There is <strong>no contact form</strong>. Getting in touch means emailing or calling us directly.</li>
-            <li>Fonts and images are <strong>served from this domain</strong>. Nothing is fetched from a font CDN or image host, so visiting a page does not disclose your address to any third party for content.</li>
+            <li>Fonts and images are <strong>served from this domain</strong>. Nothing is fetched from a font CDN or image host, so loading a page does not disclose your address to any third party for content. If you accept analytics, Google receives it as described under <a href="#cookies">Analytics and cookies</a>.</li>
           </ul>
 
-          <h2>What is stored in your browser</h2>
+          <h2 id="storage">What is stored in your browser</h2>
+          <p>The site keeps a few items in your browser's storage, all of them listed here. None of them is a cookie.</p>
           <p>The site draws one of three colour schemes at random when you arrive, and keeps it for the rest of your visit so the pages match. That draw is saved in your browser's session storage under the key <code>vynatix-look</code>, with the value <code>forest</code>, <code>teal</code> or <code>mono</code>, and your browser removes it when you close the tab.</p>
           <p>The site also draws one of four decorative backgrounds at random, on whichever page you open first (only the home page shows it), and keeps it for the rest of your visit so the pages agree. That draw is saved in your browser's session storage under the key <code>vynatix-bg</code>, with the value <code>weave</code>, <code>sheet</code>, <code>dial</code> or <code>iris</code>. Two of the backgrounds save one more value each, also in session storage: <code>vynatix-bg-seed</code>, written only when the woven background is drawn, holds one whole number that picks that visit's pattern, and <code>vynatix-bg-iris</code>, written only when the iris background is drawn, holds the value <code>1</code> once its one opening animation has begun, so that it does not play again in the same visit. None of the three holds personal data, and your browser removes all of them when you close the tab.</p>
           <p>If you use the theme toggle, your choice of light or dark is saved in your browser's local storage under the key <code>vynatix-theme</code>. The value is the name of the theme, such as <code>light</code> or <code>dark</code>. Until you use the toggle, the site follows your system's light or dark setting.</p>
-          <p>These are display preferences, not identifiers. They never leave your device, are never transmitted to us, and cannot be used to recognise you. Clearing your browser's site data removes the stored choice.</p>
+          <p>When you answer the analytics question, your answer is saved in your browser's local storage under the key <code>vynatix-consent</code>. The value records your choice and the date, for example <code>v1:granted:2026-10-19</code> or <code>v1:denied:2026-10-19</code>, where <code>v1</code> is the version of the wording you answered. Nothing is written to this key before you answer. The site uses your answer for 12 months. After that it treats you as undecided and asks again, and the key itself stays in your browser until you choose again or clear your browser's site data.</p>
+          <p>The colour scheme, the background and the theme toggle are display preferences. The consent item records your answer to the analytics question. All of them stay on your device, and the site never sends them to us or to anyone else. The Google Analytics cookies are different and are described under Analytics and cookies. Clearing your browser's site data removes all of them, and the site then asks the analytics question again.</p>
 
-          <h2>Hosting and server logs</h2>
+          <h2 id="cookies">Analytics and cookies</h2>
+          <p>If you accept, we use Google Analytics 4 to count visits and to see which pages are read. If you decline, or never choose, nothing is sent to Google and no analytics cookie is set. The site works the same either way.</p>
+          <p>Our legal basis is your consent under Article 6(1)(a) of the GDPR. We ask for your consent before any analytics cookie is set on your device. You can withdraw your consent at any time.</p>
+          <p>When you accept, your browser sends Google the address of the page you are reading, the page you came from, information about your browser and device, and a random identifier that Google Analytics stores in the cookies below. Your IP address also reaches Google's servers, because it is part of every request your browser makes. Google states that Analytics 4 does not log or store IP addresses.</p>
+          <p>If you accept, Google Analytics sets two cookies in your browser. Both are first-party cookies: they belong to this site's domain, not to a Google domain.</p>
+          <table>
+            <caption class="sr-only">Cookies set by Google Analytics after you accept</caption>
+            <thead>
+              <tr><th scope="col">Cookie</th><th scope="col">What it is for, and how long it lasts</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>_ga</code></td><td>Holds the random identifier that tells one browser's visits from another's. Lasts up to 12 months.</td></tr>
+              <tr><td><code>_ga_&lt;container-id&gt;</code></td><td>Keeps track of the visit you are in now. Lasts up to 12 months.</td></tr>
+            </tbody>
+          </table>
+          <p>The cookie names are taken from Google's documentation. In the second name, the part after <code>_ga_</code> is our property's Measurement ID without the <code>G-</code> at the start. The 12-month lifetime is the one this site sets, instead of Google's default of two years. <mark class="draft-marker">[[CONFIRM: observed cookie names, domain and lifetime after a test accept]]</mark></p>
+          <p>Because these are first-party cookies, your browser sends them to this domain with each request, whether for a page, an image or a file. That means they reach our hosting provider in the request. We do not receive or use that copy.</p>
+          <p>We have set our Google Analytics property to keep event data for 2 months. <mark class="draft-marker">[[CONFIRM: retention set to 2 months in the property]]</mark></p>
+          <p>Page views are recorded. Outbound-link clicks and file downloads are not. Other events are recorded only where our property has them switched on. <mark class="draft-marker">[[CONFIRM: Enhanced Measurement events left on in the property; outbound clicks and downloads are off]]</mark></p>
+          <p>Google Signals and ad personalisation are switched off. The code that loads Google Analytics turns both off and tells Google that storage and use of data for advertising are denied.</p>
+          <p>Google is the recipient of this data and may process it in the United States, outside the EU/EEA. We rely on the European Commission's adequacy decision for the EU&ndash;US Data Privacy Framework for that transfer, and if that adequacy no longer holds we will switch analytics off. The details are under <a href="#hosting">Hosting, transfers and server logs</a> below.</p>
+          <p>Your answer is saved in your browser, as described under <a href="#storage">What is stored in your browser</a>. If your browser blocks site storage, the site cannot remember an answer, so it does not ask and analytics stays off. When you decline, or have not chosen, the site also deletes any Google Analytics cookies it finds for this domain.</p>
+          <p>If you have accepted, you can withdraw at any time. Use the <strong>Cookie settings</strong> link in the footer of every page or, where the choice is offered in your browser, the buttons at the end of this section. Withdrawing does not affect processing that took place before it. When you withdraw, the site stops measuring, tells Google that analytics storage is denied, and deletes the Google Analytics cookies it finds for this domain. You can also delete cookies yourself in your browser's settings.</p>
+          <p>Without JavaScript nothing is measured and there is nothing to change. Where the choice is offered, your current answer and the buttons to change it appear just below.</p>
+          <div class="consent-panel" data-consent-panel></div>
+
+          <h2 id="hosting">Hosting, transfers and server logs</h2>
           <p>The site is hosted on <strong>GitHub Pages</strong> (GitHub, Inc., a Microsoft company, United States). Serving a page necessarily means your device sends its IP address, user-agent string and the page requested to the host, which may record them in access logs for security and abuse prevention. We do not receive, request or analyse those logs.</p>
           <p>We are also putting <strong>Cloudflare, Inc.</strong> (United States) in front of the site as a security and delivery layer. Once that is live, the same request data passes through Cloudflare, which processes it to serve the page, apply security headers and mitigate abuse. This page will be updated to state the date it took effect.</p>
-          <p>Both providers are outside the EU/EEA, so this involves a transfer to a third country. Both operate under the EU&ndash;US Data Privacy Framework and offer standard contractual clauses. If you would like the specifics of the safeguards in place, ask us.</p>
+          <p>Analytics, if you accept it, is separate from this and is described under <a href="#cookies">Analytics and cookies</a> above. If you accept, your browser also sends data to Google.</p>
+          <p>Both hosting providers are outside the EU/EEA, so this involves a transfer to a third country. Both operate under the EU&ndash;US Data Privacy Framework, and the European Commission's adequacy decision for that framework is the basis for the transfer.</p>
+          <p>If you accept analytics, Google may also process your data in the United States. The basis for that transfer is the same adequacy decision, which applies only to a recipient listed under the framework. Our contracting party for Google Analytics is <mark class="draft-marker">[[CONFIRM: Google contracting entity for Google Analytics, the Google entity that receives the data in the United States, and its listing on dataprivacyframework.gov with the date checked]]</mark>. If the adequacy decision, or that listing, no longer holds, we will switch analytics off. If you would like the specifics of the safeguards in place, ask us.</p>
 
           <h2>If you email or call us</h2>
           <p>When you contact us we process what you send (your name, address, and whatever is in the message) to answer you and, where it leads to work, to manage the engagement. The basis is our legitimate interest in responding to enquiries, or the steps leading to a contract.</p>
@@ -251,10 +288,13 @@
 
           <h2>Your rights</h2>
           <p>Under the GDPR you may ask us to confirm what we hold about you and give you a copy, correct it, delete it, restrict or object to how we use it, or receive it in a portable form. Ask at <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> and we will answer within one month.</p>
+          <p>Where we rely on your consent, as we do for analytics, you can withdraw it at any time. Withdrawing does not affect processing that took place before it.</p>
+          <p>Analytics data is tied to the random identifier in your <code>_ga</code> cookie, together with the page, referrer, browser and device information described above, and not to your name or email address. We cannot otherwise match it to you. If you ask for access to or deletion of analytics data, send us the value of your <code>_ga</code> cookie, which your browser's developer tools show, and we will use it to look for your data. <mark class="draft-marker">[[CONFIRM: that Google Analytics lets us look up and delete data by client ID in our property, and the procedure]]</mark> Without that value we cannot tell which data is yours. If you have already deleted the cookie, we cannot find the data.</p>
           <p>If you think we have handled your data badly, you can complain to the Swedish Authority for Privacy Protection (<span lang="sv">Integritetsskyddsmyndigheten</span>, IMY), Box 8114, 104 20 Stockholm.</p>
 
           <h2>Changes</h2>
           <p>If this notice changes we will update the date at the top. Material changes will be described rather than quietly folded in.</p>
+          <p>We changed this notice when we added optional analytics with Google Analytics, which runs only if you accept it. Before that the site used no analytics and set no cookies.</p>
         </div>
       </div>
     </section>
@@ -301,12 +341,14 @@
             <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
           </ul>

@@ -1060,11 +1060,15 @@ a.clients__item:has(.clients__mark):hover {
 }
 .legal .banner, .prose .banner { margin-bottom: var(--space-10); }
 /* Tables in long-form text keep to the column on a phone: the system's cell
-   padding plus a long Swedish compound ("Konsultmäklare") overflowed 360px. */
+   padding plus a long Swedish compound ("Konsultmäklare") overflowed 360px.
+   The legal pages' cookie table gets the same rules. */
 @media (max-width: 599px) {
-  .prose th, .prose td { padding: var(--space-2) var(--space-2); }
-  .prose td, .prose th { hyphens: auto; overflow-wrap: break-word; }
+  .legal th, .legal td, .prose th, .prose td { padding: var(--space-2) var(--space-2); }
+  .legal td, .legal th, .prose td, .prose th { hyphens: auto; overflow-wrap: break-word; }
 }
+/* A cookie name in the first column is a token to copy, so it never breaks
+   across lines; the second column takes the remaining width. */
+.legal td:first-child > code { white-space: nowrap; }
 
 /* Banner (the Banner card): a leading icon, a bold lead, then the message. */
 .banner {
@@ -1084,6 +1088,20 @@ a.clients__item:has(.clients__mark):hover {
 .banner--info > .icon { color: var(--info); }
 .banner--warning { background: var(--warning-container); color: var(--on-warning-container); }
 .banner--warning > .icon { color: var(--warning); }
+
+/* A detail in a draft notice that only a person can confirm. The marked text
+   stays in the markup in double square brackets (the release gate looks for
+   it); this makes it stand out on screen. It takes the warning pair the Banner
+   uses, which holds 4.5:1 or better in all six themes. */
+.draft-marker {
+  background: var(--warning-container);
+  color: var(--on-warning-container);
+  font-weight: 600;
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-xs);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
 
 /* ---------------------------------------------------------------
    Footer — an inverse band
@@ -1159,6 +1177,141 @@ a.clients__item:has(.clients__mark):hover {
 /* The four hero backgrounds (one drawn per visit, home page only) are not here: they are in
    hero-bg.css and hero-bg.js, which only index.html links, so no other page downloads them.
    AGENTS.md, Hero backgrounds, says how they fit together. */
+
+/* ---------------------------------------------------------------
+   Consent: the analytics bar, and the same two buttons in place on the
+   privacy pages
+   app.js builds the bar only on a first visit and when the footer's "Cookie
+   settings" link reopens it, so a visitor without JavaScript never sees a
+   bar or a dead button. It is a compact, solid, non-modal bar fixed to the
+   bottom of the viewport: no backdrop, no focus trap, no animation. Decline
+   and Accept carry the same class and size, so neither is favoured.
+   The bar sits at z-index 40, under the sticky header (50) so an open mobile
+   menu overlays it, and under the skip link (100).
+   --------------------------------------------------------------- */
+.consent {
+  position: fixed;
+  inset-inline: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 40;
+  max-width: var(--container-max-laptop);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--text-body);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-l3);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+}
+.consent p {
+  margin: 0;
+  max-width: none;
+  line-height: inherit;
+}
+.consent__status { font-weight: 600; }
+.consent__actions { display: flex; gap: var(--space-2); }
+/* Equal width on a phone, whatever the two labels are. */
+.consent__btn { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
+.consent__link { border-radius: var(--radius-xs); }
+@media (min-width: 600px) {
+  .consent { inset-inline: var(--space-6); }
+}
+/* The text beside the buttons starts at 700px: at 600px the two buttons leave
+   the Swedish text too narrow a column and it jumps from two lines to five. */
+@media (min-width: 700px) {
+  .consent {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "text actions" "status actions";
+    align-items: center;
+    gap: 0 var(--space-8);
+    padding: var(--space-4) var(--space-6);
+  }
+  /* Without a status line there is no second row to reserve, so the single
+     line of text centres on the buttons. */
+  .consent:not(:has(.consent__status)) { grid-template-areas: "text actions"; }
+  .consent__text { grid-area: text; }
+  .consent__status { grid-area: status; margin-top: var(--space-1); }
+  .consent__actions { grid-area: actions; }
+  .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
+}
+
+/* WCAG 2.4.11: a focused control must not end up hidden behind the bar. The
+   browser's scroll-into-view keeps this much clear at the bottom, and the
+   footer takes the same reserve as padding while the bar is up, so its last
+   links (Legal, Cookie settings) can be scrolled clear. Both are plain CSS: no
+   script measures the bar.
+   The reserve is in rem, as is the 7rem button minimum: the two lengths here
+   that are not on the px spacing scale. The reserve is in rem because the bar
+   grows with the text size (Firefox's text-only zoom, Android's font scale)
+   and a px reserve would not. On a phone the tallest bar is the reopened one
+   (the first-visit bar plus one status line, the 16px it floats above the
+   edge, and taller still with the text-spacing overrides of SC 1.4.12), so
+   20rem (320px at the default size); from 700px the bar sits beside its
+   buttons and 12rem is enough. tools/verify/consent-layout.js holds the
+   numbers: it sweeps focus against the bar's real rectangle. */
+@media not all and (max-height: 520px) {
+  html.consent-open { scroll-padding-bottom: 20rem; }
+  .consent-open .site-footer { padding-bottom: 20rem; }
+  @media (min-width: 700px) {
+    html.consent-open { scroll-padding-bottom: 12rem; }
+    .consent-open .site-footer { padding-bottom: 12rem; }
+  }
+}
+
+/* The home pages skip the rendering of every section after the hero until it
+   nears the viewport (content-visibility: auto, in the home-page block above).
+   While the bar is up that is switched off. A skipped section has a guessed
+   height until it is shown, so when keyboard focus moves into one, it renders,
+   the page shifts, and the focused link can end up under the bar (found at 320px
+   wide with the text scaled 1.5 times), and axe-core misreads the text in skipped
+   sections as failing contrast. The bar is up only until the visitor has chosen,
+   so the optimisation still holds for every visit after that. */
+html.consent-open .hero ~ section { content-visibility: visible; }
+
+/* A viewport this short (a 1280 by 1024 desktop at 400% zoom is 320 by 256)
+   has no room for a fixed bar over the page. There it sits at the top of the
+   page, in the flow, and scrolls away with it; the reserve above does not
+   apply. */
+@media (max-height: 520px) {
+  .consent {
+    position: static;
+    width: calc(100% - 2 * var(--space-4));
+    margin: var(--space-4) auto 0;
+  }
+}
+@media (max-height: 520px) and (min-width: 600px) {
+  .consent { width: calc(100% - 2 * var(--space-6)); }
+}
+@media print {
+  .consent { display: none; }
+}
+
+/* The in-page panel on the privacy pages: a status line and the same two
+   buttons. It stays empty, and so takes no room, until app.js fills it. */
+.consent-panel {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+  padding: var(--space-5) var(--space-6);
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-lg);
+}
+.consent-panel:empty { display: none; }
+.consent-panel p {
+  margin: 0;
+  max-width: none;
+  font-weight: 600;
+}
+.consent-panel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.consent-panel .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
 
 /* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything

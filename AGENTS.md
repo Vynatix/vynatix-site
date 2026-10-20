@@ -28,7 +28,8 @@ services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
-privacy.html        Privacy notice (GDPR Art. 13)
+privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
+                    section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
 accessibility.html  Accessibility statement
 android-automotive-development.html   Android Automotive in Gothenburg (English twin of
@@ -40,7 +41,10 @@ sv.html             Swedish home and hub for the Swedish pages (twin of index.ht
 android-automotive-utveckling.html, ai-utveckling.html,
 konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
 valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
-ai-konsultbolag-sverige.html   Swedish guides — twenty pages in total
+ai-konsultbolag-sverige.html   Swedish guides
+integritet.html     Swedish privacy notice, the twin of privacy.html (the fifth
+                    English/Swedish pair); the Swedish consent bar links to it.
+                    Twenty-one pages in total
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (hand-maintained)
 llms.txt            A plain-text summary of the company and every page, in both languages
@@ -51,7 +55,9 @@ tokens.css          Design system layer 1: the tokens, generated from the system
 colors_and_type.css Design system layer 2, verbatim: reset, semantic helpers,
                     .eyebrow, .btn, .card, .glass, .container, per-theme typefaces
 styles.css          Layer 3, the site's own: page chrome and components on the roles
-app.js              All client behaviour (vanilla JS, IIFEs, no modules)
+app.js              All client behaviour (vanilla JS, IIFEs, no modules): the theme,
+                    the hero background draw, the mobile nav, and analytics consent
+                    (see Analytics)
 hero-bg.css         The four hero backgrounds' rules (only index.html links it)
 hero-bg.js          The scripts of the backgrounds that need one (only index.html links it)
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted case
@@ -67,11 +73,12 @@ _config.yml         Controls what GitHub Pages publishes (excludes dev docs)
 SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
 CODEOWNERS          Review ownership — not published
 EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
-tools/              Local verification scripts (verify/, including the four hero
-                    background guards), stamp.js (writes the ?v= version stamps into
-                    the pages), seo-head.py (rewrites the search block, footer and
-                    sitemap) and the two mask generators, dial-masks.py and
-                    sheet-art.js — NOT published, not part of the site
+tools/              Local verification scripts (verify/, including the consent checks
+                    and the four hero background guards), stamp.js (writes the ?v=
+                    version stamps into the pages), seo-head.py (rewrites the search
+                    block, footer and sitemap) and the two mask generators,
+                    dial-masks.py and sheet-art.js; NOT published, not part of the site
+tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -118,7 +125,7 @@ cached, so the HTML names the exact stylesheet it was written for. **After you
 change any of the six files, run `cd tools && npm run stamp` and commit the
 updated pages with the change.** `npm run check` (`node stamp.js --check`) fails
 until you do, and `verify/stale-cache.js` proves, in a browser holding an old
-copy of all four files under the plain URLs, that the stamped pages still come
+copy of all six files under the plain URLs, that the stamped pages still come
 out right (`ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the
 engine iOS Chrome uses). A new page must load all four files; the stamp check
 fails if it does not. Two more files carry stamps and are not shared: `hero-bg.css` and
@@ -158,6 +165,19 @@ first-party file is the way to avoid a flash of the wrong theme. The rules:
 - If storage is blocked the draw cannot be kept, so the page stays on Forest
   rather than re-drawing on every navigation. Without JavaScript the markup's
   own `<html data-theme="light">` (Forest light) is what shows.
+
+The theme and the consent choice write three keys in the visitor's own browser,
+and none is sent anywhere: `vynatix-look` (`sessionStorage`, the direction drawn for the visit,
+written without any click), `vynatix-theme` (`localStorage`, light or dark,
+written when the toggle is pressed) and `vynatix-consent` (`localStorage`, the
+analytics choice, written when Decline or Accept is pressed; see *Analytics*).
+Both notices already name all three keys and call the first two display
+preferences; whether that description is right, and whether the bar has to mention
+them, is for counsel to confirm (`tools/PRE-FLIP-CHECKLIST.md`, 4.2). The hero
+backgrounds write three more, `vynatix-bg`, `vynatix-bg-seed` and `vynatix-bg-iris`,
+in `sessionStorage` only (see *Hero backgrounds*, *Storage*); `privacy.html` lists them
+too. The one-line fallback, if the random draw has to go, is to pin `pickLook()` as
+described below.
 - On the home page `app.js` also preloads the headline faces of the drawn
   direction (`DISPLAY_FACES`), so the hero is not blocked on a late font fetch.
   Other pages add no preloads.
@@ -205,7 +225,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   background is drawn and the widths it applies to. `tools/verify/bg-draw.js`
   enforces all of this.
 - **Where it lives.** In two files that only `index.html` links, after `styles.css` and
-  `app.js`, so the other nineteen pages never download them: `hero-bg.css` and
+  `app.js`, so the other twenty pages never download them: `hero-bg.css` and
   `hero-bg.js`. The draw itself stays in `app.js`: it is a few lines, runs on every page and
   everything else depends on it. Each background is a block in `hero-bg.css` between
   `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial, iris) and
@@ -354,7 +374,8 @@ in bronze (its bands then read by density only); then re-run the guards.
 
 **Measured costs and known limits** (an independent verification of the four draws together;
 Chromium only, no Safari, Firefox or real devices). Every draw is pixel-identical to a build
-with the other three removed, and the other 19 pages are unchanged. The price: `hero-bg.css`
+with the other three removed, and the other pages are unchanged (19 were measured;
+`integritet.html` came later and links neither file). The price: `hero-bg.css`
 and `hero-bg.js` are 8.6 and 7.0 KB gzip, paid by the home page only (about 17 KB with the iris
 block in `index.html`); every other page carries only the draw in `app.js`, +672 B gzip
 (+1.7%). They were first built into `styles.css` and `app.js`, and that cost every page 14.5 KB
@@ -398,18 +419,23 @@ both of them place with `<use>`) are copy-pasted into every page. **A change
 to nav links, the logo, or the header's contact details or addresses must be
 applied to all `*.html` files.** The footer's source is the `FOOTER` template
 in `tools/seo-head.py`: a footer change is made there and the script run, which
-writes it into every page, not made by hand in twenty files. Set
-`aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
+writes it into every page, not made by hand in twenty-one files. The Legal list
+in it carries the "Cookie settings" link (`data-consent-open`), which reopens the
+consent bar. Set `aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
 `<head>`, and `app.js` is the only script on every page but the home page, which also
-loads `hero-bg.js` (the hero backgrounds) — there is no CDN or animation stack. `app.js`
-has three features: the theme (the per-visit draw and the toggle), the mobile
-nav and the hero background draw; the small script of each background that needs one
-is in `hero-bg.js` (see *Hero backgrounds*). **Nothing on the site moves
+loads `hero-bg.js` (the hero backgrounds): there is no CDN or animation stack. `app.js`
+has four features: the theme (the per-visit draw and the toggle), the hero background
+draw, the mobile nav, and consent for Google Analytics (see *Analytics*). The small
+script of each background that needs one is in `hero-bg.js` (see *Hero backgrounds*).
+The only third-party script that can ever run is Google's `gtag.js`, which the consent feature
+injects itself, only once a real Measurement ID has been set and only for a visitor
+whose answer is Accept: on the press, or on a later page load while a stored `granted`
+answer is still valid. **Nothing on the site moves
 on its own, with one exception:** the iris background (one visit in four) opens
 its inner dial once per visit, after 20 seconds without input, in 3.6 seconds,
 and any input ends it at once. What else moves answers the visitor: short
@@ -423,10 +449,30 @@ ends it, absent under reduced motion) are part of that decision: do not loosen
 them. Reduced motion removes all of it.
 
 The Content-Security-Policy (a `<meta>` tag in every page's `<head>`) pins
-`script-src 'self'`, `style-src 'self'` and `font-src 'self'`, so **any
-third-party script, inline style or font CDN is blocked by default**. Adding
-one means deliberately widening the CSP on **every page** (and the header
-copy in `EDGE-SETUP.md`), and updating this file.
+`script-src` to `'self'` plus the single path `https://www.googletagmanager.com/gtag/js`,
+`connect-src` to `'self'` plus three Google analytics hosts, and `style-src`,
+`font-src` and `img-src` to `'self'` (and `data:` for images), so **any other
+third-party script, inline style or font CDN is still blocked by default**. The
+exact string is in `EDGE-SETUP.md`, section 3.
+
+**The Google entries are a recorded security downgrade** from the earlier
+`'self'`-only policy. The owner accepted it for Google Analytics behind consent,
+and `SECURITY-ASSESSMENT.md` (Round 6) records what it costs: the wildcard
+`connect-src` hosts are a generic exfiltration channel to any Google Analytics
+property, and, because a `<meta>` policy cannot depend on consent, the policy
+reaches every visitor whether or not they accept. Do not widen it further to make
+a measurement work. A violation names the one host that is missing; add that host
+by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
+
+**The policy lives in three places that change together:** the `<meta>` tag on
+all 21 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
+**first**: the browser enforces the meta and the header independently, so a
+narrower header silently blocks Google Analytics, while a wider one is bounded
+by the meta. `tools/verify/csp.js` keeps the pages and `EDGE-SETUP.md` in step
+(and allows Google hosts only from its list); `headers.js` checks the live
+header. Any new third-party script, or any other host, still means widening the
+CSP deliberately on **every page** and in `EDGE-SETUP.md`, and updating this file.
 
 **Progressive enhancement / accessibility** is a real constraint here, not an
 afterthought — preserve it:
@@ -435,7 +481,14 @@ afterthought — preserve it:
   hide them in CSS and let `app.js` opt in by adding a class to `<html>`:
   `.js-nav` for the collapsible mobile nav (without it the nav stays visible
   and wraps under the bar) and `.js-theme` for the theme toggle (it keeps its
-  place but is invisible until it can work).
+  place but is invisible until it can work). The consent module follows the same
+  rule by building its markup only when it can work: the bar and the in-page
+  panel do not exist without JavaScript, with blocked storage, or while the ID is
+  the placeholder, and the footer's "Cookie settings" link is then a plain link to
+  the notice. It adds `js-consent` to `<html>` once active (a test hook and a
+  guard against a second copy of the script; no CSS depends on it) and
+  `consent-open` while the bar is on screen (the bottom reserve in `styles.css`
+  depends on that one).
 - Motion is short transitions on hover and focus, the dial background's response
   to the pointer and the iris background's single opening (see *JavaScript* and
   *Hero backgrounds*). The system's `prefers-reduced-motion` rule cuts the
@@ -533,8 +586,20 @@ including LinkedIn, the registries and `llms.txt`.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
-is translated. The footer's "På svenska" column (`lang="sv"`) links the Swedish
-hub (`sv.html`), which links every Swedish page in its `#guider` section. The
+is translated, and, while the consent module is active, the footer's "Cookie
+settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and a
+link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
+`sv`. Without JavaScript, or while the module is inert, the English link to
+`privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
+`privacy.html`, the fifth English/Swedish pair, and the Swedish consent bar links
+to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
+hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
+`integritet.html`, which is a notice and not a guide and so is linked from that
+footer column (and by the Swedish consent bar), not from `#guider`. On a Swedish
+page the footer's Legal column therefore deliberately holds one Swedish item, the
+relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
+"Accessibility"); the shared footer is English by design, and the link has to match
+the Swedish bar and notice. Without JavaScript it reverts to English. The
 two home pages are not mirror images: the "three ways" list in Who we are and
 the Further reading section exist only on the English home page (sv.html has the
 Guider section instead). The Further reading items on index.html repeat the
@@ -563,6 +628,170 @@ the glyph files in `assets/icons/`, which are copies of the system's
 `light_mode` (the theme toggle) are not in the system's approved catalogue;
 they were drawn from the same package at the same settings and should be added
 to the catalogue. Never draw an icon by hand, and never use `.ms`.
+
+## Analytics
+
+Google Analytics 4 is built into the site, off by default and behind consent.
+This section holds the working rules. The reasoning and the cost are in
+`SECURITY-ASSESSMENT.md` (Round 6); the hard gate for switching it on is
+`tools/PRE-FLIP-CHECKLIST.md`.
+
+**What exists.** The fourth IIFE in `app.js`, after the theme, the hero background
+draw and the mobile nav.
+When active it shows a compact, non-modal bar fixed to the bottom of the viewport
+on a first visit (`#consent-bar`: two buttons with the identical class string,
+Decline then Accept, so neither is favoured); reopens it from the footer's
+"Cookie settings" link (`data-consent-open`); and fills the in-page panel on the
+two privacy notices (`[data-consent-panel]`, a later sibling of the `#cookies`
+heading in the same section) with the same two buttons. The wording is the `COPY`
+object in `app.js`, in English and Swedish, and has to stand on its own (a cached
+notice can sit beside a newer bar for minutes) while still naming Google, the
+cookies, who is counted and how to change the choice. The styles are the *Consent* section of `styles.css`; its bottom
+reserve is in `rem` so it grows with the text size, and that reserve and the
+buttons' `7rem` minimum width are the lengths there that are not on the spacing
+scale.
+
+**Two switches: `GA_ID` and `PURGE_ONLY`.** `var GA_ID = 'G-XXXXXXXXXX';` is the
+first line of that IIFE and the only place the Measurement ID exists (it must stay
+a single match in `app.js`; the tests rewrite it by pattern and fail on none or on
+two). While it is the placeholder, any run of X characters after `G-`, or anything
+that is not `G-` plus 6 to 12 capitals or digits, the block returns before doing
+anything: no markup, no storage read or write, no listener, no class on `<html>`,
+no cookie deletion, and the footer link stays a plain link. Shipping with the
+placeholder is the normal state of the branch. The ID is public by construction,
+so it may be committed. `var PURGE_ONLY = false;` sits beside it, the emergency
+stop described under *Cookies and withdrawal*. It is `false` in every state except
+an exit in progress, and it too is a single match in `app.js`: the tests normalise
+it by pattern, so the suite passes in the exit state, and the release gate refuses
+to pass unless it is `false`.
+
+**Flipping it on.** On the day of the flip, set the visible "Last updated" line in
+`privacy.html` and the "Senast uppdaterad" line in `integritet.html` to that day,
+set their `mod` in the `PAGES` registry of `tools/seo-head.py` to the same day, and
+run `python3 tools/seo-head.py`. Then edit the `GA_ID` line (a re-flip after an
+exit also sets `PURGE_ONLY` back to `false` in the same commit), run
+`cd tools && npm run stamp` (`app.js` changed, so every page's stamp moves), then
+`node verify/release-gate.js`, then `npm run check`. The flip is the last commit of
+the one PR. It changes the `GA_ID` line (and, on a re-flip, `PURGE_ONLY`), those two
+dates (the visible lines and `mod` in `tools/seo-head.py`), the files `seo-head.py`
+writes from them (the notices' `dateModified` and `article:modified_time`, two
+sitemap `<lastmod>` lines) and the stamps, and nothing else. It is made only when
+`tools/PRE-FLIP-CHECKLIST.md` is complete.
+
+**The release gate.** `release-gate.js` fails on: a placeholder or malformed ID;
+any `[[CONFIRM` marker on a notice; a draft banner that is still on a notice (it is
+removed only on counsel's written sign-off); a marker on a page that no longer has
+a banner; an unticked box in sections 1 to 9 of the checklist, or a blank field in
+its header block or sign-off block; `PURGE_ONLY` anything but `false`; a policy
+constant that is not the documented one (`COOKIE_MAX_AGE` 31536000,
+`CONSENT_MAX_DAYS` 365); notices that do not say "12 months" / "12 månader" or do
+not name the three storage keys in `<code>`; a notice date that is not fresh (the
+visible "Last updated" date must equal `mod` in `tools/seo-head.py`, and that date
+must be at most 14 days old); a page without the Cookie settings link in its
+footer; a CSP that differs between pages or from `EDGE-SETUP.md`; and any sentence
+that still says the site has no analytics or no cookies. When every scripted gate
+holds it prints `scripted gates pass, N human gates open` and exits 0, never a bare
+PASS: N is the number of gates it lists that only a person can pass, which the
+checklist's boxes cover with evidence. It is deliberately **not** part of
+`npm run check` (which stays green with the placeholder, and in the exit state),
+but its `--self-test` is, and so is `publish.js`.
+
+**Switching it off again** is not the reverse of the flip. The first action of an
+exit is `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last, once the purge
+has run. The exit runbook is section 10 of `tools/PRE-FLIP-CHECKLIST.md`, and every
+other document points there instead of repeating the steps.
+
+**Google is never requested before consent.** No script, `preconnect`,
+`dns-prefetch`, `preload`, `prefetch`, image, font or beacon to a Google host, in
+markup or from script, until the stored choice is `granted` or the visitor has
+just pressed Accept. This is Consent Mode "basic": nothing is sent before the
+choice, not even a default consent state. After Accept the module sends the
+consent default (all four consent parameters denied), injects the one
+`gtag.js?id=<GA_ID>` element, sends `js`, updates `analytics_storage` to granted
+and runs `config` with Google Signals and ad personalisation off and
+`cookie_expires` of 365 days (this site's own setting, not Google's default of two
+years). A returning visitor whose stored answer is still `granted` gets the same
+sequence on page load, without a press. Do not add a Google host to any `<link>`
+anywhere in the pages, and do not set `anonymize_ip` or `client_storage`.
+
+**The stored choice.** `vynatix-consent` in `localStorage`, beside `vynatix-theme`
+and `vynatix-look`, holds one plain string, `v1:granted:YYYY-MM-DD` or
+`v1:denied:YYYY-MM-DD` (the UTC date of the click). It is valid for 365 days, then
+the bar asks again. It is parsed with an exact pattern and must be a real date,
+not in the future and not expired; anything else (a wrong version, an impossible
+date, `__proto__`, markup) counts as no choice, which fails closed. Nothing writes
+the key except a click on Decline or Accept, and browsing is never consent. If
+storage cannot be read there is no bar and no analytics, and if a write does not
+stick the choice is treated as denied. Bump `POLICY_VERSION` when the wording of
+the choice changes in a way that should lapse old answers.
+
+**Cookies and withdrawal.** Google sets `_ga` and `_ga_<container-id>` (the suffix
+is the property's Measurement ID without `G-`). `cookie_expires` is configured to
+expire the cookie at most 365 days after the last hit (`COOKIE_MAX_AGE`, which
+equals `CONSENT_MAX_DAYS` in days). Whether a later hit moves the expiry is an
+observed fact the checklist asks for (3.4); if it does, a visitor who accepts and
+never returns can hold the cookie up to a year past the consent record, and a later
+visit deletes it only while the module is active. Decline and withdrawal set
+Google's own `ga-disable-<ID>` flag, send `analytics_storage: denied`, and delete
+every cookie named `_ga` or starting `_ga_` for the host and every parent domain at
+once and, while the page is still not granted, again a second later and on
+`pagehide`. A load with no choice or a denied one deletes them too. No other
+cookie is touched. The stored choice is read again on `pageshow` after a
+back/forward-cache restore, on `visibilitychange` and on `storage`, so a restored
+page or another tab follows a withdrawal. A bare revert on the server cannot reach a
+tab that has already loaded `gtag.js`; it measures until it is reloaded or until
+`PURGE_ONLY` is set to `true`, which measures nothing for anyone, deletes the `_ga`
+cookies on every load and removes the stored choice, so the `storage` event stops
+open tabs too (the exit runbook, section 10 of `tools/PRE-FLIP-CHECKLIST.md`).
+Reverting `GA_ID` to the placeholder only makes the block inert; it does not clean
+up, which is why it is the last step of an exit and never the first.
+
+**Property settings that live outside the repo.** Nothing in the repo can see
+these, they can drift, and each is evidenced in the checklist and re-checked every
+quarter: Google Signals off; ad personalisation and Google data sharing off; event
+data retention 2 months; Enhanced Measurement decided, with outbound clicks and
+file downloads off (the list pages name other firms, and an outbound-click event
+would record which one a visitor followed); an internal-traffic or Exclude
+hostname filter so local and developer visits do not count, and **no** Include
+hostname filter until it has been tested in DebugView (Google's release note of
+2026-09-21 says Include filters block events with an empty hostname, and the
+effect on web streams is unclear); and a lookup and a deletion by client ID tried
+in the property with the procedure written down, because both notices promise it.
+
+**Facts only a human can supply.** The notices carry five visible `[[CONFIRM: what
+is needed]]` markers each, each wrapped in `<mark class="draft-marker">` so it
+shows on screen (the literal text is unchanged, so the gate's pattern still
+matches): the observed cookie names, domain and lifetime; the retention setting in
+the property; which Enhanced Measurement events remain; Google's contracting
+entity, the entity that receives the data in the United States and its Data Privacy
+Framework listing check; and the client-ID lookup test. Never fill one in from
+memory or from this file. Resolve it from evidence; the release gate refuses to
+pass while any remains. The legal text is a draft for counsel and says so on the
+page; the banner stays until counsel's written sign-off.
+
+**Checks.** `csp.js` (the CSP is identical on all 21 pages, matches
+`EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
+`<link>` or `<script>` on any page is found whatever the quoting or attribute
+order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every
+`PAGES` entry exists; every other root file that is not a page or a listed asset
+type, and every directory other than the known ones, is named in `_config.yml`'s
+`exclude` or flagged; every footer carries the Cookie settings link with
+`data-consent-open` and `href="privacy.html#cookies"`; the notice link in `COPY`
+points at the right notice page; both notices name the three storage keys in
+`<code>`; the site's style rules are linted (role tokens only: no colour literal in
+`styles.css` outside the token files, and no inline style in a page or from
+`app.js`); and `llms.txt` links every URL in `sitemap.xml`), `consent.js`
+(behaviour: nothing before consent, accept, decline, withdrawal, poisoned and
+blocked storage, no-JS, Swedish, and the `PURGE_ONLY` build), `consent-layout.js`
+(bar size, the open menu over the bar, focus never hidden behind the bar, six
+themes), `release-gate.js` (above) and `consent-live.js` (opt-in; real network;
+the dummy ID `G-TEST000000`, never a real property). In
+`tools/verify/_common.js`: `pinConsent` pins a stored choice the way `pinTheme` pins
+a theme, `armGa` arms a page so the module is active under test (the placeholder is
+inert, so without it the axe, contrast, theme and screenshot checks would audit a
+page with no bar; it also normalises `PURGE_ONLY` to `false`), and `rewriteGaId`
+rewrites the `GA_ID` line by pattern and fails loudly on no match or more than
+one. A pass with the dummy ID is not a pass with the real one; see the checklist.
 
 ## Assets
 
@@ -634,7 +863,9 @@ add third-party font/CDN requests for fonts.
   the version stamps into the pages and which you run before committing a change
   to any of the six stamped files, `seo-head.py` (Python 3, standard library),
   which rewrites the search block in every head, the footer and `sitemap.xml`
-  from one registry, and `indexnow.js`, which tells Bing and the
+  from one registry, the two mask generators of the sheet and dial hero backgrounds
+  (`sheet-art.js` in plain Node, `dial-masks.py` in Python 3, neither with
+  dependencies), and `indexnow.js`, which tells Bing and the
   other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from
   the published output in `_config.yml`, with its `node_modules/` gitignored, and
   nothing in it runs at deploy time. The site itself stays hand-written.
@@ -648,14 +879,22 @@ add third-party font/CDN requests for fonts.
   proof (`stale-cache.js`), the search, structured-data and copy check
   (`seo.js`), the hero background draw and its isolation (`bg-draw.js`) with one
   guard per background (`bg-weave.js`, `bg-sheet.js`, `bg-dial.js`, `bg-iris.js`),
-  and the accessibility suite with its contrast sweep (`a11y.js`).
+  the accessibility suite with its contrast sweep (`a11y.js`), the static CSP sync
+  (`csp.js`), the "what ships" check (`publish.js`) and the consent behaviour and
+  layout checks (`consent.js`, `consent-layout.js`). Two more run outside
+  `npm run check`: the release gate (`release-gate.js`, which must fail
+  until analytics is switched on for real; only its `--self-test` is in the chain)
+  and the opt-in live test (`consent-live.js`); see *Analytics*.
   A new page also goes into `PAGES` in `tools/verify/_common.js` and into
-  `sitemap.xml`. Because every visit draws its own scheme and its own hero
+  `sitemap.xml`; `publish.js` fails if a root `*.html` is missing from `PAGES`.
+  Because every visit draws its own scheme and its own hero
   background, the checks that need a particular look pin it first (`pinTheme` in
   `tools/verify/_common.js` sets the storage keys for the theme and for the
   background; the background defaults to the sheet and a pinned weave gets a fixed
-  seed, so a caller that forgets still gets the same page every run). Before
-  changing a component, sweep all six themes:
+  seed, so a caller that forgets still gets the same page every run; `pinBg` pins
+  the background alone, `pinConsent` pins the analytics choice, and `armGa` arms
+  the consent module for checks that audit the bar). Before changing a component,
+  sweep all six themes:
   `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`. `BGS` does the
   same for the four backgrounds in the checks that visit the home page (default
   all four). Before changing the home hero, its copy, or the hero rules, run
@@ -689,8 +928,9 @@ add third-party font/CDN requests for fonts.
   `CLAUDE.md`, `SECURITY.md`, `CODEOWNERS`, the security assessment) and
   `tools/` are excluded, so they stay in the repo but are never served from
   `vynatix.com`. **Anything new that is documentation rather than site content
-  must be added to that exclude list.** (The font and icon licence texts are
-  published on purpose: they have to travel with the files.)
+  must be added to that exclude list**, and `publish.js` fails when it is not. (The
+  font and icon licence texts are published on purpose: they have to travel with the
+  files.)
 
 ### Repository hardening (set once, in GitHub settings)
 

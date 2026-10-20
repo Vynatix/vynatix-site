@@ -3,10 +3,12 @@
   "private": true,
   "description": "Local verification scripts and the version-stamp writer for the Vynatix site. Not part of the site build; excluded from the published output by _config.yml.",
   "scripts": {
-    "check": "node stamp.js --check && node verify/links.js && node verify/seo.js && node verify/requests.js && node verify/adversarial.js && node verify/theme.js && node verify/stale-cache.js && npm run check:bg && node verify/a11y.js",
+    "check": "node verify/csp.js && node verify/publish.js && node verify/release-gate.js --self-test && node stamp.js --check && node verify/links.js && node verify/seo.js && node verify/requests.js && node verify/adversarial.js && node verify/theme.js && node verify/stale-cache.js && node verify/consent.js && node verify/consent-layout.js && npm run check:bg && node verify/a11y.js",
     "check:bg": "node verify/bg-draw.js && node verify/bg-weave.js && node verify/bg-sheet.js && node verify/bg-dial.js && node verify/bg-iris.js",
     "shots": "node verify/screenshot.js current && node verify/screenshot.js compare",
-    "stamp": "node stamp.js"
+    "stamp": "node stamp.js",
+    "release-gate": "node verify/release-gate.js",
+    "consent-live": "node verify/consent-live.js --live"
   },
   "dependencies": {
     "axe-core": "^4",

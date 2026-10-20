@@ -6,7 +6,11 @@
 // the home page preloads are the ones it uses. The colour draw is what this tests, so it is
 // never pinned; the hero background is (pinBg, the sheet), so the home page is the same one
 // every run.
-const { BASE, ALL_THEMES, pinBg, launch } = require('./_common');
+//
+// Every context is armed (armGa): the consent module is live with the dummy ID and Google is stubbed, so each
+// test runs with the consent bar in the page, as a first-time visitor sees it. That is what proves the bar
+// neither flashes the wrong theme, nor adds a preload, nor trips over blocked or poisoned storage.
+const { BASE, ALL_THEMES, armGa, pinBg, launch } = require('./_common');
 
 const PAGES = ['index', 'about', 'services', 'work', 'membership', 'contact', 'privacy', 'terms', 'accessibility'];
 const LOOKS = ['forest', 'teal', 'mono'];
@@ -15,7 +19,9 @@ const isDark = (theme) => /dark$/.test(theme);
 
 (async () => {
   const browser = await launch();
-  const newCtx = async (opts) => { const c = await browser.newContext(opts); await c.addInitScript(pinBg); return c; };
+  // Armed (the consent bar is in the page) and with the hero background pinned to the sheet, the way every context
+  // of this check is made. pinBg touches only "vynatix-bg", so the colour draw and the consent answer stay free.
+  const armed = async (opts) => { const ctx = await browser.newContext(opts); await armGa(ctx); await ctx.addInitScript(pinBg); return ctx; };
   let problems = 0;
   const check = (ok, name, detail) => {
     if (!ok) problems++;
@@ -29,9 +35,20 @@ const isDark = (theme) => /dark$/.test(theme);
     pressed: document.querySelector('.theme-toggle') && document.querySelector('.theme-toggle').getAttribute('aria-pressed'),
   }));
 
+  // 0. The armed module is really up: a first visit shows exactly one consent bar. Without this, a module that
+  // died on load (a syntax error, a wrong ID rewrite) would leave every test below passing on a page with no bar.
+  {
+    const ctx = await armed();
+    const page = await ctx.newPage();
+    await page.goto(url('index'), { waitUntil: 'load' });
+    const bars = await page.evaluate(() => ({ bar: document.querySelectorAll('#consent-bar').length, cls: document.documentElement.className }));
+    check(bars.bar === 1 && /js-consent/.test(bars.cls), 'the armed consent module is up: a first visit shows one #consent-bar, so the tests below run with the bar in the page', `bars ${bars.bar}, html class "${bars.cls}"`);
+    await ctx.close();
+  }
+
   // 1. Every fresh visit draws a direction; across many visits all three appear.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const tally = { forest: 0, teal: 0, mono: 0 };
     let bad = 0;
     for (let i = 0; i < 36; i++) {
@@ -48,7 +65,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 2. Within one visit the scheme never changes: ten page loads and a reload.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     let allStable = true, detail = [];
     for (let visit = 0; visit < 6; visit++) {
       const page = await ctx.newPage();
@@ -71,7 +88,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 3. The toggle flips light and dark inside the drawn scheme, and the choice carries on.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const page = await ctx.newPage();
     await page.goto(url('about'), { waitUntil: 'domcontentloaded' });
     const a = await state(page);
@@ -96,7 +113,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 4. Nothing flashes: the theme on the page when the <body> is created is the final one.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     let flashes = 0, n = 12;
     for (let i = 0; i < n; i++) {
       const page = await ctx.newPage();
@@ -116,7 +133,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 5. Storage that cannot hold the draw leaves the site on Forest, not re-rolling per page.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -137,7 +154,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 6. A stored value that is not a known scheme is discarded, never used.
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const bad = [];
     for (const poison of ['teal-light', '__proto__', '"><img src=x>', '', 'constructor']) {
       const page = await ctx.newPage();
@@ -153,7 +170,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 7. With no stored choice, light or dark follows the system preference.
   for (const scheme of ['dark', 'light']) {
-    const ctx = await newCtx({ colorScheme: scheme });
+    const ctx = await armed({ colorScheme: scheme });
     const page = await ctx.newPage();
     await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
     const s = await state(page);
@@ -163,7 +180,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 8. Without JavaScript the page keeps the Forest light theme its markup names.
   {
-    const ctx = await newCtx({ javaScriptEnabled: false });
+    const ctx = await armed({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
     const t = await page.evaluate(() => document.documentElement.getAttribute('data-theme')).catch(() => null);
@@ -178,7 +195,7 @@ const isDark = (theme) => /dark$/.test(theme);
     ['teal', 'teal-light', ['instrument-serif-400-latin', 'instrument-serif-400-italic-latin']],
     ['mono', 'mono-dark', ['geist-variable-latin', 'fraunces-italic-variable-latin']],
   ]) {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const page = await ctx.newPage();
     const warnings = [];
     page.on('console', (m) => { if (/preload/i.test(m.text())) warnings.push(m.text().slice(0, 140)); });
@@ -196,7 +213,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 10. Other pages preload nothing (the draw only matters for the home headline).
   {
-    const ctx = await newCtx();
+    const ctx = await armed();
     const page = await ctx.newPage();
     await page.goto(url('services'), { waitUntil: 'domcontentloaded' });
     const n = await page.evaluate(() => document.querySelectorAll('link[rel="preload"]').length);

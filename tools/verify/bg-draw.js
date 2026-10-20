@@ -12,7 +12,7 @@
 //
 //   node verify/bg-draw.js              (serve the repo root first, as for the other checks)
 //   VISITS=200 node verify/bg-draw.js   more fresh visits for the odds
-const { BASE, ALL_BGS, pinTheme, launch } = require('./_common');
+const { BASE, ALL_BGS, pinTheme, launch, PAGES } = require('./_common');
 const { PNG } = require('pngjs');
 
 const VISITS = Number(process.env.VISITS || 100);
@@ -357,7 +357,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     // What the site writes is what privacy.html says it writes; the iris's test hook is not stored data.
     const ctx = await browser.newContext();
     const privacy = await (await ctx.request.get(BASE + 'privacy.html')).text();
-    const appjs = await (await ctx.request.get(BASE + 'app.js')).text();
+    const appjs = (await (await ctx.request.get(BASE + 'app.js')).text()) + '\n' + (await (await ctx.request.get(BASE + 'hero-bg.js')).text());   // the draw is in app.js, the backgrounds' scripts in hero-bg.js
     await ctx.close();
     const documented = [...new Set([...privacy.matchAll(/<code>(vynatix-[a-z-]+)<\/code>/g)].map((m) => m[1]))].sort();
     const written = Object.keys(KEYS).map((k) => k.split(' ')[1]).sort();
@@ -366,7 +366,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     const code = appjs.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[ \t])\/\/ .*$/gm, '$1');
     const inJs = [...new Set([...code.matchAll(/'(vynatix-[a-z-]+)'/g)].map((m) => m[1]))].sort();
     const known = written.concat(['vynatix-bg-iris-idle']).sort();
-    check(JSON.stringify(inJs) === JSON.stringify(known), 'app.js names exactly those keys and the iris test hook, and no other', `in app.js [${inJs.join(', ')}]`);
+    check(JSON.stringify(inJs) === JSON.stringify(known), 'app.js and hero-bg.js name exactly those keys and the iris test hook, and no other', `in the scripts [${inJs.join(', ')}]`);
 
     // The hook (vynatix-bg-iris-idle) is read-only: one literal, one read, no write, no removal, not listed for visitors.
     const uses = [...code.matchAll(/IDLE_KEY/g)].length;
@@ -405,12 +405,14 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     check(bad.length === 0, 'iris test hook: 200 and 300 start the opening within 3.2 s; no override, 199, 0, -5, 600001, 1e9, text, empty and markup are ignored and the 20 s silence stands', bad.join(' | '));
   }
 
-  // ---- 12. Structure: the four blocks are fenced and ordered, and every rule in them is scoped to its own draw. ---
+  // ---- 12. Structure: the four blocks are fenced and ordered in the two home-only files, every rule in them is scoped to its own draw, and no other page or shared file carries them. ---
   {
     const ctx = await browser.newContext();
     const get = async (f) => (await ctx.request.get(BASE + f)).text();
-    const css = await get('styles.css'), js = await get('app.js'), index = await get('index.html');
-    const others = await Promise.all(['sv', 'about', 'services', 'work', 'contact', 'privacy', 'accessibility'].map((p) => get(p + '.html')));
+    const css = await get('hero-bg.css'), js = await get('hero-bg.js'), index = await get('index.html');
+    const shared = { 'styles.css': await get('styles.css'), 'app.js': await get('app.js') };
+    const otherPages = PAGES.filter((p) => p !== 'index.html');
+    const others = await Promise.all(otherPages.map((p) => get(p)));
     await ctx.close();
     const problemsHere = [];
     const fenced = (text, open, close, label) => {
@@ -425,10 +427,14 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       }
       return { blocks, last };
     };
-    const cssF = fenced(css, (id) => `/\\* bg:${id}:begin \\*/`, (id) => `/\\* bg:${id}:end \\*/`, 'styles.css');
-    fenced(js, (id) => `// bg:${id}:begin`, (id) => `// bg:${id}:end`, 'app.js');
-    const util = css.indexOf('\n   Utilities');
-    if (!(cssF.last > 0 && util > cssF.last)) problemsHere.push('styles.css: the blocks are not before the utilities block');
+    const cssF = fenced(css, (id) => `/\\* bg:${id}:begin \\*/`, (id) => `/\\* bg:${id}:end \\*/`, 'hero-bg.css');
+    fenced(js, (id) => `// bg:${id}:begin`, (id) => `// bg:${id}:end`, 'hero-bg.js');
+    // The shared files carry none of it, and only the home page links the two files that do.
+    for (const [name, text] of Object.entries(shared)) if (/bg:[a-z]+:(begin|end)/.test(text)) problemsHere.push(`${name} still carries a background block (they live in hero-bg.css and hero-bg.js)`);
+    const linkers = otherPages.filter((p, i) => /hero-bg\.(css|js)/.test(others[i]));
+    if (linkers.length) problemsHere.push(`pages that link a home-only file: ${linkers.join(', ')}`);
+    if (!/href="hero-bg\.css\?v=[0-9a-f]{8}"/.test(index) || !/src="hero-bg\.js\?v=[0-9a-f]{8}"/.test(index)) problemsHere.push('index.html does not link hero-bg.css and hero-bg.js with stamps');
+    if (index.indexOf('src="app.js') > index.indexOf('src="hero-bg.js')) problemsHere.push('index.html links hero-bg.js before app.js, which draws the background');
 
     // Every rule starts from its own scope; custom properties and keyframes carry the id; no raw colour, no !important.
     const SCOPE = { weave: ':root[data-bg="weave"]', sheet: ':root:is(:not([data-bg]), [data-bg="sheet"])', dial: ':root[data-bg="dial"]', iris: ':root[data-bg="iris"]' };
@@ -458,15 +464,15 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       const sink = { selectors: [], props: [], keyframes: [], vars: [], other: [] };
       walk(text, id, sink);
       const unscoped = sink.selectors.filter((s) => !s.startsWith(SCOPE[id]) && !(ALLOWED_UNSCOPED[id] || []).includes(s));
-      if (!sink.selectors.length) problemsHere.push(`styles.css ${id}: no rules found`);
-      if (unscoped.length) problemsHere.push(`styles.css ${id}: ${plural(unscoped.length, 'selector')} not scoped to ${SCOPE[id]}, e.g. ${unscoped[0].slice(0, 80)}`);
+      if (!sink.selectors.length) problemsHere.push(`hero-bg.css ${id}: no rules found`);
+      if (unscoped.length) problemsHere.push(`hero-bg.css ${id}: ${plural(unscoped.length, 'selector')} not scoped to ${SCOPE[id]}, e.g. ${unscoped[0].slice(0, 80)}`);
       const foreign = sink.vars.concat(sink.props).filter((v) => !v.startsWith(`--${id}-`));
-      if (foreign.length) problemsHere.push(`styles.css ${id}: custom properties without the --${id}- prefix: ${[...new Set(foreign)].slice(0, 4).join(', ')}`);
+      if (foreign.length) problemsHere.push(`hero-bg.css ${id}: custom properties without the --${id}- prefix: ${[...new Set(foreign)].slice(0, 4).join(', ')}`);
       const badKf = sink.keyframes.filter((k) => !k.startsWith(`${id}-`));
-      if (badKf.length) problemsHere.push(`styles.css ${id}: keyframes without the ${id}- prefix: ${badKf.join(', ')}`);
-      if (sink.other.length) problemsHere.push(`styles.css ${id}: at-rules the lint does not know: ${sink.other.join(', ')}`);
+      if (badKf.length) problemsHere.push(`hero-bg.css ${id}: keyframes without the ${id}- prefix: ${badKf.join(', ')}`);
+      if (sink.other.length) problemsHere.push(`hero-bg.css ${id}: at-rules the lint does not know: ${sink.other.join(', ')}`);
       const raw = text.match(/!important|\[data-theme|#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(|var\(--(?:forest|teal|mono|cream|bronze|champagne|cloud|neutral|grey)-/);
-      if (raw) problemsHere.push(`styles.css ${id}: ${raw[0]} (role tokens only, no !important, no theme selectors)`);
+      if (raw) problemsHere.push(`hero-bg.css ${id}: ${raw[0]} (role tokens only, no !important, no theme selectors)`);
     }
     // The iris markup: one fenced block in the English home page, decorative, and nowhere else.
     const markers = [...index.matchAll(/<!-- bg-iris:(begin|end)\b/g)].map((m) => m[1]);
@@ -474,7 +480,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     if (markers.join() !== 'begin,end') problemsHere.push(`index.html: iris markers ${markers.join(',') || 'missing'}`);
     if (!/<div class="iris" aria-hidden="true">/.test(block) || /\sstyle=|\sonclick=|<a\s|<button|tabindex/.test(block)) problemsHere.push('index.html: the iris block is not a plain aria-hidden div without style, handler, link or focusable element');
     if (others.some((h) => /<!-- bg-iris|class="iris"/.test(h))) problemsHere.push('another page carries iris markup');
-    check(problemsHere.length === 0, 'source: four fenced blocks in styles.css and app.js in order before the utilities, every rule scoped to its own draw, role tokens only; the iris markup fenced in index.html and nowhere else', problemsHere.join(' | '));
+    check(problemsHere.length === 0, 'source: four fenced blocks in hero-bg.css and hero-bg.js, in order, every rule scoped to its own draw, role tokens only; the shared files carry none, only index.html links the two files; the iris markup fenced in index.html and nowhere else', problemsHere.join(' | '));
   }
 
   console.log(problems === 0 ? '\nPASS — the hero background draw and its isolation hold' : `\nFAIL — ${problems} problem(s)`);

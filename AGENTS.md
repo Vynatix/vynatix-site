@@ -52,6 +52,8 @@ colors_and_type.css Design system layer 2, verbatim: reset, semantic helpers,
                     .eyebrow, .btn, .card, .glass, .container, per-theme typefaces
 styles.css          Layer 3, the site's own: page chrome and components on the roles
 app.js              All client behaviour (vanilla JS, IIFEs, no modules)
+hero-bg.css         The four hero backgrounds' rules (only index.html links it)
+hero-bg.js          The scripts of the backgrounds that need one (only index.html links it)
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted case
                     photos (jpg + webp), app icons, the masks of the sheet and dial
                     hero backgrounds (bg-<id>-*.svg)
@@ -113,13 +115,15 @@ HTML beside the old stylesheet (iOS Chrome did exactly that after the
 design-system migration: icons at full width in black, default list bullets, an
 unstyled header). A changed file gets a URL the visitor's browser has never
 cached, so the HTML names the exact stylesheet it was written for. **After you
-change any of the four files, run `cd tools && npm run stamp` and commit the
+change any of the six files, run `cd tools && npm run stamp` and commit the
 updated pages with the change.** `npm run check` (`node stamp.js --check`) fails
 until you do, and `verify/stale-cache.js` proves, in a browser holding an old
 copy of all four files under the plain URLs, that the stamped pages still come
 out right (`ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the
 engine iOS Chrome uses). A new page must load all four files; the stamp check
-fails if it does not.
+fails if it does not. Two more files carry stamps and are not shared: `hero-bg.css` and
+`hero-bg.js`, the hero backgrounds, which only `index.html` loads (`stamp.js` and
+`stale-cache.js` handle them, and the stamp check fails if any other page links them).
 
 What the stamps do not cover: GitHub's CDN ignores the query string, so it can
 answer a new stamp with the previous bytes until a deploy replaces its copy (the
@@ -181,7 +185,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   equal odds) and sets `data-bg` on `<html>` in the blocking head, before first
   paint, on every page (only the home page has rules that read it). A stored value
   that is not one of the four is discarded. Blocked storage gives `sheet`, and
-  without JavaScript `<html>` has no `data-bg` at all, which `styles.css` treats as
+  without JavaScript `<html>` has no `data-bg` at all, which `hero-bg.css` treats as
   the sheet, so the sheet is the one background that needs no script. To pin the
   site to one, replace `pickBg()`'s body with `return 'sheet';` (or another id).
 - **The selector form and the scoping rules.** Every selector that styles a
@@ -200,13 +204,17 @@ of every text box, off wherever the visitor asks for less (see each one below).
   id and behind the media query it needs, so they are requested only when that
   background is drawn and the widths it applies to. `tools/verify/bg-draw.js`
   enforces all of this.
-- **Where it lives.** Each background is a block in `styles.css` between
-  `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial,
-  iris, immediately before the `.u-*` utilities, as the utilities' note requires)
-  and a block in `app.js` between `// bg:<id>:begin` and `// bg:<id>:end` (the
-  sheet's is a comment: it has no script). The iris also has inline SVG in
-  `index.html`, the first child of `.clients`, between `<!-- bg-iris:begin` and
-  `<!-- bg-iris:end -->`, `aria-hidden`, `display: none` unless it is drawn.
+- **Where it lives.** In two files that only `index.html` links, after `styles.css` and
+  `app.js`, so the other nineteen pages never download them: `hero-bg.css` and
+  `hero-bg.js`. The draw itself stays in `app.js`: it is a few lines, runs on every page and
+  everything else depends on it. Each background is a block in `hero-bg.css` between
+  `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial, iris) and
+  a block in `hero-bg.js` between `// bg:<id>:begin` and `// bg:<id>:end` (the sheet's is
+  a comment: it has no script). `hero-bg.js` is a blocking script in the head, after
+  `app.js`, because the weave's tile and the iris's arming must be in place before the first
+  paint. The iris also has inline SVG in `index.html`, the first child of `.clients`, between
+  `<!-- bg-iris:begin` and `<!-- bg-iris:end -->`, `aria-hidden`, `display: none` unless it is
+  drawn. Both files carry version stamps (`stamp.js`).
 - **Storage** (session storage only, nothing in local storage; listed in
   `privacy.html`, and `bg-draw.js` fails if the two differ): `vynatix-bg` (the
   draw), `vynatix-bg-seed` (weave only: one whole number from 0 to 4294967295 that
@@ -219,7 +227,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   else; `bg-draw.js` keeps it that way (one constant, one read, no write, not in
   `privacy.html`, the range and the ignored values tested).
 
-*Weave* (`weave`; no asset, no request). The `bg:weave` block in `app.js` turns the
+*Weave* (`weave`; no asset, no request). The `bg:weave` block in `hero-bg.js` turns the
 visit's seed into a 6px-pitch balanced twill tile (2/2, 3/3 or 4/4; five structures,
 five cloths, a seeded phase; the motif is 96 to 192px) and sets it as `--weave-tile`
 on `<html>` before first paint. The CSS draws one `.hero__h1::before`, behind
@@ -261,7 +269,7 @@ sheet's guard, `bg-sheet.js`.
 Grating A (`::before`, `assets/bg-dial-a.svg` as a mask over `--text-muted` at 68% plus
 a 2 degree `--text-accent` wedge for the index) is still; grating B (`::after`,
 `assets/bg-dial-b.svg` over `--text-accent` at 78%) has a pitch 2 percent finer, and
-the `bg:dial` block in `app.js` turns it about the circle's centre by -1.364 to +1.364
+the `bg:dial` block in `hero-bg.js` turns it about the circle's centre by -1.364 to +1.364
 degrees (`GAIN` = 6 / 252 rad, 6px of rim travel; `SLEW` 0.35 of the travel per frame)
 through one paused Web Animation scrubbed with `currentTime`, so the beat slides about
 51 times as far. A pointer move schedules a frame; nothing loops, nothing runs at rest;
@@ -274,15 +282,15 @@ constant. Off under forced colours, more contrast, reduced transparency and prin
 below 1200px. Hand-fitted: box 186 x 447px, circle centre (270.2, 223.5), bezel radius
 252px, sweep 130 degrees, pitch 1.5 degrees, ratio 1.02 (beat 76.5 degrees, gain 51x).
 They live in three places that must change together: `tools/dial-masks.py` (which
-prints them and reproduces the shipped pair), the dial block in `styles.css`
+prints them and reproduces the shipped pair), the dial block in `hero-bg.css`
 (`--dial-w`, `height`, `--dial-ox`, `--dial-oy`) and `BEZEL` in the `bg:dial` block of
-`app.js` and in `bg-dial.js` (with `BOX_W`, `BOX_H`, `OVERHANG` there); rename the two
+`hero-bg.js` and in `bg-dial.js` (with `BOX_W`, `BOX_H`, `OVERHANG` there); rename the two
 masks when regenerating, they are cached under fixed URLs. `bg-dial.js`.
 
 *Iris* (`iris`; no asset: inline SVG in `index.html`, 1280px and up). Two svgs in one
 2000-unit frame whose outer ring has a radius of 1000 units: the still (disc, bezel
 band, 72 minor and 12 major ticks, a lit bronze arc ending in an index mark at 296
-degrees) and the inner dial (pupil, tick ring, ring, sweep arc). `styles.css` says what
+degrees) and the inner dial (pupil, tick ring, ring, sweep arc). `hero-bg.css` says what
 1000 units is in pixels (`--iris-r: 400px`) and hangs the block on the clients rule
 (`bottom: 100%` of `.clients`, cut by it, a 1px border in the rule's colour carrying the
 rule to the window's edge). Its left edge is the furthest right of `100% - --iris-bite`
@@ -290,7 +298,7 @@ rule to the window's edge). Its left edge is the furthest right of `100% - --iri
 `--iris-bleed` (330px) off the window's right edge; `--iris-lift` (135px) is the centre's
 height above the rule. Those four numbers and the index angle are hand-fitted (the
 tightest case is the full stop of line 1 in Forest at about 116 percent text zoom). The
-`bg:iris` block in `app.js` decides in the blocking head (home page, English, no reduced
+`bg:iris` block in `hero-bg.js` decides in the blocking head (home page, English, no reduced
 motion, 1280px and wider, no forced colours, no more contrast, no reduced transparency,
 `vynatix-bg-iris` unset) whether the opening can happen and puts `iris-armed` on
 `<html>`, which hides the inner dial; after 20 s without key, pointer, scroll or touch
@@ -346,21 +354,23 @@ in bronze (its bands then read by density only); then re-run the guards.
 
 **Measured costs and known limits** (an independent verification of the four draws together;
 Chromium only, no Safari, Firefox or real devices). Every draw is pixel-identical to a build
-with the other three removed, and the other 19 pages are unchanged. The price: the four
-backgrounds add about 14.5 KB gzip (8.0 in `styles.css`, 6.5 in `app.js`) to every page, 19 of
-which show none; on a cold cache over slow 4G with the CPU throttled 4x, the first and
-largest paint of a page other than the home page rose by 64 to 100 ms, about half from the
-render-blocking CSS and half from the script, and the home page pays a further 50 to 95 ms on a
-desktop at 4x CPU in the two draws that fetch masks (sheet and dial). Where art passes under the
-glass header on scroll, a single link or button can lose up to 3.7:1 of contrast (the weave:
-13.35 to 9.64), never below 5.35:1. With web fonts delayed by 2.5 s the weave and the iris raise
-cumulative layout shift by about 0.01 (0.036 to 0.050 and 0.047), because both are placed from
-text metrics. The dial's and the iris's animation layers re-rasterise the unrelated client
-logos by one anti-aliasing step, which cannot be seen. The sheet's headline guides come within
-about 30px of the lede at the nearest row guide, and its art within 41.5px of any text.
+with the other three removed, and the other 19 pages are unchanged. The price: `hero-bg.css`
+and `hero-bg.js` are 8.6 and 7.0 KB gzip, paid by the home page only (about 17 KB with the iris
+block in `index.html`); every other page carries only the draw in `app.js`, +672 B gzip
+(+1.7%). They were first built into `styles.css` and `app.js`, and that cost every page 14.5 KB
+gzip: on a cold cache over slow 4G with the CPU throttled 4x, the first and largest paint of a
+page other than the home page rose by 64 to 100 ms, about half from the render-blocking CSS and
+half from the script, which is why they are separate files. The home page also pays 50 to 95 ms
+on a desktop at 4x CPU in the two draws that fetch masks (sheet and dial). Where art passes
+under the glass header on scroll, a single link or button can lose up to 3.7:1 of contrast (the
+weave: 13.35 to 9.64), never below 5.35:1. With web fonts delayed by 2.5 s the weave and the
+iris raise cumulative layout shift by about 0.01 (0.036 to 0.050 and 0.047), because both are
+placed from text metrics. The dial's and the iris's animation layers re-rasterise the unrelated
+client logos by one anti-aliasing step, which cannot be seen. The sheet's headline guides come
+within about 30px of the lede at the nearest row guide, and its art within 41.5px of any text.
 
 **Adding or removing one.** To add: give it an id and copy the pattern above: a `bg:<id>`
-block in `styles.css` before the utilities and one in `app.js`, assets named
+block in `hero-bg.css` and one in `hero-bg.js`, assets named
 `assets/bg-<id>-*.svg` (new names, never reused), markup (if any) fenced like the iris's,
 the id in `BGS` in the draw in `app.js` (the odds become 1 in five) and in `ALL_BGS` in
 `tools/verify/_common.js`, a `tools/verify/bg-<id>.js` in the style of the others (it skips
@@ -370,16 +380,17 @@ then `npm run stamp` and the `mod` dates. To remove: delete the same pieces. The
 blocks come out mechanically:
 
 ```sh
-sed -i '/^\/\* bg:iris:begin \*\/$/,/^\/\* bg:iris:end \*\/$/d' styles.css
-sed -i '/^\/\/ bg:iris:begin$/,/^\/\/ bg:iris:end$/d' app.js
+sed -i '/^\/\* bg:iris:begin \*\/$/,/^\/\* bg:iris:end \*\/$/d' hero-bg.css
+sed -i '/^\/\/ bg:iris:begin$/,/^\/\/ bg:iris:end$/d' hero-bg.js
 sed -i '/<!-- bg-iris:begin/,/<!-- bg-iris:end -->/d' index.html     # the iris only
 ```
 
 then take the id out of `BGS` (app.js), `ALL_BGS`, `check:bg`, the assets, the guard, the
 lines in `accessibility.html` and `privacy.html`, run `npm run stamp`, and move the pages'
-`mod` dates. The "Hero backgrounds." comment above the first block belongs to none of them
-and goes with the last one. Without the sheet's block the no-script page has no background
-at all.
+`mod` dates. The header comment of `hero-bg.css` and of `hero-bg.js` names no single
+background and stays until the last one goes, and with it the two files, their two tags in
+`index.html`, and their entries in `stamp.js` and `stale-cache.js`. Without the sheet's block
+the no-script page has no background at all.
 
 **Shared chrome is duplicated, not templated.** The `<header>` and `<footer>`
 (and the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>`
@@ -394,10 +405,11 @@ when current, one small primary button and two icon buttons.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
-`<head>`, and `app.js` is the **only** script — there is no CDN or animation stack. It
+`<head>`, and `app.js` is the only script on every page but the home page, which also
+loads `hero-bg.js` (the hero backgrounds) — there is no CDN or animation stack. `app.js`
 has three features: the theme (the per-visit draw and the toggle), the mobile
-nav and the hero background (the per-visit draw, then the small script of each
-background that needs one: see *Hero backgrounds*). **Nothing on the site moves
+nav and the hero background draw; the small script of each background that needs one
+is in `hero-bg.js` (see *Hero backgrounds*). **Nothing on the site moves
 on its own, with one exception:** the iris background (one visit in four) opens
 its inner dial once per visit, after 20 seconds without input, in 3.6 seconds,
 and any input ends it at once. What else moves answers the visitor: short
@@ -599,7 +611,7 @@ add third-party font/CDN requests for fonts.
   and what is in the repo ships verbatim. The one exception is `tools/`: the
   optional local verification scripts (Playwright) and `stamp.js`, which writes
   the version stamps into the pages and which you run before committing a change
-  to any of the four shared files, `seo-head.py` (Python 3, standard library),
+  to any of the six stamped files, `seo-head.py` (Python 3, standard library),
   which rewrites the search block in every head, the footer and `sitemap.xml`
   from one registry, and `indexnow.js`, which tells Bing and the
   other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from

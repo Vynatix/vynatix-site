@@ -18,7 +18,7 @@
 //                  (one or two roman lines, then the italic line) lie within TOL (1.25) px of the line's real baseline and cap
 //                  height, the second roman line is exactly one line height below the first, the italic line is one
 //                  line, and the rule is not drawn twice where the two sets coincide (Forest). Also that the hold
-//                  distances in styles.css clear the real text ends by 24px.
+//                  distances in hero-bg.css clear the real text ends by 24px.
 // Exits non-zero on any failure. The page must be drawn as the sheet: the script pins { theme, bg: 'sheet' }.
 // Needs Playwright and pngjs (tools/package.json has both).
 const { BASE, THEMES, ALL_THEMES, pinTheme, launch, BGS } = require('./_common.js');
@@ -86,7 +86,7 @@ function applyZoom(s) {
 
 // Insert (and later remove) a CSSOM rule that switches parts of the sheet off. Returns a function that undoes it.
 function hideSheet(which) {
-  const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || ''));
+  const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
   const sel = {
     all: '.hero::before, .hero::after, .hero__h1::before, .hero__h1 em::before',
     art: '.hero::before, .hero::after',
@@ -96,7 +96,7 @@ function hideSheet(which) {
   const i = sheet.insertRule(`${sel} { content: none !important; }`, sheet.cssRules.length);
   return i;
 }
-function unhide(i) { const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || '')); sheet.deleteRule(i); }
+function unhide(i) { const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || '')); sheet.deleteRule(i); }
 function hideText() {
   document.querySelectorAll('.hero, .hero *, .site-header, .site-header *').forEach((e) => {
     e.style.setProperty('color', 'transparent', 'important');

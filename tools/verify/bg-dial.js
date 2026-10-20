@@ -6,7 +6,7 @@
 // lede box plus 24px or, further right, the container's right edge less the arc's width, and the height is a
 // fixed 447px that ends above the clients row. That only holds while the headline, the lede and the clients
 // row keep the shape those rules assume, so this check fails, and says which rule, when a copy or layout
-// change breaks the fit. (See the comment at the top of the dial block in styles.css.)
+// change breaks the fit. (See the comment at the top of the dial block in hero-bg.css.)
 //
 //   S  Shape. Nothing below 1200px: no box, no mask request. Not drawn for another draw or without JavaScript.
 //   G  Geometry. The arc's used box against the layout it is derived from.
@@ -42,7 +42,7 @@ const INK = 1;               // a pixel the arc changes by at least this much in
 const SEARCH = 120;          // how far to look for the nearest ink, for the report
 const BEZEL = 252;           // the bezel radius in px (assets/bg-dial-*.svg, tools/dial-masks.py --radius)
 const GAIN = 6 / BEZEL * 180 / Math.PI;   // degrees at k = 1: 6px at the bezel
-const BOX_W = 186, BOX_H = 447, OVERHANG = 4;   // the box in styles.css
+const BOX_W = 186, BOX_H = 447, OVERHANG = 4;   // the box in hero-bg.css
 
 const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
 const lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
@@ -197,12 +197,12 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
   }
   // The arc switched off through the CSSOM (the page's CSP allows this, and forbids a <style> tag).
   const off = (page) => page.evaluate(() => {
-    const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || ''));
+    const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
     sheet.insertRule(':root[data-bg="dial"]:lang(en) .hero__h1::before, :root[data-bg="dial"]:lang(en) .hero__h1::after { display: none; }', sheet.cssRules.length);
     return sheet.cssRules.length - 1;
   });
   const on = (page, idx) => page.evaluate((i) => {
-    const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || ''));
+    const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
     sheet.deleteRule(i);
   }, idx);
   const shot = async (page) => toPng(await page.screenshot());

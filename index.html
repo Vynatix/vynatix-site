@@ -231,7 +231,10 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=689f256b">
+<link rel="stylesheet" href="styles.css?v=413edf8e">
+<!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
+     nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
+<link rel="stylesheet" href="hero-bg.css?v=ebac486b">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -245,7 +248,10 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=338b2210"></script>
+<script src="app.js?v=d40c4121"></script>
+<!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
+     tile and the iris's arming must be in place before the first paint. -->
+<script src="hero-bg.js?v=d28eff84"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -312,7 +318,7 @@
              consent (assets/CREDITS.md); the rest are described. Each named client links
              to its own site. -->
         <div class="clients">
-          <!-- bg-iris:begin (decorative art for the iris background: styles.css draws and places it, app.js times its one opening) -->
+          <!-- bg-iris:begin (decorative art for the iris background: hero-bg.css draws and places it, hero-bg.js times its one opening) -->
           <div class="iris" aria-hidden="true">
             <svg class="iris__still" viewBox="-1000 -1000 2000 2000" focusable="false">
               <defs><linearGradient id="iris-lit" gradientUnits="userSpaceOnUse" x1="-625" y1="694.1" x2="-839.5" y2="-409.4"><stop class="iris__stop iris__stop--0" offset="0"/><stop class="iris__stop iris__stop--1" offset="0.42"/><stop class="iris__stop iris__stop--2" offset="0.7"/><stop class="iris__stop iris__stop--3" offset="1"/></linearGradient></defs>

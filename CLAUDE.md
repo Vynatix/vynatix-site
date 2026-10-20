@@ -44,7 +44,8 @@ highlights the things most worth keeping front-of-mind.
   from `:root[data-bg="<id>"]` (the sheet's form is
   `:root:is(:not([data-bg]), [data-bg="sheet"])`), its JS returns at once unless it
   is the drawn one, and its CSS and JS sit in `bg:<id>:begin` / `bg:<id>:end` fenced
-  blocks (styles.css before the utilities, app.js after the other IIFEs; the iris
+  blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
+  nineteen pages never download them; the draw itself stays in `app.js`); the iris
   also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
   new names whenever regenerated. The art is placed from the layout and fitted by hand
   to the current headline copy ("Your in-house software team." / "Without the
@@ -61,16 +62,18 @@ highlights the things most worth keeping front-of-mind.
   its source is the `FOOTER` template in `tools/seo-head.py`, so a footer change
   is made there and the script run, which writes it into every page.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
-  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`), because GitHub Pages
+  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
+  `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
   serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
   stylesheet (that is what broke iOS Chrome after the design-system migration). The stamps
   protect the visitor's browser cache; GitHub's CDN ignores the query string. After
-  editing any of the four, run `cd tools && npm run stamp` and commit the pages with
+  editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded — three features
-  (theme draw and toggle, mobile nav, the hero background draw with the small
-  scripts of the backgrounds that need one) and no CDN/animation stack. **Nothing on
+  (theme draw and toggle, mobile nav, the hero background draw; the small scripts of
+  the backgrounds that need one are in `hero-bg.js`, home page only) and no
+  CDN/animation stack. **Nothing on
   the site moves on its own, with one exception: the iris background (a quarter of
   visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
   ends it.** The dial background answers the pointer (and sweeps once, for half a

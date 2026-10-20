@@ -3,7 +3,7 @@
 // The cloth is placed by the layout, not by pixel positions: its top is the headline's first line, its
 // left edge the lede's right edge (56ch in the lede's font), its right edge the header's right edge and
 // its height a multiple of the headline's line height (see the comment at the top of the weave block in
-// styles.css). That only holds while the headline and the lede keep the shape those rules assume, so
+// hero-bg.css). That only holds while the headline and the lede keep the shape those rules assume, so
 // this check fails, and says which rule, when a copy or layout change breaks the fit.
 //
 //   B  Clearance. Pixels the cloth changes (a screenshot with it against one with it switched off through
@@ -176,12 +176,12 @@ function behind(png, t) {
   }
   // The cloth switched off through the CSSOM (the page's CSP allows this, and forbids a <style> tag).
   const off = (page) => page.evaluate(() => {
-    const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || ''));
+    const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
     sheet.insertRule(':root[data-bg="weave"]:lang(en) .hero__h1::before { display: none; }', sheet.cssRules.length);
     return sheet.cssRules.length - 1;
   });
   const on = (page, idx) => page.evaluate((i) => {
-    const sheet = [...document.styleSheets].find((s) => /styles\.css/.test(s.href || ''));
+    const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
     sheet.deleteRule(i);
   }, idx);
   const shot = async (page) => toPng(await page.screenshot());

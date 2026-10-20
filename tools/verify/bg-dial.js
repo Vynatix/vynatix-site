@@ -412,19 +412,22 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     await ctx.close();
   }
   {
-    // The sweep keeps the pointer's speed limit, from an edge too (the longest swing), per 60 Hz frame.
+    // The sweep keeps the pointer's speed limit, from an edge too (the longest swing): speed, in degrees per
+    // 60 Hz frame. Time comes from the frame's own timestamp (the time base the animation runs on), never from
+    // performance.now(): the latter jitters by whole frames under load and read the same sweep as anything
+    // from 0.36 to 1.03 degrees; a dropped 33 ms frame covers twice the time at the same speed.
     const { ctx, page } = await open(T, 1440);
     await toK(page, 1440, -1);
     const samples = await page.evaluate(() => new Promise((resolve) => {
       const el = document.querySelector('.hero__h1');
       const read = () => parseFloat(getComputedStyle(el, '::after').rotate) || 0;
-      const out = [[performance.now(), read()]]; let n = 0;
+      const out = [[document.timeline.currentTime, read()]]; let n = 0;
       document.querySelector('.theme-toggle').click();
-      const tick = () => { out.push([performance.now(), read()]); if (++n < 45) requestAnimationFrame(tick); else resolve(out); };
+      const tick = (ts) => { out.push([ts, read()]); if (++n < 45) requestAnimationFrame(tick); else resolve(out); };
       requestAnimationFrame(tick);
     }));
     let step = 0;
-    for (let i = 1; i < samples.length; i++) { const dt = samples[i][0] - samples[i - 1][0]; if (dt > 0) step = Math.max(step, Math.abs(samples[i][1] - samples[i - 1][1]) * 16.667 / dt); }
+    for (let i = 1; i < samples.length; i++) { const dt = samples[i][0] - samples[i - 1][0]; if (dt > 0.5) step = Math.max(step, Math.abs(samples[i][1] - samples[i - 1][1]) * 16.667 / dt); }
     check(step <= 0.35 * GAIN + 0.01, 'M  toggle: the sweep moves B by at most 0.35 of its travel per 60 Hz frame, from an edge too', `largest step ${step.toFixed(3)} degrees (${(step * Math.PI / 180 * BEZEL).toFixed(2)}px at the bezel), limit ${(0.35 * GAIN).toFixed(3)}`);
     await ctx.close();
   }

@@ -309,6 +309,11 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
         await p.goto(url(page), { waitUntil: 'load' });
         await p.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
         await p.waitForTimeout(250);
+        // styles.css lets the browser skip the sections below the hero until they are near the viewport
+        // (content-visibility: auto), so a full-page capture of a long page at phone width is 12789 or 13165px
+        // tall depending on timing, on a build with no background code at all. Show every section, as
+        // screenshot.js does: this compares the backgrounds, not the browser's bookkeeping.
+        await p.evaluate(() => { document.querySelectorAll('main > section').forEach((s) => s.style.setProperty('content-visibility', 'visible')); });
         pngs[bg] = PNG.sync.read(await p.screenshot({ fullPage: true, animations: 'disabled', caret: 'hide' }));
         shots++;
         await ctx.close();

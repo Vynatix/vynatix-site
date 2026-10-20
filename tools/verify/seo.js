@@ -1,6 +1,8 @@
 // Search, sharing and copy checks for every page in PAGES, run in Chromium against the local server.
 // - one canonical per page, in the form the sitemap uses; og:url, og:title and og:description
 //   match the canonical, <title> and meta description; html lang is en or sv and og:locale agrees
+// - one robots meta per page, exactly "index, follow, max-snippet:-1, max-image-preview:large";
+//   twitter:title and twitter:description repeat og:title and og:description
 // - every JSON-LD block parses, carries the Organization node, and names this page with a
 //   dateModified that matches the sitemap's lastmod
 // - every page carries article:published_time and article:modified_time equal to its page
@@ -27,6 +29,7 @@ const { PAGES, BASE, armGa, pinBg, launch } = require('./_common');
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
 const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p);
+const ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large';
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
 const ok = (msg) => console.log('ok   ' + msg);
@@ -95,6 +98,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
         ogDesc: (document.querySelector('meta[property="og:description"]') || {}).content,
         ogLocale: (document.querySelector('meta[property="og:locale"]') || {}).content,
         twitter: !!document.querySelector('meta[name="twitter:card"]'),
+        twTitle: (document.querySelector('meta[name="twitter:title"]') || {}).content,
+        twDesc: (document.querySelector('meta[name="twitter:description"]') || {}).content,
+        robots: attr('meta[name="robots"]', 'content'),
         hreflang: [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((e) => [e.hreflang, e.href]),
         ld: [...document.querySelectorAll('script[type="application/ld+json"]')].map((e) => e.textContent),
         h1: document.querySelectorAll('h1').length,
@@ -110,6 +116,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     if (norm(d.ogTitle) !== norm(d.title)) issues.push('og:title differs from <title>');
     if (norm(d.ogDesc) !== norm(d.desc)) issues.push('og:description differs from the meta description');
     if (!d.twitter) issues.push('no twitter:card');
+    if (norm(d.twTitle) !== norm(d.ogTitle) || !norm(d.twTitle)) issues.push('twitter:title differs from og:title');
+    if (norm(d.twDesc) !== norm(d.ogDesc) || !norm(d.twDesc)) issues.push('twitter:description differs from og:description');
+    if (d.robots.length !== 1 || d.robots[0] !== ROBOTS) issues.push(`robots meta ${JSON.stringify(d.robots)} (want one, "${ROBOTS}")`);
     if (!['en', 'sv'].includes(d.lang)) issues.push(`html lang "${d.lang}"`);
     if (d.ogLocale !== { en: 'en_GB', sv: 'sv_SE' }[d.lang]) issues.push(`og:locale ${d.ogLocale} for lang ${d.lang}`);
     if (d.h1 !== 1) issues.push(`${d.h1} h1 elements`);

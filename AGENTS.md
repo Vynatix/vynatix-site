@@ -46,7 +46,8 @@ integritet.html     Swedish privacy notice, the twin of privacy.html (the fifth
                     English/Swedish pair); the Swedish consent bar links to it.
                     Twenty-one pages in total
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
-sitemap.xml         Every page, its lastmod and its hreflang pair (hand-maintained)
+sitemap.xml         Every page, its lastmod and its hreflang pair (written by
+                    tools/seo-head.py from PAGES)
 llms.txt            A plain-text summary of the company and every page, in both languages
 <32 hex>.txt        The IndexNow key file (tools/indexnow.js proves ownership with it)
 tokens.css          Design system layer 1: the tokens, generated from the system's
@@ -531,9 +532,12 @@ Overviews and AI Mode, Microsoft Copilot), and every page carries the same
 machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
 
 - one `<link rel="canonical">` (`https://vynatix.com/` for the home page, otherwise
-  `https://vynatix.com/<file>.html`, the form the internal links use), and Open
-  Graph and `twitter:card` tags whose title, description and URL repeat the page's
-  own `<title>`, meta description and canonical;
+  `https://vynatix.com/<file>.html`, the form the internal links use), one
+  `<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">`,
+  and Open Graph tags whose title, description and URL repeat the page's own
+  `<title>`, meta description and canonical, plus `twitter:card`, `twitter:title`
+  and `twitter:description`, the last two carrying exactly the strings `og:title`
+  and `og:description` carry;
 - for a page with a twin in the other language, `hreflang` links to both versions
   and `x-default` to the English one, reciprocal on both pages and mirrored in
   `sitemap.xml`;
@@ -573,16 +577,16 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
 - `tools/verify/seo.js` (part of `npm run check`) enforces all of the above, plus
   the copy rules below on visible text.
 
-**One sentence about the company**, used verbatim wherever a page introduces it and
-in the JSON-LD description, so every source an engine reads agrees: "Vynatix AB is
-a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra
-Group. Three senior engineers work embedded in client teams on Android Automotive,
-AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our
-clients." (Swedish: "Vynatix AB är ett mjukvarukonsultbolag i Göteborg, grundat
-2023 och en del av Ultra Group. Tre seniora utvecklare arbetar inbäddade i
-kundernas team inom Android Automotive, AI och molnplattformar, med Volvo Trucks
-och Volvo Cars bland kunderna.") If a fact in it changes, change it everywhere,
-including LinkedIn, the registries and `llms.txt`.
+**One sentence about the company**, used verbatim wherever a page introduces it
+and in the JSON-LD description, so every source an engine reads agrees: "Vynatix
+AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of
+Ultra Group. Our senior engineers work as part of client organisations on Android
+Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars
+among our clients." (Swedish: "Vynatix AB är ett mjukvarukonsultbolag i Göteborg,
+grundat 2023 och en del av Ultra Group. Våra seniora utvecklare arbetar som en del
+av kundernas organisationer inom Android Automotive, AI och molnplattformar, med
+Volvo Trucks och Volvo Cars bland kunderna.") If a fact in it changes, change it
+everywhere, including LinkedIn, the registries and `llms.txt`.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
@@ -600,7 +604,7 @@ page the footer's Legal column therefore deliberately holds one Swedish item, th
 relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
 "Accessibility"); the shared footer is English by design, and the link has to match
 the Swedish bar and notice. Without JavaScript it reverts to English. The
-two home pages are not mirror images: the "three ways" list in Who we are and
+two home pages are not mirror images: the comparison table in Who we are and
 the Further reading section exist only on the English home page (sv.html has the
 Guider section instead). The Further reading items on index.html repeat the
 linked pages' `<title>` (without the brand suffix) and meta description word for

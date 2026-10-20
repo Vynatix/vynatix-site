@@ -6,11 +6,12 @@ with the others and with sitemap.xml. Python 3, standard library only; run it fr
 
 What it rewrites, on every page it is given:
 - the search and sharing block in <head>, between <!-- seo --> and <!-- /seo -->: canonical,
-  hreflang, Open Graph with article:published_time and article:modified_time, twitter:card, and
-  the JSON-LD graph (the Organization node, identical on every page; the WebSite node; the page
-  node with datePublished and dateModified; a FAQPage node built from the page's visible FAQ,
-  [data-faq] and [data-faq-item]; an Article node for the guides; and the page's extra nodes
-  from tools/seo/<page>.json, when that file exists);
+  hreflang, the robots meta, Open Graph with article:published_time and article:modified_time,
+  twitter:card with twitter:title and twitter:description (the same strings as og:title and
+  og:description), and the JSON-LD graph (the Organization node, identical on every page; the
+  WebSite node; the page node with datePublished and dateModified; a FAQPage node built from the
+  page's visible FAQ, [data-faq] and [data-faq-item]; an Article node for the guides; and the
+  page's extra nodes from tools/seo/<page>.json, when that file exists);
 - the footer, from the FOOTER template below (a footer change is made there, then this is run;
   it is not edited in twenty-one files);
 - lang="en" on the site header, which stays English on the Swedish pages;
@@ -46,7 +47,7 @@ WEBSITE_ID = SITE + '#website'
 # The order here is the order of sitemap.xml.
 PAGES = {
   'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-20', alt={'sv': 'sv.html'}),
-  'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-18'),
+  'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-20'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-18'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
@@ -55,16 +56,16 @@ PAGES = {
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
-  'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'android-automotive-utveckling.html'}),
-  'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'android-automotive-development.html'}),
-  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'ai-utveckling.html'}),
-  'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'ai-engineering.html'}),
-  'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}),
-  'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}),
-  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
-  'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
-  'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
-  'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-18', article=True),
+  'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'android-automotive-utveckling.html'}),
+  'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'android-automotive-development.html'}),
+  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'ai-utveckling.html'}),
+  'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'ai-engineering.html'}),
+  'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}),
+  'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}),
+  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
+  'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
+  'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
+  'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-10-19', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
@@ -76,8 +77,8 @@ def url_of(f):
 
 # ---------------------------------------------------------------- shared nodes
 COMPANY_SENTENCE = ("Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of "
-    "Ultra Group. Its senior engineers work as part of client organisations on Android Automotive, AI engineering "
-    "and cloud platforms, with Volvo Trucks and Volvo Cars among its clients.")
+    "Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering "
+    "and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.")
 
 ORGANIZATION = {
   "@type": "Organization",
@@ -93,7 +94,6 @@ ORGANIZATION = {
   "foundingLocation": {"@type": "Place", "name": "Gothenburg, Sweden"},
   "memberOf": {"@type": "Organization", "name": "Ultra Group", "url": "https://ultragroup.se/"},
   "identifier": {"@type": "PropertyValue", "propertyID": "Swedish organisationsnummer", "value": "559445-6542"},
-  "numberOfEmployees": {"@type": "QuantitativeValue", "value": 3},
   "address": {"@type": "PostalAddress", "streetAddress": "Mailbox 1611", "postalCode": "411 42",
               "addressLocality": "Gothenburg", "addressCountry": "SE"},
   "email": "front.disk@vynatix.com",
@@ -182,6 +182,7 @@ def head_block(f, title, desc, main_html, extra_nodes):
                 lines.append(f'<link rel="alternate" hreflang="{lang}" href="{url_of(versions[lang])}">')
         lines.append(f'<link rel="alternate" hreflang="x-default" href="{url_of(versions.get("en", f))}">')
     lines += ['<meta name="author" content="Vynatix AB">',
+              '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">',
               f'<meta property="og:type" content="{p["og"]}">',
               '<meta property="og:site_name" content="Vynatix">',
               f'<meta property="og:title" content="{html.escape(title, quote=True)}">',
@@ -196,7 +197,9 @@ def head_block(f, title, desc, main_html, extra_nodes):
               '<meta property="og:image:width" content="512">',
               '<meta property="og:image:height" content="512">',
               '<meta property="og:image:alt" content="The Vynatix mark">',
-              '<meta name="twitter:card" content="summary">']
+              '<meta name="twitter:card" content="summary">',
+              f'<meta name="twitter:title" content="{html.escape(title, quote=True)}">',
+              f'<meta name="twitter:description" content="{html.escape(desc, quote=True)}">']
     # JSON-LD graph
     page = {"@type": p['type'], "@id": u, "url": u, "name": title, "description": desc,
             "inLanguage": p['lang'], "isPartOf": {"@id": WEBSITE_ID},
@@ -298,9 +301,22 @@ def read(f): return open(os.path.join(REPO, f), encoding='utf-8').read()
 def write(f, s): open(os.path.join(REPO, f), 'w', encoding='utf-8').write(s)
 
 def extra_nodes_for(f):
-    """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any."""
+    """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any.
+    That file holds either "extra_nodes" (the nodes themselves) or "extra_nodes_from" (another file
+    in tools/seo/) with "ids": the "extra_nodes" of that file whose "@id" is listed, in the order
+    of "ids", so a node that more than one page carries has one source."""
     path = os.path.join(SEO_DIR, f[:-len('.html')] + '.json')
-    return json.load(open(path, encoding='utf-8')).get('extra_nodes') if os.path.exists(path) else None
+    if not os.path.exists(path):
+        return None
+    data = json.load(open(path, encoding='utf-8'))
+    src = data.get('extra_nodes_from')
+    if not src:
+        return data.get('extra_nodes')
+    nodes = {n['@id']: n for n in json.load(open(os.path.join(SEO_DIR, src), encoding='utf-8')).get('extra_nodes', [])}
+    missing = [i for i in data.get('ids', []) if i not in nodes]
+    if missing:
+        raise SystemExit(f + ': ' + src + ' has no node with @id ' + ', '.join(missing))
+    return [nodes[i] for i in data.get('ids', [])]
 
 def main_of(s):
     m = re.search(r'(\s*<main id="main">.*?</main>)', s, re.S); return m.group(1) if m else ''

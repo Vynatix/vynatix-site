@@ -1,9 +1,12 @@
 // Accessibility checks: axe-core scan on every page in every theme under test
 // (THEMES, default light,dark), plus functional tests for the skip link, the
 // still client list, the no-JS and reduced-motion fallbacks, and an
-// independent contrast sweep.
+// independent contrast sweep. The home page is scanned and swept once for each
+// hero background under test (BGS, default all four); every other page once.
+// The reduced-motion check always runs all four backgrounds, because two of them
+// (the dial and the iris) use the Web Animations API, which animationName cannot see.
 const fs = require('fs');
-const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+const { PAGES, BASE, THEMES, ALL_BGS, bgsFor, pinTheme, pinBg, launch } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
 
 (async () => {
@@ -13,12 +16,13 @@ const AXE = require.resolve('axe-core/axe.min.js');
 
   // --- axe scan -----------------------------------------------------------
   for (const p of PAGES) {
-    for (const theme of THEMES) {
+    for (const theme of THEMES) for (const bg of bgsFor(p)) {
+      const label = `${theme}${bg ? ' ' + bg : ''}`;
       // bypassCSP only for the axe scan: script-src 'self' correctly refuses the
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
       const ctx = await browser.newContext({ bypassCSP: true });
       const page = await ctx.newPage();
-      await page.addInitScript(pinTheme, theme);
+      await page.addInitScript(pinTheme, { theme, bg });
       await page.goto(BASE + p, { waitUntil: 'load' });
       await page.addScriptTag({ content: axeSrc });
       const res = await page.evaluate(async () => await window.axe.run(document, {
@@ -27,10 +31,10 @@ const AXE = require.resolve('axe-core/axe.min.js');
       const v = res.violations;
       if (v.length) {
         problems += v.length;
-        console.log(`FAIL ${p} [${theme}] — ${v.length} violation(s)`);
+        console.log(`FAIL ${p} [${label}] — ${v.length} violation(s)`);
         v.forEach((x) => console.log(`       ${x.impact}: ${x.id} — ${x.help} (${x.nodes.length} node(s))\n         e.g. ${x.nodes[0].target.join(' ')}`));
       } else {
-        console.log(`ok   ${p} [${theme}] — 0 axe violations`);
+        console.log(`ok   ${p} [${label}] — 0 axe violations`);
       }
       await ctx.close();
     }
@@ -39,6 +43,7 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // --- skip link, on every page --------------------------------------------
   {
     const page = await browser.newPage();
+    await page.addInitScript(pinBg);
     const bad = [];
     for (const pg of PAGES) {
       await page.goto(BASE + pg, { waitUntil: 'load' });
@@ -66,9 +71,11 @@ const AXE = require.resolve('axe-core/axe.min.js');
   // The design system forbids ambient loops and auto-advancing strips, so the
   // client marks are a plain list: exactly one copy, named by a visible label,
   // every named client an off-site link that opens safely, nothing animating
-  // and no pause control left over from the old marquee.
+  // and no pause control left over from the old marquee. (The hero backgrounds
+  // are a separate matter, see the reduced-motion check below.)
   {
     const page = await browser.newPage();
+    await page.addInitScript(pinBg);
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const r = await page.evaluate(() => {
       const lists = [...document.querySelectorAll('.clients__list')];
@@ -118,22 +125,60 @@ const AXE = require.resolve('axe-core/axe.min.js');
   }
 
   // --- reduced motion ------------------------------------------------------
-  // Nothing on the site moves on its own; what remains are short transitions,
-  // which the design system cuts to 0.01ms under prefers-reduced-motion.
-  {
-    const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  // With reduced motion on, nothing on the site animates: not by CSS (animationName)
+  // and not by script (document.getAnimations(), which also lists the Web Animations
+  // the dial and the iris use, and CSS transitions still running). The remaining
+  // transitions are cut to 0.01ms by the design system. Every hero background is
+  // drawn in turn, at 1440 wide so that all four have their art on screen, and each
+  // is shown to be drawn, so that a zero is not the zero of an empty page. Each is
+  // also given every chance to move: the pointer crosses the page (the dial's input),
+  // the theme button is pressed (the dial's sweep), and the iris's 20 seconds of
+  // silence are cut to 200ms through its test hook, vynatix-bg-iris-idle (read-only,
+  // see tools/README.md), so that an opening that was going to play would have started.
+  for (const bg of ALL_BGS) {
+    const ctx = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
+    await page.addInitScript(pinTheme, { theme: 'light', bg });
+    if (bg === 'iris') await page.addInitScript(() => { try { sessionStorage.setItem('vynatix-bg-iris-idle', '200'); } catch (e) { /* blocked */ } });
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
+    await page.mouse.move(300, 450, { steps: 6 });
+    await page.mouse.move(1300, 520, { steps: 6 });
+    await page.click('.theme-toggle');
+    await page.waitForTimeout(1500);                // let anything that was going to start, start
     const r = await page.evaluate(() => {
       const running = [...document.querySelectorAll('*')].filter((el) => getComputedStyle(el).animationName !== 'none').length;
+      const pseudo = [...document.querySelectorAll('.hero, .hero__h1, .hero__h1 em')].reduce((n, el) =>
+        n + ['::before', '::after'].filter((q) => getComputedStyle(el, q).animationName !== 'none').length, 0);
+      const live = document.getAnimations();
+      const h1 = document.querySelector('.hero__h1');
+      const iris = document.querySelector('.iris');
+      const drawn = {
+        weave: getComputedStyle(h1, '::before').display === 'block' && getComputedStyle(h1, '::before').content !== 'none',
+        sheet: getComputedStyle(h1, '::before').content !== 'none',
+        dial: getComputedStyle(h1, '::after').content !== 'none' && getComputedStyle(h1, '::after').maskImage !== 'none',
+        iris: !!iris && getComputedStyle(iris).display === 'block',
+      }[document.documentElement.dataset.bg];
       const card = document.querySelector('.case');
-      return { animating: running, cardTransition: card ? getComputedStyle(card).transitionDuration : 'missing' };
+      // The iris under reduced motion: the dial is drawn settled and the opening is not even armed (the design
+      // system's own rule would cut the animation to 0.01ms, which getAnimations() could not tell from "never
+      // started", so look at the opening's own state: classes on <html> and the once-per-visit flag).
+      const c = document.documentElement.classList, dial = document.querySelector('.iris__dial');
+      const irisState = document.documentElement.dataset.bg !== 'iris' ? null : {
+        armed: c.contains('iris-armed'), play: c.contains('iris-play'), done: c.contains('iris-done'),
+        flag: sessionStorage.getItem('vynatix-bg-iris'), dialOpacity: dial ? getComputedStyle(dial).opacity : null,
+      };
+      return {
+        bg: document.documentElement.dataset.bg, drawn, iris: irisState, animating: running, pseudoAnimating: pseudo,
+        webAnimations: live.length, which: live.map((a) => `${a.constructor.name} ${a.animationName || a.transitionProperty || ''}`).slice(0, 4),
+        cardTransition: card ? getComputedStyle(card).transitionDuration : 'missing',
+      };
     });
     // Chrome reports the system's 0.01ms as "1e-05s"; anything under a millisecond counts as cut.
     const cut = r.cardTransition !== 'missing' && r.cardTransition.split(',').every((d) => parseFloat(d) < 0.001);
-    const ok = r.animating === 0 && cut;
+    const irisOk = !r.iris || (!r.iris.armed && !r.iris.play && !r.iris.done && r.iris.flag === null && r.iris.dialOpacity === '1');
+    const ok = r.bg === bg && r.drawn === true && irisOk && r.animating === 0 && r.pseudoAnimating === 0 && r.webAnimations === 0 && cut;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: nothing animates and transitions are cut — ${JSON.stringify(r)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion [${bg}]: art drawn, nothing animates (CSS or Web Animations) through pointer moves, a theme toggle and a short silence, and transitions are cut — ${JSON.stringify(r)}`);
     await ctx.close();
   }
 
@@ -144,9 +189,10 @@ const AXE = require.resolve('axe-core/axe.min.js');
     const page = await browser.newPage();
     const failures = [];
     for (const pg of PAGES) {
-      for (const theme of THEMES) {
-        await page.addInitScript(pinTheme, theme);
+      for (const theme of THEMES) for (const bg of bgsFor(pg)) {
+        await page.addInitScript(pinTheme, { theme, bg });
         await page.goto(BASE + pg, { waitUntil: 'load' });
+        const label = `${theme}${bg ? ' ' + bg : ''}`;
         const bad = await page.evaluate(() => {
           const lum = (rgb) => {
             const c = rgb.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
@@ -193,13 +239,13 @@ const AXE = require.resolve('axe-core/axe.min.js');
           });
           return out;
         });
-        bad.forEach((b) => failures.push(`${pg} [${theme}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
+        bad.forEach((b) => failures.push(`${pg} [${label}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
       }
     }
     if (failures.length) problems++;
     console.log(failures.length
       ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 30).join('\n       ')}`
-      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}`);
+      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')} (home page in each of ${bgsFor('index.html').join(', ')})`);
     await page.close();
   }
 

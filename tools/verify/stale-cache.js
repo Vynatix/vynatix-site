@@ -32,6 +32,7 @@ const http = require('http');
 const path = require('path');
 
 const ENGINE = process.env.ENGINE || 'chromium';
+const { pinBg } = require('./_common');
 const launch = ENGINE === 'chromium'
   ? require('./_common').launch
   : () => require('playwright')[ENGINE].launch();
@@ -117,6 +118,7 @@ const hashOf = (f) => crypto.createHash('sha256')
     for (const variant of ['control', 'test']) {
       // One context per run: a fresh in-memory cache, primed with the old build.
       const ctx = await browser.newContext({ viewport: { width: 430, height: 900 } });
+      await ctx.addInitScript(pinBg);   // the hero background is drawn at random per visit; pin it so the home page is the same one every run
       const page = await ctx.newPage();
       mode = 'old';
       await page.goto(base + p, { waitUntil: 'load' });         // primes the cache

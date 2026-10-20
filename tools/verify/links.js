@@ -4,11 +4,12 @@
 // It does NOT check that the _config.yml exclusions hold — those are applied by
 // Jekyll at publish time, and the local server serves every file raw. Verify
 // them against the live origin instead; EDGE-SETUP.md section 4 has the loop.
-const { PAGES, BASE, launch } = require('./_common');
+const { PAGES, BASE, pinBg, launch } = require('./_common');
 
 (async () => {
   const browser = await launch();
   const page = await browser.newPage();
+  await page.addInitScript(pinBg);     // the hero background is drawn at random per visit; the links do not depend on it
   const seen = new Map();
   let bad = 0;
 

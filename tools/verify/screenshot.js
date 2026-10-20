@@ -1,10 +1,16 @@
 // Visual-regression gate. Capture a baseline before a refactor, then compare after.
 //   node verify/screenshot.js baseline | current | compare
 // Animations are disabled during capture so the marquee cannot cause false diffs.
+// The home page is captured once for each hero background under test (BGS, default all
+// four), as index-<theme>-<bg>.png; every other page once, as <page>-<theme>.png. The
+// draw is always pinned (a weave with its fixed seed, a dial at rest, an iris still
+// waiting: a capture takes seconds, the iris opens after twenty seconds of silence),
+// so the same tree gives the same pixels. Changing the home page changes its files by
+// design: regenerate those baselines deliberately, not the other pages'.
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+const { PAGES, BASE, THEMES, bgsFor, pinTheme, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
@@ -17,13 +23,14 @@ const VIEWPORT = {
 async function capture() {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await launch();
+  let shots = 0;
   for (const p of PAGES) {
-    for (const theme of THEMES) {
+    for (const theme of THEMES) for (const bg of bgsFor(p)) {
       const ctx = await browser.newContext({ viewport: VIEWPORT });
       const page = await ctx.newPage();
       // Pin the theme before first paint (the site otherwise draws a colour scheme at
       // random per visit) so every capture is the same theme, never a mid-toggle frame.
-      await page.addInitScript(pinTheme, theme);
+      await page.addInitScript(pinTheme, { theme, bg });
       await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
       await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
       // Force every image to load and decode before capturing. fullPage grows the
@@ -36,14 +43,15 @@ async function capture() {
         await Promise.all(imgs.map((img) => img.decode().catch(() => {})));
       });
       await page.waitForTimeout(300);
-      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}.png`);
+      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}${bg ? '-' + bg : ''}.png`);
       await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });
       console.log(`  captured ${path.basename(file)}`);
+      shots++;
       await ctx.close();
     }
   }
   await browser.close();
-  console.log(`\n${PAGES.length * THEMES.length} screenshots written to ${OUT}`);
+  console.log(`\n${shots} screenshots written to ${OUT}`);
 }
 
 function sha(file) {

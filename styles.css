@@ -1167,7 +1167,7 @@ a.clients__item:has(.clients__mark):hover {
    56ch (the lede's max-width) is the lede's own measure in whichever face the visit has. Its right
    is the header's right edge. The numbers fitted by hand are the clearance below the first line
    (1.12 line heights and 24px), the height (4.5 line heights, which ends 24px above the clients
-   row in the serif themes) and the ramp stops; tools/verify/guard-weave.js fails when a copy or
+   row in the serif themes) and the ramp stops; tools/verify/bg-weave.js fails when a copy or
    layout change breaks them.
 
    Every rule starts from the draw, so with another background drawn this changes nothing. Home
@@ -1521,7 +1521,7 @@ a.clients__item:has(.clients__mark):hover {
    numbers fitted by hand are the arc's box and its centre (--dial-w, the height, --dial-ox and
    --dial-oy, printed by tools/dial-masks.py), the clearance below the first line (1.12 line
    heights and 24px) and the 4px by which the box overhangs the container's edge;
-   tools/verify/guard-dial.js fails when a copy or layout change breaks them.
+   tools/verify/bg-dial.js fails when a copy or layout change breaks them.
 
    Every rule starts from the draw, so with another background drawn this changes nothing. Home
    page and English only (:lang(en)). The rules sit behind one feature query because they need
@@ -1617,7 +1617,7 @@ a.clients__item:has(.clients__mark):hover {
    than into the copy; and the place where it bleeds --iris-bleed off the right edge of the window, so a
    wide screen shows the same crop as a laptop. --iris-lift is how far the dial's centre stands above the
    rule. The numbers fitted by hand are --iris-r, --iris-bite, --iris-bleed and --iris-lift, and the index
-   angle in the markup; guard-iris.js fails when a copy or layout change breaks them.
+   angle in the markup; tools/verify/bg-iris.js fails when a copy or layout change breaks them.
 
    Every rule starts from the draw, so with another background drawn this changes nothing. Home page and
    English only (:lang(en)). The art is a still composition by default (no script, reduced motion and

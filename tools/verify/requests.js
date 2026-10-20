@@ -1,7 +1,9 @@
 // Asserts the site makes ZERO off-origin requests, that the self-hosted fonts
 // actually resolve, and that no CSP violation fires — on every page, in every
-// theme under test (THEMES, default light,dark).
-const { PAGES, BASE, THEMES, pinTheme, launch } = require('./_common');
+// theme under test (THEMES, default light,dark), and on the home page in every
+// hero background under test too (BGS, default all four: the woven cloth is a
+// data: URI and the iris an inline SVG, so the CSP has to allow both).
+const { PAGES, BASE, THEMES, bgsFor, pinTheme, launch } = require('./_common');
 
 // The faces the design system sets per direction: Forest renders in Fraunces
 // and Aptos with Geist eyebrows, Teal in Instrument Serif and Geist,
@@ -16,7 +18,8 @@ function requiredFaces(theme) {
   const browser = await launch();
   let failures = 0;
 
-  for (const p of PAGES) for (const theme of THEMES) {
+  for (const p of PAGES) for (const theme of THEMES) for (const bg of bgsFor(p)) {
+    const label = `${theme}${bg ? ' ' + bg : ''}`;
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
     const offOrigin = [], cspViolations = [], failed = [];
@@ -34,7 +37,7 @@ function requiredFaces(theme) {
       document.addEventListener('securitypolicyviolation',
         (e) => window.__csp.push(`${e.effectiveDirective} -> ${e.blockedURI}`));
     });
-    await page.addInitScript(pinTheme, theme);
+    await page.addInitScript(pinTheme, { theme, bg });
 
     await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }).catch((e) => failed.push('goto: ' + e.message));
 
@@ -55,7 +58,7 @@ function requiredFaces(theme) {
 
     const bad = offOrigin.length || cspViolations.length || failed.length || missingFaces.length;
     if (bad) failures++;
-    console.log(`${bad ? 'FAIL' : 'ok  '}  ${p} [${theme}]`);
+    console.log(`${bad ? 'FAIL' : 'ok  '}  ${p} [${label}]`);
     if (offOrigin.length) console.log(`        off-origin requests: ${[...new Set(offOrigin)].join(', ')}`);
     if (cspViolations.length) console.log(`        CSP violations: ${cspViolations.join(' | ')}`);
     if (failed.length) console.log(`        failed requests: ${failed.join(' | ')}`);

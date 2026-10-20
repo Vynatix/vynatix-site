@@ -2,9 +2,10 @@
 
 Local-only checks for the site, plus `stamp.js`, which writes the version stamps
 into the pages (run it after changing `tokens.css`, `colors_and_type.css`,
-`styles.css` or `app.js`), and `seo-head.py`, which rewrites the search block in
+`styles.css`, `app.js`, `hero-bg.css` or `hero-bg.js`), and `seo-head.py`, which rewrites the search block in
 every head, the footer and `sitemap.xml` from one registry (see the table below).
-**None of this is part of the site build** — the site
+Two small generators, `dial-masks.py` and `sheet-art.js`, write the masks of the dial and
+sheet hero backgrounds into `assets/`. **None of this is part of the site build** — the site
 itself is hand-written static files with no build step, nothing here runs at
 deploy time, and everything in this directory is excluded from the published
 output via `_config.yml`.
@@ -49,17 +50,23 @@ Then, from `tools/`:
 | `node verify/consent-layout.js` | Layout and accessibility of the bar, armed, in all six themes by default (`THEMES=` narrows it; about two minutes): height (at most 160px at 320 wide on a first visit, at most half the viewport at 320x568 and 360x640 and for the reopened bar), static in flow at 520px of height or less, no horizontal scroll added by the bar; the open mobile menu overlays the bar and every link passes `elementFromPoint`; WCAG 2.4.11 by a Tab sweep against the bar's real rectangle and a scroll to the end of the page, at 1x and with all text scaled 1.5x; 44px targets; label in name; contrast of text, link, buttons, hover and focus ring from rendered colours; forced colours; reduced motion; axe with the bar up. The informational line about the copyright line ending under the bar is a note, not a check, and its count is not the same on every run |
 | `node verify/release-gate.js` | The flip gate; `npm run release-gate`. Only `--self-test` is in `npm run check` (a pass says the gate refuses for the right reasons, no browser, no server); the gate itself is the reverse of `check` and **fails (exit 1) on the shipped tree by design**. Each line is `ok` or `FAIL`. It fails on: the placeholder, a malformed or doubled `GA_ID`; `PURGE_ONLY` not `false` (exactly one `var PURGE_ONLY = false;` in code, comments excluded; a re-flip after an exit must set it back); `COOKIE_MAX_AGE` not `31536000` or `CONSENT_MAX_DAYS` not `365`; a notice that does not say "12 months" / "12 månader" or does not name `<code>vynatix-consent</code>` (read from `CONSENT_KEY`), `<code>vynatix-theme</code>` and `<code>vynatix-look</code>`; a draft banner still on either notice (English or Swedish, any `banner--warning` note); any `[[CONFIRM` marker (matched loosely: spacing, case, a `]` inside); a marker on a page that no longer has its banner; an unticked `- [ ]` box in sections 1 to 9 of `tools/PRE-FLIP-CHECKLIST.md` (sections 10 and 11, the exit runbook and the quarterly review, are not read) or a blank `______` in its header block or Sign-off block; a notice whose visible "Last updated" / "Senast uppdaterad" date is not the `mod` of the page in the `PAGES` registry of `tools/seo-head.py` (read as text) or is more than 14 days old or in the future, and a `mod` whose generated copies (`article:modified_time`, the sitemap `lastmod`) do not follow; any of the old "no analytics, no cookies" sentences (from the git history of `privacy.html`, with a fixed list as fallback); the footer link missing on a page; the CSP not identical and equal to `EDGE-SETUP.md`; the accessibility statement not mentioning the bar; the consent-text snapshot not current. **It never prints a bare PASS**: when every scripted gate holds it prints `scripted gates pass, N human gates open` and exits 0, and the gates a script cannot check (counsel, Google's terms, the Data Privacy Framework listings, the real-ID run in three browsers, the property settings, the records, the keyboard and screen reader passes) are printed above it as WARN lines. WARN lines also list sentences that still say "no analytics" or "no cookies" in some form and that nobody has read: the true ones are listed per file in `READ_BY_EYE_OK` in the script and counted in a note, so a new one stands out, and a list longer than 12 says how many were cut. A draft banner comes off only on counsel's written sign-off (checklist 5.2) |
 | `node verify/consent-live.js --live` | NOT in `npm run check`; `npm run consent-live`. The only check that talks to Google: real network, the dummy ID `G-TEST000000` only (it refuses to run otherwise and never prints a real ID), the pages from localhost, Google not stubbed. In Chromium, Firefox and WebKit (each skipped with the reason if it cannot start): Accept and a collect hit answered 2xx, every host contacted and every violation, the cookies set (name, domain, path, SameSite, expiry), Decline, ten seconds with no hit and no cookie, Accept again, and a back/forward cache round trip. Without `--live` (or `LIVE=1`, which does the same where the shell allows that syntax) it only prints how to run it; `npm run consent-live` passes the flag, so it works in any shell. Unlike the other checks it does not ignore certificate errors: behind a proxy that re-signs HTTPS, the proxy's CA has to be trusted by the browser or the run fails on the first Google request. Browsers do not read `HTTPS_PROXY`: it is passed as the proxy (`PW_PROXY=` to override) |
-| `node verify/adversarial.js` | CSP actually **blocks** injected scripts/styles/images/handlers, with the attacker's host routed to a working 200 so only the policy can stop it (and the matching `securitypolicyviolation` asserted, with a bypass control that must succeed); a `connect-src` block; the Google hosts reachable and nothing near them; Tag Manager's `gtm.js` **blocked** by the path-pinned `script-src` while `/gtag/js` loads; an image from `www.google-analytics.com` **blocked** (`img-src` was not widened; the host serves a real pixel, with a bypass control that must load it); the injected inline `<style>` on `index.html` and on `privacy.html` (its own policy), each with a bypass control; localStorage poisoning including `vynatix-consent`; URL reflection |
-| `node verify/requests.js` | **Zero** off-origin requests; self-hosted fonts resolve; no CSP violations. The "nothing leaves before a choice" proof: as shipped, then armed and undecided, then armed with the answer denied. In the armed states it also asserts the module is really up (undecided: exactly one `#consent-bar`; denied: `js-consent` on `<html>` and no bar), so a module that died on load cannot pass as "nothing leaves". `CONSENT=undecided\|denied` runs one armed state. `CONSENT=granted BASE=https://vynatix.com/` is the live-only mode for after the flip: it allows only `GOOGLE_HOSTS` and tolerates `ERR_ABORTED` on a collect hit cut off by the page unloading |
-| `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test, first with the consent bar up (armed, no answer) and again with the answer pinned to denied, plus skip link, the still client list, no-JS and reduced-motion fallbacks, and the contrast sweep, which reports a node in the bar it cannot resolve instead of skipping it |
+| `node verify/adversarial.js` | CSP actually **blocks** injected scripts/styles/images/handlers, with the attacker's host routed to a working 200 so only the policy can stop it (and the matching `securitypolicyviolation` asserted, with a bypass control that must succeed); a `connect-src` block; the Google hosts reachable and nothing near them; Tag Manager's `gtm.js` **blocked** by the path-pinned `script-src` while `/gtag/js` loads; an image from `www.google-analytics.com` **blocked** (`img-src` was not widened; the host serves a real pixel, with a bypass control that must load it); the injected inline `<style>` on `index.html` and on `privacy.html` (its own policy), each with a bypass control; storage poisoning (the light or dark choice, the colour draw, the hero background draw, the weave's seed, the iris test hook and `vynatix-consent`), none of it reflected into the page or a style; URL reflection |
+| `node verify/requests.js` | **Zero** off-origin requests; self-hosted fonts resolve; no CSP violations, on every page in every theme under test and on the home page once for each background under test (the weave's cloth is a `data:` image and the iris an inline SVG, so the policy has to allow both). The "nothing leaves before a choice" proof: as shipped, then armed and undecided, then armed with the answer denied. In the armed states it also asserts the module is really up (undecided: exactly one `#consent-bar`; denied: `js-consent` on `<html>` and no bar), so a module that died on load cannot pass as "nothing leaves". `CONSENT=undecided\|denied` runs one armed state. `CONSENT=granted BASE=https://vynatix.com/` is the live-only mode for after the flip: it allows only `GOOGLE_HOSTS` and tolerates `ERR_ABORTED` on a collect hit cut off by the page unloading |
+| `node verify/a11y.js` | axe-core (WCAG 2.0/2.1/2.2 A+AA) on every page in every theme under test (the home page once for each background under test), first with the consent bar up (armed, no answer) and again with the answer pinned to denied, plus skip link, the still client list, the no-JS fallback, and reduced motion in all four backgrounds: art drawn, no CSS animation and no Web Animation (`document.getAnimations()`, which the dial and iris use) after pointer moves, a theme toggle and the iris's silence cut short, and the iris not even armed. The contrast sweep runs in both passes and reports a node in the bar it cannot resolve instead of skipping it |
 | `node verify/theme.js` | The per-visit random colour scheme, with the consent bar in the page (its first check is that the armed module is up and a first visit shows one `#consent-bar`): the draw is random, stable across pages, the toggle works inside it, no flash, blocked or poisoned storage survived, preloads are used and the module adds none |
+| `node verify/bg-draw.js` | The hero background draw and what keeps the four backgrounds apart (the draw checks leave the draw alone, the isolation checks pin or force one background at a time): odds over fresh visits (`VISITS`, default 100) with each of the four inside sane bounds; one visit stays on one background across ten pages including `sv.html` and a reload; a bad stored value is replaced; blocked storage gives the sheet and throws nothing; no JavaScript gives no `data-bg` and the sheet's pixels; `data-bg` is set before the body exists. Isolation: each background's files are requested only by it and only at the widths it applies to (and none on other pages, at 1000, 1199, 1200 and 1440), the calls each background's script makes (listeners, timers, frames, idle callbacks, observers, Web Animations, storage writes) compared with the sheet's, and the same on `sv.html` and `about.html`, nothing running at rest, `sv.html` and `about.html` pixel-identical in all four draws. Storage: the home page writes only the documented keys, `privacy.html` lists exactly them. The iris test hook (see below) is read-only and range-checked. Source: four fenced blocks in `hero-bg.css` and `hero-bg.js`, in order, every rule scoped to its own draw, role tokens only; `styles.css` and `app.js` carry none, only `index.html` links the two files, and the iris markup is fenced in `index.html` and nowhere else |
+| `node verify/bg-weave.js` | The weave background (pinned, with a fixed seed): the cloth is never nearer than 24px to text, buttons, the header or the clients row (with text-only zoom 1.25, 1.5, 2), the contrast behind every hero text box with the text hidden equals the page without the cloth, and the field's geometry equals the layout it is derived from (G). `WIDTHS`, `ZOOMS`, `SEED`, `SCROLLS` |
+| `node verify/bg-sheet.js` | The sheet background: clearance of the art, contrast (the headline measured against its own floor, because the rules run under it), and registration of the headline's guides to the real baseline and cap line, in each wrapped state. `WIDTHS`, `ZOOMS`, `SCROLLS`, `CLEAR`, `SLACK` |
+| `node verify/bg-dial.js` | The dial background: shape (nothing below 1200px, nothing for another draw or without JavaScript), geometry, clearance and contrast with the pointer at rest and at either edge, and motion (still at idle, the turn limited to 6px at the bezel, left alone under the header, one sweep on the theme toggle, still under reduced motion, touch and print). `WIDTHS`, `ZOOMS`, `STATES`, `SCROLLS` |
+| `node verify/bg-iris.js` | The iris background: clearance at each width and zoom, contrast (waiting, settled and four event frames), and placement (the art on the clients rule, 24px from the lede box, the bleed between 25 and 65 percent, the index mark's aim at the end of the italic line). `CHECKS` (letters B, C, P), `WIDTHS`, `ZOOMS`, `FRAMES`, `SCROLLS` |
 | `node verify/links.js` | Every internal link, script, style and image resolves; every `#fragment` names an element that exists (the footer's `privacy.html#cookies` on every page), and so does every notice link in the `COPY` of `app.js` |
 | `node verify/seo.js` | Search, sharing and copy: one canonical per page matching the sitemap, Open Graph matching the title and description, every JSON-LD block parses, the page node's datePublished and dateModified equal the article:* date metas and the sitemap lastmod, the FAQPage is a graph node linked from the page by hasPart/isPartOf with a resolving @id and matches the visible FAQ (p and li, flat), hreflang pairs are reciprocal (the page a language entry points at must link back with an entry in the linking page's own language; an `x-default` entry is not a way back), robots.txt names the sitemap, llms.txt links only real pages, and no em dash, exclamation mark or ellipsis in visible text |
-| `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those four files |
+| `node stamp.js --check` | Every page loads `tokens.css`, `colors_and_type.css`, `styles.css` and `app.js` with the `?v=` stamp of the file on disk, and `index.html` (only) also loads `hero-bg.css` and `hero-bg.js` the same way; any other page that links those two fails. `node stamp.js` (or `npm run stamp`) rewrites the stamps; run it after changing any of those six files |
+| `python3 dial-masks.py`, `node sheet-art.js` | Not checks: write the two masks of the dial and of the sheet background into `assets/` (see `assets/AGENTS.md`; with their defaults they reproduce the shipped files byte for byte, and a regenerated mask needs a new file name) |
 | `python3 seo-head.py [page.html …]` | Not a check: rewrites the generated parts of every page (or only the pages named) from one registry. The search block in the head (canonical, hreflang, Open Graph with the article:* dates, the JSON-LD graph), the footer, the header `lang` and `sitemap.xml`; nothing inside `<main>`. Python 3, standard library. A page's `pub` and `mod` dates live in its `PAGES` entry; `tools/seo/<page>.json` holds a page's extra JSON-LD nodes. Run it after editing a FAQ, moving a `mod` date or changing the footer, and run `npm run stamp` afterwards if styles or scripts changed |
-| `node verify/stale-cache.js` | Self-contained: a browser holding OLD copies of the four shared files at the plain URLs is not paired with the new pages (a control without stamps must break for the intended reason, the stamped pages must fetch every file under its stamp and show nothing of the old build). `ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the engine iOS Chrome uses (needs `npx playwright install webkit`) |
+| `node verify/stale-cache.js` | Self-contained: a browser holding OLD copies of the shared files, and of the two home-only ones, at the plain URLs is not paired with the new pages (a control without stamps must break for the intended reason, the stamped pages must fetch every file under its stamp and show nothing of the old build). `ENGINE=webkit node verify/stale-cache.js` runs it in WebKit, the engine iOS Chrome uses (needs `npx playwright install webkit`) |
 | `node verify/headers.js` | Security response headers (see `EDGE-SETUP.md`) |
-| `node verify/screenshot.js baseline` | Capture every page in PAGES x each theme under test into `baseline/`, armed with the consent answer pinned to denied so the bar never enters the baseline. Every capture is armed, so `app.js` must carry the one `var GA_ID` line and the one `var PURGE_ONLY` line: **a baseline cannot be captured on a tree from before the consent module** (take it with that tree's own tools, or compare only the pages the module did not touch). `compare` walks `baseline/` only, so a page that has a capture but no baseline (a page added since) is not compared |
+| `node verify/screenshot.js baseline` | Capture every page in PAGES x each theme under test into `baseline/` (the home page once for each background under test, as `index-<theme>-<bg>.png`), armed with the consent answer pinned to denied so the bar never enters the baseline. Every capture is armed, so `app.js` must carry the one `var GA_ID` line and the one `var PURGE_ONLY` line: **a baseline cannot be captured on a tree from before the consent module** (take it with that tree's own tools, or compare only the pages the module did not touch). `compare` walks `baseline/` only, so a page that has a capture but no baseline (a page added since) is not compared |
 | `node verify/screenshot.js current` | Capture into `current/` |
 | `node verify/screenshot.js compare` | Pixel-diff `current/` against `baseline/` |
 | `node verify/screenshot.js bar` | Viewport-only captures of the consent bar itself in each theme under test (index and Swedish hub, 390x844 and 1440x900 or `VW`x`VH`): first visit, reopened from the footer, and scrolled to the end of the page. Into `current-bar/`, for review by eye; not part of `compare` |
@@ -77,7 +84,8 @@ that `styles.css` lets the browser skip are compared as designed, not at a place
 or remembered height.
 
 `csp.js` and `publish.js` are first in `npm run check`, then `release-gate.js --self-test`;
-`consent.js` and `consent-layout.js` come before `a11y.js`. The consent checks arm a page that
+`consent.js` and `consent-layout.js` come after `stale-cache.js`, then `npm run check:bg` (the five
+hero background scripts), and `a11y.js` is last. The consent checks arm a page that
 lacks the widened policy or the footer link (armGa supplies both), so that every scenario still
 runs on a tree that is not integrated yet; but `consent.js` then fails and says how many pages it
 had to repair, because the shipped tree carries both on every page. `csp.js` and `publish.js`
@@ -100,11 +108,19 @@ concern and `headers.js` is where it is asserted.
 Other useful env vars: `VW`/`VH` set the screenshot viewport (e.g. `VW=390
 VH=844` for mobile) and `SUFFIX` writes to a separate directory set.
 
-The site draws one of three colour schemes at random for each visit, so any
-check that needs a particular theme sets it before the page loads with
-`pinTheme` from `verify/_common.js` (it writes both storage keys:
-`sessionStorage` `vynatix-look` for the scheme and `localStorage`
-`vynatix-theme` for light or dark); pass it to `page.addInitScript`.
+The site draws one of three colour schemes and one of four hero backgrounds at random for
+each visit, so any check that needs a particular look sets it before the page loads with
+`pinTheme` from `verify/_common.js`; pass it to `page.addInitScript(pinTheme, arg)`, where
+`arg` is a theme id or `{ theme, bg, seed }`. It writes `sessionStorage` `vynatix-look` for
+the scheme, `localStorage` `vynatix-theme` for light or dark and `sessionStorage`
+`vynatix-bg` for the background, and **always pins the background**: without a `bg` it is
+`sheet` (what the page shows without script), so a caller that forgets still gets the same
+page every run. A pinned weave also gets a fixed seed (`vynatix-bg-seed`, 7). `pinBg(bg)` pins
+the background alone, for the checks that must leave the colour draw alone (`theme.js`) or
+that set their own storage. Only the draw checks of `bg-draw.js` leave the draw random, because
+the draw is what they test. The scripts that load pages without measuring the hero (`links.js`, `seo.js`, `headers.js`,
+`stale-cache.js`, `theme.js`) pin it with `pinBg` so that no run is random; `adversarial.js`
+pins the sheet unless one of its own checks has planted something else in `vynatix-bg`.
 
 The consent answer is pinned the same way: `pinConsent` from `verify/_common.js`
 (`page.addInitScript(pinConsent, 'granted' | 'denied' | 'undecided')`) writes
@@ -150,3 +166,42 @@ before changing a component:
 ```sh
 THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/a11y.js
 ```
+
+`BGS` does the same for the four hero backgrounds in the checks that visit the home page
+(`a11y.js`, `requests.js` and `screenshot.js` run the home page once for each background
+under test; every other page runs once). The default is **all four**, unlike `THEMES`, because
+every one of them ships and the setting only multiplies loads of the home page, never the
+other twenty. `BGS=sheet` narrows a run to the background the page shows without script. The
+guards `bg-weave.js`, `bg-sheet.js`, `bg-dial.js` and `bg-iris.js` skip themselves (exit 0, one
+line) unless `BGS` includes their background, and always pin their own. An unknown theme or
+background exits 2.
+
+The full sweep, every theme with every background, is:
+
+```sh
+THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark BGS=weave,sheet,dial,iris npm run check:bg
+THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark BGS=weave,sheet,dial,iris node verify/a11y.js
+```
+
+`npm run check:bg` runs the five background scripts alone (`bg-draw.js` and the four guards);
+`npm run check` runs them after the consent checks and before `a11y.js`. The guards drive Chromium through many
+frames (widths, text-only zoom emulated through the CSSOM, pointer states, scroll offsets) and
+take minutes: `npm run check` as a whole took 10 to 14 minutes (629 s alone, 811 s with other jobs
+running) on a four-core machine in the default configuration (the Forest pair of themes, all four
+backgrounds), and `bg-draw.js` about two minutes of that; with all six themes, the four guards run
+side by side on four cores took between 3 and 13 minutes each (175, 295, 613 and 431 s for weave,
+sheet, dial and iris alone; 309, 514, 770 and 635 s under load). Narrow a guard with its own variables
+(`ZOOMS=1,1.5 WIDTHS=1440 node verify/bg-sheet.js`) while iterating; the defaults are the ones
+to pass before committing. The figures for the whole of `npm run check` were taken before the
+consent checks joined the chain: `consent.js` and `consent-layout.js` add about two minutes each
+and `a11y.js` now runs its axe scan and contrast sweep twice, so expect the whole to take longer.
+
+**The iris test hook.** `sessionStorage` `vynatix-bg-iris-idle` replaces the iris's 20 seconds
+of silence with a number of milliseconds from 200 to 600000, so the checks need not wait; anything
+else is ignored. It is a **test hook**, not a setting: the site only ever reads it (never writes or
+removes it, never lists it in `privacy.html`), and `bg-draw.js` fails if that changes (one constant,
+one read, no write, not in `privacy.html`, the range and the ignored values tested at run time).
+A script that wants the iris's opening quickly sets it in an init script before the page loads and
+sets `vynatix-bg-iris` itself to start from the settled state. `vynatix-bg-iris` (the flag the site
+writes when the opening starts) and `vynatix-bg-seed` (the weave's seed) are real, documented
+storage and are listed in `privacy.html`.

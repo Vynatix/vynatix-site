@@ -1,5 +1,7 @@
-// Version stamps for the four files every page loads: tokens.css,
-// colors_and_type.css, styles.css and app.js.
+// Version stamps for the four files every page loads (tokens.css, colors_and_type.css,
+// styles.css and app.js) and the two only index.html loads (hero-bg.css and hero-bg.js, the hero
+// backgrounds). Any other page that links one of those two is a problem: the point of keeping them
+// out of the shared files is that the other pages never download them.
 //
 // Why this exists. GitHub Pages serves every file at a fixed URL with
 // Cache-Control: max-age=600, and nothing forces a browser to refetch a
@@ -26,7 +28,7 @@
 //   node stamp.js           rewrite the stamps in every root *.html page
 //   node stamp.js --check   exit 1 if any stamp is missing or out of date
 //
-// Run it after any change to one of the four files, then commit the pages with
+// Run it after any change to one of the six files, then commit the pages with
 // the change. `npm run check` fails until you do.
 const crypto = require('crypto');
 const fs = require('fs');
@@ -34,6 +36,9 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const ASSETS = ['tokens.css', 'colors_and_type.css', 'styles.css', 'app.js'];
+// Linked by the pages listed and by no other.
+const HOME_ONLY = { 'hero-bg.css': ['index.html'], 'hero-bg.js': ['index.html'] };
+const ALL = ASSETS.concat(Object.keys(HOME_ONLY));
 
 // Hash the text with line endings normalised, so a Windows checkout with
 // autocrlf computes the same stamp as the LF files GitHub Pages serves.
@@ -42,8 +47,10 @@ function stampOf(file) {
   return crypto.createHash('sha256').update(text).digest('hex').slice(0, 8);
 }
 
-const stamps = Object.fromEntries(ASSETS.map((a) => [a, stampOf(a)]));
-const escaped = ASSETS.map((a) => a.replace(/\./g, '\\.')).join('|');
+const stamps = Object.fromEntries(ALL.map((a) => [a, stampOf(a)]));
+// Every regular-expression metacharacter, backslash included, so a file name can never change the pattern.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escaped = ALL.map(escapeRe).join('|');
 // href="styles.css" or href="styles.css?v=abc123", on a <link> or a <script src>.
 const REF = new RegExp(`((?:href|src)=")(${escaped})(\\?v=[0-9a-f]*)?(")`, 'g');
 
@@ -69,8 +76,11 @@ for (const page of pages) {
     }
     return pre + asset + want + post;
   });
-  for (const a of ASSETS) {
-    if (!found.has(a)) { problems++; console.log(`MISSING ${page} never loads ${a}`); }
+  for (const a of ALL) {
+    const only = HOME_ONLY[a];
+    const should = !only || only.includes(page);
+    if (should && !found.has(a)) { problems++; console.log(`MISSING ${page} never loads ${a}`); }
+    if (!should && found.has(a)) { problems++; console.log(`UNEXPECTED ${page} loads ${a}, which only ${only.join(', ')} may`); }
   }
   if (!check && out !== html) {
     fs.writeFileSync(path.join(ROOT, page), out);
@@ -82,5 +92,5 @@ if (check) {
   console.log(`${pages.length} pages checked, ${problems} stamp problem${problems === 1 ? '' : 's'}${problems ? ' (run: node stamp.js)' : ''}`);
   process.exit(problems === 0 ? 0 : 1);
 }
-console.log(`stamped ${pages.length} pages (${changed} changed): ${ASSETS.map((a) => `${a}?v=${stamps[a]}`).join('  ')}`);
+console.log(`stamped ${pages.length} pages (${changed} changed): ${ALL.map((a) => `${a}?v=${stamps[a]}`).join('  ')}`);
 process.exit(problems === 0 ? 0 : 1);

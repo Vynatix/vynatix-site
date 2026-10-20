@@ -17,7 +17,8 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, footer and sitemap), never site content and
+  (Python 3; rewrites the search block, footer and sitemap), and the mask generators
+  `dial-masks.py` and `sheet-art.js` for two hero backgrounds, never site content and
   never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
@@ -35,9 +36,27 @@ highlights the things most worth keeping front-of-mind.
   Forest. The markup's `<html data-theme="light">` is the no-JS default. The
   inverse bands (CTA band, editorial band, footer) are light in the dark themes
   by design. Because the theme is random, any check that needs one pins it with
-  `pinTheme` (`tools/verify/_common.js`), and a component change has to hold in
-  all six (`THEMES=…` on the check scripts). Logo files, favicon, app icons and
-  manifest colours stay Forest.
+  `pinTheme` (`tools/verify/_common.js`, which also pins the hero background), and
+  a component change has to hold in all six (`THEMES=…` on the check scripts). Logo
+  files, favicon, app icons and manifest colours stay Forest.
+- **One of four hero backgrounds, drawn at random per visit.** `weave`, `sheet`,
+  `dial` and `iris` decorate the English home hero; `app.js` keeps the pick in
+  `sessionStorage` (`vynatix-bg`) and sets `data-bg` on `<html>` before first paint;
+  blocked storage or no JavaScript means `sheet`. Every rule of a background starts
+  from `:root[data-bg="<id>"]` (the sheet's form is
+  `:root:is(:not([data-bg]), [data-bg="sheet"])`), its JS returns at once unless it
+  is the drawn one, and its CSS and JS sit in `bg:<id>:begin` / `bg:<id>:end` fenced
+  blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
+  twenty pages never download them; the draw itself stays in `app.js`); the iris
+  also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
+  new names whenever regenerated. The art is placed from the layout and fitted by hand
+  to the current headline copy ("Your in-house software team." / "Without the
+  hiring."): **a change to the headline, the lede, the hero spacing or the clients row
+  can move art into text, and `npm run check:bg` (the five `tools/verify/bg-*.js`
+  guards) fails and says which rule.** Storage: `vynatix-bg`, `vynatix-bg-seed`
+  (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
+  `vynatix-bg-iris-idle` is a read-only test hook. Per-background detail, constants,
+  the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
 - **Header and footer (and the inline wordmark `<symbol>`) are duplicated
   across every `*.html` file** — there is no include system. Any nav, logo or
   header contact-detail change must be made in **all** pages, and
@@ -45,21 +64,30 @@ highlights the things most worth keeping front-of-mind.
   its source is the `FOOTER` template in `tools/seo-head.py`, so a footer change
   is made there and the script run, which writes it into every page.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
-  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`), because GitHub Pages
+  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
+  `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
   serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
   stylesheet (that is what broke iOS Chrome after the design-system migration). The stamps
   protect the visitor's browser cache; GitHub's CDN ignores the query string. After
-  editing any of the four, run `cd tools && npm run stamp` and commit the pages with
+  editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: three features
-  (theme draw and toggle, mobile nav, analytics consent) and no CDN/animation
-  stack. Nothing on the site moves on its own: the system forbids auto-advancing
-  strips and ambient loops. It is still the only script the pages load. The CSP
-  pins `script-src` to `'self'` plus one Google path, so adding any other
-  third-party script means widening the CSP first (see the analytics bullet).
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
+  (theme draw and toggle, the hero background draw, mobile nav, analytics consent;
+  the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
+  only) and no CDN/animation stack. **Nothing on
+  the site moves on its own, with one exception: the iris background (a quarter of
+  visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
+  ends it.** The dial background answers the pointer (and sweeps once, for half a
+  second, when the theme toggles with a mouse or trackpad); reduced motion removes all of it. The system
+  forbids auto-advancing strips and ambient loops, so the client list is still and
+  the iris is a single event, an owner decision whose limits must not be loosened.
+  `app.js` is the only script every page loads (the home page adds `hero-bg.js`).
+  The CSP pins `script-src` to `'self'` plus one Google path, so adding any other
+  third-party script means widening the CSP in **every page** first (see the
+  analytics bullet).
 - **Analytics is Google Analytics 4 behind opt-in consent, and it is off.**
-  `var GA_ID = 'G-XXXXXXXXXX';` in the third IIFE of `app.js` is an inert
+  `var GA_ID = 'G-XXXXXXXXXX';` in the fourth IIFE of `app.js` is an inert
   placeholder: no bar, no storage, no request. Beside it, `PURGE_ONLY` is the
   emergency stop, `false` except during an exit. Google is never requested, and
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
@@ -113,10 +141,12 @@ There is no lint step, but there *is* a check suite: see `tools/README.md`
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
-style rules), accessibility including a contrast sweep, and a screenshot diff.
+style rules), the hero background draw and a guard per background, accessibility
+including a contrast sweep, and a screenshot diff.
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
-(`python3 -m http.server 8000`).
+(`python3 -m http.server 8000`). `THEMES` and `BGS` widen the themes and the
+backgrounds a run covers (see `tools/README.md`).
 
 Also verify visually: render in light and dark, confirm header/footer match the
 other pages, and check it degrades gracefully with JS disabled and reduced

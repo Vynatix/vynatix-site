@@ -11,7 +11,7 @@
 //    fonts or .well-known unless it is excluded (otherwise GitHub Pages serves it);
 //  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
-//  - both notice pages name the three storage keys the site writes, each in <code>;
+//  - both notice pages name every storage key the site's scripts use (app.js and hero-bg.js), each in <code>;
 //  - the site rules of CLAUDE.md that nothing else reads: no raw hex colour in styles.css, no style="" attribute in
 //    any page, no .style, cssText or setAttribute('style' in app.js (comments excluded);
 //  - llms.txt links every URL in sitemap.xml (seo.js checks the other direction).
@@ -133,8 +133,15 @@ function run(root = ROOT, pages = PAGES) {
     add(bad.length === 0, 'the notice link in each language of COPY (app.js) points at that language\'s notice page', bad.join('; '));
   }
 
-  // --- the three storage keys in both notices
-  const keys = [(app && app.consentKey) || CONSENT_KEY, THEME_KEY, LOOK_KEY];
+  // --- every storage key the scripts use, in both notices (the Swedish one is easy to forget when a key is added)
+  const scriptKeys = new Set([(app && app.consentKey) || CONSENT_KEY, THEME_KEY, LOOK_KEY]);
+  for (const f of ['app.js', 'hero-bg.js']) {
+    const src = tryRead(f);
+    if (src === null) continue;
+    for (const m of stripJsComments(src).matchAll(/['"](vynatix-[a-z-]+)['"]/g)) scriptKeys.add(m[1]);
+  }
+  scriptKeys.delete('vynatix-bg-iris-idle');            // a test hook the site only reads and never stores
+  const keys = [...scriptKeys].sort();
   const keyBad = [];
   for (const page of Object.values(NOTICE_PAGES)) {
     const html = tryRead(page);
@@ -143,7 +150,7 @@ function run(root = ROOT, pages = PAGES) {
     if (lost.length) keyBad.push(`${page} does not name ${lost.map((k) => '<code>' + k + '</code>').join(', ')}`);
   }
   if (app) for (const k of [THEME_KEY, LOOK_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
-  add(keyBad.length === 0, `both notices name the three storage keys the site writes (${keys.join(', ')}), each in <code>`, keyBad.join(' | '));
+  add(keyBad.length === 0, `both notices name every storage key the scripts use (${keys.join(', ')}), each in <code>`, keyBad.join(' | '));
 
   // --- the site rules
   const css = tryRead('styles.css');

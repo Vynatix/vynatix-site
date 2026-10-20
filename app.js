@@ -1,8 +1,10 @@
-// Site script. Three features, each in its own block below: the theme (a
-// colour scheme drawn at random for each visit), the mobile nav, and consent
-// for Google Analytics. The analytics block does nothing until the visitor
-// presses Accept on the consent bar, and it is inert (no markup, no storage
-// access, no listeners) while the measurement ID is still the placeholder.
+// Site script. Four features, each in its own block below: the theme (a
+// colour scheme drawn at random for each visit), the home page's hero
+// background (also drawn at random for the visit), the mobile nav, and consent
+// for Google Analytics. The analytics block does nothing until the visitor has
+// accepted on the consent bar (a stored Accept from an earlier visit counts),
+// and it is inert (no markup, no storage access, no listeners) while the
+// measurement ID is still the placeholder.
 //
 // Theme — a colour scheme picked at random for each visit, light or dark.
 //
@@ -142,6 +144,46 @@
   } else {
     init();
   }
+})();
+
+// Hero background — one of four, drawn at random for each visit.
+//
+// The home hero carries one piece of background art: a woven cloth ('weave'),
+// the headline's drafting sheet ('sheet'), a vernier dial ('dial') or an iris
+// ('iris'). Like the colour scheme, the draw is made once per visit, kept in
+// sessionStorage so every page of the visit agrees, and made again in a new
+// tab or a later visit. It is stored as data-bg on <html>, which every
+// background rule in hero-bg.css and every background feature in hero-bg.js is scoped
+// to, so only the drawn one has any effect. This block runs in the blocking
+// first script, before the page paints, for the same reason the theme draw
+// does: the art must be there on first paint, not appear after it.
+//
+// If storage is blocked the draw cannot be kept, so the page uses the sheet,
+// the one background that needs no script, rather than redrawing on every
+// navigation. Without JavaScript <html> has no data-bg, and hero-bg.css treats
+// that as the sheet too. To pin the site to one background, replace
+// pickBg()'s body with return 'sheet'; (or 'weave', 'dial', 'iris').
+(function () {
+  var BG_KEY = 'vynatix-bg';  // sessionStorage: the background drawn for this visit
+  var BGS = ['weave', 'sheet', 'dial', 'iris'];
+
+  // The background for this visit: the one already drawn, else a fresh random
+  // pick, kept for the visit. Anything stored that is not one of the four is
+  // discarded rather than trusted.
+  function pickBg() {
+    try {
+      var stored = sessionStorage.getItem(BG_KEY);
+      if (BGS.indexOf(stored) < 0) {
+        stored = BGS[Math.floor(Math.random() * BGS.length)];
+        sessionStorage.setItem(BG_KEY, stored);
+      }
+      return stored;
+    } catch (e) {
+      return 'sheet';
+    }
+  }
+
+  document.documentElement.setAttribute('data-bg', pickBg());
 })();
 
 // Mobile nav — toggle the menu open/closed from the menu button.

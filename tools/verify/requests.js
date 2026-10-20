@@ -1,6 +1,8 @@
 // Asserts the site makes ZERO off-origin requests, that the self-hosted fonts
 // actually resolve, and that no CSP violation fires — on every page, in every
-// theme under test (THEMES, default light,dark).
+// theme under test (THEMES, default light,dark), and on the home page in every
+// hero background under test too (BGS, default all four: the woven cloth is a
+// data: URI and the iris an inline SVG, so the CSP has to allow both).
 //
 // This is the "nothing leaves before a choice" proof for Google Analytics. It runs three ways:
 //   - as shipped, a plain browser, no routes: whatever app.js does on a first visit (nothing, while GA_ID is the
@@ -19,7 +21,7 @@
 //       off-origin requests allowed are to the CSP's own Google hosts (GOOGLE_HOSTS). A collect hit the page
 //       aborts while it unloads (ERR_ABORTED) is tolerated; any other failure is not.
 const {
-  PAGES, BASE, THEMES, GOOGLE_HOSTS, GTAG_SCRIPT, pinTheme, pinConsent, armGa, abortGoogle, launch, pool, redact,
+  PAGES, BASE, THEMES, bgsFor, GOOGLE_HOSTS, GTAG_SCRIPT, pinTheme, pinConsent, armGa, abortGoogle, launch, pool, redact,
   isAllowedGoogleHost,
 } = require('./_common');
 
@@ -50,7 +52,7 @@ function allowedLive(r) {
 }
 const isCollect = (u) => { try { const h = new URL(u).hostname; return /(^|\.)google-analytics\.com$/.test(h) || /(^|\.)analytics\.google\.com$/.test(h); } catch (e) { return false; } };
 
-async function visit(browser, p, theme, state) {
+async function visit(browser, p, theme, bg, state) {
   const ctx = await browser.newContext();
   if (state === 'plain') await abortGoogle(ctx);
   else if (state === 'granted') { /* the real site, real network */ } else await armGa(ctx);
@@ -76,7 +78,7 @@ async function visit(browser, p, theme, state) {
     document.addEventListener('securitypolicyviolation',
       (e) => window.__csp.push(`${e.effectiveDirective} -> ${e.blockedURI}`));
   });
-  await page.addInitScript(pinTheme, theme);
+  await page.addInitScript(pinTheme, { theme, bg });
   if (state === 'undecided' || state === 'denied' || state === 'granted') await page.addInitScript(pinConsent, state);
 
   await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 }).catch((e) => failed.push('goto: ' + e.message));
@@ -108,15 +110,15 @@ async function visit(browser, p, theme, state) {
   cspViolations.push(...(await page.evaluate(() => window.__csp || [])));
   if (ctx.__ga && ctx.__ga.errors.length) failed.push(...ctx.__ga.errors);
   await ctx.close();
-  return { p, theme, state, offOrigin, cspViolations, failed, missingFaces, loaded, contacted: [...contacted], moduleProblem };
+  return { p, theme, bg, state, offOrigin, cspViolations, failed, missingFaces, loaded, contacted: [...contacted], moduleProblem };
 }
 
 (async () => {
   const browser = await launch();
   let failures = 0;
   const jobs = [];
-  for (const state of STATES) for (const p of PAGES) for (const theme of THEMES) jobs.push({ p, theme, state });
-  const results = await pool(jobs, 3, (j) => visit(browser, j.p, j.theme, j.state));
+  for (const state of STATES) for (const p of PAGES) for (const theme of THEMES) for (const bg of bgsFor(p)) jobs.push({ p, theme, bg, state });
+  const results = await pool(jobs, 3, (j) => visit(browser, j.p, j.theme, j.bg, j.state));
   const hosts = new Set();
 
   for (const r of results) {
@@ -124,7 +126,7 @@ async function visit(browser, p, theme, state) {
     if (bad) failures++;
     r.contacted.forEach((h) => hosts.add(h));
     const label = r.state === 'plain' ? '' : r.state === 'granted' ? ' (live, answer granted)' : ` (armed, ${r.state})`;
-    console.log(`${bad ? 'FAIL' : 'ok  '}  ${r.p} [${r.theme}]${label}`);
+    console.log(`${bad ? 'FAIL' : 'ok  '}  ${r.p} [${r.theme}${r.bg ? ' ' + r.bg : ''}]${label}`);
     if (r.offOrigin.length) console.log(`        off-origin requests: ${[...new Set(r.offOrigin)].map(redact).join(', ')}`);
     if (r.cspViolations.length) console.log(`        CSP violations: ${r.cspViolations.map(redact).join(' | ')}`);
     if (r.failed.length) console.log(`        failed requests: ${r.failed.map(redact).join(' | ')}`);

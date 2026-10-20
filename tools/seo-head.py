@@ -45,15 +45,15 @@ WEBSITE_ID = SITE + '#website'
 # alt: the twin in the other language (hreflang). article: the page also carries an Article node.
 # The order here is the order of sitemap.xml.
 PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-19', alt={'sv': 'sv.html'}),
+  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-20', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-18'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-18'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
-  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19', alt={'sv': 'integritet.html'}),
+  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
-  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-19'),
+  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-18', alt={'en': 'android-automotive-development.html'}),

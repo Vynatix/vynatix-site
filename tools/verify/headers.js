@@ -3,7 +3,7 @@
 //   BASE=https://vynatix.com/ node verify/headers.js
 // Against a plain GitHub Pages origin (or the local server) every header-only
 // control is expected to be MISSING — that is the gap the edge closes.
-const { BASE, launch } = require('./_common');
+const { BASE, pinBg, launch } = require('./_common');
 
 // These are the literal values EDGE-SETUP.md tells you to set. Keep the two in
 // sync: if the runbook changes, this must change with it.
@@ -23,6 +23,7 @@ const PERMISSIONS = ['accelerometer', 'camera', 'geolocation', 'gyroscope',
 (async () => {
   const browser = await launch();
   const page = await browser.newPage();
+  await page.addInitScript(pinBg);     // the hero background is drawn at random per visit; the headers do not depend on it
   const resp = await page.goto(BASE, { waitUntil: 'domcontentloaded' });
   const headers = resp.headers();
 

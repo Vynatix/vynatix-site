@@ -22,7 +22,7 @@
 // text the copy rules and the FAQ comparison see.
 const fs = require('fs');
 const path = require('path');
-const { PAGES, BASE, armGa, launch } = require('./_common');
+const { PAGES, BASE, armGa, pinBg, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
@@ -60,6 +60,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
   const ctx = await browser.newContext();
   await armGa(ctx);
   const page = await ctx.newPage();
+  await page.addInitScript(pinBg);     // the hero background is drawn at random per visit; nothing measured here depends on it
   const alternates = {};
   const langOf = {};
   for (const p of PAGES) {

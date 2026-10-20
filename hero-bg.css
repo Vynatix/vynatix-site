@@ -1,0 +1,589 @@
+/* ===============================================================
+   hero-bg.css: the hero backgrounds.
+
+   The home hero carries one of four decorative backgrounds, drawn at random for each
+   visit (app.js sets data-bg on <html>): the woven cloth (weave), the headline's
+   drafting sheet (sheet, also the default without script), the vernier dial (dial) and
+   the iris (iris). Only index.html links this file, after styles.css, so the other
+   nineteen pages never download it; hero-bg.js, its script, is linked the same way.
+   Each block below is fenced by "bg:<id>:begin" and "bg:<id>:end" so it can be found,
+   replaced or removed on its own, and every rule in it starts from its own data-bg
+   value, so only the drawn one has any effect. English home page only. The notes on
+   each, and how to add or remove one, are in AGENTS.md.
+   =============================================================== */
+
+/* bg:weave:begin */
+/* Hero background "weave": a seeded woven cloth, still. One field in the right column of the
+   hero, below the first line of the headline and to the right of the lede, ending in a
+   three-cord selvedge on the header's right edge. Its left, top and bottom dissolve into the page.
+
+   --weave-tile is a tile of 3px warp and weft floats on a 6px pitch, drawn by hero-bg.js from the
+   visit's seed. Only its alpha counts: it is a mask, so one tile takes its colour from the role
+   tokens and reads in all six themes. Without it the field shows the ground and the selvedge only.
+
+   The field is one pseudo-element of the headline, so the layout places it. Its top is the end of
+   the headline's first line: the registered --weave-lh is the headline's own line height, so the
+   field follows the headline's size, face and zoom, and the headline may wrap to two lines or
+   three. Its left is the right edge of the lede box: the pseudo-element takes the lede's font, so
+   56ch (the lede's max-width) is the lede's own measure in whichever face the visit has. Its right
+   is the header's right edge. The numbers fitted by hand are the clearance below the first line
+   (1.12 line heights and 24px), the height (4.5 line heights, which ends 24px above the clients
+   row in the serif themes) and the ramp stops; tools/verify/bg-weave.js fails when a copy or
+   layout change breaks them.
+
+   Every rule starts from the draw, so with another background drawn this changes nothing. Home
+   page and English only (:lang(en)): the Swedish headline is wider than the column. The rules sit
+   behind one feature query because they need registered custom properties and the lh unit; an
+   engine without either keeps the plain hero. */
+@property --weave-lh {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@supports (transition-behavior: allow-discrete) {
+  :root[data-bg="weave"]:lang(en) .hero {
+    position: relative;
+    isolation: isolate;
+    /* The header's right edge, and where the text starts on the left. */
+    --weave-edge: max(var(--space-6), calc((100% - var(--container-max-laptop)) / 2));
+    --weave-text: calc(max(0px, (100% - var(--container-max-laptop)) / 2) + var(--space-6));
+    /* The field starts one gap to the right of the lede box. */
+    --weave-from: calc(var(--weave-text) + min(56ch, min(100%, var(--container-max-laptop)) - 2 * var(--space-6)) + var(--space-6));
+    /* The theme's own ink, warmed with the accent. */
+    --weave-ink: color-mix(in srgb, var(--md-sys-color-tertiary) 45%, var(--md-sys-color-on-surface));
+    --weave-mask: var(--md-sys-color-on-surface);
+  }
+  :root[data-bg="weave"]:lang(en) .hero__h1 {
+    --weave-lh: 1lh;
+  }
+  :root[data-bg="weave"]:lang(en) .hero__h1::before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    /* Vertical: no top, so the box starts where the headline starts (its static position), then
+       steps down one line of the headline, a little more (a line of text paints a touch past its
+       line box) and a gap. */
+    top: auto;
+    margin-top: calc(var(--weave-lh) * 1.12 + var(--space-6));
+    height: calc(var(--weave-lh) * 4.5);
+    /* Horizontal: the lede's own font, so that the ch in --weave-from is the lede's. */
+    font: var(--text-type-lede);
+    left: var(--weave-from);
+    right: var(--weave-edge);
+    /* The cords of the selvedge (a heavy one and two lighter) on the right 16px, then the ink
+       ramp over the rest: the cloth is faint where it starts and full strength by its middle. */
+    background:
+      linear-gradient(to left,
+        var(--weave-ink) 0 3px, transparent 3px 7px,
+        color-mix(in srgb, var(--weave-ink) 70%, transparent) 7px 9px, transparent 9px 12px,
+        color-mix(in srgb, var(--weave-ink) 45%, transparent) 12px 13px, transparent 13px)
+        right / 16px 100% no-repeat,
+      linear-gradient(to right,
+        transparent 0,
+        color-mix(in srgb, var(--weave-ink) 20%, transparent) 10%,
+        color-mix(in srgb, var(--weave-ink) 48%, transparent) 26%,
+        color-mix(in srgb, var(--weave-ink) 72%, transparent) 46%,
+        color-mix(in srgb, var(--weave-ink) 82%, transparent) 70%)
+        left / calc(100% - 16px) 100% no-repeat;
+    /* The mask, top layer first: the fade at the top and bottom, intersected with the threads, the
+       ground (a quarter of full strength everywhere, so the cloth has a tone between its threads)
+       and the selvedge band. */
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0, var(--weave-mask) 14%, var(--weave-mask) 82%, transparent 100%),
+      var(--weave-tile, none),
+      linear-gradient(color-mix(in srgb, var(--weave-mask) 24%, transparent), color-mix(in srgb, var(--weave-mask) 24%, transparent)),
+      linear-gradient(to left, var(--weave-mask) 16px, transparent 16px);
+    mask-image:
+      linear-gradient(to bottom, transparent 0, var(--weave-mask) 14%, var(--weave-mask) 82%, transparent 100%),
+      var(--weave-tile, none),
+      linear-gradient(color-mix(in srgb, var(--weave-mask) 24%, transparent), color-mix(in srgb, var(--weave-mask) 24%, transparent)),
+      linear-gradient(to left, var(--weave-mask) 16px, transparent 16px);
+    -webkit-mask-size: 100% 100%, auto, 100% 100%, 100% 100%;
+    mask-size: 100% 100%, auto, 100% 100%, 100% 100%;
+    -webkit-mask-repeat: no-repeat, repeat, no-repeat, no-repeat;
+    mask-repeat: no-repeat, repeat, no-repeat, no-repeat;
+    -webkit-mask-position: 0 0, 100% 0, 0 0, 0 0;
+    mask-position: 0 0, 100% 0, 0 0, 0 0;
+    -webkit-mask-composite: source-in, source-over, source-over, source-over;
+    mask-composite: intersect, add, add, add;
+  }
+  /* Below 1100px the free column beside the lede is under about 200px (the lede is wider in the
+     sans faces), so the cloth is off. It is also off wherever the visitor asks for less (forced
+     colours, reduced transparency, more contrast) and on paper. */
+  @media (max-width: 1099px), (forced-colors: active), (prefers-reduced-transparency: reduce), (prefers-contrast: more), print {
+    :root[data-bg="weave"]:lang(en) .hero__h1::before { display: none; }
+  }
+}
+/* bg:weave:end */
+
+/* bg:sheet:begin */
+/* ---------------------------------------------------------------
+   Hero background: the headline's drafting sheet ('sheet')
+   One of the four hero backgrounds, drawn per visit by app.js (data-bg on <html>).
+   It is also the page's default: with no data-bg (no script) or with blocked
+   storage the sheet is what shows, so nothing here may need script. English
+   home hero only, no motion, no new markup, no inline style.
+   A. Row guides. The h1 and its italic line each start with a pseudo-element: a
+      zero-net-width inline-block whose bottom edge sits on that line's real
+      baseline (1cap is the face's own cap height), so the cap and baseline rules
+      land on the glyphs in every theme and face. They run from the container
+      edge past the viewport edge and pass under the letters. The roman row is
+      one line in Forest and two in Teal and Monochrome, so the first pseudo is
+      two rows tall: a second set of guides one line height (1lh) down covers
+      the second line when it exists, and lies exactly under the italic line's
+      own guides when it does not. Both draw opaque colours, so where they
+      coincide nothing doubles. Ascender and descender are dashed guides, not
+      claims about the glyphs.
+   B. The sheet. Two pseudo-elements of the hero, behind the content and above
+      the guides, are alpha masks (rulers as gradients, the A-frame, its arcs and
+      the grid from two small SVG files) filled with role colours, so every
+      theme recolours them. Ink is neutral; bronze (tertiary) is kept for the
+      second baseline, the measured edge and the apex mark. From 75rem up the
+      art sits in the right column below the first headline line, in em units
+      anchored to the container, so it follows text zoom.
+   --------------------------------------------------------------- */
+
+:root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1 {
+  --sheet-ink: color-mix(in srgb, var(--md-sys-color-outline) 64%, var(--md-sys-color-surface));
+  --sheet-soft: color-mix(in srgb, var(--md-sys-color-outline) 46%, var(--md-sys-color-surface));
+  --sheet-faint: color-mix(in srgb, var(--md-sys-color-outline) 26%, var(--md-sys-color-surface));
+  --sheet-accent: var(--md-sys-color-tertiary);
+  --sheet-w: 100vw;
+  --sheet-up: 0.04em;
+  --sheet-down: 0.21em;
+  --sheet-rise: 1.4em;
+  --sheet-lo: 30%;
+  --sheet-hold: 11em;
+  --sheet-acc-from: 6.9em;
+  --sheet-more: 0px;
+}
+
+@supports (overflow-x: clip) and (height: 1cap) and ((mask-image: none) or (-webkit-mask-image: none)) {
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en) { overflow-x: clip; position: relative; isolation: isolate; }
+
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en)::before,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before {
+    --sheet-row: calc(var(--sheet-up) + 1cap + var(--sheet-down));
+    --sheet-ink-lo: color-mix(in srgb, var(--sheet-ink) var(--sheet-lo), var(--md-sys-color-surface));
+    --sheet-soft-lo: color-mix(in srgb, var(--sheet-soft) var(--sheet-lo), var(--md-sys-color-surface));
+    --sheet-dash: repeating-linear-gradient(90deg, var(--sheet-faint) 0 0.14em, transparent 0.14em 0.24em);
+    --sheet-base-img: linear-gradient(90deg, var(--sheet-ink-lo) var(--sheet-hold), var(--sheet-ink) calc(var(--sheet-hold) + var(--sheet-rise)));
+    --sheet-cap-img: linear-gradient(90deg, var(--sheet-soft-lo) var(--sheet-hold), var(--sheet-soft) calc(var(--sheet-hold) + var(--sheet-rise)));
+    --sheet-bar-img: linear-gradient(var(--sheet-soft), var(--sheet-soft));
+    --sheet-by: calc(var(--sheet-up) + 1cap - 1px);
+    --sheet-cy: calc(var(--sheet-up) - 1px);
+    --sheet-dy: calc(var(--sheet-row) - 1px);
+    content: "";
+    content: "" / "";
+    position: relative;
+    z-index: -2;
+    display: inline-block;
+    width: var(--sheet-w);
+    height: calc(var(--sheet-row) + var(--sheet-more));
+    margin: calc(-1 * (var(--sheet-up) + 1cap)) calc(0.25em - var(--sheet-w)) calc(-1 * (var(--sheet-down) + var(--sheet-more))) -0.25em;
+    vertical-align: baseline;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    background-repeat: no-repeat;
+    background-image: var(--sheet-acc),
+      var(--sheet-base-img),
+      var(--sheet-cap-img),
+      var(--sheet-bar-img),
+      var(--sheet-dash),
+      var(--sheet-dash);
+    background-size: 100% 2px,
+      100% 2px,
+      100% 2px,
+      2px var(--sheet-row),
+      100% 1px,
+      100% 1px;
+    background-position: 0 var(--sheet-by),
+      0 var(--sheet-by),
+      0 var(--sheet-cy),
+      0 0,
+      0 0,
+      0 var(--sheet-dy);
+  }
+  /* The roman row: the same guides twice, the second one line height down. */
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en)::before {
+    --sheet-more: 1lh;
+    --sheet-acc: linear-gradient(transparent, transparent);
+    background-image: var(--sheet-acc),
+      var(--sheet-base-img),
+      var(--sheet-cap-img),
+      var(--sheet-bar-img),
+      var(--sheet-dash),
+      var(--sheet-dash),
+      var(--sheet-acc),
+      var(--sheet-base-img),
+      var(--sheet-cap-img),
+      var(--sheet-bar-img),
+      var(--sheet-dash),
+      var(--sheet-dash);
+    background-size: 100% 2px,
+      100% 2px,
+      100% 2px,
+      2px var(--sheet-row),
+      100% 1px,
+      100% 1px,
+      100% 2px,
+      100% 2px,
+      100% 2px,
+      2px var(--sheet-row),
+      100% 1px,
+      100% 1px;
+    background-position: 0 var(--sheet-by),
+      0 var(--sheet-by),
+      0 var(--sheet-cy),
+      0 0,
+      0 0,
+      0 var(--sheet-dy),
+      0 calc(var(--sheet-by) + 1lh),
+      0 calc(var(--sheet-by) + 1lh),
+      0 calc(var(--sheet-cy) + 1lh),
+      0 1lh,
+      0 1lh,
+      0 calc(var(--sheet-dy) + 1lh);
+  }
+  /* The italic line is one line in every face and width, so it carries the bronze second baseline. */
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before {
+    --sheet-hold: 6.9em;
+    --sheet-acc: linear-gradient(90deg, transparent 0, transparent var(--sheet-acc-from), var(--sheet-accent) calc(var(--sheet-acc-from) + 1.4em));
+  }
+
+  /* Phones: the headline is 40px there and its rows are 42px apart, so the dashed guides would
+     crowd each other. Cap and baseline rules stay. */
+  @media (max-width: 599px) {
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en)::before,
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before { --sheet-dash: linear-gradient(transparent, transparent); }
+  }
+
+  /* The sheet itself. */
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after {
+    --sheet-art: 0 0;
+    --sheet-art-img: none;
+    --sheet-rule-y: 15px;
+    --sheet-h1: 7px;
+    --sheet-h2: 13px;
+    --sheet-h3: 19px;
+    content: "";
+    content: "" / "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: min(100%, 54em);
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  @media (min-width: 600px) {
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-rule-y: 32px; --sheet-h1: 9px; --sheet-h2: 17px; --sheet-h3: 27px; }
+  }
+  /* The art files are only asked for from 75rem up, where the A-frame is drawn at all. */
+  @media (min-width: 75rem) {
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-art: 87.5em 50em; }
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before { --sheet-art-img: url("assets/bg-sheet-art.svg"); }
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-art-img: url("assets/bg-sheet-edge.svg"); }
+  }
+
+  /* Neutral ink: a tick scale under the header across the container, a vertical one on the
+     right edge (only as wide as the gutter allows) and, from 75rem, the A-frame, its arcs and grid. */
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before {
+    --sheet-tick: var(--md-sys-color-on-surface);
+    --sheet-gutter: max(0px, calc(50vw - 600px - 24px));
+    --sheet-rv0: min(1px, var(--sheet-gutter));
+    --sheet-rv1: min(9px, var(--sheet-gutter));
+    --sheet-rv2: min(17px, var(--sheet-gutter));
+    --sheet-rv3: min(27px, var(--sheet-gutter));
+    background: color-mix(in srgb, var(--md-sys-color-outline) 80%, var(--md-sys-color-surface));
+    --sheet-mask-image:
+      var(--sheet-art-img),
+      linear-gradient(var(--sheet-tick), var(--sheet-tick)),
+      repeating-linear-gradient(90deg, var(--sheet-tick) 0 1px, transparent 1px 12px),
+      repeating-linear-gradient(90deg, var(--sheet-tick) 0 1px, transparent 1px 60px),
+      repeating-linear-gradient(90deg, var(--sheet-tick) 0 2px, transparent 2px 120px),
+      linear-gradient(var(--sheet-tick), var(--sheet-tick)),
+      linear-gradient(270deg, var(--sheet-tick), var(--sheet-tick)),
+      repeating-linear-gradient(180deg, var(--sheet-tick) 0 1px, transparent 1px 10px),
+      repeating-linear-gradient(180deg, var(--sheet-tick) 0 1px, transparent 1px 50px),
+      repeating-linear-gradient(180deg, var(--sheet-tick) 0 2px, transparent 2px 100px);
+    --sheet-mask-size:
+      var(--sheet-art),
+      min(100%, var(--container-max-laptop)) 1px, min(100%, var(--container-max-laptop)) var(--sheet-h1), min(100%, var(--container-max-laptop)) var(--sheet-h2), min(100%, var(--container-max-laptop)) var(--sheet-h3),
+      1px var(--sheet-h3),
+      var(--sheet-rv0) 600px, var(--sheet-rv1) 600px, var(--sheet-rv2) 600px, var(--sheet-rv3) 600px;
+    --sheet-mask-position:
+      calc(50% + 40em - 576px) 0,
+      50% calc(var(--sheet-rule-y) + var(--sheet-h3) - 1px), 50% calc(var(--sheet-rule-y) + var(--sheet-h3) - var(--sheet-h1)), 50% calc(var(--sheet-rule-y) + var(--sheet-h3) - var(--sheet-h2)), 50% var(--sheet-rule-y),
+      calc(50% + min(50%, var(--container-max-laptop) / 2)) var(--sheet-rule-y),
+      right 0 top 100px, right 0 top 100px, right 0 top 100px, right 0 top 100px;
+    -webkit-mask-image: var(--sheet-mask-image);
+    mask-image: var(--sheet-mask-image);
+    -webkit-mask-size: var(--sheet-mask-size);
+    mask-size: var(--sheet-mask-size);
+    -webkit-mask-position: var(--sheet-mask-position);
+    mask-position: var(--sheet-mask-position);
+  }
+  /* Bronze ink: the measured edge along the right leg and the apex mark (75rem and up; below that
+     there is nothing to mask, and an unmasked box would paint solid, so it is not generated). */
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after {
+    display: none;
+    background: var(--md-sys-color-tertiary);
+    -webkit-mask-image: var(--sheet-art-img);
+    mask-image: var(--sheet-art-img);
+    -webkit-mask-size: var(--sheet-art);
+    mask-size: var(--sheet-art);
+    -webkit-mask-position: calc(50% + 40em - 576px) 0;
+    mask-position: calc(50% + 40em - 576px) 0;
+  }
+  @media (min-width: 75rem) {
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { display: block; }
+  }
+}
+
+/* Forced colours, higher contrast and print: the sheet is decoration, so it goes, and its art files are
+   not asked for either (a pseudo-element with no content still resolves its mask-image). */
+@media (forced-colors: active), (prefers-contrast: more), print {
+  :root:is(:not([data-bg]), [data-bg="sheet"]) :is(.hero, .hero__h1):lang(en)::before,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) :is(.hero, .hero__h1):lang(en)::after,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before { content: none; }
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
+  :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-art-img: none; }
+}
+/* bg:sheet:end */
+
+/* bg:dial:begin */
+/* ---------------------------------------------------------------
+   Hero background "dial" (home, English, 1200px and wider). A vernier dial seen as one arc of a
+   large circle in the right column of the hero, below the first line of the headline: a bezel,
+   an outer scale of radial hairline ticks (a long tick every 4th, the longest every 8th), a
+   hairline ring with an inner scale, and a bronze index with a small caret at the middle of the
+   arc. Two gratings carry the scales, 2 percent apart in pitch. Grating A (::before) never
+   moves and holds the bezel, both scales and the index. Grating B (::after) is the vernier, the
+   same two scales in bronze, and the pointer turns it a fraction of a degree (hero-bg.js), so the
+   beat between the two slides along the arc: the ticks move a few pixels, the place where they
+   line up travels about 50 times as far. At rest B sits at zero, the two coincide at the index,
+   and the arc thickens into bands of bronze either side. Nothing moves on its own.
+
+   The tick geometry is assets/bg-dial-a.svg and bg-dial-b.svg (tools/dial-masks.py), used as
+   masks over role-token colours, so one pair of files recolours itself in all six themes. The
+   gratings are the two pseudo-elements of the headline, so the layout places them. The top is
+   the end of the headline's first line: the registered --dial-lh is the headline's own line
+   height, so the arc follows the headline's size, face and zoom, and the headline may wrap to
+   two lines or three. The left is the right edge of the lede box plus a gap (the pseudo-elements
+   take the lede's font, so 56ch is the lede's own measure in whichever face the visit has), or
+   the container's right edge less the arc's width, whichever is further right: normally the
+   second, so the arc ends on the container's edge, and when the text is zoomed on its own the
+   first, which pushes the arc away from the lede and off the page rather than into it. The
+   numbers fitted by hand are the arc's box and its centre (--dial-w, the height, --dial-ox and
+   --dial-oy, printed by tools/dial-masks.py), the clearance below the first line (1.12 line
+   heights and 24px) and the 4px by which the box overhangs the container's edge;
+   tools/verify/bg-dial.js fails when a copy or layout change breaks them.
+
+   Every rule starts from the draw, so with another background drawn this changes nothing. Home
+   page and English only (:lang(en)). The rules sit behind one feature query because they need
+   registered custom properties and the lh unit; an engine without either keeps the plain hero.
+   Under 1200px the copy fills the hero and there is no column to draw in: nothing here applies
+   and the masks are not requested. */
+@property --dial-lh {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@supports (transition-behavior: allow-discrete) {
+  @media (min-width: 1200px) {
+    :root[data-bg="dial"]:lang(en) .hero { overflow-x: clip; }
+    :root[data-bg="dial"]:lang(en) .hero__h1 {
+      position: relative;
+      --dial-lh: 1lh;
+    }
+    :root[data-bg="dial"]:lang(en) .hero__h1::before,
+    :root[data-bg="dial"]:lang(en) .hero__h1::after {
+      content: "";
+      position: absolute; /* z-index stays auto: the ink paints over the copy and keeps the hero's text out of an extra compositor layer, so the clearance below is what protects the words */
+      pointer-events: none;
+      /* The lede's own font, so that ch and em below are the lede's. */
+      font: var(--text-type-lede);
+      /* The circle's centre in the box (tools/dial-masks.py prints these). */
+      --dial-ox: 270.2px;
+      --dial-oy: 223.5px;
+      --dial-w: 186px;
+      /* The container's content width, 1152px from 1200px up, and the lede box's right edge in it. */
+      --dial-content: calc(min(100vw, var(--container-max-laptop)) - 2 * var(--space-6));
+      --dial-lede: min(56ch, var(--dial-content));
+      top: calc(var(--dial-lh) * 1.12 + var(--space-6));
+      --dial-from: calc(var(--dial-lede) + var(--space-6));
+      --dial-to: calc(var(--dial-content) - var(--dial-w) + 4px); /* the box overhangs the container's edge by 4px: the ends of the arc fade out before the box does */
+      left: max(var(--dial-from), var(--dial-to));
+      width: var(--dial-w);
+      height: 447px;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+    }
+    :root[data-bg="dial"]:lang(en) .hero__h1::before {
+      /* The scale, bezel and ring in the muted text colour at 68 percent, and the index, the dial's
+         solid Bronze moment (the accent text colour), cut out of the same mask by a 2 degree wedge
+         of the circle: the index line, its caret and the short stretch of bezel under them. */
+      background:
+        conic-gradient(from 269deg at var(--dial-ox) var(--dial-oy), var(--text-accent) 0deg 2deg, transparent 2deg),
+        color-mix(in oklab, var(--text-muted) 68%, transparent);
+      -webkit-mask-image: url(assets/bg-dial-a.svg);
+      mask-image: url(assets/bg-dial-a.svg);
+    }
+    :root[data-bg="dial"]:lang(en) .hero__h1::after {
+      /* The vernier: bronze, so where it lies over the scale the two read as one bronze-tipped
+         tick and where it falls between ticks they read as a pair. */
+      background: color-mix(in oklab, var(--text-accent) 78%, transparent);
+      -webkit-mask-image: url(assets/bg-dial-b.svg);
+      mask-image: url(assets/bg-dial-b.svg);
+      /* The only moving layer: hero-bg.js animates rotate. Without it, B rests at zero. */
+      rotate: 0deg;
+      transform-origin: var(--dial-ox) var(--dial-oy);
+      will-change: transform;
+    }
+  }
+
+  /* No ink where the system asks for less decoration or its own colours, or on paper. */
+  @media (forced-colors: active), (prefers-reduced-transparency: reduce), (prefers-contrast: more), print {
+    :root[data-bg="dial"]:lang(en) .hero__h1::before,
+    :root[data-bg="dial"]:lang(en) .hero__h1::after { display: none; }
+  }
+}
+/* bg:dial:end */
+
+/* bg:iris:begin */
+/* ---------------------------------------------------------------
+   Hero background "iris" (home, English, 1280px and wider). A tonal dial seen through the edge of the
+   page: a disc with a darker bezel, two scales of radial ticks, and a bronze arc of light that ends in an
+   index mark aimed at the end of the italic line. It rises behind the clients rule in the empty right of
+   the hero, below the first line of the headline, and the rule cuts it. Nothing else touches the copy.
+   After twenty seconds without input an inner dial opens inside it, once per visit, in 3.6 seconds
+   (hero-bg.js times it; this file draws both states); any input ends it at once, and the settled dial stays.
+
+   The art is one block of inline SVG in index.html (between the bg-iris markers), drawn in a frame whose
+   outer ring has a radius of 1000 units. The one number that sets its size is --iris-r, the pixel radius
+   of that ring, so the markup and this file share no pixel number. Three more numbers place it. The art
+   hangs on the clients rule, because the rule moves down with the headline when a typeface wraps it to a
+   third line or the text is zoomed, and the italic line moves with it; the rule is also the clean edge
+   that keeps the art off the client marks. The disc's left edge is the furthest right of three things: the
+   container's right edge less --iris-bite; the lede box's right edge (56ch in the lede's own font, as the
+   lede sets it) plus a page margin, so a wider measure or text zoom pushes the disc off the page rather
+   than into the copy; and the place where it bleeds --iris-bleed off the right edge of the window, so a
+   wide screen shows the same crop as a laptop. --iris-lift is how far the dial's centre stands above the
+   rule. The numbers fitted by hand are --iris-r, --iris-bite, --iris-bleed and --iris-lift, and the index
+   angle in the markup; tools/verify/bg-iris.js fails when a copy or layout change breaks them.
+
+   Every rule starts from the draw, so with another background drawn this changes nothing. Home page and
+   English only (:lang(en)). The art is a still composition by default (no script, reduced motion and
+   every later view in a visit show it), and the opening is an opt-in layered on top by classes hero-bg.js puts
+   on <html>. Under 1280px there is no column to draw in: nothing here applies. */
+.iris { display: none; }
+
+@supports (color: color-mix(in srgb, red, transparent)) and (overflow: clip) {
+  @media (min-width: 1280px) {
+    /* The art sits behind the copy in the hero's own stacking context, and the hero clips it at the
+       window's edge, so a block that runs past the right edge makes no horizontal scroll. */
+    :root[data-bg="iris"]:lang(en) .hero { isolation: isolate; overflow-x: clip; }
+    :root[data-bg="iris"]:lang(en) .hero .clients { position: relative; }
+    :root[data-bg="iris"]:lang(en) .iris {
+      --iris-r: 400px;       /* the outer ring's radius */
+      --iris-bite: 285px;    /* how far the disc's left edge reaches into the column from its right edge */
+      --iris-bleed: 330px;   /* how far the disc runs off the right edge of a window wider than the column */
+      --iris-lift: 135px;    /* the centre's height above the clients rule */
+      /* Bronze pulled toward the ink: the lines hold on cream and on dark alike. */
+      --iris-ink: color-mix(in srgb, var(--md-sys-color-tertiary) 70%, var(--md-sys-color-on-surface));
+      --iris-accent: color-mix(in srgb, var(--md-sys-color-tertiary) 86%, var(--md-sys-color-on-surface));
+      display: block;
+      position: absolute;
+      z-index: -1;
+      /* The lede's own font, so that ch below is the lede's measure in whichever face the visit has. */
+      font: var(--text-type-lede);
+      left: max(
+        100% - var(--iris-bite),
+        min(56ch, 100%) + var(--space-6),
+        50vw + 50% + var(--iris-bleed) - 2 * var(--iris-r)
+      );
+      right: calc(50% - 50vw);
+      bottom: 100%;
+      height: calc(var(--iris-r) + var(--iris-lift));
+      /* The cut at the bottom is the clients rule carried on to the window's edge, so it reads as a line
+         the dial stands on rather than a clipped box. The border sits on the rule's own row. */
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+    }
+    :root[data-bg="iris"]:lang(en) .iris svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      max-width: none;       /* the reset caps an svg at its parent's width; the art is wider than its window */
+      width: calc(2 * var(--iris-r));
+      height: calc(2 * var(--iris-r));
+      overflow: visible;
+      fill: none;
+      stroke: none;
+    }
+
+    /* The widths are in frame units: at 400px a ring of 1000 units is 0.4px a unit. */
+    :root[data-bg="iris"]:lang(en) .iris__outer { fill: var(--iris-ink); fill-opacity: .04; }
+    :root[data-bg="iris"]:lang(en) .iris__disc { fill: var(--iris-ink); fill-opacity: .09; }
+    :root[data-bg="iris"]:lang(en) .iris__band { stroke: var(--iris-ink); stroke-opacity: .08; }
+    :root[data-bg="iris"]:lang(en) .iris__line { stroke: var(--iris-ink); }
+    :root[data-bg="iris"]:lang(en) .iris__line--a { stroke-width: 6; stroke-opacity: .85; }
+    :root[data-bg="iris"]:lang(en) .iris__line--b { stroke-width: 2.5; stroke-opacity: .55; }
+    :root[data-bg="iris"]:lang(en) .iris__line--c { stroke-width: 2.5; stroke-opacity: .5; }
+    :root[data-bg="iris"]:lang(en) .iris__line--d { stroke-width: 5; stroke-opacity: .8; }
+    :root[data-bg="iris"]:lang(en) .iris__line--f { stroke-width: 4; stroke-opacity: .7; }
+    :root[data-bg="iris"]:lang(en) .iris__ticks { stroke: var(--iris-ink); stroke-opacity: .8; }
+    :root[data-bg="iris"]:lang(en) .iris__ticks--minor { stroke-opacity: .6; }
+    :root[data-bg="iris"]:lang(en) .iris__ticks--dial { stroke-opacity: .55; }
+    :root[data-bg="iris"]:lang(en) .iris__pupil { fill: var(--iris-accent); fill-opacity: .14; }
+    /* The lit arc: accent colour, strongest at the head, a long tail that fades out. */
+    :root[data-bg="iris"]:lang(en) .iris__stop { stop-color: var(--iris-accent); }
+    :root[data-bg="iris"]:lang(en) .iris__stop--0 { stop-opacity: 0; }
+    :root[data-bg="iris"]:lang(en) .iris__stop--1 { stop-opacity: .3; }
+    :root[data-bg="iris"]:lang(en) .iris__stop--2 { stop-opacity: .7; }
+    :root[data-bg="iris"]:lang(en) .iris__stop--3 { stop-opacity: 1; }
+    :root[data-bg="iris"]:lang(en) .iris__arc { stroke-width: 10; stroke-linecap: round; }
+    :root[data-bg="iris"]:lang(en) .iris__arc--still { stroke-width: 15; }
+    :root[data-bg="iris"]:lang(en) .iris__index { stroke: var(--iris-accent); stroke-width: 9; }
+  }
+}
+
+/* No art where it would be a second layer of noise: forced colours, less transparency, more contrast,
+   and on paper. */
+@media (forced-colors: active), (prefers-reduced-transparency: reduce), (prefers-contrast: more), print {
+  :root[data-bg="iris"]:lang(en) .iris { display: none; }
+}
+
+/* The one motion: opt-in, once per visit, one layer, transform and opacity only, under four seconds,
+   never under reduced motion. hero-bg.js adds iris-armed before the first paint (only where the opening can
+   happen), iris-play after twenty seconds of silence, and iris-done when it ends. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1280px) {
+  /* Armed: the inner dial is not drawn yet. No will-change here. */
+  :root[data-bg="iris"].iris-armed:not(.iris-done):lang(en) .iris__dial { opacity: 0; }
+  /* Play: the layer exists only while it moves. */
+  :root[data-bg="iris"].iris-armed.iris-play:not(.iris-done):lang(en) .iris__dial {
+    will-change: transform, opacity;
+    animation: iris-open 3.6s cubic-bezier(.22, .7, .2, 1) both;
+  }
+  :root[data-bg="iris"].iris-armed.iris-play.iris-hold:not(.iris-done):lang(en) .iris__dial { animation-play-state: paused; }
+}
+@keyframes iris-open {
+  from { transform: rotate(-24deg) scale(.72); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+/* bg:iris:end */

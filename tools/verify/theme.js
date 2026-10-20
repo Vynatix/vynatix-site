@@ -3,12 +3,14 @@
 // tab closes; light or dark follows the visitor's choice or their system. This
 // proves the draw is random, the visit is stable, the toggle works inside it,
 // nothing flashes, bad or blocked storage is survived, and the headline faces
-// the home page preloads are the ones it uses.
+// the home page preloads are the ones it uses. The colour draw is what this tests, so it is
+// never pinned; the hero background is (pinBg, the sheet), so the home page is the same one
+// every run.
 //
 // Every context is armed (armGa): the consent module is live with the dummy ID and Google is stubbed, so each
 // test runs with the consent bar in the page, as a first-time visitor sees it. That is what proves the bar
 // neither flashes the wrong theme, nor adds a preload, nor trips over blocked or poisoned storage.
-const { BASE, ALL_THEMES, armGa, launch } = require('./_common');
+const { BASE, ALL_THEMES, armGa, pinBg, launch } = require('./_common');
 
 const PAGES = ['index', 'about', 'services', 'work', 'membership', 'contact', 'privacy', 'terms', 'accessibility'];
 const LOOKS = ['forest', 'teal', 'mono'];
@@ -17,7 +19,9 @@ const isDark = (theme) => /dark$/.test(theme);
 
 (async () => {
   const browser = await launch();
-  const armed = async (opts) => { const ctx = await browser.newContext(opts); await armGa(ctx); return ctx; };
+  // Armed (the consent bar is in the page) and with the hero background pinned to the sheet, the way every context
+  // of this check is made. pinBg touches only "vynatix-bg", so the colour draw and the consent answer stay free.
+  const armed = async (opts) => { const ctx = await browser.newContext(opts); await armGa(ctx); await ctx.addInitScript(pinBg); return ctx; };
   let problems = 0;
   const check = (ok, name, detail) => {
     if (!ok) problems++;

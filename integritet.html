@@ -150,7 +150,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=f5360802">
+<link rel="stylesheet" href="styles.css?v=b990f5e5">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -164,7 +164,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=7578b743"></script>
+<script src="app.js?v=d187b8ce"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Hoppa till innehållet</a>
@@ -242,11 +242,12 @@
           </ul>
 
           <h2 id="storage">Vad som sparas i er webbläsare</h2>
-          <p>Webbplatsen sparar tre poster i webbläsarens lagring. Ingen av dem är en cookie.</p>
+          <p>Webbplatsen sparar några poster i webbläsarens lagring, alla listade här. Ingen av dem är en cookie.</p>
           <p>Webbplatsen slumpar fram ett av tre färgscheman när ni kommer in och behåller det under resten av besöket, så att sidorna matchar varandra. Det som slumpades fram sparas i webbläsarens sessionslagring under nyckeln <code>vynatix-look</code>, med värdet <code>forest</code>, <code>teal</code> eller <code>mono</code>, och webbläsaren tar bort det när ni stänger fliken.</p>
+          <p>Webbplatsen slumpar också fram en av fyra dekorativa bakgrunder, på den sida ni öppnar först (bara startsidan visar den), och behåller den under resten av besöket så att sidorna stämmer överens. Det som slumpades fram sparas i webbläsarens sessionslagring under nyckeln <code>vynatix-bg</code>, med värdet <code>weave</code>, <code>sheet</code>, <code>dial</code> eller <code>iris</code>. Två av bakgrunderna sparar ytterligare ett värde var, också i sessionslagringen: <code>vynatix-bg-seed</code>, som skrivs bara när den vävda bakgrunden slumpas fram, innehåller ett heltal som väljer mönstret för just det besöket, och <code>vynatix-bg-iris</code>, som skrivs bara när irisbakgrunden slumpas fram, innehåller värdet <code>1</code> när dess enda öppningsanimation har börjat, så att den inte spelas upp igen under samma besök. Inget av de tre innehåller personuppgifter, och webbläsaren tar bort alla när ni stänger fliken.</p>
           <p>Om ni använder knappen för ljust och mörkt läge sparas ert val i webbläsarens lokala lagring under nyckeln <code>vynatix-theme</code>. Värdet är temats namn, till exempel <code>light</code> eller <code>dark</code>. Tills ni använder knappen följer webbplatsen systemets inställning för ljust eller mörkt läge.</p>
           <p>När ni svarar på frågan om statistik sparas ert svar i webbläsarens lokala lagring under nyckeln <code>vynatix-consent</code>. Värdet anger ert val och datumet, till exempel <code>v1:granted:2026-10-19</code> eller <code>v1:denied:2026-10-19</code>, där <code>v1</code> är versionen av den lydelse ni svarade på. Ingenting skrivs till den här nyckeln innan ni har svarat. Webbplatsen använder ert svar i 12 månader. Därefter betraktas ni som obeslutade och frågan ställs igen. Själva nyckeln finns kvar i webbläsaren tills ni väljer på nytt eller rensar webbläsarens webbplatsdata.</p>
-          <p>De två första nycklarna är visningsinställningar. Den tredje registrerar ert svar på frågan om statistik. Alla tre stannar på er enhet, och webbplatsen skickar dem aldrig till oss eller till någon annan. Cookies från Google Analytics är något annat och beskrivs under <a href="#cookies">Statistik och cookies</a>. När ni rensar webbläsarens webbplatsdata tas alla tre bort, och webbplatsen ställer då frågan om statistik igen.</p>
+          <p>Färgschemat, bakgrunden och knappen för ljust och mörkt läge är visningsinställningar. Posten för samtycke registrerar ert svar på frågan om statistik. Alla stannar på er enhet, och webbplatsen skickar dem aldrig till oss eller till någon annan. Cookies från Google Analytics är något annat och beskrivs under Statistik och cookies. När ni rensar webbläsarens webbplatsdata tas alla bort, och webbplatsen ställer då frågan om statistik igen.</p>
 
           <h2 id="cookies">Statistik och cookies</h2>
           <p>Om ni godkänner använder vi Google Analytics 4 för att räkna besök och se vilka sidor som läses. Om ni avböjer, eller aldrig väljer, skickas ingenting till Google och ingen cookie för statistik sätts. Webbplatsen fungerar likadant oavsett vad ni väljer.</p>

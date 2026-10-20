@@ -7,14 +7,22 @@
 // the consent bar never enters the baseline, so a diff is a change to the page, not to whether a bar happens to
 // be up. The footer's Cookie settings link is part of the page and does show.
 //
+// The home page is captured once for each hero background under test (BGS, default all
+// four), as index-<theme>-<bg>.png; every other page once, as <page>-<theme>.png. The
+// draw is always pinned (a weave with its fixed seed, a dial at rest, an iris still
+// waiting: a capture takes seconds, the iris opens after twenty seconds of silence),
+// so the same tree gives the same pixels. Changing the home page changes its files by
+// design: regenerate those baselines deliberately, not the other pages'.
+//
 // `bar` is a separate mode for looking at the bar itself, viewport only (not full page), in each theme under
 // test: first visit, the bar reopened from the footer, and a first visit scrolled to the end of the page (the
 // footer against the bar). Pages index.html and sv.html at 390x844 and 1440x900, or VW x VH. It writes to
-// current-bar/ for review by eye and is not part of `compare`.
+// current-bar/ for review by eye and is not part of `compare`. The hero background is pinned to the sheet there
+// (pinTheme's default), not looped: the bar is a fixed card with its own opaque surface, whichever background sits behind it.
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { PAGES, BASE, THEMES, pinTheme, pinConsent, armGa, launch } = require('./_common');
+const { PAGES, BASE, THEMES, bgsFor, pinTheme, pinConsent, armGa, launch } = require('./_common');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
@@ -27,21 +35,22 @@ const VIEWPORT = {
 async function capture() {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await launch();
+  let shots = 0;
   for (const p of PAGES) {
-    for (const theme of THEMES) {
+    for (const theme of THEMES) for (const bg of bgsFor(p)) {
       const ctx = await browser.newContext({ viewport: VIEWPORT });
       await armGa(ctx);
       const page = await ctx.newPage();
       // Pin the theme before first paint (the site otherwise draws a colour scheme at
       // random per visit) so every capture is the same theme, never a mid-toggle frame.
-      await page.addInitScript(pinTheme, theme);
+      await page.addInitScript(pinTheme, { theme, bg });
       await page.addInitScript(pinConsent, 'denied');
       await page.goto(BASE + p, { waitUntil: 'load', timeout: 20000 });
       await page.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
       // The pinned answer is what keeps the bar out of the baseline; if the pin stops working (the stored format
       // changed), say so rather than capture a bar and call every page changed.
       if (await page.evaluate(() => !!document.getElementById('consent-bar'))) {
-        throw new Error(`${p} [${theme}]: the consent bar is up although the answer is pinned to denied; check pinConsent in _common.js against app.js`);
+        throw new Error(`${p} [${theme}${bg ? ' ' + bg : ''}]: the consent bar is up although the answer is pinned to denied; check pinConsent in _common.js against app.js`);
       }
       // Force every image to load and decode before capturing. fullPage grows the
       // viewport after this point, so loading="lazy" covers would otherwise still
@@ -63,14 +72,15 @@ async function capture() {
         document.querySelectorAll('main > section').forEach((s) => s.style.setProperty('content-visibility', 'visible'));
       });
       await page.waitForTimeout(300);
-      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}.png`);
+      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}${bg ? '-' + bg : ''}.png`);
       await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });
       console.log(`  captured ${path.basename(file)}`);
+      shots++;
       await ctx.close();
     }
   }
   await browser.close();
-  console.log(`\n${PAGES.length * THEMES.length} screenshots written to ${OUT}`);
+  console.log(`\n${shots} screenshots written to ${OUT}`);
 }
 
 // The bar itself, viewport only: first visit, reopened, and a first visit scrolled to the end of the page.

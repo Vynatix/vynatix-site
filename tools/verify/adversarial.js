@@ -12,7 +12,7 @@
 // asserted by headers.js instead. Two of the checks below (storage
 // poisoning and URL reflection) pass because app.js has no reflective sink,
 // not because the CSP blocks them — they guard against a future regression.
-const { BASE, ALL_THEMES, NOTICE_PAGES, TEST_ID, GTAG_SCRIPT, armGa, launch } = require('./_common');
+const { BASE, ALL_THEMES, ALL_BGS, NOTICE_PAGES, TEST_ID, GTAG_SCRIPT, armGa, launch } = require('./_common');
 
 // A 1x1 transparent PNG, so an image from the attacker's host is a real image if it is ever allowed through.
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
@@ -47,6 +47,11 @@ async function routeAttacker(ctx) {
     const ga = await armGa(ctx, { csp: 'asis', footer: false });
     await routeAttacker(ctx);
     const page = await ctx.newPage();
+    // The hero background is drawn at random; pin it to the sheet unless a check below has put
+    // something else in its place (pinBg would overwrite the poison the checks plant).
+    await page.addInitScript(() => {
+      try { if (sessionStorage.getItem('vynatix-bg') === null) sessionStorage.setItem('vynatix-bg', 'sheet'); } catch (e) { /* blocked */ }
+    });
     await page.addInitScript(() => {
       window.__v = [];
       document.addEventListener('securitypolicyviolation',
@@ -206,12 +211,18 @@ async function routeAttacker(ctx) {
   record('negative control is real: gtm.js loads when the CSP is bypassed', gtmControl === 'LOADED', `result=${gtmControl}`);
   record('script-src lets the one pinned /gtag/js path through', gtag === 'LOADED', `result=${gtag}, violations=${v8.filter((v) => /gtag/.test(v)).join(';') || 'none'}`);
 
-  // 9. Poisoned stored values (the light/dark choice, the drawn colour scheme and the consent answer)
-  //    must be rejected, not reflected into the DOM. The consent module is live here, so a bar proves the page really ran it.
+  // 9. Poisoned stored values (the light/dark choice, the drawn colour scheme, the drawn hero background,
+  //    the weave's seed and the consent answer) must be rejected, not reflected into the DOM or into a style.
+  //    The consent module is live here, so a bar proves the page really ran it.
+  //    (The iris's test hook, vynatix-bg-iris-idle, is read as a number.)
   await page.evaluate(() => {
-    localStorage.setItem('vynatix-theme', '"><img src=x onerror=window.__xss=1>');
-    sessionStorage.setItem('vynatix-look', '"><img src=x onerror=window.__xss=2>');
-    localStorage.setItem('vynatix-consent', '"><img src=x onerror=window.__xss=3>');
+    const p = (n) => '"><img src=x onerror=window.__xss=' + n + '>';
+    localStorage.setItem('vynatix-theme', p(1));
+    sessionStorage.setItem('vynatix-look', p(2));
+    sessionStorage.setItem('vynatix-bg', p(3));
+    sessionStorage.setItem('vynatix-bg-seed', p(4));
+    sessionStorage.setItem('vynatix-bg-iris-idle', p(5));
+    localStorage.setItem('vynatix-consent', p(6));
   });
   const before = ga.google().length;
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -219,15 +230,34 @@ async function routeAttacker(ctx) {
   const poison = await page.evaluate(() => ({
     theme: document.documentElement.getAttribute('data-theme'),
     look: sessionStorage.getItem('vynatix-look'),
+    bg: document.documentElement.getAttribute('data-bg'),
+    bgStored: sessionStorage.getItem('vynatix-bg'),
     xss: window.__xss || false,
     node: !!document.querySelector('img[src="x"]'),
     bar: !!document.getElementById('consent-bar'),
   }));
   record('storage poisoning rejected',
-    ALL_THEMES.includes(poison.theme) && ['forest', 'teal', 'mono'].includes(poison.look) && !poison.xss && !poison.node
+    ALL_THEMES.includes(poison.theme) && ['forest', 'teal', 'mono'].includes(poison.look) &&
+    ALL_BGS.includes(poison.bg) && poison.bg === poison.bgStored && !poison.xss && !poison.node
       && poison.bar && ga.google().length === before,
     JSON.stringify(poison) + `, google requests ${ga.google().length - before}`);
-  await page.evaluate(() => { localStorage.removeItem('vynatix-theme'); sessionStorage.removeItem('vynatix-look'); localStorage.removeItem('vynatix-consent'); });
+  // The weave's seed: a poisoned value must not reach the generated tile, only a plain number is used.
+  await page.evaluate(() => { sessionStorage.setItem('vynatix-bg', 'weave'); sessionStorage.setItem('vynatix-bg-seed', '"><img src=x onerror=window.__xss=7>'); });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  const seeded = await page.evaluate(() => ({
+    seed: sessionStorage.getItem('vynatix-bg-seed'),
+    tile: document.documentElement.style.getPropertyValue('--weave-tile').slice(0, 24),
+    xss: window.__xss || false,
+    node: !!document.querySelector('img[src="x"]'),
+  }));
+  record('weave seed poisoning rejected',
+    /^\d{1,10}$/.test(seeded.seed) && seeded.tile.startsWith('url("data:image/svg+xml') && !seeded.xss && !seeded.node,
+    JSON.stringify(seeded));
+  await page.evaluate(() => {
+    localStorage.removeItem('vynatix-theme');
+    localStorage.removeItem('vynatix-consent');
+    ['vynatix-look', 'vynatix-bg', 'vynatix-bg-seed', 'vynatix-bg-iris-idle'].forEach((k) => sessionStorage.removeItem(k));
+  });
 
   // 10. URL fragment/query payloads must never become DOM nodes.
   await page.goto(BASE + 'index.html#"><img src=x onerror=window.__u1=1>', { waitUntil: 'domcontentloaded' });

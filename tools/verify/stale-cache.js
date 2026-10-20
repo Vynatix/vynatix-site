@@ -64,7 +64,9 @@ const OLD_HTML = '<!doctype html><html lang="en"><head><meta charset="utf-8"><ti
 
 const PAGES_TO_TRY = ['index.html', 'services.html', 'about.html'];
 const STRIP_UPGRADE = ENGINE !== 'chromium';
-const STAMPS = new RegExp(`((?:href|src)="(?:${ALL.map((a) => a.replace(/\./g, '\\.')).join('|')}))\\?v=[0-9a-f]+"`, 'g');
+// Every regular-expression metacharacter, backslash included, so a file name can never change the pattern.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const STAMPS = new RegExp(`((?:href|src)="(?:${ALL.map(escapeRe).join('|')}))\\?v=[0-9a-f]+"`, 'g');
 let mode = 'old';           // 'old' serves the primed build, 'new' serves the repo
 const hits = [];            // every request the server actually received
 

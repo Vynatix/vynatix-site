@@ -48,7 +48,9 @@ function stampOf(file) {
 }
 
 const stamps = Object.fromEntries(ALL.map((a) => [a, stampOf(a)]));
-const escaped = ALL.map((a) => a.replace(/\./g, '\\.')).join('|');
+// Every regular-expression metacharacter, backslash included, so a file name can never change the pattern.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escaped = ALL.map(escapeRe).join('|');
 // href="styles.css" or href="styles.css?v=abc123", on a <link> or a <script src>.
 const REF = new RegExp(`((?:href|src)=")(${escaped})(\\?v=[0-9a-f]*)?(")`, 'g');
 

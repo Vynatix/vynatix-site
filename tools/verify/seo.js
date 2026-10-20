@@ -19,7 +19,7 @@
 //   mark, no ellipsis
 const fs = require('fs');
 const path = require('path');
-const { PAGES, BASE, launch } = require('./_common');
+const { PAGES, BASE, pinBg, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
@@ -55,6 +55,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
   // Pages
   const browser = await launch();
   const page = await browser.newPage();
+  await page.addInitScript(pinBg);     // the hero background is drawn at random per visit; nothing measured here depends on it
   const alternates = {};
   for (const p of PAGES) {
     await page.goto(BASE + p, { waitUntil: 'domcontentloaded' });

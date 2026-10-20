@@ -31,6 +31,40 @@ from the system (or `@material-symbols/svg-300@0.47.5`, `outlined/`) rather than
 drawing it. `dark_mode.svg` and `light_mode.svg` are not yet in the system's
 approved catalogue.
 
+## Hero background masks
+
+`bg-sheet-art.svg`, `bg-sheet-edge.svg`, `bg-dial-a.svg` and `bg-dial-b.svg` are
+alpha-only masks for two of the four home hero backgrounds (the sheet's A-frame, arcs
+and grid, and its bronze edge; the dial's two gratings of scale marks). `hero-bg.css`
+uses each as a CSS `mask-image` over a role-token colour, so one file recolours itself in
+all six themes; the dial's strokes are `#000` and the sheet's use `currentColor` and
+gradients, because only alpha counts in a mask, which is why none of them is a colour in
+the sense the root rules ban. They are requested only when their
+background is drawn (the sheet from 75rem, the dial from 1200px), and the weave and the
+iris have no file here at all (the weave's tile is generated in `hero-bg.js`, the iris is
+inline SVG in `index.html`).
+
+**Do not edit them by hand; regenerate them, and give the new files new names.** Assets are
+cached under fixed URLs and are not version-stamped (only `tokens.css`,
+`colors_and_type.css`, `styles.css`, `app.js`, `hero-bg.css` and `hero-bg.js` are), so a changed file under an old name
+would reach a visitor beside a stylesheet written for the old one, or the reverse. Rename,
+change the `url()` in the block of `hero-bg.css` and delete the old file.
+
+- Sheet: `node tools/sheet-art.js` writes both files (plain Node; with its defaults it
+  reproduces the shipped pair byte for byte). Override fields as JSON in `ART` to retune,
+  and change the numbers the script's header names in `hero-bg.css` and
+  `tools/verify/bg-sheet.js`.
+- Dial: `python3 tools/dial-masks.py` writes both files (standard library; same, it
+  reproduces the shipped pair) and prints the box, the circle's centre and the gain. The
+  radius, the box and the centre live in three places that must change together: the
+  script's output, the dial block of `hero-bg.css` (`--dial-w`, `height`, `--dial-ox`,
+  `--dial-oy`) and `BEZEL` (with `BOX_W`, `BOX_H`, `OVERHANG`) in `hero-bg.js` and in
+  `tools/verify/bg-dial.js`.
+
+Then run `npm run check:bg` in `tools/`: the guards measure the art against the text and
+fail if it has moved into it. The art is fitted to the current headline copy; see the
+root [AGENTS.md](../AGENTS.md), *Hero backgrounds*.
+
 ## Photography
 
 `case-volvo-trucks`, `case-volvo-cars` and `case-regulated-ai` are the three

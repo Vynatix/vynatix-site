@@ -1156,6 +1156,10 @@ a.clients__item:has(.clients__mark):hover {
   .site-footer__grid { grid-template-columns: 1fr; gap: var(--space-8); }
 }
 
+/* The four hero backgrounds (one drawn per visit, home page only) are not here: they are in
+   hero-bg.css and hero-bg.js, which only index.html links, so no other page downloads them.
+   AGENTS.md, Hero backgrounds, says how they fit together. */
+
 /* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything
    with colour, type or background belongs in a named component above.

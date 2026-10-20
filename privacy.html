@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://vynatix.com/privacy.html">
 <meta property="og:locale" content="en_GB">
 <meta property="article:published_time" content="2026-08-19">
-<meta property="article:modified_time" content="2026-10-13">
+<meta property="article:modified_time" content="2026-10-20">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -131,7 +131,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-08-19",
-   "dateModified": "2026-10-13"
+   "dateModified": "2026-10-20"
   }
  ]
 }
@@ -143,7 +143,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=5513fdcb">
+<link rel="stylesheet" href="styles.css?v=4042eccc">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -157,7 +157,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=1e3c15cc"></script>
+<script src="app.js?v=d40c4121"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -213,7 +213,7 @@
     <section class="section">
       <div class="container">
         <div class="legal">
-          <p class="legal__meta">Last updated 13 October 2026</p>
+          <p class="legal__meta">Last updated 20 October 2026</p>
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
@@ -236,6 +236,7 @@
 
           <h2>What is stored in your browser</h2>
           <p>The site draws one of three colour schemes at random when you arrive, and keeps it for the rest of your visit so the pages match. That draw is saved in your browser's session storage under the key <code>vynatix-look</code>, with the value <code>forest</code>, <code>teal</code> or <code>mono</code>, and your browser removes it when you close the tab.</p>
+          <p>The site also draws one of four decorative backgrounds at random, on whichever page you open first (only the home page shows it), and keeps it for the rest of your visit so the pages agree. That draw is saved in your browser's session storage under the key <code>vynatix-bg</code>, with the value <code>weave</code>, <code>sheet</code>, <code>dial</code> or <code>iris</code>. Two of the backgrounds save one more value each, also in session storage: <code>vynatix-bg-seed</code>, written only when the woven background is drawn, holds one whole number that picks that visit's pattern, and <code>vynatix-bg-iris</code>, written only when the iris background is drawn, holds the value <code>1</code> once its one opening animation has begun, so that it does not play again in the same visit. None of the three holds personal data, and your browser removes all of them when you close the tab.</p>
           <p>If you use the theme toggle, your choice of light or dark is saved in your browser's local storage under the key <code>vynatix-theme</code>. The value is the name of the theme, such as <code>light</code> or <code>dark</code>. Until you use the toggle, the site follows your system's light or dark setting.</p>
           <p>These are display preferences, not identifiers. They never leave your device, are never transmitted to us, and cannot be used to recognise you. Clearing your browser's site data removes the stored choice.</p>
 

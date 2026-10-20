@@ -3,8 +3,10 @@
 // tab closes; light or dark follows the visitor's choice or their system. This
 // proves the draw is random, the visit is stable, the toggle works inside it,
 // nothing flashes, bad or blocked storage is survived, and the headline faces
-// the home page preloads are the ones it uses.
-const { BASE, ALL_THEMES, launch } = require('./_common');
+// the home page preloads are the ones it uses. The colour draw is what this tests, so it is
+// never pinned; the hero background is (pinBg, the sheet), so the home page is the same one
+// every run.
+const { BASE, ALL_THEMES, pinBg, launch } = require('./_common');
 
 const PAGES = ['index', 'about', 'services', 'work', 'membership', 'contact', 'privacy', 'terms', 'accessibility'];
 const LOOKS = ['forest', 'teal', 'mono'];
@@ -13,6 +15,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
 (async () => {
   const browser = await launch();
+  const newCtx = async (opts) => { const c = await browser.newContext(opts); await c.addInitScript(pinBg); return c; };
   let problems = 0;
   const check = (ok, name, detail) => {
     if (!ok) problems++;
@@ -28,7 +31,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 1. Every fresh visit draws a direction; across many visits all three appear.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const tally = { forest: 0, teal: 0, mono: 0 };
     let bad = 0;
     for (let i = 0; i < 36; i++) {
@@ -45,7 +48,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 2. Within one visit the scheme never changes: ten page loads and a reload.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     let allStable = true, detail = [];
     for (let visit = 0; visit < 6; visit++) {
       const page = await ctx.newPage();
@@ -68,7 +71,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 3. The toggle flips light and dark inside the drawn scheme, and the choice carries on.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const page = await ctx.newPage();
     await page.goto(url('about'), { waitUntil: 'domcontentloaded' });
     const a = await state(page);
@@ -93,7 +96,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 4. Nothing flashes: the theme on the page when the <body> is created is the final one.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     let flashes = 0, n = 12;
     for (let i = 0; i < n; i++) {
       const page = await ctx.newPage();
@@ -113,7 +116,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 5. Storage that cannot hold the draw leaves the site on Forest, not re-rolling per page.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -134,7 +137,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 6. A stored value that is not a known scheme is discarded, never used.
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const bad = [];
     for (const poison of ['teal-light', '__proto__', '"><img src=x>', '', 'constructor']) {
       const page = await ctx.newPage();
@@ -150,7 +153,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 7. With no stored choice, light or dark follows the system preference.
   for (const scheme of ['dark', 'light']) {
-    const ctx = await browser.newContext({ colorScheme: scheme });
+    const ctx = await newCtx({ colorScheme: scheme });
     const page = await ctx.newPage();
     await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
     const s = await state(page);
@@ -160,7 +163,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 8. Without JavaScript the page keeps the Forest light theme its markup names.
   {
-    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const ctx = await newCtx({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
     const t = await page.evaluate(() => document.documentElement.getAttribute('data-theme')).catch(() => null);
@@ -175,7 +178,7 @@ const isDark = (theme) => /dark$/.test(theme);
     ['teal', 'teal-light', ['instrument-serif-400-latin', 'instrument-serif-400-italic-latin']],
     ['mono', 'mono-dark', ['geist-variable-latin', 'fraunces-italic-variable-latin']],
   ]) {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const page = await ctx.newPage();
     const warnings = [];
     page.on('console', (m) => { if (/preload/i.test(m.text())) warnings.push(m.text().slice(0, 140)); });
@@ -193,7 +196,7 @@ const isDark = (theme) => /dark$/.test(theme);
 
   // 10. Other pages preload nothing (the draw only matters for the home headline).
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx();
     const page = await ctx.newPage();
     await page.goto(url('services'), { waitUntil: 'domcontentloaded' });
     const n = await page.evaluate(() => document.querySelectorAll('link[rel="preload"]').length);

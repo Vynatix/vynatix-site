@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://vynatix.com/accessibility.html">
 <meta property="og:locale" content="en_GB">
 <meta property="article:published_time" content="2026-08-19">
-<meta property="article:modified_time" content="2026-10-18">
+<meta property="article:modified_time" content="2026-10-19">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -131,7 +131,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-08-19",
-   "dateModified": "2026-10-18"
+   "dateModified": "2026-10-19"
   }
  ]
 }
@@ -143,7 +143,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=e234c0e4">
+<link rel="stylesheet" href="styles.css?v=449c6b02">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -157,7 +157,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=1c1be8ad"></script>
+<script src="app.js?v=57426172"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -213,7 +213,7 @@
     <section class="section">
       <div class="container">
         <div class="legal">
-          <p class="legal__meta">Last updated 18 October 2026</p>
+          <p class="legal__meta">Last updated 19 October 2026</p>
 
           <div class="banner banner--warning" role="note">
             <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M74.62-140 480-840l405.38 700H74.62Zm78.61-45.39h653.54L480-749.23 153.23-185.39Zm347.46-67.41q7.16-7.33 7.16-17.84t-7.34-17.67q-7.34-7.15-17.85-7.15-10.51 0-17.66 7.33-7.15 7.34-7.15 17.85 0 10.51 7.33 17.66 7.34 7.16 17.85 7.16 10.51 0 17.66-7.34Zm-40.54-90.58h45.39v-217.85h-45.39v217.85ZM480-467.31Z"/></svg>
@@ -227,16 +227,26 @@
           <ul>
             <li>A <strong>skip link</strong> as the first item in the tab order, so keyboard users can jump past the header straight to the content.</li>
             <li>Every control is <strong>reachable and operable by keyboard</strong>, with a visible focus indicator.</li>
-            <li>The client list on the home page is a <strong>plain, still list</strong>: nothing on the site moves on its own.</li>
-            <li>The only motion is short transitions on hover and focus, and <strong>prefers-reduced-motion</strong> removes them.</li>
+            <li>The client list on the home page is a <strong>plain, still list</strong>.</li>
+            <li>The English home page opens with <strong>one of four decorative backgrounds</strong>, drawn at random for each visit and described in the next section. Screen readers skip them, they cannot take focus or catch a click, and they never lower the text below the AA contrast ratio.</li>
+            <li>Nothing on the site moves on its own, with <strong>one exception</strong>: the iris, one of those four backgrounds, opens an inner dial once per visit after 20 seconds without any input, and any input ends it at once. Everything else that moves answers you: short transitions on hover and focus, and the dial background, which follows the pointer. <strong>prefers-reduced-motion</strong> removes all of it.</li>
             <li>Text meets the <strong>AA contrast ratio</strong> in every colour scheme the site can show: it draws one of three at random for each visit, and each has a light and a dark theme.</li>
-            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the two controls that need JavaScript, the menu button and the theme toggle, are hidden rather than left sitting dead. Without JavaScript the theme follows the page default.</li>
+            <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the two controls that need JavaScript, the menu button and the theme toggle, are hidden rather than left sitting dead. Without JavaScript the theme follows the page default and the home page shows the still drafting-sheet background.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>
             <li>Pages in Swedish declare Swedish as their language, and the header and footer they share with the English pages declare English, so a screen reader switches voice at the right place.</li>
           </ul>
 
+          <h2>The background of the home page</h2>
+          <p>The top of the English home page carries one decorative background, drawn at random for each visit from four and kept for the rest of that visit, so every page you open agrees. (The Swedish home page and every other page have none.) If your browser blocks storage, or JavaScript is off, you get the drafting sheet. All four have no content, role or focus, are hidden from screen readers, let clicks and taps through to the page, and are kept clear of the text or run behind it, which keeps at least 4.5 to 1 against everything behind it in all six colour schemes (3 to 1 for the large headline, which on the drafting sheet has ruled lines behind its letters and measures a little over 4 to 1).</p>
+          <ul>
+            <li><strong>Woven cloth.</strong> A still, woven pattern in the column beside the opening paragraph. It never moves. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1100 pixels.</li>
+            <li><strong>Drafting sheet.</strong> Still ruled lines behind the headline, a scale under the header and, from 1200 pixels wide, a drawing of an A-shaped frame with compass arcs and a grid. It never moves. It is removed under forced colours, increased contrast and print. Below 1200 pixels the drawing is left out and the ruled lines and the scale stay; below 600 pixels the dashed lines are left out as well.</li>
+            <li><strong>Dial.</strong> An arc of fine scale marks at the right of the opening section. With a mouse or trackpad it answers the pointer: one of its two layers of marks turns by at most 1.4 degrees (6 pixels at the edge of the dial), moving at most about 2 pixels of mark a frame and never flashing. Pressing the theme button also turns it once, over half a second. It never moves by itself, a touch does not turn it, and with reduced motion on nothing moves it. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1200 pixels.</li>
+            <li><strong>Iris.</strong> A large dial at the right of the opening section, drawn as an inline image that screen readers skip. After 20 seconds without any key, pointer, scroll or touch input an inner dial opens inside it once, in 3.6 seconds, and then stays; that is the one movement on the site that starts by itself. Any input ends the opening at once, a hidden tab or an off-screen page holds it, and with reduced motion on it never plays and the inner dial is simply shown. It runs for less than five seconds and stops on any input, so WCAG 2.2.2 does not ask for a pause control. It is removed under forced colours, increased contrast, reduced transparency and print, and on screens narrower than 1280 pixels.</li>
+          </ul>
+
           <h2>How we check</h2>
-          <p>Every page is scanned with axe-core against the WCAG 2.0, 2.1 and 2.2 A and AA rule sets in all six themes (three colour schemes, each light and dark), every visible line of text is measured for contrast in each, and the build is checked with JavaScript disabled and with reduced motion enabled. At the last check, all pages passed with no violations.</p>
+          <p>Every page is scanned with axe-core against the WCAG 2.0, 2.1 and 2.2 A and AA rule sets in all six themes (three colour schemes, each light and dark), every visible line of text is measured for contrast in each, and the build is checked with JavaScript disabled and with reduced motion enabled, where nothing may animate in any of the four home page backgrounds. Each background is also measured for its distance from the text and for the contrast behind every line of text, at several widths and text sizes, in all six themes. At the last check, all pages passed with no violations.</p>
 
           <h2>What we have not verified</h2>
           <p>We want to be straightforward about the limits of that:</p>

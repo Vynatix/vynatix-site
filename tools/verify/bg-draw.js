@@ -5,8 +5,10 @@
 // blocked storage, no JavaScript), that only the drawn background has any effect (asset requests, script
 // calls, storage keys, other pages), that what the site stores is exactly what privacy.html lists, that the
 // iris's test hook stays a read-only test hook, and that the source keeps its structure (fenced blocks, every
-// rule scoped). The draw is never pinned here, because the draw is what is under test; the clearance,
-// contrast and motion of each background are proved by bg-weave.js, bg-sheet.js, bg-dial.js and bg-iris.js.
+// rule scoped). The checks of the draw itself leave it alone, because the draw is what is under test; the
+// isolation checks pin one background (or force it through the site's own draw) to look at it by itself. The
+// clearance, contrast and motion of each background are proved by bg-weave.js, bg-sheet.js, bg-dial.js and
+// bg-iris.js.
 //
 //   node verify/bg-draw.js              (serve the repo root first, as for the other checks)
 //   VISITS=200 node verify/bg-draw.js   more fresh visits for the odds
@@ -53,7 +55,8 @@ function instrument() {
 }
 // Reaches one background through the site's own draw (app.js picks it and writes the keys), by making Math.random
 // return a fixed value before any page script runs: 0.1 is the weave, 0.3 the sheet, 0.6 the dial, 0.9 the iris
-// (the draw is floor(random * 4) over weave, sheet, dial, iris), and 0.1 is also Forest for the colour draw.
+// (the draw is floor(random * 4) over weave, sheet, dial, iris). The colour draw takes the same value, so these
+// also give Forest, Forest, Teal and Monochrome; nothing here depends on it.
 const R = { weave: 0.1, sheet: 0.3, dial: 0.6, iris: 0.9 };
 const forceDraw = (page, bg) => page.addInitScript((r) => { Math.random = () => r; }, R[bg]);
 const tally = (calls) => calls.reduce((m, c) => { m[c] = (m[c] || 0) + 1; return m; }, {});
@@ -75,7 +78,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       if (ids.includes(v) && v === s) t[v]++; else bad++;
       await page.close();
     }
-    // Equal odds of 1 in 4: over 100 visits a count outside 7 to 48 is a one in twenty thousand event.
+    // Equal odds of 1 in 4: over 100 visits a count outside 7 to 48 is a one in twenty thousand event or rarer.
     // Scaled to VISITS, so a longer run keeps the same false-alarm rate.
     const lo = Math.max(1, Math.floor(VISITS * 0.07)), hi = Math.ceil(VISITS * 0.48);
     check(bad === 0 && ids.every((i) => t[i] >= lo && t[i] <= hi),

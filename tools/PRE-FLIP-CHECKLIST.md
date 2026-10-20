@@ -323,10 +323,10 @@ thread or the company's own records.
   description says so, with the link to the evidence. The PR is one PR from
   `claude/google-analytics`, merged whole. It is not merged while `main` has moved
   since the branch last merged it: merge `main` into the branch first, re-run 6.1
-  and this section, and only then merge the PR. The branch carries `main`'s own
-  drift in the company sentence (the visible "Three senior engineers" wording on
-  some pages against the wording in the JSON-LD and on the home page); that is not
-  this branch's change and is for the site owner, so the flip does not touch it.
+  and this section, and only then merge the PR. The company sentence is verbatim on
+  every page that describes the company, and the headcount is dropped, per the
+  19 Oct decision. If a page gives a number of engineers or words the company
+  sentence differently, fix it before merging; the flip does not touch it.
   - Owner: Site owner.
   - Evidence: the PR description.
 

@@ -301,9 +301,22 @@ def read(f): return open(os.path.join(REPO, f), encoding='utf-8').read()
 def write(f, s): open(os.path.join(REPO, f), 'w', encoding='utf-8').write(s)
 
 def extra_nodes_for(f):
-    """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any."""
+    """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any.
+    That file holds either "extra_nodes" (the nodes themselves) or "extra_nodes_from" (another file
+    in tools/seo/) with "ids": the "extra_nodes" of that file whose "@id" is listed, in the order
+    of "ids", so a node that more than one page carries has one source."""
     path = os.path.join(SEO_DIR, f[:-len('.html')] + '.json')
-    return json.load(open(path, encoding='utf-8')).get('extra_nodes') if os.path.exists(path) else None
+    if not os.path.exists(path):
+        return None
+    data = json.load(open(path, encoding='utf-8'))
+    src = data.get('extra_nodes_from')
+    if not src:
+        return data.get('extra_nodes')
+    nodes = {n['@id']: n for n in json.load(open(os.path.join(SEO_DIR, src), encoding='utf-8')).get('extra_nodes', [])}
+    missing = [i for i in data.get('ids', []) if i not in nodes]
+    if missing:
+        raise SystemExit(f + ': ' + src + ' has no node with @id ' + ', '.join(missing))
+    return [nodes[i] for i in data.get('ids', [])]
 
 def main_of(s):
     m = re.search(r'(\s*<main id="main">.*?</main>)', s, re.S); return m.group(1) if m else ''

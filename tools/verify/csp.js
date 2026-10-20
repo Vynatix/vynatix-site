@@ -18,7 +18,7 @@
 //    snippet cannot hide behind the way it is written.
 // Exports run() for release-gate.js and publish.js.
 const {
-  PAGES, ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp, parseTags,
+  PAGES, ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp, parseTags, stripComments,
 } = require('./_common');
 
 // The directives Google Analytics did not touch, as they were on every page before it.
@@ -67,7 +67,7 @@ function googleScriptTags(html) {
 
 // Markup that names a Google host anywhere but in the CSP meta (comments and the policy itself excluded).
 function googleHostMentions(html) {
-  const stripped = html.replace(/<!--[\s\S]*?-->/g, '').replace(CSP_META_RE, '');
+  const stripped = stripComments(html).replace(CSP_META_RE, '');
   const found = new Set();
   for (const m of stripped.matchAll(/(?:https?:)?\/\/([a-z0-9.-]+)/gi)) if (isGoogleHost(m[1])) found.add(m[1].toLowerCase());
   return [...found];

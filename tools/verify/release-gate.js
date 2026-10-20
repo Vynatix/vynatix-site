@@ -19,7 +19,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const {
   ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, LOOK_KEY, readApp, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
-  stripJsComments, todayUtc,
+  stripJsComments, todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
 } = require('./_common');
 const csp = require('./csp');
 const pub = require('./publish');
@@ -72,14 +72,15 @@ const MAX_WARN_LINES = 12;
 
 const norm = (s) => String(s).toLowerCase().replace(/[“”"'`]/g, '').replace(/\s+/g, ' ').replace(/\s+([.,;:!?])/g, '$1').trim();
 
+// The gate also starts a new line after page-structure tags and links, so a footer link is never glued to the next block.
+const GATE_BLOCKS = new Set([...BLOCK_TAGS, 'section', 'header', 'footer', 'nav', 'main', 'a']);
+
 // Text blocks of an HTML page (headings, paragraphs, items) plus the page's meta, Open Graph and JSON-LD descriptions.
 function htmlTexts(html) {
   const out = [];
-  const body = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
-  body.replace(/<\/(p|li|h[1-6]|tr|td|th|caption|div|table|ul|ol|section|header|footer|nav|main|a)>/gi, '\n').replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]*>/g, '').replace(/&ndash;/g, '–').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+  htmlToText(html, GATE_BLOCKS)
     .split('\n').forEach((l) => { if (l.trim()) out.push({ where: 'visible text', text: l.replace(/\s+/g, ' ').trim() }); });
-  for (const m of html.matchAll(/<meta\s+(?:name|property)="((?:og:|twitter:)?description)"\s+content="([^"]*)"/gi)) out.push({ where: `meta ${m[1]}`, text: m[2].replace(/&amp;/g, '&') });
+  for (const m of html.matchAll(/<meta\s+(?:name|property)="((?:og:|twitter:)?description)"\s+content="([^"]*)"/gi)) out.push({ where: `meta ${m[1]}`, text: decodeEntities(m[2]) });
   for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi)) {
     try {
       const walk = (n) => {
@@ -200,7 +201,7 @@ function visibleDate(html, lang) {
 }
 const formatDate = (iso, lang) => `${+iso.slice(8, 10)} ${lang === 'sv' ? MONTHS.sv[+iso.slice(5, 7) - 1] : MONTHS.en[+iso.slice(5, 7) - 1].replace(/^./, (c) => c.toUpperCase())} ${iso.slice(0, 4)}`;
 // The `mod` of a page in the PAGES registry of tools/seo-head.py (read as text; Python is not run).
-const registryEntry = (py, page) => new RegExp('([\'"]' + page.replace(/\./g, '\\.') + '[\'"]\\s*:\\s*dict\\()([^)]*)(\\))').exec(py || '');
+const registryEntry = (py, page) => new RegExp('([\'"]' + escapeRegExp(page) + '[\'"]\\s*:\\s*dict\\()([^)]*)(\\))').exec(py || '');
 function modOf(py, page) {
   const e = registryEntry(py, page);
   const m = e ? /\bmod\s*=\s*['"](\d{4}-\d{2}-\d{2})['"]/.exec(e[2]) : null;
@@ -282,7 +283,7 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
     let gen = '';
     if (mod) {
       const meta = /<meta\s+property="article:modified_time"\s+content="([^"]*)"/i.exec(html);
-      const lastmod = sitemap ? new RegExp('<loc>https://vynatix\\.com/' + rel.replace(/\./g, '\\.') + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>([^<]*)</lastmod>').exec(sitemap) : null;
+      const lastmod = sitemap ? new RegExp('<loc>https://vynatix\\.com/' + escapeRegExp(rel) + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>([^<]*)</lastmod>').exec(sitemap) : null;
       if (!meta || meta[1] !== mod) gen += `article:modified_time is ${meta ? meta[1] : 'missing'}; `;
       if (!lastmod || lastmod[1] !== mod) gen += `sitemap lastmod is ${lastmod ? lastmod[1] : 'missing'}; `;
     }
@@ -441,7 +442,7 @@ function readyFiles(today) {
     html = html.replace(/(<meta\s+property="article:modified_time"\s+content=")[^"]*(")/i, `$1${today}$2`);
     o[rel] = html;
     py = py.replace(registryEntry(py, rel)[0], (all) => all.replace(/\bmod\s*=\s*['"]\d{4}-\d{2}-\d{2}['"]/, `mod='${today}'`));
-    map = map.replace(new RegExp('(<loc>https://vynatix\\.com/' + rel.replace(/\./g, '\\.') + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${today}`);
+    map = map.replace(new RegExp('(<loc>https://vynatix\\.com/' + escapeRegExp(rel) + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${today}`);
   }
   o[SEO_HEAD] = py;
   o['sitemap.xml'] = map;
@@ -592,7 +593,7 @@ function selfTest() {
   return bad;
 }
 
-module.exports = { runChecks, staleSentences, selfTest, readyFiles, HUMAN_GATES, parseChecklist, draftBanner, confirmMarkers, visibleDate, modOf, summary, READ_BY_EYE_OK };
+module.exports = { htmlTexts, runChecks, staleSentences, selfTest, readyFiles, HUMAN_GATES, parseChecklist, draftBanner, confirmMarkers, visibleDate, modOf, summary, READ_BY_EYE_OK };
 
 if (require.main === module) {
   if (process.argv.includes('--self-test')) process.exit(selfTest() === 0 ? 0 : 1);

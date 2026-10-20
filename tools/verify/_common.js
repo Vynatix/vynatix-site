@@ -220,6 +220,82 @@ function purgeOnlyState(src) {
   };
 }
 
+// --- Reading markup -----------------------------------------------------------------------------
+// The pages are plain files in this repo, but markup is still read the way it has to be read anywhere: by scanning,
+// not by pattern-stripping. A string with a comment or a script cut out of it by one regex pass can contain exactly
+// what was cut (`<!<!-- x -->--` becomes `<!--`), and decoding `&amp;` before `&lt;` turns `&amp;lt;` into `<`.
+// These helpers keep going until nothing is left, and decode every entity in one pass.
+
+// Lower-cases ASCII letters only, so every index in the result is an index in the input.
+const lowerAscii = (s) => String(s).replace(/[A-Z]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 32));
+
+// A string for use inside a RegExp, with every special character escaped, the backslash included.
+const escapeRegExp = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// `html` without its comments. An unterminated comment runs to the end, as in a browser.
+function stripComments(html) {
+  let s = String(html);
+  for (;;) {
+    const open = s.indexOf('<!--');
+    if (open < 0) return s;
+    const close = s.indexOf('-->', open + 4);
+    s = close < 0 ? s.slice(0, open) : s.slice(0, open) + s.slice(close + 3);
+  }
+}
+
+// `html` without the elements named in `names` (their tags and everything between them), e.g. ['script', 'style'].
+// The end tag may carry spaces or be upper case (`</SCRIPT >`); an element that never closes runs to the end.
+function stripElements(html, names) {
+  let s = String(html);
+  for (const name of names) {
+    for (;;) {
+      const lower = lowerAscii(s);
+      let open = -1;
+      for (let i = lower.indexOf('<' + name); i >= 0; i = lower.indexOf('<' + name, i + 1)) {
+        const after = lower[i + 1 + name.length];
+        if (after === undefined || /[\s/>]/.test(after)) { open = i; break; }
+      }
+      if (open < 0) break;
+      const close = lower.indexOf('</' + name, open);
+      if (close < 0) { s = s.slice(0, open); break; }
+      const gt = s.indexOf('>', close);
+      s = s.slice(0, open) + (gt < 0 ? '' : s.slice(gt + 1));
+    }
+  }
+  return s;
+}
+
+const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", ndash: '–', nbsp: ' ' };
+// The entities the pages use, decoded in ONE pass: `&amp;lt;` becomes `&lt;`, never `<`.
+const decodeEntities = (s) => String(s).replace(/&(amp|lt|gt|quot|#39|ndash|nbsp);/g, (m, name) => ENTITIES[name]);
+
+// The tags after which text starts on a new line.
+const BLOCK_TAGS = new Set(['p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'tr', 'td', 'th', 'caption', 'div', 'table', 'ul', 'ol']);
+
+// The visible text of a page or a fragment, one block per line: comments, scripts and styles dropped, every tag
+// dropped (a `>` inside a quoted attribute value does not end it), a new line after a closing block tag and after
+// `<br>`, entities decoded. `blocks` is the set of block tag names.
+function htmlToText(html, blocks = BLOCK_TAGS) {
+  const src = stripElements(stripComments(html), ['script', 'style']);
+  let out = '';
+  for (let i = 0; i < src.length;) {
+    if (src[i] !== '<' || !/[A-Za-z/!?]/.test(src[i + 1] || '')) { out += src[i]; i++; continue; }   // text, or a bare "<"
+    let j = i + 1;
+    let quote = '';
+    for (; j < src.length; j++) {
+      const c = src[j];
+      if (quote) { if (c === quote) quote = ''; } else if (c === '"' || c === "'") quote = c; else if (c === '>') break;
+    }
+    const m = /^(\/?)([A-Za-z][A-Za-z0-9-]*)/.exec(src.slice(i + 1, j));
+    if (m) {
+      const name = m[2].toLowerCase();
+      if (name === 'br' || (m[1] && blocks.has(name))) out += '\n';
+    }
+    i = j + 1;
+  }
+  return decodeEntities(out);
+}
+
 // The tags named `name` in a page, with their attributes: quote-agnostic (double, single or no quotes, any
 // attribute order, a `>` inside a quoted value), HTML comments ignored. Returns [{ attrs: { lower-case name: value },
 // raw, index }]. A regex over `rel="..."` misses `rel=preconnect` and `href='...'`; this does not.
@@ -535,4 +611,5 @@ module.exports = {
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
   parseCsp, CSP_META_RE, readPage, pageLang, edgeCsp,
+  lowerAscii, escapeRegExp, stripComments, stripElements, decodeEntities, BLOCK_TAGS, htmlToText,
 };

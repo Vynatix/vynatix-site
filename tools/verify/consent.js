@@ -18,6 +18,7 @@
 const {
   PAGES, BASE, TEST_ID, PLACEHOLDER_ID, CONSENT_KEY, POLICY_VERSION, NOTICE_PAGES, launch, pool, pinConsent,
   readApp, rewriteGaIdSource, normalisePurgeOnly, PURGE_DECL, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
+  stripComments, stripElements, decodeEntities, htmlToText, escapeRegExp,
 } = require('./_common');
 const C = require('./_consent');
 const { googleHostMentions } = require('./csp');
@@ -107,6 +108,20 @@ function clean(env, name) {
       `app.js ${app.consentKey}/${app.policyVersion}, _common.js ${CONSENT_KEY}/${POLICY_VERSION}`);
     ck(maxAge > 0 && maxDays > 0 && maxAge <= maxDays * 86400, 'the _ga cookie lifetime is never longer than the consent record', `${maxAge}s against ${maxDays} days`);
     ck(!!copy && copy.en && copy.sv, 'app.js has COPY for en and sv');
+
+    // The markup helpers read the pages for several checks. They scan instead of pattern-stripping, so what they cut
+    // out cannot be left behind or put back together, and they decode every entity in one pass.
+    ck(stripComments('a<!-- x -->b') === 'ab' && stripComments('a<!<!-- x -->--b') === 'a' && !stripComments('<!<!-- x -->-->').includes('<!--') && stripComments('a<!-- never closed') === 'a',
+      'stripComments removes comments, cannot be made to leave "<!--" behind by nesting one, and ends an unterminated comment at the end');
+    ck(stripElements('<p>a</p><script>x</script >b<STYLE type=x>y</STYLE>c', ['script', 'style']) === '<p>a</p>bc' && stripElements('<scr<script></script>ipt>alert(1)</script>', ['script']) === '' && stripElements('<scripty>k</scripty>', ['script']) === '<scripty>k</scripty>' && stripElements('a<script>never closed', ['script']) === 'a',
+      'stripElements ignores case and spaces in the end tag, cannot be made to reassemble a <script> by nesting, leaves <scripty> alone and ends an unclosed element at the end');
+    ck(decodeEntities('&amp;lt;') === '&lt;' && decodeEntities('&lt;b&gt; &amp; &quot;x&quot; &#39;y&#39; a&ndash;b&nbsp;c') === '<b> & "x" \'y\' a–b c',
+      'decodeEntities decodes every entity once: "&amp;lt;" becomes "&lt;", never "<"');
+    ck(htmlToText('<h2 class="a">Title</h2><p>One <a title="a>b" href=\'x>y\'>two</a> 3 < 4<br>next</p><ul><li>L1</li><li>L2</li></ul><!-- c --><script>var a = "<p>";</script>')
+      === 'Title\nOne two 3 < 4\nnext\nL1\nL2\n\n',
+      'htmlToText keeps a ">" inside a quoted attribute out of the text, treats a bare "<" as text, breaks lines after block tags and <br>, and drops comments and scripts');
+    ck(new RegExp('^' + escapeRegExp('a\\b.c+d(e)') + '$').test('a\\b.c+d(e)') && !new RegExp('^' + escapeRegExp('a.c') + '$').test('abc') && escapeRegExp('\\') === '\\\\',
+      'escapeRegExp escapes every special character, the backslash included');
 
     const env = await armedContext(browser);
     const page = await open(env.ctx, 'robots.txt');

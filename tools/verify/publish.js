@@ -19,7 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, CONSENT_KEY, THEME_KEY, LOOK_KEY, readApp, parseTags, stripJsComments,
+  ROOT, PAGES, NOTICE_PAGES, CONSENT_KEY, THEME_KEY, LOOK_KEY, readApp, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -159,7 +159,7 @@ function run(root = ROOT, pages = PAGES) {
   for (const p of pages) {
     const html = tryRead(p);
     if (html === null) continue;
-    const markup = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '');
+    const markup = stripElements(stripComments(html), ['script', 'style']);
     if (/<[a-zA-Z][^<>]*\sstyle\s*=/.test(markup)) inline.push(p);
   }
   add(inline.length === 0, 'no page has a style="" attribute (the CSP pins style-src \'self\')', inline.join(', '));

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const {
-  ROOT, BASE, TEST_ID, NOTICE_PAGES, armGa, pinTheme, pinConsent, readApp, readPage, pageLang,
+  ROOT, BASE, TEST_ID, NOTICE_PAGES, armGa, pinTheme, pinConsent, readApp, readPage, pageLang, htmlToText,
 } = require('./_common');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -167,12 +167,7 @@ function sectionBlocks(html) {
   const rest = html.slice(start);
   const end = rest.slice(5).search(/<h2\b|<\/main>/);
   const section = end < 0 ? rest : rest.slice(0, end + 5);
-  const text = section
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<\/(p|li|h[1-6]|tr|td|th|caption|div|table|ul|ol)>/gi, '\n')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]*>/g, '')
-    .replace(/&ndash;/g, '–').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  const text = htmlToText(section);
   return text.split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
 }
 

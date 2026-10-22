@@ -546,13 +546,7 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
   holding a `@graph` with the full Organization node (`@id`
   `https://vynatix.com/#organization`), the WebSite node, the page itself with its
   `datePublished` and `dateModified`, and page-specific nodes (FAQPage, Service,
-  ItemList, Article). The Service and ItemList nodes are written once, in
-  `tools/seo/<page>.json` of the page that owns them (`extra_nodes`); a page that
-  shows the same node borrows it with `extra_nodes_from`, either one file name
-  plus `ids` or a list of `{"file", "ids"}` objects when the nodes come from more
-  than one file (the home page takes its three Service nodes from `services.json`
-  and the ItemList of the projects from `work.json`). An id the file does not have
-  stops `seo-head.py`.
+  ItemList, Article).
   **Keep the Organization node identical on every page** and true to the site:
   the relationship to Ultra Group is `memberOf`, matching the footer's "Part of
   Ultra Group"; do not change it to `parentOrganization` unless Bolagsverket shows
@@ -610,7 +604,7 @@ page the footer's Legal column therefore deliberately holds one Swedish item, th
 relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
 "Accessibility"); the shared footer is English by design, and the link has to match
 the Swedish bar and notice. Without JavaScript it reverts to English. The
-two home pages are not mirror images: the comparison list in Who we are and
+two home pages are not mirror images: the comparison table in Who we are and
 the Further reading section exist only on the English home page (sv.html has the
 Guider section instead). The Further reading items on index.html repeat the
 linked pages' `<title>` (without the brand suffix) and meta description word for

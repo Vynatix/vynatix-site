@@ -1,4 +1,1 @@
-{"extra_nodes_from": [
-  {"file": "services.json", "ids": ["https://vynatix.com/services.html#application-development", "https://vynatix.com/services.html#ai-engineering", "https://vynatix.com/services.html#cloud-platforms"]},
-  {"file": "work.json", "ids": ["https://vynatix.com/work.html#selected-work"]}
-]}
+{"extra_nodes_from": "services.json", "ids": ["https://vynatix.com/services.html#application-development", "https://vynatix.com/services.html#ai-engineering", "https://vynatix.com/services.html#cloud-platforms"]}

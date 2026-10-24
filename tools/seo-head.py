@@ -49,7 +49,7 @@ PAGES = {
   'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-20', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-20'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
-  'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-18'),
+  'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-23'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20', alt={'sv': 'integritet.html'}),

@@ -112,6 +112,13 @@ highlights the things most worth keeping front-of-mind.
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
+- **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
+  `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
+  Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
+  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. A fact
+  not already on a published page is drafted outside the public repo until the owner approves it, and a
+  `[[CONFIRM]]` marker is never filled in. `status='withdrawn'` replaces a page with a stub; `tools/urls.lock`
+  and `tools/verify/permanence.js` stop a URL from disappearing; `tools/TAKEDOWN.md` is the runbook.
 - **Icons are inline SVG** from the system's Material Symbols files in
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.

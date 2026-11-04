@@ -21,6 +21,37 @@ const PAGES = [
   'ai-konsultbolag-sverige.html', 'integritet.html',
 ];
 
+// The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):
+// { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }.
+// Each entry is one `'file.html': dict(...)` on one line; a value is a quoted string, True, False or a flat
+// {'k': 'v'} dict. `status` defaults to 'live'. `original` is the effective value: the key when given, otherwise
+// true for an English page (the English page of a pair is its original unless the registry says otherwise).
+function readRegistry(root = ROOT) {
+  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
+  const out = {};
+  const str = String.raw`'(?:[^'\\]|\\.)*'`;
+  const val = new RegExp(String.raw`(\w+)\s*=\s*(${str}|True|False|\{[^}]*\})`, 'g');
+  const unq = (s) => s.slice(1, -1).replace(/\\(.)/g, '$1');
+  for (const line of py.split('\n')) {
+    const m = /^\s*'([^']+\.html)'\s*:\s*dict\((.*)\),?\s*$/.exec(line);
+    if (!m) continue;
+    const e = { alt: {}, article: false, status: 'live', kind: null };
+    let kv;
+    val.lastIndex = 0;
+    while ((kv = val.exec(m[2]))) {
+      const [, k, v] = kv;
+      if (v === 'True' || v === 'False') e[k] = v === 'True';
+      else if (v[0] === '{') {
+        e[k] = {};
+        for (const p of v.matchAll(new RegExp(String.raw`(${str})\s*:\s*(${str})`, 'g'))) e[k][unq(p[1])] = unq(p[2]);
+      } else e[k] = unq(v);
+    }
+    if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
+    out[m[1]] = e;
+  }
+  return out;
+}
+
 // The page that carries the privacy notice (and the in-page consent panel) in each language.
 const NOTICE_PAGES = { en: 'privacy.html', sv: 'integritet.html' };
 
@@ -642,7 +673,7 @@ async function launch(opts = {}) {
 }
 
 module.exports = {
-  ROOT, PAGES, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, BGS, ALL_BGS, bgsFor, pinBg, pinTheme, launch, chromePath, pool,
+  ROOT, PAGES, readRegistry, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, BGS, ALL_BGS, bgsFor, pinBg, pinTheme, launch, chromePath, pool,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,

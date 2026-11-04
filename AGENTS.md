@@ -80,6 +80,8 @@ tools/              Local verification scripts (verify/, including the consent c
                     block, footer and sitemap) and the two mask generators,
                     dial-masks.py and sheet-art.js; NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
+tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
+                    registered (written by seo-head.py); both not published
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -632,6 +634,92 @@ the glyph files in `assets/icons/`, which are copies of the system's
 `light_mode` (the theme toggle) are not in the system's approved catalogue;
 they were drawn from the same package at the same settings and should be added
 to the catalogue. Never draw an icon by hand, and never use `.ms`.
+
+## Posts, permanence and withdrawal
+
+The site's blog format is the **Guide**: a dated page that answers one buyer question, in the house pattern
+of the four Swedish guides. A page written to this pattern after the blog was added is a **post**, marked
+`kind='post'` in its `PAGES` entry in `tools/seo-head.py` (the older guides are not marked). The full plan,
+its measurements and the reasons for every choice below are in the blog extension plan the owner holds; this
+section is the working rules.
+
+**Where a post lives.** At the flat root, as `<slug>.html`, with a slug that is undated, descriptive and
+permanent (a-z, 0-9, hyphens; it must not contain the words `project` or `membership`). Never in a directory:
+a `blog/` directory breaks `stamp.js` (non-recursive, and its regex needs `href="styles.css`), the exact-match
+footer checks, the font preloads in `app.js` (any path ending `/` is treated as the home page), `links.js`
+(it resolves against the base URL, not the page) and `publish.js`. Never `_posts/*.md`: Jekyll publishes a
+markdown file without front matter at `/YYYY/MM/DD/name.html` and `publish.js` lets it pass. A slug is never
+reused and a URL never removed.
+
+**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; an interest
+disclosure in the lede; a "when we are the wrong choice" section; a `data-faq` block (flat, as in the SEO
+section); the company sentence verbatim under "About Vynatix"; a call-to-action band. The byline is
+`<p class="prose__meta">Published <time datetime="YYYY-MM-DD">…</time> · Last updated <time datetime="YYYY-MM-DD">…</time> · Vynatix</p>`
+(Swedish: "Publicerad" and "Senast uppdaterad"); the two dates are `pub` and `mod` in the registry, and
+`permanence.js` fails if they differ. No cadence promise anywhere. **Section ids must not be `article`**: the
+Article node's `@id` is the page URL plus `#article`, and a FAQ container with that id collides with it
+(`seo.js` then reports a misleading date error). Use `intro`, `questions`, `faq` and the like. The
+byline author is "Vynatix" and the Article's author is the Organization; no named person appears anywhere on the
+site, and naming one is an owner decision.
+
+**Registering a post.** Add its entry to `PAGES` in `tools/seo-head.py` (with `kind='post'`) and its file name to
+`PAGES` in `tools/verify/_common.js`; add a line for it in `llms.txt`; list it on the home page that matches its
+language (`index.html` Further reading repeats the page's title, without the brand suffix, and its meta
+description word for word; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
+footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
+deploy. `publish.js` names an omission of the registries or `llms.txt` precisely. A post adds no CSS, so no
+`npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
+`original=True` on the original, `original=False` on the translation (the English page is the original unless
+the registry says otherwise; `seo-head.py` refuses a pair with zero or two originals, and `seo.js` checks the
+`workTranslation` / `translationOfWork` direction). Pair a page only with a full counterpart that has the same
+question and the same answers.
+
+**The call to action carries the post's slug.** The primary button is
+`mailto:front.disk@vynatix.com?subject=Project:%20<slug>`, with the plain address under it and one sentence
+saying the subject line names the guide and can be changed (written in the page's language). The routing word
+stays first because `contact.html` asks senders to start the subject with Project or Membership; nothing in the
+repository says how the inbox is routed. `tools/verify/mailto.js` enforces the form. Only mail sent from that
+button with the subject unedited is tagged; analytics are off, so this is a floor, not a count.
+
+**Drafts.** The repository is public, and a draft pushed to any branch is public on github.com even though
+only the production branch is served. A post that introduces a fact not already on a published page is drafted
+outside the repository and committed only after the owner has approved the text; a twin of a page that is
+already published may be drafted on a branch. A `[[CONFIRM: what is needed]]` marker is a fact only a human
+supplies: never fill one in; `permanence.js` fails on one in any page that is not a privacy notice.
+
+**Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
+Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
+- The company sentence, verbatim: "One sentence about the company", above.
+- The three projects that can be discussed and the non-disclosure line, with the date: `index.html` work section
+  ("As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks
+  and Volvo Cars is under non-disclosure."), `work.html`, `sv.html`. **The scope of the non-disclosure line
+  differs between pages and has not been settled**: limited to Volvo Trucks and Volvo Cars on `index.html`,
+  `sv.html` and `android-automotive-development.html`; "The rest of our work" on the `work.html` hero and
+  "the remainder of our work" on `terms.html`. Until the owner picks one, a post uses the Volvo-limited form.
+- Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
+  only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
+- The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
+- The regulated client stays anonymous (`work.html`, the closed-domain assistant case;
+  `ai-assistent-interna-dokument.html`).
+- Team projects: no client names, dates or figures (the comment above `#team-projects` in `work.html`); library
+  names are allowed.
+- No headcount, and no figure the owner has not confirmed (the history of `index.html`: commits 1c9c765,
+  2b39a53, d03ea15).
+- Other firms: their own words, alphabetical, dated, sourced, with the disclosure, never ranked (see "The list
+  pages" above).
+
+**Withdrawing a page.** `status='withdrawn'` in the registry replaces the page with a stub, adds `noindex`,
+drops hreflang, FAQ and Article data, and removes it from `sitemap.xml`; `tools/urls.lock` (append-only,
+written by `seo-head.py`) remembers every URL ever registered, and `tools/verify/permanence.js` fails if a
+locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt` or a feed, or disallowed in
+`robots.txt`, or if its `<main>` is anything but the stub. The runbook, with the timeline and what a stub
+cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
+title and the description.
+
+**Checks.** `permanence.js` and `mailto.js` are in `npm run check` (static, third and fourth).
+`python3 tools/seo-head.py --check` (`npm run check:gen`) reports any generated part that differs from what a
+run would write; it needs Python and is not in the chain. `seo-head.py` exits with an error on a page that
+lacks its footer marker (it used to skip it silently).
 
 ## Analytics
 

@@ -19,7 +19,12 @@ What it rewrites, on every page it is given:
 
 What it never touches: anything inside <main>, the <title> and the meta description (the page
 is the source of truth for both; the block repeats them), and the ?v= stamps on the stylesheets
-and app.js.
+and app.js. The one exception is a page whose registry status is 'withdrawn': the whole page
+body, title and description are replaced by the short stub below (see TAKEDOWN.md), because on
+GitHub Pages a withdrawn URL has to keep answering and must stop serving its old text.
+
+    python3 tools/seo-head.py --check     reports (and exits 1 on) any generated part that differs
+                                          from what a run would write, without writing anything
 
 When to run it: after editing a FAQ (the FAQPage data must repeat the visible answers word for
 word), after moving a page's `mod` date in PAGES because its content changed (`pub`, the date the
@@ -44,6 +49,14 @@ WEBSITE_ID = SITE + '#website'
 # pub: datePublished, the date the page first went live (first commit for the original nine);
 #      it never moves. mod: dateModified; move it when the page's content changes, then run this.
 # alt: the twin in the other language (hreflang). article: the page also carries an Article node.
+# original: which page of an alt pair is the original and which the translation (translationOfWork /
+#      workTranslation). Default: the English page is the original. Give True on a Swedish original
+#      and False on its English twin; exactly one page of each pair must be the original.
+# kind: 'post' marks a guide or blog post written after the blog was added (the visible-date check
+#      of tools/verify/permanence.js applies to these; the older guides are not marked).
+# status: 'live' (default) or 'withdrawn'. A withdrawn page keeps its URL but is replaced by a short
+#      stub, carries noindex and no hreflang, and is left out of sitemap.xml (and so of llms.txt).
+# One entry per line, as written here: tools/verify/_common.js reads this table as text.
 # The order here is the order of sitemap.xml.
 PAGES = {
   'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-20', alt={'sv': 'sv.html'}),
@@ -69,8 +82,23 @@ PAGES = {
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-10-19', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
-    p.setdefault('alt', {}); p.setdefault('article', False)
+    p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
 assert all('pub' in p and 'mod' in p for p in PAGES.values())
+assert all(p['status'] in ('live', 'withdrawn') for p in PAGES.values()), 'status is live or withdrawn'
+
+def is_original(f):
+    """True for the original of an alt pair (the English page unless the registry says otherwise)."""
+    p = PAGES[f]
+    return p['original'] if 'original' in p else p['lang'] == 'en'
+
+for f, p in PAGES.items():
+    for other in p['alt'].values():
+        assert other in PAGES, f'{f}: alt {other} is not in PAGES'
+        assert is_original(f) != is_original(other), (
+            f'{f} and {other}: exactly one page of a pair is the original '
+            f"(set original=True on the original and original=False on the translation)")
+        assert not (p['status'] == 'live' and PAGES[other]['status'] == 'withdrawn'), (
+            f'{f}: alt {other} is withdrawn; remove the alt from {f} first')
 
 def url_of(f):
     return SITE if f == 'index.html' else SITE + f
@@ -171,25 +199,27 @@ def h1_text(main_html):
 # ---------------------------------------------------------------- head block
 def head_block(f, title, desc, main_html, extra_nodes):
     p = PAGES[f]; u = url_of(f)
+    withdrawn = p['status'] == 'withdrawn'
     loc = {'en': 'en_GB', 'sv': 'sv_SE'}
     lines = ['<!-- Search and sharing: the canonical address, the other-language version, Open Graph, and',
              '     structured data (a JSON-LD data block: never executed, so script-src does not apply). -->',
              f'<link rel="canonical" href="{u}">']
-    if p['alt']:
+    if p['alt'] and not withdrawn:
         versions = {p['lang']: f, **p['alt']}
         for lang in ('en', 'sv'):
             if lang in versions:
                 lines.append(f'<link rel="alternate" hreflang="{lang}" href="{url_of(versions[lang])}">')
         lines.append(f'<link rel="alternate" hreflang="x-default" href="{url_of(versions.get("en", f))}">')
+    robots = 'noindex' if withdrawn else 'index, follow, max-snippet:-1, max-image-preview:large'
     lines += ['<meta name="author" content="Vynatix AB">',
-              '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">',
-              f'<meta property="og:type" content="{p["og"]}">',
+              f'<meta name="robots" content="{robots}">',
+              f'<meta property="og:type" content="{"website" if withdrawn else p["og"]}">',
               '<meta property="og:site_name" content="Vynatix">',
               f'<meta property="og:title" content="{html.escape(title, quote=True)}">',
               f'<meta property="og:description" content="{html.escape(desc, quote=True)}">',
               f'<meta property="og:url" content="{u}">',
               f'<meta property="og:locale" content="{loc[p["lang"]]}">']
-    for lang in p['alt']:
+    for lang in ([] if withdrawn else p['alt']):
         lines.append(f'<meta property="og:locale:alternate" content="{loc[lang]}">')
     lines += [f'<meta property="article:published_time" content="{p["pub"]}">',
               f'<meta property="article:modified_time" content="{p["mod"]}">']
@@ -206,14 +236,15 @@ def head_block(f, title, desc, main_html, extra_nodes):
             "publisher": {"@id": ORG_ID}, "datePublished": p['pub'], "dateModified": p['mod']}
     if f in ('index.html', 'sv.html', 'about.html'):
         page["about"] = {"@id": ORG_ID}
-    if p['alt']:
+    if p['alt'] and not withdrawn:
         other = list(p['alt'].values())[0]
-        # The English page is the original; the Swedish page is its translation.
-        if p['lang'] == 'sv':
-            page["translationOfWork"] = {"@id": url_of(other)}
-        else:
+        # The original carries workTranslation, the translation carries translationOfWork. The English
+        # page is the original unless the registry says otherwise (original=True / original=False).
+        if is_original(f):
             page["workTranslation"] = {"@id": url_of(other)}
-    faqs, frag = faq_items(main_html, f)
+        else:
+            page["translationOfWork"] = {"@id": url_of(other)}
+    faqs, frag = ([], None) if withdrawn else faq_items(main_html, f)
     graph = [ORGANIZATION, WEBSITE, page]
     if faqs:
         fid = u + '#' + frag
@@ -222,12 +253,12 @@ def head_block(f, title, desc, main_html, extra_nodes):
                       "isPartOf": {"@id": u},
                       "mainEntity": [{"@type": "Question", "name": q,
                                       "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]})
-    if p['article']:
+    if p['article'] and not withdrawn:
         graph.append({"@type": "Article", "@id": u + "#article", "headline": h1_text(main_html) or title,
                       "description": desc, "inLanguage": p['lang'], "mainEntityOfPage": {"@id": u},
                       "author": {"@id": ORG_ID}, "publisher": {"@id": ORG_ID},
                       "datePublished": p['pub'], "dateModified": p['mod']})
-    graph += extra_nodes or []
+    graph += [] if withdrawn else (extra_nodes or [])
     ld = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=1)
     ld = ld.replace('</', '<\\/')
     lines += ['<script type="application/ld+json">', ld, '</script>']
@@ -297,8 +328,19 @@ FOOTER = '''  <!-- ============================================================ 
   </footer>'''
 
 # ---------------------------------------------------------------- read helpers
+CHECK = '--check' in sys.argv
+STALE = []
+
 def read(f): return open(os.path.join(REPO, f), encoding='utf-8').read()
-def write(f, s): open(os.path.join(REPO, f), 'w', encoding='utf-8').write(s)
+def write(f, s):
+    # With --check nothing is written: a file that a run would change is recorded as stale instead.
+    if CHECK:
+        try:
+            if read(f) == s: return
+        except FileNotFoundError:
+            pass
+        STALE.append(f); return
+    open(os.path.join(REPO, f), 'w', encoding='utf-8').write(s)
 
 def extra_nodes_for(f):
     """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any.
@@ -321,17 +363,64 @@ def extra_nodes_for(f):
 def main_of(s):
     m = re.search(r'(\s*<main id="main">.*?</main>)', s, re.S); return m.group(1) if m else ''
 
+# ---------------------------------------------------------------- withdrawn pages
+# A withdrawn page keeps its URL (GitHub Pages cannot redirect) and says so, in about a hundred
+# characters, with nothing of the old text. Built from existing components only (.page-hero), so a
+# withdrawal never needs a stylesheet change or a new stamp. No reason is given on the page.
+MONTHS = {'en': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
+                 'October', 'November', 'December'],
+          'sv': ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september',
+                 'oktober', 'november', 'december']}
+STUB = {
+  'en': dict(title='Page withdrawn, Vynatix', desc='Vynatix has withdrawn this page.', eyebrow='Withdrawn',
+             h1='This page has been withdrawn', home='index.html',
+             lede='Vynatix removed this page on {date}. <a href="{home}">Go to the home page</a>.',
+             date=lambda y, m, d: f'{d} {MONTHS["en"][m - 1]} {y}'),
+  'sv': dict(title='Sidan är återkallad, Vynatix', desc='Vynatix har tagit bort den här sidan.', eyebrow='Återkallad',
+             h1='Den här sidan är återkallad', home='sv.html',
+             lede='Vynatix tog bort sidan den {date}. <a href="{home}">Gå till startsidan</a>.',
+             date=lambda y, m, d: f'{d} {MONTHS["sv"][m - 1]} {y}'),
+}
+
+def stub_main(f):
+    p = PAGES[f]; t = STUB[p['lang']]
+    y, m, d = (int(x) for x in p['mod'].split('-'))
+    lede = t['lede'].format(date=t['date'](y, m, d), home=t['home'])
+    return ('  <main id="main">\n'
+            '    <section class="page-hero">\n'
+            '      <div class="container">\n'
+            f'        <p class="eyebrow">{t["eyebrow"]}</p>\n'
+            f'        <h1 class="page-hero__h1">{t["h1"]}</h1>\n'
+            f'        <p class="page-hero__lede">{lede}</p>\n'
+            '      </div>\n'
+            '    </section>\n'
+            '  </main>')
+
+def withdraw(f, s):
+    """Replaces the title, the meta description and the whole <main> with the stub."""
+    t = STUB[PAGES[f]['lang']]
+    s = re.sub(r'<title>.*?</title>', lambda m: f'<title>{t["title"]}</title>', s, count=1, flags=re.S)
+    s = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{t["desc"]}">', s, count=1)
+    s, n = re.subn(r'(\s*)<main id="main">.*?</main>', lambda m: m.group(1) + stub_main(f).lstrip(), s, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit(f + ': no <main id="main"> to replace with the stub')
+    return s
+
 # ---------------------------------------------------------------- pages
 def update_existing(f):
     # The page is the source of truth for its title, description and FAQ markup; the head block,
     # the footer and the header lang are rewritten from them and from the registry.
     s = read(f)
+    if PAGES[f]['status'] == 'withdrawn':
+        s = withdraw(f, s)
     title = html.unescape(re.search(r'<title>(.*?)</title>', s, re.S).group(1))
     desc = html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))
     block = head_block(f, title, desc, main_of(s), extra_nodes_for(f))
     s = re.sub(r'\n?<!-- seo -->.*?<!-- /seo -->', '', s, flags=re.S)
     s = re.sub(r'(<meta name="description" content="[^"]*">)', lambda m: m.group(1) + '\n' + block, s, count=1)
-    s = re.sub(r'  <!-- =+ Footer -->\n  <footer class="site-footer inverse"( lang="en")?>.*?</footer>', lambda m: FOOTER, s, count=1, flags=re.S)
+    s, n = re.subn(r'  <!-- =+ Footer -->\n  <footer class="site-footer inverse"( lang="en")?>.*?</footer>', lambda m: FOOTER, s, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit(f + ': no footer marker ("<!-- ==== Footer -->" then <footer class="site-footer inverse">) to rewrite')
     s = s.replace('<header class="site-header" role="banner">', '<header class="site-header" role="banner" lang="en">')
     write(f, s)
 
@@ -340,6 +429,7 @@ def sitemap():
     rows = ['<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
     for f, p in PAGES.items():
+        if p['status'] != 'live': continue
         rows.append('  <url>')
         rows.append(f'    <loc>{url_of(f)}</loc>')
         if p['alt']:
@@ -352,12 +442,40 @@ def sitemap():
     rows.append('</urlset>')
     write('sitemap.xml', '\n'.join(rows) + '\n')
 
+# ---------------------------------------------------------------- URL lock
+LOCK = os.path.join('tools', 'urls.lock')
+LOCK_HEAD = '''# Every URL this site has ever registered, and the date it first went live (pub).
+# Append-only and written by tools/seo-head.py; never edit a row. GitHub Pages cannot redirect, so a URL
+# that has been public must keep answering for good: as the live page, or as the withdrawn stub.
+# tools/verify/permanence.js fails if a locked URL has no file, if a registered URL is missing here, or
+# if a pub date differs from the registry. tools/ is not published.
+'''
+
+def lock():
+    try:
+        text = read(LOCK)
+    except FileNotFoundError:
+        text = LOCK_HEAD
+    have = {l.split()[0] for l in text.splitlines() if l.strip() and not l.startswith('#')}
+    for f, p in PAGES.items():
+        if url_of(f) not in have:
+            text += f'{url_of(f)} {p["pub"]}\n'
+    write(LOCK, text)
+
 if __name__ == '__main__':
-    only = [os.path.basename(a) for a in sys.argv[1:]]
+    only = [os.path.basename(a) for a in sys.argv[1:] if not a.startswith('--')]
     unknown = [f for f in only if f not in PAGES]
     if unknown:
         raise SystemExit('not in PAGES: ' + ', '.join(unknown))
     for f in PAGES:
         if only and f not in only: continue
-        update_existing(f); print('  updated', f)
-    sitemap(); print('  sitemap.xml')
+        update_existing(f)
+        if not CHECK: print('  updated', f)
+    sitemap(); lock()
+    if CHECK:
+        if STALE:
+            print('stale (a run of tools/seo-head.py would change): ' + ', '.join(STALE))
+            sys.exit(1)
+        print('every generated part is current')
+    else:
+        print('  sitemap.xml'); print('  ' + LOCK.replace(os.sep, '/'))

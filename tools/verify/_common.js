@@ -25,31 +25,49 @@ const PAGES = [
 
 // The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):
 // { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }.
-// Each entry is one `'file.html': dict(...)` on one line; a value is a quoted string, True, False or a flat
-// {'k': 'v'} dict. `status` defaults to 'live'. `original` is the effective value: the key when given, otherwise
-// true for an English page (the English page of a pair is its original unless the registry says otherwise).
+// Each entry is one `'file.html': dict(...)` on one line, optionally followed by a comma and a # comment; a value is
+// a quoted string (single or double quotes), True, False or a flat {'k': 'v'} dict. `status` defaults to 'live'.
+// `original` is the effective value: the key when given, otherwise true for an English page (the English page of a
+// pair is its original unless the registry says otherwise). This reader is strict on purpose: anything it cannot
+// read, an unknown key, a bad status or kind, or an entry that is not alone on its line throws, because a registry
+// entry that is silently dropped or misread would turn a withdrawn page into a live one for the checks that use it.
+const REGISTRY_KEYS = ['lang', 'type', 'og', 'pub', 'mod', 'alt', 'article', 'original', 'kind', 'status'];
 function readRegistry(root = ROOT) {
   const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
   const out = {};
-  const str = String.raw`'(?:[^'\\]|\\.)*'`;
-  const val = new RegExp(String.raw`(\w+)\s*=\s*(${str}|True|False|\{[^}]*\})`, 'g');
-  const unq = (s) => s.slice(1, -1).replace(/\\(.)/g, '$1');
+  const q = String.raw`(?:'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")`;
+  const unq = (v) => v.slice(1, -1).replace(/\\(.)/g, '$1');
+  const pair = new RegExp(String.raw`(${q})\s*:\s*(${q})`, 'g');
+  const tok = new RegExp(String.raw`\s*(\w+)\s*=\s*(${q}|True|False|\{[^}]*\})\s*(?:,|$)`, 'y');
   for (const line of py.split('\n')) {
-    const m = /^\s*'([^']+\.html)'\s*:\s*dict\((.*)\),?\s*$/.exec(line);
+    const m = /^\s*(['"])([^'"\n]+\.html)\1\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
     if (!m) continue;
+    const file = m[2];
+    if (out[file]) throw new Error(`tools/seo-head.py: ${file} is registered twice`);
     const e = { alt: {}, article: false, status: 'live', kind: null };
-    let kv;
-    val.lastIndex = 0;
-    while ((kv = val.exec(m[2]))) {
-      const [, k, v] = kv;
+    const body = m[3].trim();
+    let pos = 0;
+    while (pos < body.length) {
+      tok.lastIndex = pos;
+      const t = tok.exec(body);
+      if (!t) throw new Error(`tools/seo-head.py: cannot read the registry entry for ${file} near "${body.slice(pos, pos + 40)}"`);
+      pos = tok.lastIndex;
+      const [, k, v] = t;
+      if (!REGISTRY_KEYS.includes(k)) throw new Error(`tools/seo-head.py: ${file} has an unknown registry key "${k}" (known: ${REGISTRY_KEYS.join(', ')})`);
       if (v === 'True' || v === 'False') e[k] = v === 'True';
       else if (v[0] === '{') {
         e[k] = {};
-        for (const p of v.matchAll(new RegExp(String.raw`(${str})\s*:\s*(${str})`, 'g'))) e[k][unq(p[1])] = unq(p[2]);
+        for (const p of v.matchAll(pair)) e[k][unq(p[1])] = unq(p[2]);
       } else e[k] = unq(v);
     }
+    if (!['live', 'withdrawn'].includes(e.status)) throw new Error(`tools/seo-head.py: ${file} has status "${e.status}" (live or withdrawn)`);
+    if (e.kind !== null && e.kind !== 'post') throw new Error(`tools/seo-head.py: ${file} has kind "${e.kind}" (post, or leave it out)`);
     if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
-    out[m[1]] = e;
+    out[file] = e;
+  }
+  const declared = (py.match(/['"][^'"\n]+\.html['"]\s*:\s*dict\(/g) || []).length;
+  if (declared !== Object.keys(out).length) {
+    throw new Error(`tools/seo-head.py: ${declared} entries look like registry entries but ${Object.keys(out).length} were read; one entry per line, as in the table`);
   }
   return out;
 }

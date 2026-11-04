@@ -87,7 +87,11 @@ PAGES = {
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
 assert all('pub' in p and 'mod' in p for p in PAGES.values())
-assert all(p['status'] in ('live', 'withdrawn') for p in PAGES.values()), 'status is live or withdrawn'
+KEYS = {'lang', 'type', 'og', 'pub', 'mod', 'alt', 'article', 'original', 'kind', 'status'}
+for f, p in PAGES.items():
+    assert set(p) <= KEYS, f'{f}: unknown registry key {sorted(set(p) - KEYS)} (known: {sorted(KEYS)})'
+    assert p['status'] in ('live', 'withdrawn'), f'{f}: status is live or withdrawn'
+    assert p.get('kind') in (None, 'post'), f'{f}: kind is post, or leave it out'
 
 def is_original(f):
     """True for the original of an alt pair (the English page unless the registry says otherwise)."""
@@ -97,6 +101,7 @@ def is_original(f):
 for f, p in PAGES.items():
     for other in p['alt'].values():
         assert other in PAGES, f'{f}: alt {other} is not in PAGES'
+        assert f in PAGES[other]['alt'].values(), f'{f} names {other} as its twin, but {other} does not name {f} back'
         assert is_original(f) != is_original(other), (
             f'{f} and {other}: exactly one page of a pair is the original '
             f"(set original=True on the original and original=False on the translation)")
@@ -451,9 +456,10 @@ def withdraw(f, s):
     return s
 
 # ---------------------------------------------------------------- pages
-def update_existing(f):
+def render(f):
     # The page is the source of truth for its title, description and FAQ markup; the head block,
-    # the footer and the header lang are rewritten from them and from the registry.
+    # the header and the footer are rewritten from them and from the registry. Returns the new text;
+    # nothing is written here, so a run that fails on one page has written none.
     s = read(f)
     if PAGES[f]['status'] == 'withdrawn':
         s = withdraw(f, s)
@@ -468,7 +474,7 @@ def update_existing(f):
     s, n = re.subn(r'  <!-- =+ Header -->\n  <header class="site-header".*?</header>', lambda m: header_for(f), s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no header marker ("<!-- ==== Header -->" then <header class="site-header">) to rewrite')
-    write(f, s)
+    return s
 
 # ---------------------------------------------------------------- sitemap
 def sitemap():
@@ -502,26 +508,41 @@ def lock():
         text = read(LOCK)
     except FileNotFoundError:
         text = LOCK_HEAD
-    have = {l.split()[0] for l in text.splitlines() if l.strip() and not l.startswith('#')}
+    rows = [l.split() for l in text.splitlines() if l.strip() and not l.startswith('#')]
+    for r in rows:
+        if len(r) != 2 or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', r[1]):
+            raise SystemExit(f'{LOCK}: a row is not "<url> <YYYY-MM-DD>": {" ".join(r)}')
+    dup = sorted({r[0] for r in rows if [x[0] for x in rows].count(r[0]) > 1})
+    if dup:
+        raise SystemExit(f'{LOCK}: duplicate rows for {", ".join(dup)}; the lock is append-only, one row per URL')
+    have = {r[0] for r in rows}
+    if text and not text.endswith('\n'):
+        text += '\n'
     for f, p in PAGES.items():
         if url_of(f) not in have:
             text += f'{url_of(f)} {p["pub"]}\n'
     write(LOCK, text)
 
 if __name__ == '__main__':
+    flags = [a for a in sys.argv[1:] if a.startswith('--')]
+    unknown_flags = [a for a in flags if a != '--check']
+    if unknown_flags:
+        raise SystemExit('unknown option ' + ', '.join(unknown_flags) + ' (the only option is --check)')
     only = [os.path.basename(a) for a in sys.argv[1:] if not a.startswith('--')]
     unknown = [f for f in only if f not in PAGES]
     if unknown:
         raise SystemExit('not in PAGES: ' + ', '.join(unknown))
-    for f in PAGES:
-        if only and f not in only: continue
-        update_existing(f)
+    chosen = [f for f in PAGES if not only or f in only]
+    rendered = {f: render(f) for f in chosen}      # every page first, so a failure writes nothing
+    for f, text in rendered.items():
+        write(f, text)
         if not CHECK: print('  updated', f)
     sitemap(); lock()
     if CHECK:
+        scope = ', '.join(chosen) if only else 'every page'
         if STALE:
             print('stale (a run of tools/seo-head.py would change): ' + ', '.join(STALE))
             sys.exit(1)
-        print('every generated part is current')
+        print(f'every generated part is current ({scope}, sitemap.xml, tools/urls.lock)')
     else:
         print('  sitemap.xml'); print('  ' + LOCK.replace(os.sep, '/'))

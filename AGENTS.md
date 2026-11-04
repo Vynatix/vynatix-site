@@ -80,11 +80,12 @@ EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not publ
 tools/              Local verification scripts (verify/, including the consent checks
                     and the four hero background guards), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
-                    block, footer and sitemap) and the two mask generators,
+                    block, header, footer, sitemap and URL lock) and the two mask generators,
                     dial-masks.py and sheet-art.js; NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
-                    registered (written by seo-head.py); both not published
+                    registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement
+                    protocol and decision rule; none published
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -670,8 +671,16 @@ its language, with the page's title without the brand suffix and its meta descri
 in the ItemList of `tools/seo/blog.json`) and on the home page that matches its language (`index.html` Further
 reading repeats the title and description the same way; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
 footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
-deploy. `publish.js` names an omission of the registries or `llms.txt` precisely. A post adds no CSS, so no
-`npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
+deploy. `publish.js` names an omission of the registries or `llms.txt` precisely, and `permanence.js` fails if
+a `kind='post'` page is missing from `blog.html`, from the ItemList in `tools/seo/blog.json` (keep
+`numberOfItems` and the positions right) or from the home page of its language. Nothing checks the other
+hand-kept lists: when you edit `blog.html`, `index.html` or `sv.html`, move that page's `mod` and run the
+generator. Swedish items on the Blog page carry `lang="sv"` (and `hreflang="sv"` on the link). Adding a Swedish
+post makes the `sv.html` guider lead ("Publicerade den 18 oktober 2026") false: fix it then. After the deploy,
+ping IndexNow for the post, its twin and the pages that now list it (`node tools/indexnow.js <slug>.html
+blog.html index.html`). Run `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/a11y.js`
+on the new page, because `accessibility.html` says every page is scanned in all six themes. A post adds no
+CSS, so no `npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
 `original=True` on the original, `original=False` on the translation (the English page is the original unless
 the registry says otherwise; `seo-head.py` refuses a pair with zero or two originals, and `seo.js` checks the
 `workTranslation` / `translationOfWork` direction). Pair a page only with a full counterpart that has the same
@@ -688,17 +697,28 @@ button with the subject unedited is tagged; analytics are off, so this is a floo
 only the production branch is served. A post that introduces a fact not already on a published page is drafted
 outside the repository and committed only after the owner has approved the text; a twin of a page that is
 already published may be drafted on a branch. A `[[CONFIRM: what is needed]]` marker is a fact only a human
-supplies: never fill one in; `permanence.js` fails on one in any page that is not a privacy notice.
+supplies: never fill one in; `permanence.js` fails on one in any page or published text file that is not a
+privacy notice.
+
+**Open question for counsel.** The call to action's sentence ("The subject line names this guide so we know
+which page you read") attributes an email to the page that prompted it, while `privacy.html` says "There is
+no other analytics". The notices are drafts pending counsel. Whether they cover per-page attribution of a
+voluntary email subject, or the email section needs a purpose line, is unresolved; settle it before the first
+post goes live on `main`.
 
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
 - The company sentence, verbatim: "One sentence about the company", above.
 - The three projects that can be discussed and the non-disclosure line, with the date: `index.html` work section
   ("As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks
-  and Volvo Cars is under non-disclosure."), `work.html`, `sv.html`. **The scope of the non-disclosure line
-  differs between pages and has not been settled**: limited to Volvo Trucks and Volvo Cars on `index.html`,
-  `sv.html` and `android-automotive-development.html`; "The rest of our work" on the `work.html` hero and
-  "the remainder of our work" on `terms.html`. Until the owner picks one, a post uses the Volvo-limited form.
+  and Volvo Cars is under non-disclosure."), `work.html`, `sv.html` (the date, "As of October 2026" / "I oktober
+  2026", is on `index.html` and `sv.html` only). **The scope of the non-disclosure line differs between pages
+  and has not been settled**: limited to Volvo Trucks and Volvo Cars on `index.html`,
+  `android-automotive-development.html` and the `sv.html` work section ("Resten av vårt arbete för Volvo Trucks
+  och Volvo Cars omfattas av sekretess"); unscoped in the `work.html` hero ("The rest of our work is under
+  non-disclosure"), in `terms.html` ("the remainder of our work is under non-disclosure") and in the `sv.html`
+  company description ("Övriga kunduppdrag omfattas av sekretess"). Until the owner picks one, a post uses the
+  Volvo-limited form.
 - Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
   only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
@@ -715,7 +735,10 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
 drops hreflang, FAQ and Article data, and removes it from `sitemap.xml`; `tools/urls.lock` (append-only,
 written by `seo-head.py`) remembers every URL ever registered, and `tools/verify/permanence.js` fails if a
 locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt` or a feed, or disallowed in
-`robots.txt`, or if its `<main>` is anything but the stub. The runbook, with the timeline and what a stub
+`robots.txt`, or if its title, description or `<main>` is anything but the stub's own text. Its `--self-test`
+(in the chain) proves those failures still fail. The lock is append-only by convention and review (check that
+`git diff tools/urls.lock` shows only added lines); a deliberate deletion of the file, the registry entries and
+the lock row together is not caught. The runbook, with the timeline and what a stub
 cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
 title and the description.
 
@@ -957,8 +980,8 @@ add third-party font/CDN requests for fonts.
   optional local verification scripts (Playwright) and `stamp.js`, which writes
   the version stamps into the pages and which you run before committing a change
   to any of the six stamped files, `seo-head.py` (Python 3, standard library),
-  which rewrites the search block in every head, the footer and `sitemap.xml`
-  from one registry, the two mask generators of the sheet and dial hero backgrounds
+  which rewrites the search block in every head, the header, the footer, `sitemap.xml`
+  and `tools/urls.lock` from one registry, the two mask generators of the sheet and dial hero backgrounds
   (`sheet-art.js` in plain Node, `dial-masks.py` in Python 3, neither with
   dependencies), and `indexnow.js`, which tells Bing and the
   other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from
@@ -1042,7 +1065,9 @@ admin rights on the repository:
   personal account settings, and use the `@users.noreply.github.com` address
   going forward. **Do not rewrite the existing history** — it would break the
   merged pull-request record for no real gain, since the address is already
-  public.
+  public. (One exception, and only the owner can authorise it, in writing, in the pull request: text that
+  must not stay public, such as a client name under NDA or personal data, published by mistake; see
+  `tools/TAKEDOWN.md`.)
 - **Footer VAT number.** Swedish e-handelslag expects the
   `momsregistreringsnummer` alongside the company identification already in the
   footer. It is not added here because it is a legal identifier that must be

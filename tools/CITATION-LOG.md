@@ -1,7 +1,14 @@
 # Citation log and the pilot's decision rule
 
 Not published (`tools/` is excluded in `_config.yml`), but the repository is public: **record counts and facts
-about pages only, never the identity of anyone who wrote in.** Analytics are off, so every signal here is a floor.
+about pages only, never the identity of anyone who wrote in, and keep screenshots outside the repository** (they
+show the tester's account, locale and profile; the Screenshot column holds a file name or reference only).
+Analytics are off, so every signal here is a floor.
+
+Open question for counsel, to settle before the first post goes live on `main`: the guide's call to action says
+the subject line names the guide so we know which page was read, while the privacy notice says there is no other
+analytics. Do the notices cover per-page attribution of a voluntary email subject, or does the email section need
+a purpose line? (`AGENTS.md`, "Posts, permanence and withdrawal".)
 
 ## What this can and cannot show
 

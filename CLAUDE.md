@@ -17,7 +17,7 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, footer and sitemap), and the mask generators
+  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generators
   `dial-masks.py` and `sheet-art.js` for two hero backgrounds, never site content and
   never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the

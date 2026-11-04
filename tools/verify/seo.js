@@ -36,7 +36,7 @@ const ROBOTS_WITHDRAWN = 'noindex';
 // The registry of tools/seo-head.py, read as text. A withdrawn page keeps its URL but is left out of the
 // sitemap, carries noindex and has no hreflang, FAQ or Article node (TAKEDOWN.md).
 const REG = readRegistry();
-const isLive = (p) => !REG[p] || REG[p].status === 'live';
+const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is in PAGES (_common.js) but not in the registry of tools/seo-head.py`); return REG[p].status === 'live'; };
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
 const ok = (msg) => console.log('ok   ' + msg);

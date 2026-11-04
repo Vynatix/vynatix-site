@@ -156,7 +156,7 @@ cannot stand in for this section.
 - [ ] **3.3 Hosts recorded.** The Google hosts the real property needed are listed
   and compared with the policy. `img-src` widens only if a violation names it. A
   host that a violation names is added **by name**, in all three places: the
-  dashboard rule first if the edge is live, then the 21 page metas and
+  dashboard rule first if the edge is live, then the 23 page metas and
   `EDGE-SETUP.md` in one commit. Never `https://*.google.com`, never
   `'unsafe-inline'` or `'unsafe-eval'`; `csp.js` is re-run. A host in the policy
   that the run did not use (the candidates are `https://www.googletagmanager.com`

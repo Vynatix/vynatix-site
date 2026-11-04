@@ -12,20 +12,27 @@
 //    and nothing else, at most 80 characters, with no em dash, exclamation mark or ellipsis;
 //  - a slug (the file name without .html) of a-z, 0-9 and hyphens that does not contain the routing words, so a
 //    word-matching inbox rule cannot be confused by it.
-// A tagged subject is only allowed on a page whose slug it names. Plain links without a subject are not this
-// script's business.
-const { ROOT, PAGES, readPage, parseTags } = require('./_common');
+// A tagged subject is only allowed on a page whose slug it names. A mailto link without a subject is fine, but
+// it must still go to that address and carry no cc, bcc or body. The href is read the way a browser reads it:
+// entities decoded, tabs, newlines and surrounding spaces removed, the scheme case-insensitive.
+const { ROOT, PAGES, readPage, parseTags, decodeEntities } = require('./_common');
 
 const ADDRESS = 'front.disk@vynatix.com';
 
 // The problems of one mailto href on the page with the given file name, [] when it is fine.
-function subjectProblems(href, file) {
-  const m = /^mailto:([^?]*)(?:\?(.*))?$/i.exec(href);
+const clean = (href) => decodeEntities(String(href)).replace(/[\t\n\r]/g, '').trim();
+
+function subjectProblems(rawHref, file) {
+  const href = clean(rawHref);
+  const m = /^mailto:([^?]*)(?:\?([\s\S]*))?$/i.exec(href);
   if (!m) return [];
   const query = m[2];
-  if (query === undefined || !/(^|&)subject=/i.test(query)) return [];
   const out = [];
-  if (m[1].toLowerCase() !== ADDRESS) out.push(`address ${m[1]} (want ${ADDRESS})`);
+  if (decodeURIComponent(m[1]).toLowerCase() !== ADDRESS) out.push(`address ${m[1]} (want ${ADDRESS})`);
+  if (query === undefined || !/(^|&)subject=/i.test(query)) {
+    if (query !== undefined && query !== '') out.push(`parameters ${query} without a subject (a mailto link here carries only a subject)`);
+    return out;
+  }
   const params = query.split('&');
   if (params.length !== 1) out.push(`${params.length} parameters (want only subject)`);
   const raw = params.find((p) => /^subject=/i.test(p)).slice('subject='.length);
@@ -50,6 +57,7 @@ function selfTest() {
     ['mailto:front.disk@vynatix.com?subject=Membership:%20blog', 'blog.html'],
     ['mailto:front.disk@vynatix.com', 'about.html'],
     ['https://vynatix.com/', 'about.html'],
+    [' MAILTO:front.disk@vynatix.com?SUBJECT=Project\n', 'contact.html'],
   ];
   const bad = [
     ['mailto:front.disk@vynatix.com?subject=Project:%20choose-a-software-consultancy%20-%20membership', 'choose-a-software-consultancy.html'],
@@ -61,6 +69,10 @@ function selfTest() {
     ['mailto:someone@example.com?subject=Project', 'contact.html'],
     ['mailto:front.disk@vynatix.com?subject=Project:%20membership-guide', 'membership-guide.html'],
     ['mailto:front.disk@vynatix.com?subject=Project&subject=Membership', 'contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project:%20choose-a-software-consultancy&bcc=a@b.c\n', 'choose-a-software-consultancy.html'],
+    ['mailto:front.disk@vynatix.com?bcc=evil@x.com', 'about.html'],
+    ['mailto:someone@example.com', 'about.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project&amp;body=hi', 'contact.html'],
   ];
   let bad_ = 0;
   for (const [h, f] of good) if (subjectProblems(h, f).length) { bad_++; console.log(`FAIL accepted-by-design rejected: ${h} on ${f}: ${subjectProblems(h, f).join('; ')}`); }
@@ -76,13 +88,13 @@ if (require.main === module) {
   for (const p of PAGES) {
     for (const t of parseTags(readPage(p), 'a')) {
       const href = t.attrs.href || '';
-      if (!/^mailto:/i.test(href) || !/[?&]subject=/i.test(href)) continue;
+      if (!/^mailto:/i.test(clean(href))) continue;
       links++;
       const problems = subjectProblems(href, p);
       if (problems.length) { bad++; console.log(`FAIL ${p}: ${href}\n       ${problems.join('; ')}`); }
     }
   }
-  if (!bad) console.log(`ok   ${links} mailto links with a subject, all well formed`);
+  if (!bad) console.log(`ok   ${links} mailto links, all to ${ADDRESS} and all well formed`);
   console.log(bad ? `\nFAIL — ${bad} problem(s)` : '\nPASS — mailto subjects');
   process.exit(bad ? 1 : 0);
 }

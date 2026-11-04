@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rewrites the generated parts of the twenty-one pages from one registry, so every page agrees
+"""Rewrites the generated parts of every page from one registry, so every page agrees
 with the others and with sitemap.xml. Python 3, standard library only; run it from anywhere:
 
     python3 tools/seo-head.py [page.html ...]      (no arguments: every page in PAGES)
@@ -13,7 +13,7 @@ What it rewrites, on every page it is given:
   page's visible FAQ, [data-faq] and [data-faq-item]; an Article node for the guides; and the
   page's extra nodes from tools/seo/<page>.json, when that file exists);
 - the footer, from the FOOTER template below (a footer change is made there, then this is run;
-  it is not edited in twenty-one files);
+  it is not edited in every file);
 - the site header, from the HEADER template below (a nav change is made in NAV, then this is run); it stays
   English, with lang="en", on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language pairs.
@@ -60,12 +60,13 @@ WEBSITE_ID = SITE + '#website'
 # One entry per line, as written here: tools/verify/_common.js reads this table as text.
 # The order here is the order of sitemap.xml.
 PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-10-20', alt={'sv': 'sv.html'}),
+  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-04', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-20'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-23'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
+  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-04', mod='2026-11-04'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20'),
@@ -76,10 +77,11 @@ PAGES = {
   'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'ai-engineering.html'}),
   'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}),
   'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}),
-  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
+  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-04', article=True, original=True, alt={'en': 'choose-a-software-consultancy.html'}),
   'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
+  'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-04', mod='2026-11-04', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-10-19', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
@@ -297,6 +299,7 @@ FOOTER = '''  <!-- ============================================================ 
           <ul class="site-footer__links list-reset">
             <li><a href="about.html">About</a></li>
             <li><a href="work.html">Work</a></li>
+            <li><a href="blog.html">Blog</a></li>
             <li><a href="membership.html">Membership</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
@@ -333,7 +336,7 @@ FOOTER = '''  <!-- ============================================================ 
 # replaced with this on each run (the aria-current link is the page itself), so a nav change is made in NAV
 # below, once, and this script run. The skip link and the wordmark <symbol> above the header are still
 # copied by hand into every page.
-NAV = [('services.html', 'Services'), ('work.html', 'Work'), ('about.html', 'About'), ('contact.html', 'Contact')]
+NAV = [('services.html', 'Services'), ('work.html', 'Work'), ('blog.html', 'Blog'), ('about.html', 'About'), ('contact.html', 'Contact')]
 MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
 HEADER = '''  <!-- ============================================================ Header -->
   <header class="site-header" role="banner" lang="en">

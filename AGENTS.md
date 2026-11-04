@@ -28,6 +28,7 @@ services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
+blog.html           The blog: a hand-written list of the guides, in English and in Swedish
 privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
                     section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
@@ -35,6 +36,8 @@ accessibility.html  Accessibility statement
 android-automotive-development.html   Android Automotive in Gothenburg (English twin of
                     android-automotive-utveckling.html)
 ai-engineering.html AI engineering in Gothenburg (English twin of ai-utveckling.html)
+choose-a-software-consultancy.html   How to choose a software consultancy: the English twin of
+                    valja-konsultbolag.html, and the first post (kind='post')
 android-automotive-consultancies-gothenburg.html  Alphabetical, sourced list of Gothenburg
                     consultancies working on Android Automotive (English twin)
 sv.html             Swedish home and hub for the Swedish pages (twin of index.html)
@@ -42,9 +45,9 @@ android-automotive-utveckling.html, ai-utveckling.html,
 konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
 valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
 ai-konsultbolag-sverige.html   Swedish guides
-integritet.html     Swedish privacy notice, the twin of privacy.html (the fifth
-                    English/Swedish pair); the Swedish consent bar links to it.
-                    Twenty-one pages in total
+integritet.html     Swedish privacy notice, the twin of privacy.html (one of six
+                    English/Swedish pairs); the Swedish consent bar links to it.
+                    Twenty-three pages in total
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
@@ -228,7 +231,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   background is drawn and the widths it applies to. `tools/verify/bg-draw.js`
   enforces all of this.
 - **Where it lives.** In two files that only `index.html` links, after `styles.css` and
-  `app.js`, so the other twenty pages never download them: `hero-bg.css` and
+  `app.js`, so the other twenty-two pages never download them: `hero-bg.css` and
   `hero-bg.js`. The draw itself stays in `app.js`: it is a few lines, runs on every page and
   everything else depends on it. Each background is a block in `hero-bg.css` between
   `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial, iris) and
@@ -467,7 +470,7 @@ a measurement work. A violation names the one host that is missing; add that hos
 by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
 
 **The policy lives in three places that change together:** the `<meta>` tag on
-all 21 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+all 23 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
 Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
 **first**: the browser enforces the meta and the header independently, so a
 narrower header silently blocks Google Analytics, while a wider one is bounded
@@ -596,7 +599,7 @@ settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and 
 link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `sv`. Without JavaScript, or while the module is inert, the English link to
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
-`privacy.html`, the fifth English/Swedish pair, and the Swedish consent bar links
+`privacy.html`, one of six English/Swedish pairs, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
 `integritet.html`, which is a notice and not a guide and so is linked from that
@@ -662,9 +665,10 @@ byline author is "Vynatix" and the Article's author is the Organization; no name
 site, and naming one is an owner decision.
 
 **Registering a post.** Add its entry to `PAGES` in `tools/seo-head.py` (with `kind='post'`) and its file name to
-`PAGES` in `tools/verify/_common.js`; add a line for it in `llms.txt`; list it on the home page that matches its
-language (`index.html` Further reading repeats the page's title, without the brand suffix, and its meta
-description word for word; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
+`PAGES` in `tools/verify/_common.js`; add a line for it in `llms.txt`; list it on the Blog page (`blog.html`, under
+its language, with the page's title without the brand suffix and its meta description word for word, and
+in the ItemList of `tools/seo/blog.json`) and on the home page that matches its language (`index.html` Further
+reading repeats the title and description the same way; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
 footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
 deploy. `publish.js` names an omission of the registries or `llms.txt` precisely. A post adds no CSS, so no
 `npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
@@ -860,7 +864,7 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 21 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 23 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every

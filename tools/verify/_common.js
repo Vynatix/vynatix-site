@@ -9,7 +9,7 @@ const ROOT = path.join(__dirname, '..', '..');
 
 const PAGES = [
   'index.html', 'about.html', 'services.html',
-  'work.html', 'membership.html', 'contact.html',
+  'work.html', 'membership.html', 'contact.html', 'blog.html',
   'privacy.html', 'terms.html', 'accessibility.html',
   // English deep pages and the list page (each has a Swedish twin below)
   'android-automotive-development.html', 'ai-engineering.html',
@@ -19,6 +19,8 @@ const PAGES = [
   'konsultbolag-android-automotive-goteborg.html', 'valja-konsultbolag.html',
   'platform-engineering.html', 'ai-assistent-interna-dokument.html',
   'ai-konsultbolag-sverige.html', 'integritet.html',
+  // The first English post, the twin of valja-konsultbolag.html
+  'choose-a-software-consultancy.html',
 ];
 
 // The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):
@@ -70,7 +72,7 @@ for (const t of THEMES) {
 // (sessionStorage "vynatix-bg", set as data-bg on <html> by app.js). BGS picks the ones the
 // home-page checks run in, the way THEMES picks themes. Unlike THEMES the default is all four:
 // every one of them ships, and the setting only multiplies loads of the home page (never the
-// other nineteen), so the whole suite grows by a handful of page loads. BGS=sheet narrows a
+// other twenty-two), so the whole suite grows by a handful of page loads. BGS=sheet narrows a
 // run to the background the page shows without script; set BGS=weave,sheet,dial,iris with
 // THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark for the full sweep.
 const ALL_BGS = ['weave', 'sheet', 'dial', 'iris'];

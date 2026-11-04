@@ -14,7 +14,8 @@ What it rewrites, on every page it is given:
   page's extra nodes from tools/seo/<page>.json, when that file exists);
 - the footer, from the FOOTER template below (a footer change is made there, then this is run;
   it is not edited in twenty-one files);
-- lang="en" on the site header, which stays English on the Swedish pages;
+- the site header, from the HEADER template below (a nav change is made in NAV, then this is run); it stays
+  English, with lang="en", on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language pairs.
 
 What it never touches: anything inside <main>, the <title> and the meta description (the page
@@ -327,6 +328,46 @@ FOOTER = '''  <!-- ============================================================ 
     </div>
   </footer>'''
 
+# ---------------------------------------------------------------- header
+# The one source of the site header, the way FOOTER is the one source of the footer. Every page's header is
+# replaced with this on each run (the aria-current link is the page itself), so a nav change is made in NAV
+# below, once, and this script run. The skip link and the wordmark <symbol> above the header are still
+# copied by hand into every page.
+NAV = [('services.html', 'Services'), ('work.html', 'Work'), ('about.html', 'About'), ('contact.html', 'Contact')]
+MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
+HEADER = '''  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner" lang="en">
+    <div class="site-header__inner">
+      <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
+        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+      </a>
+      <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+        <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
+        <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
+      </button>
+      <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
+        <ul class="site-header__list list-reset">
+@@NAV@@
+        </ul>
+      </nav>
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" type="button" title="Dark theme" aria-label="Dark theme" aria-pressed="false">
+          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
+          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
+        </button>
+        <a href="contact.html" class="btn btn--sm site-header__cta">Get in touch</a>
+      </div>
+    </div>
+  </header>'''
+
+def header_for(f):
+    rows = []
+    for href, label in NAV:
+        cur = ' aria-current="page"' if href == f else ''
+        rows.append(f'          <li><a href="{href}" class="site-header__link"{cur}>{label}</a></li>')
+    rows.append(f'          <li class="site-header__menu-cta"><a href="{MENU_CTA[0]}" class="site-header__link">{MENU_CTA[1]}</a></li>')
+    return HEADER.replace('@@NAV@@', '\n'.join(rows))
+
 # ---------------------------------------------------------------- read helpers
 CHECK = '--check' in sys.argv
 STALE = []
@@ -421,7 +462,9 @@ def update_existing(f):
     s, n = re.subn(r'  <!-- =+ Footer -->\n  <footer class="site-footer inverse"( lang="en")?>.*?</footer>', lambda m: FOOTER, s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no footer marker ("<!-- ==== Footer -->" then <footer class="site-footer inverse">) to rewrite')
-    s = s.replace('<header class="site-header" role="banner">', '<header class="site-header" role="banner" lang="en">')
+    s, n = re.subn(r'  <!-- =+ Header -->\n  <header class="site-header".*?</header>', lambda m: header_for(f), s, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit(f + ': no header marker ("<!-- ==== Header -->" then <header class="site-header">) to rewrite')
     write(f, s)
 
 # ---------------------------------------------------------------- sitemap

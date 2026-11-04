@@ -416,15 +416,14 @@ background and stays until the last one goes, and with it the two files, their t
 `index.html`, and their entries in `stamp.js` and `stale-cache.js`. Without the sheet's block
 the no-script page has no background at all.
 
-**Shared chrome is duplicated, not templated.** The `<header>` and `<footer>`
-(and the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>`
-both of them place with `<use>`) are copy-pasted into every page. **A change
-to nav links, the logo, or the header's contact details or addresses must be
-applied to all `*.html` files.** The footer's source is the `FOOTER` template
-in `tools/seo-head.py`: a footer change is made there and the script run, which
-writes it into every page, not made by hand in twenty-one files. The Legal list
-in it carries the "Cookie settings" link (`data-consent-open`), which reopens the
-consent bar. Set `aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
+**Shared chrome: the header and the footer are templates, the rest is duplicated.** The `<header>` and `<footer>`
+are written into every page by `tools/seo-head.py` from the `HEADER` and `FOOTER` templates in it: a nav
+change (the `NAV` list), a change to the footer's links or contact details, or an `aria-current="page"` on the
+current page's nav link is made there, once, and the script run, not by hand in every file. The skip link and
+the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
+`<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files. The
+header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons.
 

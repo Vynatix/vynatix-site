@@ -57,12 +57,11 @@ highlights the things most worth keeping front-of-mind.
   (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
   `vynatix-bg-iris-idle` is a read-only test hook. Per-background detail, constants,
   the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
-- **Header and footer (and the inline wordmark `<symbol>`) are duplicated
-  across every `*.html` file** — there is no include system. Any nav, logo or
-  header contact-detail change must be made in **all** pages, and
-  `aria-current="page"` set on the active link. The footer is the one exception:
-  its source is the `FOOTER` template in `tools/seo-head.py`, so a footer change
-  is made there and the script run, which writes it into every page.
+- **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
+  sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
+  templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
+  which writes it into every page. The skip link and the `<symbol>` block are copy-pasted into every
+  `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
   `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages

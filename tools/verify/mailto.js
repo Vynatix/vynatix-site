@@ -12,10 +12,13 @@
 //    and nothing else, at most 80 characters, with no em dash, exclamation mark or ellipsis;
 //  - a slug (the file name without .html) of a-z, 0-9 and hyphens that does not contain the routing words, so a
 //    word-matching inbox rule cannot be confused by it.
-// A tagged subject is only allowed on a page whose slug it names. A mailto link without a subject is fine, but
+// A tagged subject is only allowed on a page whose slug it names, and that page must link the email section of the
+// privacy notice in its language (privacy.html#email or integritet.html#email), which must exist: the notices are
+// where the tag and the per-guide count are disclosed. A mailto link without a subject is fine, but
 // it must still go to that address and carry no cc, bcc or body. The href is read the way a browser reads it:
 // entities decoded, tabs, newlines and surrounding spaces removed, the scheme case-insensitive.
-const { ROOT, PAGES, readPage, parseTags, decodeEntities } = require('./_common');
+const { ROOT, PAGES, readPage, pageLang, parseTags, decodeEntities } = require('./_common');
+const NOTICE_EMAIL = { en: 'privacy.html#email', sv: 'integritet.html#email' };
 
 const ADDRESS = 'front.disk@vynatix.com';
 
@@ -85,16 +88,25 @@ if (require.main === module) {
   if (process.argv.includes('--self-test')) process.exit(selfTest() ? 1 : 0);
   let bad = selfTest();
   let links = 0;
+  const tagged = new Set();
   for (const p of PAGES) {
     for (const t of parseTags(readPage(p), 'a')) {
       const href = t.attrs.href || '';
       if (!/^mailto:/i.test(clean(href))) continue;
       links++;
+      if (/subject=[^&]*%3A|subject=[^&]*:/i.test(clean(href))) tagged.add(p);
       const problems = subjectProblems(href, p);
       if (problems.length) { bad++; console.log(`FAIL ${p}: ${href}\n       ${problems.join('; ')}`); }
     }
   }
-  if (!bad) console.log(`ok   ${links} mailto links, all to ${ADDRESS} and all well formed`);
+  for (const p of tagged) {
+    const lang = (pageLang(p) || 'en').slice(0, 2);
+    const want = NOTICE_EMAIL[lang] || NOTICE_EMAIL.en;
+    const notice = want.split('#')[0];
+    if (!parseTags(readPage(p), 'a').some((t) => clean(t.attrs.href || '') === want)) { bad++; console.log(`FAIL ${p}: its button carries the page's slug in the subject, but the page does not link ${want}, where the tag is disclosed`); }
+    if (!/\bid="email"/.test(readPage(notice))) { bad++; console.log(`FAIL ${notice} has no id="email" section, which ${p} relies on`); }
+  }
+  if (!bad) console.log(`ok   ${links} mailto links, all to ${ADDRESS} and all well formed; ${tagged.size} page(s) with a tagged subject, each linking the notice's email section`);
   console.log(bad ? `\nFAIL — ${bad} problem(s)` : '\nPASS — mailto subjects');
   process.exit(bad ? 1 : 0);
 }

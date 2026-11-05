@@ -12,18 +12,23 @@
 //     named by no robots.txt Disallow, and linked by no other page (any href, src or link element that resolves
 //     to it, however it is written), so nothing of the old text is served and nothing points at the stub
 //  L  tools/urls.lock lists every URL ever registered, one row per URL as "<url> <YYYY-MM-DD>": each locked URL
-//     still has a file (the live page or the stub), every registered URL is locked, no pub date moved
+//     still has a file (the live page or the stub), every registered URL is locked, no pub date moved, and,
+//     when git can show origin/main's lock, no row that is on main has been changed or removed
 //  C  no [[CONFIRM: ...]] marker on any page that is not one of the two notices, nor in llms.txt, robots.txt,
 //     sitemap.xml, the manifest or a feed (release-gate.js reads only the notices, and only at the analytics
 //     flip, so a marker in a post would ship)
 //  D  for registry kind 'post': the Published (and Last updated) <time> of the byline equals pub and mod in
 //     the registry, both the datetime and the text shown
+//  V  every other live page that shows a dated line (a prose__meta byline with Published / Publicerad / Last
+//     updated / Senast uppdaterad, or a legal__meta "Last updated" / "Senast uppdaterad" line) shows the registry's
+//     pub and mod (event dates such as the list pages' Checked / Kontrollerad lines are not read)
 //  H  the hub: every live kind 'post' page is listed on blog.html, in the ItemList of tools/seo/blog.json and on
 //     the home page of its language; the ItemList and the visible list on blog.html name the same pages, with
 //     numberOfItems and positions that add up
 // Exports run() for the self-test. See AGENTS.md, "Posts, permanence and withdrawal".
 const fs = require('fs');
 const os = require('os');
+const { execFileSync } = require('child_process');
 const path = require('path');
 const { ROOT, PAGES, NOTICE_PAGES, readRegistry, parseTags, htmlToText, stripComments, decodeEntities } = require('./_common');
 
@@ -149,9 +154,20 @@ function run(root = ROOT, pages = PAGES) {
     }
     for (const f of files) {
       if (!(urlOf(f) in locked)) problems.push(`not locked: ${urlOf(f)} (run python3 tools/seo-head.py)`);
-      else if (locked[urlOf(f)] !== reg[f].pub) problems.push(`pub moved: ${urlOf(f)} locked ${locked[urlOf(f)]}, registry ${reg[f].pub} (pub never moves)`);
+      else if (locked[urlOf(f)] !== reg[f].pub) problems.push(`pub moved: ${urlOf(f)} locked ${locked[urlOf(f)]}, registry ${reg[f].pub} (pub never moves once the URL has been on main; for a page never on main, run python3 tools/redate.py: AGENTS.md, "Dates when a branch sits")`);
     }
-    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file, none unregistered, no pub date moved`, problems.join('; '));
+    // Rows that are on main are immutable. Read origin/main's lock through git when this is a checkout that has one.
+    let mainLock = null;
+    try { mainLock = execFileSync('git', ['-C', root, 'show', 'origin/main:tools/urls.lock'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch (e) { mainLock = null; }
+    if (mainLock) {
+      for (const raw of mainLock.split(/\r?\n/)) {
+        const m = /^(https:\/\/vynatix\.com\/\S*) (\d{4}-\d{2}-\d{2})$/.exec(raw.trim());
+        if (!m) continue;
+        if (!(m[1] in locked)) problems.push(`lock row removed: ${m[1]} is in origin/main's lock (a row is never removed once its URL has been on main)`);
+        else if (locked[m[1]] !== m[2]) problems.push(`lock row changed: ${m[1]} is ${locked[m[1]]}, main has ${m[2]} (a row is never edited once its URL has been on main)`);
+      }
+    }
+    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file, none unregistered, no pub date moved${mainLock ? ', rows on main unchanged' : ' (origin/main has no lock yet)'}`, problems.join('; '));
   }
 
   // C. unresolved owner-fact markers
@@ -184,7 +200,23 @@ function run(root = ROOT, pages = PAGES) {
   }
   if (!posts.length) add(true, 'no kind=post pages (nothing to check)', '');
 
+  // V. the visible dates of every other live page
+  const vProblems = [];
+  for (const f of files.filter((g) => reg[g].status === 'live' && reg[g].kind !== 'post')) {
+    const src = tryRead(f) || '';
+    const lang = reg[f].lang;
+    const meta = /<p\b[^>]*\bclass="[^"]*\bprose__meta\b[^"]*"[^>]*>([\s\S]*?)<\/p>/.exec(src);
+    for (const m of meta ? meta[1].matchAll(/(Published|Publicerad|Last updated|Senast uppdaterad)\s*<time\b[^>]*\bdatetime="([^"]*)"[^>]*>([^<]*)<\/time>/g) : []) {
+      const want = /^Publ/.test(m[1]) ? reg[f].pub : reg[f].mod;
+      if (m[2] !== want || m[3].trim() !== day(want, lang)) vProblems.push(`${f}: ${m[1]} shows ${m[2]} "${m[3].trim()}"; the registry says ${want}`);
+    }
+    const legal = /<p class="legal__meta">(Last updated|Senast uppdaterad) ([^<]*)<\/p>/.exec(src);
+    if (legal && legal[2].trim() !== day(reg[f].mod, lang)) vProblems.push(`${f}: ${legal[1]} shows "${legal[2].trim()}"; mod is ${reg[f].mod}`);
+  }
+  add(!vProblems.length, 'every other page that shows a Published or Last updated date shows the registry\'s pub and mod', vProblems.join('; '));
+
   // H. the hub lists the posts
+  if (!reg['blog.html']) add(!posts.length, 'blog.html is registered (the hub every post is listed on)', 'kind=post pages exist but blog.html is not in PAGES');
   if (reg['blog.html']) {
     const problems = [];
     const blog = tryRead('blog.html') || '';
@@ -260,11 +292,13 @@ function selfTest() {
     ['an unknown registry key', (d) => { edit(d, PY, (s) => s.replace("'terms.html':        dict(lang='en',", "'terms.html':        dict(staus='withdrawn', lang='en',")); return PAGES; }, /unknown registry key/],
     ['a duplicate row in the lock', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/about.html 2026-07-01\n'); return PAGES; }, /duplicate row/],
     ['a locked URL with no file', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); return PAGES; }, /gone: https:\/\/vynatix\.com\/ghost\.html/],
-    ['a moved pub date', (d) => { edit(d, PY, (s) => s.replace("pub='2026-06-27', mod='2026-10-20'", "pub='2026-07-01', mod='2026-10-20'")); return PAGES; }, /pub moved/],
+    ['a moved pub date', (d) => { edit(d, PY, (s) => s.replace(/('about\.html':[^\n]*?\bpub=')\d{4}-\d{2}-\d{2}'/, (m, a) => a + "2001-01-01'")); return PAGES; }, /pub moved/],
     ['a [[CONFIRM marker in llms.txt', (d) => { edit(d, 'llms.txt', (s) => s + '[[CONFIRM: a figure]]\n'); return PAGES; }, /found in llms\.txt/],
     ['a [[CONFIRM marker in a post', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace('<h1', '[[CONFIRM: x]]<h1')); return PAGES; }, /found in choose-a-software-consultancy\.html/],
-    ['a post whose shown date differs from its datetime', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace('>4 November 2026</time> · Last', '>1 January 2020</time> · Last')); return PAGES; }, /shows \"1 January 2020\"/],
+    ['a post whose shown date differs from its datetime', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace(/(<p class="prose__meta">Published <time datetime="[^"]*">)[^<]*(<\/time>)/, (m, a, b) => a + '1 January 2020' + b)); return PAGES; }, /shows \"1 January 2020\"/],
     ['a post missing from blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/<li><a href="choose-a-software-consultancy\.html">[\s\S]*?<\/li>\n/, '')); return PAGES; }, /is not listed on blog\.html|differ/],
+    ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); return PAGES; }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
+    ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); return PAGES; }, /privacy\.html: Last updated shows/],
     ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace('"numberOfItems": 5', '"numberOfItems": 9')); return PAGES; }, /numberOfItems/],
   ];
   let bad = 0;

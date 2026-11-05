@@ -217,7 +217,9 @@ cannot stand in for this section.
   browser and is valid for 365 days (the notices say 12 months). The notices
   describe what the site does and say that the legal basis is the visitor's
   consent; they do not assert what Swedish law requires, and counsel decides
-  whether that stands. The sign-off also covers the sentences that were in the
+  whether that stands. It also covers the paragraph on the guides' email button under `#email` in both
+  notices (the per-guide count of tagged mail and the legitimate interest named for it), which goes live
+  with the first post, before this sign-off. The sign-off also covers the sentences that were in the
   notices before analytics: the one saying Cloudflare may set a cookie of its own
   (checked against 8.5 if the edge is live) and the one saying GitHub and
   Cloudflare operate under the Data Privacy Framework (checked in 1.2). The "Draft

@@ -79,7 +79,7 @@ competitor baseline (who is cited today for these prompts), not proof that the p
 
 Tagged mail and tool data, counts only:
 
-| Date | Page | Tagged mail received | Of which genuine (owner's call) | Search Console impressions | Bing impressions | Bing AI citations (sampled) |
+| Sitting date (never the day a mail arrived) | Page | Tagged mail received | Of which genuine (owner's call) | Search Console impressions | Bing impressions | Bing AI citations (sampled) |
 |---|---|---|---|---|---|---|
 | | | | | | | |
 

@@ -688,7 +688,9 @@ question and the same answers.
 
 **The call to action carries the post's slug.** The primary button is
 `mailto:front.disk@vynatix.com?subject=Project:%20<slug>`, with the plain address under it and one sentence
-saying the subject line names the guide and can be changed (written in the page's language). The routing word
+saying the subject line names the guide and can be changed, linking to the notice's email section
+(`privacy.html#email`, or `integritet.html#email` on a Swedish page), written in the page's language;
+`mailto.js` fails a page whose button carries its slug without that link. The routing word
 stays first because `contact.html` asks senders to start the subject with Project or Membership; nothing in the
 repository says how the inbox is routed. `tools/verify/mailto.js` enforces the form. Only mail sent from that
 button with the subject unedited is tagged; analytics are off, so this is a floor, not a count.
@@ -708,12 +710,20 @@ sentence links to that section. Keep the three in step: a post whose button carr
 and any other use of the subject (beyond answering and counting per guide) needs the notices changed first.
 The notices as a whole remain drafts pending counsel.
 
-**Dates when a branch sits.** A post's `pub` is the day it first goes live, not the day it was written. If a
-branch with new or changed pages is merged on a later day, re-date it on the day of the merge: `pub` and `mod`
-of each new page, `mod` of each changed page, the visible Published, Last updated and "Senast uppdaterad" lines
-that repeat them, the notices' "Last updated" lines, and the `tools/urls.lock` rows of the new URLs. A lock row
-is never edited once its URL has been on the live site; a row whose URL has never been on `main` may be
-corrected before its first merge, and only then. Then run `python3 tools/seo-head.py` and the checks.
+**Dates when a branch sits.** A page's `pub` is the day it first goes live, not the day it was written, so a
+branch merged on a later day than the dates it carries is re-dated on the day of the merge, in its own commit:
+`python3 tools/redate.py` (or `npm run redate` in `tools/`; `--dry-run` shows the plan and exits 1 if anything
+would change, so it can stand in a merge checklist). Against `origin/main` it finds the **new** pages (the file
+is not on `main`) and the **changed** ones (the branch moved `mod` in `PAGES`; a change to the generated header
+or footer alone moves no date, so `git diff --stat` is not the list). It moves `pub` and `mod` of the new pages
+and `mod` of the changed ones to the merge day, with the byline's Published / Publicerad and Last updated /
+Senast uppdaterad `<time>` and the `legal__meta` line that repeat them, and the `tools/urls.lock` rows of the
+new pages, then runs `seo-head.py`. It never touches a lock row whose URL is on `main` (a row is never edited
+once its URL has been on the live site), event dates (the list pages' Checked / Kontrollerad lines, the
+`sv.html` guider lead, `tools/TAKEDOWN.md`, `tools/CITATION-LOG.md`), a date in the future or one earlier than
+the date it replaces, and it refuses a page whose visible date already disagrees with the registry.
+`permanence.js` checks the visible dates of every page (D for posts, V for the rest) and, once `main` has a
+lock, that no row on `main` changed. Then run `npm run check`.
 
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
@@ -721,17 +731,26 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
 - The three projects that can be discussed and the non-disclosure line, with the date: `index.html` work section
   ("As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks
   and Volvo Cars is under non-disclosure."), `work.html`, `sv.html` (the date, "As of October 2026" / "I oktober
-  2026", is on `index.html` and `sv.html` only). **The scope of the non-disclosure line differs between pages
-  and has not been settled**: limited to Volvo Trucks and Volvo Cars on `index.html`,
-  `android-automotive-development.html` and the `sv.html` work section ("Resten av vårt arbete för Volvo Trucks
-  och Volvo Cars omfattas av sekretess"); unscoped in the `work.html` hero ("The rest of our work is under
-  non-disclosure"), in `terms.html` ("the remainder of our work is under non-disclosure") and in the `sv.html`
-  company description ("Övriga kunduppdrag omfattas av sekretess"). The two do not contradict each other: the
-  unscoped form implies the Volvo-limited one. **New content uses the Volvo-limited form** (for example "Beyond
-  the cases published on this site, our work with Volvo Trucks and Volvo Cars is under non-disclosure"),
-  because it is true whichever form describes the rest of the work. The existing unscoped sentences are the
-  owner's own and stay as they are; do not widen a Volvo-limited sentence into the unscoped form without the
-  owner.
+  2026", is on `index.html` and `sv.html` only). **The scope of the non-disclosure line differs between pages.**
+  Limited to Volvo Trucks and Volvo Cars: the `index.html` work section and its FAQ answer "Who are Vynatix's
+  clients?" ("The rest of the work with both is under non-disclosure."), `android-automotive-development.html`
+  and `android-automotive-utveckling.html`, and the `sv.html` work section ("Resten av vårt arbete för Volvo
+  Trucks och Volvo Cars omfattas av sekretess"). Unscoped: the `work.html` hero ("The rest of our work is under
+  non-disclosure"), `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
+  work is under non-disclosure and is not described here") and the `sv.html` FAQ answer "Vilka kunder har ni?"
+  ("Övriga kunduppdrag omfattas av sekretess"), which is the Swedish twin of the `index.html` FAQ answer, so the
+  two FAQPage answers differ in scope (both written in commit 8e521a7). Read as "beyond the published cases", an
+  unscoped sentence implies the Volvo-limited one, so no two sentences contradict each other. Only the
+  `terms.html` sentence was committed by the owner (e413cb9); the others come from agent commits, and all stay
+  until the owner answers one question: **is all work not described on this site, for every client, under
+  non-disclosure?** **New content uses the Volvo-limited form, word for word**, because it is true either way: in
+  English "Beyond what we have published, our work with Volvo Trucks and Volvo Cars is under non-disclosure."
+  (`android-automotive-development.html`, "Non-disclosure is normal"), in Swedish "Utöver det vi har publicerat
+  omfattas vårt arbete med Volvo Trucks och Volvo Cars av sekretess." (`android-automotive-utveckling.html`, the
+  same section). Where it follows a list of all three cases, label it with its scope ("Volvo Trucks and Volvo
+  Cars:"), so it is not read as the whole remainder or as a claim that the regulated client's other work is
+  public. Do not reuse "That is what we can publish. The rest of our work with Volvo Trucks and Volvo Cars is under
+  non-disclosure." outside the Volvo Trucks case it follows: read alone it takes in the published Volvo Cars case.
 - Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
   only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.

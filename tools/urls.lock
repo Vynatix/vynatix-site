@@ -1,5 +1,6 @@
 # Every URL this site has ever registered, and the date it first went live (pub).
-# Append-only and written by tools/seo-head.py; never edit a row. GitHub Pages cannot redirect, so a URL
+# Append-only and written by tools/seo-head.py; never edit a row (a row whose URL has never been on main may be
+# corrected before its first merge: AGENTS.md, "Dates when a branch sits"). GitHub Pages cannot redirect, so a URL
 # that has been public must keep answering for good: as the live page, or as the withdrawn stub.
 # tools/verify/permanence.js fails if a locked URL has no file, if a registered URL is missing here, or
 # if a pub date differs from the registry. tools/ is not published.

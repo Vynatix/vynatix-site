@@ -67,7 +67,7 @@ PAGES = {
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
   'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-04', mod='2026-11-04'),
-  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20', alt={'sv': 'integritet.html'}),
+  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-05', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-10-20'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
@@ -82,7 +82,7 @@ PAGES = {
   'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-04', mod='2026-11-04', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
-  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-10-19', alt={'en': 'privacy.html'}),
+  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-05', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
@@ -497,7 +497,8 @@ def sitemap():
 # ---------------------------------------------------------------- URL lock
 LOCK = os.path.join('tools', 'urls.lock')
 LOCK_HEAD = '''# Every URL this site has ever registered, and the date it first went live (pub).
-# Append-only and written by tools/seo-head.py; never edit a row. GitHub Pages cannot redirect, so a URL
+# Append-only and written by tools/seo-head.py; never edit a row (a row whose URL has never been on main may be
+# corrected before its first merge: AGENTS.md, "Dates when a branch sits"). GitHub Pages cannot redirect, so a URL
 # that has been public must keep answering for good: as the live page, or as the withdrawn stub.
 # tools/verify/permanence.js fails if a locked URL has no file, if a registered URL is missing here, or
 # if a pub date differs from the registry. tools/ is not published.

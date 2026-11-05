@@ -5,10 +5,9 @@ about pages only, never the identity of anyone who wrote in, and keep screenshot
 show the tester's account, locale and profile; the Screenshot column holds a file name or reference only).
 Analytics are off, so every signal here is a floor.
 
-Open question for counsel, to settle before the first post goes live on `main`: the guide's call to action says
-the subject line names the guide so we know which page was read, while the privacy notice says there is no other
-analytics. Do the notices cover per-page attribution of a voluntary email subject, or does the email section need
-a purpose line? (`AGENTS.md`, "Posts, permanence and withdrawal".)
+Tagged mail is counted only as both privacy notices describe it (their email section, `#email`): per guide,
+without names. Any other use of the subject line needs the notices changed first (`AGENTS.md`, "Posts,
+permanence and withdrawal").
 
 ## What this can and cannot show
 

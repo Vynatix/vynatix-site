@@ -700,11 +700,20 @@ already published may be drafted on a branch. A `[[CONFIRM: what is needed]]` ma
 supplies: never fill one in; `permanence.js` fails on one in any page or published text file that is not a
 privacy notice.
 
-**Open question for counsel.** The call to action's sentence ("The subject line names this guide so we know
-which page you read") attributes an email to the page that prompted it, while `privacy.html` says "There is
-no other analytics". The notices are drafts pending counsel. Whether they cover per-page attribution of a
-voluntary email subject, or the email section needs a purpose line, is unresolved; settle it before the first
-post goes live on `main`.
+**The tagged subject is disclosed.** Both notices say, in their email section (`#email`), that a guide's
+email button names the guide in the subject line, that the visitor can change or delete it, that it is used to
+know what they read and that messages are counted per guide without names, on the basis of legitimate
+interest; the summary list says "no other website analytics" and points there. The guide's call-to-action
+sentence links to that section. Keep the three in step: a post whose button carries its slug relies on them,
+and any other use of the subject (beyond answering and counting per guide) needs the notices changed first.
+The notices as a whole remain drafts pending counsel.
+
+**Dates when a branch sits.** A post's `pub` is the day it first goes live, not the day it was written. If a
+branch with new or changed pages is merged on a later day, re-date it on the day of the merge: `pub` and `mod`
+of each new page, `mod` of each changed page, the visible Published, Last updated and "Senast uppdaterad" lines
+that repeat them, the notices' "Last updated" lines, and the `tools/urls.lock` rows of the new URLs. A lock row
+is never edited once its URL has been on the live site; a row whose URL has never been on `main` may be
+corrected before its first merge, and only then. Then run `python3 tools/seo-head.py` and the checks.
 
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
@@ -717,8 +726,12 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
   `android-automotive-development.html` and the `sv.html` work section ("Resten av vårt arbete för Volvo Trucks
   och Volvo Cars omfattas av sekretess"); unscoped in the `work.html` hero ("The rest of our work is under
   non-disclosure"), in `terms.html` ("the remainder of our work is under non-disclosure") and in the `sv.html`
-  company description ("Övriga kunduppdrag omfattas av sekretess"). Until the owner picks one, a post uses the
-  Volvo-limited form.
+  company description ("Övriga kunduppdrag omfattas av sekretess"). The two do not contradict each other: the
+  unscoped form implies the Volvo-limited one. **New content uses the Volvo-limited form** (for example "Beyond
+  the cases published on this site, our work with Volvo Trucks and Volvo Cars is under non-disclosure"),
+  because it is true whichever form describes the rest of the work. The existing unscoped sentences are the
+  owner's own and stay as they are; do not widen a Volvo-limited sentence into the unscoped form without the
+  owner.
 - Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
   only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.

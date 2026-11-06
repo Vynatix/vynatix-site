@@ -28,6 +28,7 @@ services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
+blog.html           The blog: a hand-written list of the guides, in English and in Swedish
 privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
                     section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
@@ -35,6 +36,8 @@ accessibility.html  Accessibility statement
 android-automotive-development.html   Android Automotive in Gothenburg (English twin of
                     android-automotive-utveckling.html)
 ai-engineering.html AI engineering in Gothenburg (English twin of ai-utveckling.html)
+choose-a-software-consultancy.html   How to choose a software consultancy: the English twin of
+                    valja-konsultbolag.html, and the first post (kind='post')
 android-automotive-consultancies-gothenburg.html  Alphabetical, sourced list of Gothenburg
                     consultancies working on Android Automotive (English twin)
 sv.html             Swedish home and hub for the Swedish pages (twin of index.html)
@@ -42,9 +45,9 @@ android-automotive-utveckling.html, ai-utveckling.html,
 konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
 valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
 ai-konsultbolag-sverige.html   Swedish guides
-integritet.html     Swedish privacy notice, the twin of privacy.html (the fifth
-                    English/Swedish pair); the Swedish consent bar links to it.
-                    Twenty-one pages in total
+integritet.html     Swedish privacy notice, the twin of privacy.html (one of six
+                    English/Swedish pairs); the Swedish consent bar links to it.
+                    Twenty-three pages in total
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
@@ -77,9 +80,12 @@ EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not publ
 tools/              Local verification scripts (verify/, including the consent checks
                     and the four hero background guards), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
-                    block, footer and sitemap) and the two mask generators,
+                    block, header, footer, sitemap and URL lock) and the two mask generators,
                     dial-masks.py and sheet-art.js; NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
+tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
+                    registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement
+                    protocol and decision rule; none published
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -226,7 +232,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   background is drawn and the widths it applies to. `tools/verify/bg-draw.js`
   enforces all of this.
 - **Where it lives.** In two files that only `index.html` links, after `styles.css` and
-  `app.js`, so the other twenty pages never download them: `hero-bg.css` and
+  `app.js`, so the other twenty-two pages never download them: `hero-bg.css` and
   `hero-bg.js`. The draw itself stays in `app.js`: it is a few lines, runs on every page and
   everything else depends on it. Each background is a block in `hero-bg.css` between
   `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial, iris) and
@@ -414,15 +420,14 @@ background and stays until the last one goes, and with it the two files, their t
 `index.html`, and their entries in `stamp.js` and `stale-cache.js`. Without the sheet's block
 the no-script page has no background at all.
 
-**Shared chrome is duplicated, not templated.** The `<header>` and `<footer>`
-(and the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>`
-both of them place with `<use>`) are copy-pasted into every page. **A change
-to nav links, the logo, or the header's contact details or addresses must be
-applied to all `*.html` files.** The footer's source is the `FOOTER` template
-in `tools/seo-head.py`: a footer change is made there and the script run, which
-writes it into every page, not made by hand in twenty-one files. The Legal list
-in it carries the "Cookie settings" link (`data-consent-open`), which reopens the
-consent bar. Set `aria-current="page"` on the current page's nav link. The header is the system's TopAppBar: a floating Liquid
+**Shared chrome: the header and the footer are templates, the rest is duplicated.** The `<header>` and `<footer>`
+are written into every page by `tools/seo-head.py` from the `HEADER` and `FOOTER` templates in it: a nav
+change (the `NAV` list), a change to the footer's links or contact details, or an `aria-current="page"` on the
+current page's nav link is made there, once, and the script run, not by hand in every file. The skip link and
+the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
+`<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files. The
+header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons.
 
@@ -466,7 +471,7 @@ a measurement work. A violation names the one host that is missing; add that hos
 by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
 
 **The policy lives in three places that change together:** the `<meta>` tag on
-all 21 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+all 23 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
 Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
 **first**: the browser enforces the meta and the header independently, so a
 narrower header silently blocks Google Analytics, while a wider one is bounded
@@ -595,7 +600,7 @@ settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and 
 link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `sv`. Without JavaScript, or while the module is inert, the English link to
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
-`privacy.html`, the fifth English/Swedish pair, and the Swedish consent bar links
+`privacy.html`, one of six English/Swedish pairs, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
 `integritet.html`, which is a notice and not a guide and so is linked from that
@@ -632,6 +637,147 @@ the glyph files in `assets/icons/`, which are copies of the system's
 `light_mode` (the theme toggle) are not in the system's approved catalogue;
 they were drawn from the same package at the same settings and should be added
 to the catalogue. Never draw an icon by hand, and never use `.ms`.
+
+## Posts, permanence and withdrawal
+
+The site's blog format is the **Guide**: a dated page that answers one buyer question, in the house pattern
+of the four Swedish guides. A page written to this pattern after the blog was added is a **post**, marked
+`kind='post'` in its `PAGES` entry in `tools/seo-head.py` (the older guides are not marked). The full plan,
+its measurements and the reasons for every choice below are in the blog extension plan the owner holds; this
+section is the working rules.
+
+**Where a post lives.** At the flat root, as `<slug>.html`, with a slug that is undated, descriptive and
+permanent (a-z, 0-9, hyphens; it must not contain the words `project` or `membership`). Never in a directory:
+a `blog/` directory breaks `stamp.js` (non-recursive, and its regex needs `href="styles.css`), the exact-match
+footer checks, the font preloads in `app.js` (any path ending `/` is treated as the home page), `links.js`
+(it resolves against the base URL, not the page) and `publish.js`. Never `_posts/*.md`: Jekyll publishes a
+markdown file without front matter at `/YYYY/MM/DD/name.html` and `publish.js` lets it pass. A slug is never
+reused and a URL never removed.
+
+**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; an interest
+disclosure in the lede; a "when we are the wrong choice" section; a `data-faq` block (flat, as in the SEO
+section); the company sentence verbatim under "About Vynatix"; a call-to-action band. The byline is
+`<p class="prose__meta">Published <time datetime="YYYY-MM-DD">…</time> · Last updated <time datetime="YYYY-MM-DD">…</time> · Vynatix</p>`
+(Swedish: "Publicerad" and "Senast uppdaterad"); the two dates are `pub` and `mod` in the registry, and
+`permanence.js` fails if they differ. No cadence promise anywhere. **Section ids must not be `article`**: the
+Article node's `@id` is the page URL plus `#article`, and a FAQ container with that id collides with it
+(`seo.js` then reports a misleading date error). Use `intro`, `questions`, `faq` and the like. The
+byline author is "Vynatix" and the Article's author is the Organization; no named person appears anywhere on the
+site, and naming one is an owner decision.
+
+**Registering a post.** Add its entry to `PAGES` in `tools/seo-head.py` (with `kind='post'`) and its file name to
+`PAGES` in `tools/verify/_common.js`; add a line for it in `llms.txt`; list it on the Blog page (`blog.html`, under
+its language, with the page's title without the brand suffix and its meta description word for word, and
+in the ItemList of `tools/seo/blog.json`) and on the home page that matches its language (`index.html` Further
+reading repeats the title and description the same way; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
+footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
+deploy. `publish.js` names an omission of the registries or `llms.txt` precisely, and `permanence.js` fails if
+a `kind='post'` page is missing from `blog.html`, from the ItemList in `tools/seo/blog.json` (keep
+`numberOfItems` and the positions right) or from the home page of its language. Nothing checks the other
+hand-kept lists: when you edit `blog.html`, `index.html` or `sv.html`, move that page's `mod` and run the
+generator. Swedish items on the Blog page carry `lang="sv"` (and `hreflang="sv"` on the link). Adding a Swedish
+post makes the `sv.html` guider lead ("Publicerade den 18 oktober 2026") false: fix it then. After the deploy,
+ping IndexNow for the post, its twin and the pages that now list it (`node tools/indexnow.js <slug>.html
+blog.html index.html`). Run `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/a11y.js`
+on the new page, because `accessibility.html` says every page is scanned in all six themes. A post adds no
+CSS, so no `npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
+`original=True` on the original, `original=False` on the translation (the English page is the original unless
+the registry says otherwise; `seo-head.py` refuses a pair with zero or two originals, and `seo.js` checks the
+`workTranslation` / `translationOfWork` direction). Pair a page only with a full counterpart that has the same
+question and the same answers.
+
+**The call to action carries the post's slug.** The primary button is
+`mailto:front.disk@vynatix.com?subject=Project:%20<slug>`, with the plain address under it and one sentence
+saying the subject line names the guide and can be changed, linking to the notice's email section
+(`privacy.html#email`, or `integritet.html#email` on a Swedish page), written in the page's language;
+`mailto.js` fails a page whose button carries its slug without that link. The routing word
+stays first because `contact.html` asks senders to start the subject with Project or Membership; nothing in the
+repository says how the inbox is routed. `tools/verify/mailto.js` enforces the form. Only mail sent from that
+button with the subject unedited is tagged; analytics are off, so this is a floor, not a count.
+
+**Drafts.** The repository is public, and a draft pushed to any branch is public on github.com even though
+only the production branch is served. A post that introduces a fact not already on a published page is drafted
+outside the repository and committed only after the owner has approved the text; a twin of a page that is
+already published may be drafted on a branch. A `[[CONFIRM: what is needed]]` marker is a fact only a human
+supplies: never fill one in; `permanence.js` fails on one in any page or published text file that is not a
+privacy notice.
+
+**The tagged subject is disclosed.** Both notices say, in their email section (`#email`), that a guide's
+email button names the guide in the subject line, that the visitor can change or delete it, that it is used to
+know what they read and that messages are counted per guide without names, on the basis of legitimate
+interest; the summary list says "no other website analytics" and points there. The guide's call-to-action
+sentence links to that section. Keep the three in step: a post whose button carries its slug relies on them,
+and any other use of the subject (beyond answering and counting per guide) needs the notices changed first.
+The notices as a whole remain drafts pending counsel.
+
+**Dates when a branch sits.** A page's `pub` is the day it first goes live, not the day it was written, so a
+branch merged on a later day than the dates it carries is re-dated on the day of the merge, in its own commit:
+`python3 tools/redate.py` (or `npm run redate` in `tools/`; `--dry-run` shows the plan and exits 1 if anything
+would change, so it can stand in a merge checklist). Against `origin/main` it finds the **new** pages (the file
+is not on `main`) and the **changed** ones (the branch moved `mod` in `PAGES`; a change to the generated header
+or footer alone moves no date, so `git diff --stat` is not the list). It moves `pub` and `mod` of the new pages
+and `mod` of the changed ones to the merge day, with the byline's Published / Publicerad and Last updated /
+Senast uppdaterad `<time>` and the `legal__meta` line that repeat them, and the `tools/urls.lock` rows of the
+new pages, then runs `seo-head.py`. It never touches a lock row whose URL is on `main` (a row is never edited
+once its URL has been on the live site), event dates (the list pages' Checked / Kontrollerad lines, the
+`sv.html` guider lead, `tools/TAKEDOWN.md`, `tools/CITATION-LOG.md`), a date in the future or one earlier than
+the date it replaces, and it refuses a page whose visible date already disagrees with the registry.
+`permanence.js` checks the visible dates of every page (D for posts, V for the rest) and, once `main` has a
+lock, that no row on `main` changed. Then run `npm run check`.
+
+**Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
+Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
+- The company sentence, verbatim: "One sentence about the company", above.
+- The three projects that can be discussed and the non-disclosure line, with the date: `index.html` work section
+  ("As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks
+  and Volvo Cars is under non-disclosure."), `work.html`, `sv.html` (the date, "As of October 2026" / "I oktober
+  2026", is on `index.html` and `sv.html` only). **The scope of the non-disclosure line differs between pages.**
+  Limited to Volvo Trucks and Volvo Cars: the `index.html` work section and its FAQ answer "Who are Vynatix's
+  clients?" ("The rest of the work with both is under non-disclosure."), `android-automotive-development.html`
+  and `android-automotive-utveckling.html`, and the `sv.html` work section ("Resten av vårt arbete för Volvo
+  Trucks och Volvo Cars omfattas av sekretess"). Unscoped: the `work.html` hero ("The rest of our work is under
+  non-disclosure"), `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
+  work is under non-disclosure and is not described here") and the `sv.html` FAQ answer "Vilka kunder har ni?"
+  ("Övriga kunduppdrag omfattas av sekretess"), which is the Swedish twin of the `index.html` FAQ answer, so the
+  two FAQPage answers differ in scope (both written in commit 8e521a7). Read as "beyond the published cases", an
+  unscoped sentence implies the Volvo-limited one, so no two sentences contradict each other. Only the
+  `terms.html` sentence was committed by the owner (e413cb9); the others come from agent commits, and all stay
+  until the owner answers one question: **is all work not described on this site, for every client, under
+  non-disclosure?** **New content uses the Volvo-limited form, word for word**, because it is true either way: in
+  English "Beyond what we have published, our work with Volvo Trucks and Volvo Cars is under non-disclosure."
+  (`android-automotive-development.html`, "Non-disclosure is normal"), in Swedish "Utöver det vi har publicerat
+  omfattas vårt arbete med Volvo Trucks och Volvo Cars av sekretess." (`android-automotive-utveckling.html`, the
+  same section). Where it follows a list of all three cases, label it with its scope ("Volvo Trucks and Volvo
+  Cars:"), so it is not read as the whole remainder or as a claim that the regulated client's other work is
+  public. Do not reuse "That is what we can publish. The rest of our work with Volvo Trucks and Volvo Cars is under
+  non-disclosure." outside the Volvo Trucks case it follows: read alone it takes in the published Volvo Cars case.
+- Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
+  only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
+- The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
+- The regulated client stays anonymous (`work.html`, the closed-domain assistant case;
+  `ai-assistent-interna-dokument.html`).
+- Team projects: no client names, dates or figures (the comment above `#team-projects` in `work.html`); library
+  names are allowed.
+- No headcount, and no figure the owner has not confirmed (the history of `index.html`: commits 1c9c765,
+  2b39a53, d03ea15).
+- Other firms: their own words, alphabetical, dated, sourced, with the disclosure, never ranked (see "The list
+  pages" above).
+
+**Withdrawing a page.** `status='withdrawn'` in the registry replaces the page with a stub, adds `noindex`,
+drops hreflang, FAQ and Article data, and removes it from `sitemap.xml`; `tools/urls.lock` (append-only,
+written by `seo-head.py`) remembers every URL ever registered, and `tools/verify/permanence.js` fails if a
+locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt` or a feed, or disallowed in
+`robots.txt`, or if its title, description or `<main>` is anything but the stub's own text. Its `--self-test`
+(in the chain) proves those failures still fail. The lock is append-only by convention and review (check that
+`git diff tools/urls.lock` shows only added lines); a deliberate deletion of the file, the registry entries and
+the lock row together is not caught. The runbook, with the timeline and what a stub
+cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
+title and the description.
+
+**Checks.** `permanence.js` and `mailto.js` are in `npm run check` (static, third and fourth).
+`python3 tools/seo-head.py --check` (`npm run check:gen`) reports any generated part that differs from what a
+run would write; it needs Python and is not in the chain. `seo-head.py` exits with an error on a page that
+lacks its footer marker (it used to skip it silently).
 
 ## Analytics
 
@@ -773,7 +919,7 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 21 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 23 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every
@@ -866,8 +1012,8 @@ add third-party font/CDN requests for fonts.
   optional local verification scripts (Playwright) and `stamp.js`, which writes
   the version stamps into the pages and which you run before committing a change
   to any of the six stamped files, `seo-head.py` (Python 3, standard library),
-  which rewrites the search block in every head, the footer and `sitemap.xml`
-  from one registry, the two mask generators of the sheet and dial hero backgrounds
+  which rewrites the search block in every head, the header, the footer, `sitemap.xml`
+  and `tools/urls.lock` from one registry, the two mask generators of the sheet and dial hero backgrounds
   (`sheet-art.js` in plain Node, `dial-masks.py` in Python 3, neither with
   dependencies), and `indexnow.js`, which tells Bing and the
   other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from
@@ -951,7 +1097,9 @@ admin rights on the repository:
   personal account settings, and use the `@users.noreply.github.com` address
   going forward. **Do not rewrite the existing history** — it would break the
   merged pull-request record for no real gain, since the address is already
-  public.
+  public. (One exception, and only the owner can authorise it, in writing, in the pull request: text that
+  must not stay public, such as a client name under NDA or personal data, published by mistake; see
+  `tools/TAKEDOWN.md`.)
 - **Footer VAT number.** Swedish e-handelslag expects the
   `momsregistreringsnummer` alongside the company identification already in the
   footer. It is not added here because it is a legal identifier that must be

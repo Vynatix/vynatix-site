@@ -1,7 +1,8 @@
 // Search, sharing and copy checks for every page in PAGES, run in Chromium against the local server.
 // - one canonical per page, in the form the sitemap uses; og:url, og:title and og:description
 //   match the canonical, <title> and meta description; html lang is en or sv and og:locale agrees
-// - one robots meta per page, exactly "index, follow, max-snippet:-1, max-image-preview:large";
+// - one robots meta per page, exactly "index, follow, max-snippet:-1, max-image-preview:large" (a withdrawn
+//   page: exactly "noindex", no hreflang, no FAQPage or Article node, and not in the sitemap);
 //   twitter:title and twitter:description repeat og:title and og:description
 // - every JSON-LD block parses, carries the Organization node, and names this page with a
 //   dateModified that matches the sitemap's lastmod
@@ -14,6 +15,7 @@
 //   answers (p and li in order, ol items numbered) equal the visible FAQ; answers are flat
 //   (no p inside li, no nested list) and contain no element other than h3, p, ul, ol, li
 //   and inline a, strong, em, abbr, code, br, span
+// - an alt pair names its original once: the original carries workTranslation, the translation translationOfWork
 // - hreflang alternates are reciprocal and point at pages that exist: the page a language entry points at must
 //   link back with an entry in the linking page's own language (x-default does not count as the way back)
 // - sitemap.xml lists exactly the pages; robots.txt names the sitemap; llms.txt links only
@@ -24,12 +26,17 @@
 // text the copy rules and the FAQ comparison see.
 const fs = require('fs');
 const path = require('path');
-const { PAGES, BASE, armGa, pinBg, launch } = require('./_common');
+const { PAGES, readRegistry, BASE, armGa, pinBg, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
 const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p);
 const ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large';
+const ROBOTS_WITHDRAWN = 'noindex';
+// The registry of tools/seo-head.py, read as text. A withdrawn page keeps its URL but is left out of the
+// sitemap, carries noindex and has no hreflang, FAQ or Article node (TAKEDOWN.md).
+const REG = readRegistry();
+const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is in PAGES (_common.js) but not in the registry of tools/seo-head.py`); return REG[p].status === 'live'; };
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
 const ok = (msg) => console.log('ok   ' + msg);
@@ -41,11 +48,11 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
   const locs = [...sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>[\s\S]*?<lastmod>([^<]+)<\/lastmod>/g)]
     .map((m) => ({ loc: m[1], lastmod: m[2] }));
   const lastmod = Object.fromEntries(locs.map((l) => [l.loc, l.lastmod]));
-  const expected = PAGES.map(canonicalOf);
+  const expected = PAGES.filter(isLive).map(canonicalOf);
   const missing = expected.filter((u) => !lastmod[u]);
   const extra = locs.map((l) => l.loc).filter((u) => !expected.includes(u));
   if (missing.length || extra.length) fail(`sitemap.xml: missing ${missing.join(', ') || 'none'}; not a page ${extra.join(', ') || 'none'}`);
-  else ok(`sitemap.xml lists exactly the ${PAGES.length} pages`);
+  else ok(`sitemap.xml lists exactly the ${expected.length} live pages (${PAGES.length - expected.length} withdrawn)`);
 
   const robots = fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8');
   if (!/^Sitemap: https:\/\/vynatix\.com\/sitemap\.xml$/m.test(robots)) fail('robots.txt does not name the sitemap');
@@ -118,7 +125,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     if (!d.twitter) issues.push('no twitter:card');
     if (norm(d.twTitle) !== norm(d.ogTitle) || !norm(d.twTitle)) issues.push('twitter:title differs from og:title');
     if (norm(d.twDesc) !== norm(d.ogDesc) || !norm(d.twDesc)) issues.push('twitter:description differs from og:description');
-    if (d.robots.length !== 1 || d.robots[0] !== ROBOTS) issues.push(`robots meta ${JSON.stringify(d.robots)} (want one, "${ROBOTS}")`);
+    const wantRobots = isLive(p) ? ROBOTS : ROBOTS_WITHDRAWN;
+    if (d.robots.length !== 1 || d.robots[0] !== wantRobots) issues.push(`robots meta ${JSON.stringify(d.robots)} (want one, "${wantRobots}")`);
+    if (!isLive(p) && d.hreflang.length) issues.push('a withdrawn page carries hreflang');
     if (!['en', 'sv'].includes(d.lang)) issues.push(`html lang "${d.lang}"`);
     if (d.ogLocale !== { en: 'en_GB', sv: 'sv_SE' }[d.lang]) issues.push(`og:locale ${d.ogLocale} for lang ${d.lang}`);
     if (d.h1 !== 1) issues.push(`${d.h1} h1 elements`);
@@ -137,12 +146,24 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
       if (typeof self['@type'] !== 'string') issues.push('page node @type is not a plain string');
       if (!ISO.test(self.datePublished || '')) issues.push(`datePublished ${self.datePublished} (want YYYY-MM-DD)`);
       if (!ISO.test(self.dateModified || '')) issues.push(`dateModified ${self.dateModified} (want YYYY-MM-DD)`);
-      if (self.dateModified !== lastmod[canon]) issues.push(`dateModified ${self.dateModified} but sitemap lastmod ${lastmod[canon]}`);
+      if (isLive(p) && self.dateModified !== lastmod[canon]) issues.push(`dateModified ${self.dateModified} but sitemap lastmod ${lastmod[canon]}`);
+      if (!isLive(p) && lastmod[canon]) issues.push('a withdrawn page is still in the sitemap');
       if (d.modified !== self.dateModified) issues.push(`article:modified_time ${d.modified} but dateModified ${self.dateModified}`);
       if (d.published !== self.datePublished) issues.push(`article:published_time ${d.published} but datePublished ${self.datePublished}`);
       if (self.datePublished > self.dateModified) issues.push('datePublished is after dateModified');
       const art = nodes.find((n) => n['@id'] === canon + '#article');
       if (art && (art.datePublished !== self.datePublished || art.dateModified !== self.dateModified)) issues.push('Article node dates differ from the page node');
+      if (!isLive(p) && (art || nodes.some((n) => types(n).includes('FAQPage')))) issues.push('a withdrawn page carries an Article or FAQPage node');
+      // An alt pair names its original once: the original carries workTranslation, the translation translationOfWork.
+      const reg = REG[p];
+      if (reg && isLive(p)) {
+        const has = Object.keys(reg.alt).length > 0;
+        const want = has ? (reg.original ? 'workTranslation' : 'translationOfWork') : null;
+        const other = reg.original ? 'translationOfWork' : 'workTranslation';
+        if (want && !self[want]) issues.push(`${want} missing (this page is the ${reg.original ? 'original' : 'translation'} of its pair)`);
+        if (want && self[other]) issues.push(`${other} present but this page is the ${reg.original ? 'original' : 'translation'} of its pair`);
+        if (!has && (self.workTranslation || self.translationOfWork)) issues.push('a translation property on a page with no twin');
+      }
     }
     const faqNodes = nodes.filter((n) => types(n).includes('FAQPage'));
     if (d.faq.length) {

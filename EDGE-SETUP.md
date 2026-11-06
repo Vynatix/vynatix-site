@@ -106,7 +106,7 @@ are enforced independently and a resource must satisfy both, so the meta tag is
 a free fallback if the edge is ever bypassed or misconfigured.
 
 The consequence is that the policy now lives in three places that must change
-together: the `<meta>` tag in each of the 21 pages, the header value above, and
+together: the `<meta>` tag in each of the 23 pages, the header value above, and
 the Transform Rule in the Cloudflare dashboard. The header carries exactly one
 directive more than the meta (`frame-ancestors 'none'`); if you change one,
 change the others in the same piece of work.
@@ -115,7 +115,7 @@ Order matters once the edge is live. A resource has to pass the meta and the
 header independently, so a header narrower than the meta silently blocks Google
 Analytics and nothing reports it, while a header wider than the meta is simply
 bounded by the meta. **Widen the dashboard rule first, then the pages.**
-`verify/csp.js` checks the 21 pages against this file; `verify/headers.js` checks
+`verify/csp.js` checks the 23 pages against this file; `verify/headers.js` checks
 the live header against the live meta.
 
 ### Optional: violation reporting

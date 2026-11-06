@@ -1,0 +1,70 @@
+{
+ "extra_nodes": [
+  {
+   "@type": "ItemList",
+   "@id": "https://vynatix.com/blog.html#guides",
+   "name": "Guides",
+   "mainEntityOfPage": {
+    "@id": "https://vynatix.com/blog.html"
+   },
+   "numberOfItems": 5,
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/choose-a-software-consultancy.html#article",
+      "url": "https://vynatix.com/choose-a-software-consultancy.html",
+      "name": "How to choose a software consultancy",
+      "inLanguage": "en"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/valja-konsultbolag.html#article",
+      "url": "https://vynatix.com/valja-konsultbolag.html",
+      "name": "Så väljer ni konsultbolag för mjukvaruutveckling",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/platform-engineering.html#article",
+      "url": "https://vynatix.com/platform-engineering.html",
+      "name": "Platform engineering: vad det är, när det lönar sig och hur ni börjar",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 4,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/ai-assistent-interna-dokument.html#article",
+      "url": "https://vynatix.com/ai-assistent-interna-dokument.html",
+      "name": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 5,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/ai-konsultbolag-sverige.html#article",
+      "url": "https://vynatix.com/ai-konsultbolag-sverige.html",
+      "name": "AI-konsultbolag i Sverige: så jämför ni dem inför nästa projekt",
+      "inLanguage": "sv"
+     }
+    }
+   ]
+  }
+ ]
+}

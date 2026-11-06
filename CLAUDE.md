@@ -10,14 +10,14 @@ highlights the things most worth keeping front-of-mind.
 ## The short version
 
 - **Static, hand-written marketing site** for Vynatix (a Nordic software
-  consultancy). Twenty-one pages: nine core English pages, three English deep pages,
-  and nine Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
+  consultancy). Twenty-three pages: ten core English pages (`blog.html` lists the guides), four English
+  deep pages and nine Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
   Swedish privacy notice). No framework, no build step, no package manager for
   the site: what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, footer and sitemap), and the mask generators
+  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generators
   `dial-masks.py` and `sheet-art.js` for two hero backgrounds, never site content and
   never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
@@ -47,7 +47,7 @@ highlights the things most worth keeping front-of-mind.
   `:root:is(:not([data-bg]), [data-bg="sheet"])`), its JS returns at once unless it
   is the drawn one, and its CSS and JS sit in `bg:<id>:begin` / `bg:<id>:end` fenced
   blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
-  twenty pages never download them; the draw itself stays in `app.js`); the iris
+  twenty-two pages never download them; the draw itself stays in `app.js`); the iris
   also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
   new names whenever regenerated. The art is placed from the layout and fitted by hand
   to the current headline copy ("Your in-house software team." / "Without the
@@ -57,12 +57,11 @@ highlights the things most worth keeping front-of-mind.
   (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
   `vynatix-bg-iris-idle` is a read-only test hook. Per-background detail, constants,
   the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
-- **Header and footer (and the inline wordmark `<symbol>`) are duplicated
-  across every `*.html` file** — there is no include system. Any nav, logo or
-  header contact-detail change must be made in **all** pages, and
-  `aria-current="page"` set on the active link. The footer is the one exception:
-  its source is the `FOOTER` template in `tools/seo-head.py`, so a footer change
-  is made there and the script run, which writes it into every page.
+- **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
+  sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
+  templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
+  which writes it into every page. The skip link and the `<symbol>` block are copy-pasted into every
+  `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
   `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
@@ -106,17 +105,24 @@ highlights the things most worth keeping front-of-mind.
   prints `scripted gates pass, N human gates open` when it passes. Switching off
   again starts with `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last
   (checklist, section 10). The CSP names Google's hosts, **a recorded security
-  downgrade** from the `'self'`-only policy: the meta on all 21
+  downgrade** from the `'self'`-only policy: the meta on all 23
   pages, `EDGE-SETUP.md` and the Cloudflare dashboard rule change together
   (dashboard first if the edge is live), and a missing host is added by name,
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
+- **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
+  `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
+  Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
+  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. A fact
+  not already on a published page is drafted outside the public repo until the owner approves it, and a
+  `[[CONFIRM]]` marker is never filled in. `status='withdrawn'` replaces a page with a stub; `tools/urls.lock`
+  and `tools/verify/permanence.js` stop a URL from disappearing; `tools/TAKEDOWN.md` is the runbook.
 - **Icons are inline SVG** from the system's Material Symbols files in
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for the five English/Swedish pairs, and one
+  canonical link, Open Graph, hreflang for the six English/Swedish pairs, and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;

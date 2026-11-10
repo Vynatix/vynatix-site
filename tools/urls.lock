@@ -1,0 +1,29 @@
+# Every URL this site has ever registered, and the date it first went live (pub).
+# Append-only and written by tools/seo-head.py; never edit a row (a row whose URL has never been on main may be
+# corrected before its first merge: AGENTS.md, "Dates when a branch sits"). GitHub Pages cannot redirect, so a URL
+# that has been public must keep answering for good: as the live page, or as the withdrawn stub.
+# tools/verify/permanence.js fails if a locked URL has no file, if a registered URL is missing here, or
+# if a pub date differs from the registry. tools/ is not published.
+https://vynatix.com/ 2026-05-14
+https://vynatix.com/about.html 2026-06-27
+https://vynatix.com/services.html 2026-06-27
+https://vynatix.com/work.html 2026-06-27
+https://vynatix.com/membership.html 2026-06-27
+https://vynatix.com/contact.html 2026-06-27
+https://vynatix.com/privacy.html 2026-08-19
+https://vynatix.com/terms.html 2026-08-19
+https://vynatix.com/accessibility.html 2026-08-19
+https://vynatix.com/sv.html 2026-10-18
+https://vynatix.com/android-automotive-development.html 2026-10-18
+https://vynatix.com/android-automotive-utveckling.html 2026-10-18
+https://vynatix.com/ai-engineering.html 2026-10-18
+https://vynatix.com/ai-utveckling.html 2026-10-18
+https://vynatix.com/android-automotive-consultancies-gothenburg.html 2026-10-18
+https://vynatix.com/konsultbolag-android-automotive-goteborg.html 2026-10-18
+https://vynatix.com/valja-konsultbolag.html 2026-10-18
+https://vynatix.com/platform-engineering.html 2026-10-18
+https://vynatix.com/ai-assistent-interna-dokument.html 2026-10-18
+https://vynatix.com/ai-konsultbolag-sverige.html 2026-10-18
+https://vynatix.com/integritet.html 2026-10-19
+https://vynatix.com/choose-a-software-consultancy.html 2026-11-06
+https://vynatix.com/blog.html 2026-11-06

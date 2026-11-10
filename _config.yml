@@ -13,7 +13,7 @@
 #
 # tools/ holds local verification scripts (Playwright checks), stamp.js, which
 # writes the ?v= version stamps into the pages, and seo-head.py, which rewrites
-# the search block, footer and sitemap. They are developer tooling, never site
+# the search block, header, footer, sitemap and URL lock. They are developer tooling, never site
 # content and never run at deploy time, so they are excluded from the published
 # output.
 #

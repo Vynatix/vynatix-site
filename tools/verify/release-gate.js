@@ -48,6 +48,9 @@ const STALE_FIXED = [
   'We set none, so there is no consent banner to click.',
   'The site sets none, so there is no consent banner to click.',
   'No analytics, cookies or tracking of any kind.',
+  // Retired when the guides' email button started naming the guide (both notices, #email): no longer true as written.
+  'There is no other analytics, and no server-side page counting we control.',
+  'Det finns ingen annan statistik och ingen räkning av sidvisningar på serversidan som vi styr.',
 ];
 
 // Sentences that match TRIGGER or TRIGGER_SV and are true: they describe what the site does now (nothing before a

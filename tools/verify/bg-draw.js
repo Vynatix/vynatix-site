@@ -271,8 +271,8 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     check(dw.length === 1 && dw[0] === 'store session vynatix-bg-seed 0->1', 'weave: its script adds one storage write (the seed) and no listener, timer, frame, observer or animation', dw.join('; ') || 'no difference');
     // The dial adds listeners and nothing that runs by itself.
     const dd = diff(home.sheet.calls, home.dial.calls);
-    check(dd.length > 0 && dd.every((d) => /^listener (DOMContentLoaded|resize|pointermove|change|click) /.test(d)),
-      'dial: its script adds listeners only (DOMContentLoaded, resize, pointermove, media query changes, the theme toggle), no timer, frame, observer, animation or write', dd.join('; '));
+    check(dd.length > 0 && dd.every((d) => /^listener (DOMContentLoaded|resize|pointermove|hashchange|change|click) /.test(d)),
+      'dial: its script adds listeners only (DOMContentLoaded, resize, pointermove, hashchange, media query changes, the theme toggle), no timer, frame, observer, animation or write', dd.join('; '));
     // The iris adds its input listeners, one idle callback, one observer and the 20 s timer, and writes nothing until it opens.
     const di = diff(home.sheet.calls, home.iris.calls);
     check(di.length > 0 && di.every((d) => /^(listener|timer|idle|observer) /.test(d)),

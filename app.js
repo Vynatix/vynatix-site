@@ -1,6 +1,7 @@
-// Site script. Four features, each in its own block below: the theme (a
+// Site script. Five features, each in its own block below: the theme (a
 // colour scheme drawn at random for each visit), the home page's hero
-// background (also drawn at random for the visit), the mobile nav, and consent
+// background (also drawn at random for the visit), the mobile nav, the home
+// page's audience switch (a small enhancement of two plain links), and consent
 // for Google Analytics. The analytics block does nothing until the visitor has
 // accepted on the consent bar (a stored Accept from an earlier visit counts),
 // and it is inert (no markup, no storage access, no listeners) while the
@@ -218,6 +219,99 @@
         toggle.focus();
       }
     });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+// Audience switch (English home page). The switch itself is two plain links and CSS :target (styles.css,
+// "Audience switch"): it works without this script, can be linked to, and stores nothing, the address
+// being the only state. With script, three things are added on top and nothing depends on them:
+//  1. js-view-join on <html>, set here in the blocking head from the address, so a fresh load of /#join
+//     paints the joiner view from the first frame. The browser only sets :target once parsing is done, and
+//     a slow connection would otherwise paint the client hero first and swap it a moment later. The class
+//     is only ever the same answer :target gives (plus the two spellings :target is unreliable for:
+//     a percent-encoded id and a text fragment directive).
+//  2. aria-current on the selected link, which CSS cannot set; no style reads it.
+//  3. Focus stays on the link that was pressed. A fragment link clears focus to the page, which would put
+//     the next Tab on the link before the one just used.
+(function () {
+  var root = document.documentElement;
+  var onHome = /\/(index\.html)?$/.test(location.pathname);
+
+  function wantsJoin() {
+    if (!onHome) return false;
+    var h = location.hash;
+    var d = h.indexOf(':~:');
+    if (d >= 0) h = h.slice(0, d);
+    try { h = decodeURIComponent(h); } catch (e) { return false; }
+    return h === '#join';
+  }
+
+  var links = [];
+  var pressed = null;
+
+  function apply(join) {
+    root.classList.toggle('js-view-join', join);
+    for (var i = 0; i < links.length; i++) {
+      var isJoin = links[i].classList.contains('audience__link--join');
+      if (isJoin === join) links[i].setAttribute('aria-current', 'true');
+      else links[i].removeAttribute('aria-current');
+    }
+  }
+
+  function sync() {
+    apply(wantsJoin());
+  }
+
+  function onHash() {
+    sync();
+    var p = pressed;
+    pressed = null;
+    if (p && location.hash === p.getAttribute('href')) p.focus({ preventScroll: true });
+  }
+
+  function init() {
+    var found = document.querySelectorAll('.audience__link');
+    // On a spelling of the path the head test does not know (an extensionless /index) the whole
+    // enhancement stays off and :target decides alone, as with script blocked.
+    if (!onHome || !found.length) return;
+    links = Array.prototype.slice.call(found);
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var href = a.getAttribute('href');
+        // A plain click moves the view at once, a moment before the hashchange event the browser queues
+        // for the address; Back and Forward, which have no click, follow the event.
+        apply(href === '#join');
+        if (location.hash === href) {
+          // Already the address: no hashchange follows, yet the fragment navigation still clears focus to
+          // the page (at once in Chromium, a task later in Firefox), so give it back when that blur
+          // arrives. A short window only: a blur to another element, or later, is the visitor's.
+          var regain = function (ev) {
+            a.removeEventListener('blur', regain);
+            if (ev.relatedTarget) return;
+            window.setTimeout(function () {
+              if (document.activeElement === document.body) a.focus({ preventScroll: true });
+            }, 0);
+          };
+          a.addEventListener('blur', regain);
+          window.setTimeout(function () { a.removeEventListener('blur', regain); }, 300);
+        } else {
+          pressed = a;   // onHash gives focus back; only a click that changes the address arms it
+        }
+      });
+    });
+    sync();
+  }
+
+  if (onHome) {
+    sync();   // the class only: the links are not parsed yet
+    window.addEventListener('hashchange', onHash);
   }
 
   if (document.readyState === 'loading') {
@@ -572,15 +666,18 @@
     return bar && bar.querySelector('[data-consent-choice]');
   }
 
-  // Puts the bar second in <body>, straight after the skip link, so the skip
-  // link stays the first Tab stop and the bar's buttons come early in the tab
-  // order. A first visit does not take focus; a reopened bar does, because the
+  // Puts the bar straight after the skip link, so the skip link stays the first
+  // Tab stop and the bar's buttons come early in the tab order. The home page has
+  // two skip links (the second is the joiner view's, hidden in the client view and
+  // the only one shown in the joiner view), so it is the last of them that the bar
+  // follows. A first visit does not take focus; a reopened bar does, because the
   // visitor asked for it.
   function showBar(isReopen) {
     reopened = isReopen;
     bar = buildBar(isReopen);
-    var skip = document.querySelector('.skip-link');
-    var before = skip && skip.parentNode === document.body ? skip.nextSibling : document.body.firstChild;
+    var skips = document.querySelectorAll('body > .skip-link');
+    var skip = skips.length ? skips[skips.length - 1] : null;
+    var before = skip ? skip.nextSibling : document.body.firstChild;
     document.body.insertBefore(bar, before);
     root.classList.add('consent-open');
     if (isReopen) firstButton().focus();

@@ -16,6 +16,11 @@ const fs = require('fs');
 const { PAGES, BASE, THEMES, ALL_BGS, bgsFor, pinTheme, pinBg, pinConsent, armGa, launch, pool } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
 
+// The home page has a second view at index.html#join (the audience switch). Axe and the contrast sweep skip
+// anything that is not displayed, so the joiner view is only audited if it is the view on screen: it is scanned and
+// swept as a page of its own, once per theme (the hero art is not drawn in it, so no loop over the backgrounds).
+const VIEW_PAGES = [...PAGES, 'index.html#join'];
+
 // The two ways a page is met: first visit (no answer stored, bar up) and after a decline (bar gone).
 const PASSES = [['', undefined], [', consent pinned denied', 'denied']];
 
@@ -41,7 +46,7 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   // --- axe scan -----------------------------------------------------------
   {
     const jobs = [];
-    for (const [label, answer] of PASSES) for (const p of PAGES) for (const theme of THEMES) for (const bg of bgsFor(p)) jobs.push({ label, answer, p, theme, bg });
+    for (const [label, answer] of PASSES) for (const p of VIEW_PAGES) for (const theme of THEMES) for (const bg of bgsFor(p)) jobs.push({ label, answer, p, theme, bg });
     const scans = await pool(jobs, 3, async (j) => {
       // bypassCSP only for the axe scan: script-src 'self' correctly refuses the
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
@@ -225,7 +230,7 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   {
     const failures = [];
     const jobs = [];
-    for (const [label, answer] of PASSES) for (const pg of PAGES) for (const theme of THEMES) for (const bg of bgsFor(pg)) jobs.push({ label, answer, pg, theme, bg });
+    for (const [label, answer] of PASSES) for (const pg of VIEW_PAGES) for (const theme of THEMES) for (const bg of bgsFor(pg)) jobs.push({ label, answer, pg, theme, bg });
     const swept = await pool(jobs, 3, async (j) => {
       const ctx = await armed(browser, {}, j.answer);
       const page = await ctx.newPage();

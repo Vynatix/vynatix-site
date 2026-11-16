@@ -10,7 +10,7 @@
 
 ## Pages in English
 
-- [Home](https://vynatix.com/): what we do, how working with us goes, selected work, who we are, common questions
+- [Home](https://vynatix.com/): what we do, how working with us goes, selected work, who we are, common questions, and a view for senior engineers who want to join, which the Join the team link at the top opens at https://vynatix.com/#join (the page does not change; the full version is Membership, below)
 - [Services](https://vynatix.com/services.html): application development (web, desktop, native mobile, Android Automotive, wearables, VR, enterprise integration); AI engineering (retrieval-augmented generation, evaluation pipelines, on-prem and sovereign cloud deployment, production observability); cloud platforms (GCP, AWS, on-prem hybrids, Kubernetes and GitOps, FinOps, migration off legacy)
 - [Android Automotive development in Gothenburg](https://vynatix.com/android-automotive-development.html): what we build on Android Automotive and the Volvo Trucks in-cab radio
 - [AI engineering in Gothenburg](https://vynatix.com/ai-engineering.html): retrieval, evaluation and deployment in your environment, and the closed-domain assistant

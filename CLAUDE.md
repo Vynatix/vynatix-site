@@ -61,7 +61,8 @@ highlights the things most worth keeping front-of-mind.
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. The skip link and the `<symbol>` block are copy-pasted into every
-  `*.html` file — there is no include system — so a change to either is made in **all** pages.
+  `*.html` file — there is no include system — so a change to either is made in **all** pages
+  (the home page also has a second skip link, for its joiner view).
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
   `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
@@ -71,8 +72,9 @@ highlights the things most worth keeping front-of-mind.
   editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
-  (theme draw and toggle, the hero background draw, mobile nav, analytics consent;
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
+  (theme draw and toggle, the hero background draw, mobile nav, the audience switch's
+  `js-view-join`, `aria-current` and focus, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
   only) and no CDN/animation stack. **Nothing on
   the site moves on its own, with one exception: the iris background (a quarter of
@@ -86,7 +88,7 @@ highlights the things most worth keeping front-of-mind.
   third-party script means widening the CSP in **every page** first (see the
   analytics bullet).
 - **Analytics is Google Analytics 4 behind opt-in consent, and it is off.**
-  `var GA_ID = 'G-XXXXXXXXXX';` in the fourth IIFE of `app.js` is an inert
+  `var GA_ID = 'G-XXXXXXXXXX';` in the fifth IIFE of `app.js` is an inert
   placeholder: no bar, no storage, no request. Beside it, `PURGE_ONLY` is the
   emergency stop, `false` except during an exit. Google is never requested, and
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
@@ -111,6 +113,18 @@ highlights the things most worth keeping front-of-mind.
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
+- **The English home page has two views, picked by the address, with nothing stored.** A bar above the hero
+  ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
+  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`); with
+  script `app.js` adds `js-view-join` in the head (so a load on `#join` never paints the client hero first),
+  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar (the
+  sections, and the contents row) carries exactly one of `view-hire` or `view-join`, and the client closing band
+  comes before the joiner sections (adjacent-sibling rules ignore `display: none`); a `:target` view survives
+  one fragment, and any fragment but `#join` is the client view, so same-page links inside the client view (the
+  contents row) are fine and every other one is `#main`, `#hire` or `#join`; the joiner view's blocks are lifted word for
+  word from `membership.html` (`data-from`) and any other text in it is on the review list in `audience.js`;
+  `sv.html` has none. `tools/verify/audience.js` enforces it. Details and known limits in AGENTS.md,
+  *Audience switch*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
@@ -137,7 +151,7 @@ highlights the things most worth keeping front-of-mind.
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
   `.js-theme` for the theme toggle, `.js-consent` once the consent module is
-  active). Copy follows the system's content rules: no
+  active, `.js-view-join` while the address is the home page's `#join`). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 
 ## Verifying work

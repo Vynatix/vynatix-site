@@ -371,6 +371,50 @@ placement against the lede, the italic line and the bleed. All are in `npm run c
 (`npm run check:bg` runs these five alone). `a11y.js` adds the reduced-motion proof for all
 four (nothing animates, by CSS or by the Web Animations API, and the iris is not armed).
 
+**Audience switch.** The English home page opens with a slim bar of two plain links, "Hire
+a team" and "Join the team" (`.audience`, first in `<main>`), and the page has two views:
+the client view (today's page) and a joiner view for senior engineers who want to join.
+Both views are in the one document. The fragment is the state and **nothing is stored**:
+`index.html#join` shows the joiner view and any other address the client view. Two empty
+anchors, `#hire` and `#join`, come first in `<main>`, so the general sibling combinator
+does the swap (`#join:target ~ .view-hire` and `#join:not(:target) ~ .view-join` are
+`display: none`, in `styles.css`, "Audience switch"). That is why it works with JavaScript
+off, can be linked to from a recruiting post, is undone by Back, and needs no storage key
+(so neither privacy notice is touched). The selected look follows `:target`, never
+`aria-current`, so the page, and the hero strip `bg-draw.js` check 5 compares with and
+without JavaScript, looks the same either way. `app.js` only mirrors the state into
+`aria-current` for assistive technology.
+
+Rules that keep it working:
+
+- **Every top-level `<section>` of `<main>` carries exactly one of `view-hire` or
+  `view-join`.** A new section on the home page is one or the other; a section with neither
+  would show in both views.
+- **One fragment at a time.** `:target` holds a single fragment, so any other same-page link
+  on the home page (a `#faq` deep link, say) would drop the view without a word. The only
+  same-page links are `#main`, `#hire` and `#join`, and `audience.js` fails on any other. The
+  normal skip link points at `#main`, so the joiner view has its own (`.skip-link--join`,
+  `href="#join"`, shown by `:has(#join:target)`); without `:has()` the normal one stays and
+  following it returns to the client view.
+- **One `h1`.** `seo.js` counts hidden headings, so the joiner view opens with an `h2` styled
+  as the page hero's (`h2.page-hero__h1`). No `data-faq`, no second `.clients__list` in it.
+- **The joiner view says nothing new.** Its blocks are lifted word for word from
+  `membership.html` and marked `data-from="membership.html"`; `audience.js` fails if a marked
+  sentence is not on that page, so a membership edit that rewords one is a two-file change.
+  The only new wording is the headline, the lede, the "The work" section and the labels.
+  Every link in it goes to `contact.html`, `membership.html` or `work.html`. A new fact is an
+  owner decision as everywhere else (*Drafts*).
+- **English only.** `sv.html` has none of it: there is no Swedish membership page to lift from.
+  A Swedish joiner view is new published text, drafted outside the repository first.
+- **The hero is not touched.** The bar sits above it; `check:bg` stays green (the bar moves the
+  hero down by its own height and the art moves with it). The joiner view draws no hero art:
+  the client hero is hidden, and `audience.js` proves that landing on `#join` and then switching
+  gives the same hero, in each of the four backgrounds, as a direct load.
+- **Audited as a page of its own.** `a11y.js` (axe and the contrast sweep) and `screenshot.js`
+  take `index.html#join` too, because both skip what is not displayed.
+
+`tools/verify/audience.js` is in `npm run check`.
+
 **Bronze budget.** The hero already spends Bronze (the accent text colour) on the italic
 line of the headline. The sheet adds a bronze second baseline under it, a measured edge and
 an apex mark; the dial adds the whole B grating at 78% accent and the index; the iris adds a
@@ -435,8 +479,9 @@ when current, one small primary button and two icon buttons.
 guarded so a missing element is a no-op. Every page loads `app.js` from the
 `<head>`, and `app.js` is the only script on every page but the home page, which also
 loads `hero-bg.js` (the hero backgrounds): there is no CDN or animation stack. `app.js`
-has four features: the theme (the per-visit draw and the toggle), the hero background
-draw, the mobile nav, and consent for Google Analytics (see *Analytics*). The small
+has five features: the theme (the per-visit draw and the toggle), the hero background
+draw, the mobile nav, the audience switch's `aria-current` (see *Audience switch*), and
+consent for Google Analytics (see *Analytics*). The small
 script of each background that needs one is in `hero-bg.js` (see *Hero backgrounds*).
 The only third-party script that can ever run is Google's `gtag.js`, which the consent feature
 injects itself, only once a real Measurement ID has been set and only for a visitor
@@ -786,8 +831,8 @@ This section holds the working rules. The reasoning and the cost are in
 `SECURITY-ASSESSMENT.md` (Round 6); the hard gate for switching it on is
 `tools/PRE-FLIP-CHECKLIST.md`.
 
-**What exists.** The fourth IIFE in `app.js`, after the theme, the hero background
-draw and the mobile nav.
+**What exists.** The fifth IIFE in `app.js`, after the theme, the hero background
+draw, the mobile nav and the audience switch.
 When active it shows a compact, non-modal bar fixed to the bottom of the viewport
 on a first visit (`#consent-bar`: two buttons with the identical class string,
 Decline then Accept, so neither is favoured); reopens it from the footer's

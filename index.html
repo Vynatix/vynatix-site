@@ -26,7 +26,7 @@
 <meta property="og:locale" content="en_GB">
 <meta property="og:locale:alternate" content="sv_SE">
 <meta property="article:published_time" content="2026-05-14">
-<meta property="article:modified_time" content="2026-11-06">
+<meta property="article:modified_time" content="2026-11-16">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -134,7 +134,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-05-14",
-   "dateModified": "2026-11-06",
+   "dateModified": "2026-11-16",
    "about": {
     "@id": "https://vynatix.com/#organization"
    },
@@ -271,7 +271,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=26c0662c">
+<link rel="stylesheet" href="styles.css?v=c7003e51">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
 <link rel="stylesheet" href="hero-bg.css?v=ebac486b">
@@ -288,13 +288,14 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=d187b8ce"></script>
+<script src="app.js?v=7fca33e0"></script>
 <!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
      tile and the iris's arming must be in place before the first paint. -->
 <script src="hero-bg.js?v=d28eff84"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link skip-link--join" href="#join">Skip to content</a>
 <div id="app">
 
   <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
@@ -344,8 +345,20 @@
   </header>
 
   <main id="main">
+    <!-- ============================================================ Audience switch
+         Two plain links; the fragment is the state (styles.css, "Audience switch"). #join shows the joiner
+         view, anything else the client view. Nothing is stored. -->
+    <span class="view-anchor" id="hire"></span>
+    <span class="view-anchor" id="join"></span>
+    <nav class="audience" aria-label="Audience">
+      <div class="container audience__bar">
+        <a class="audience__link audience__link--hire" href="#hire">Hire a team</a>
+        <a class="audience__link audience__link--join" href="#join">Join the team</a>
+      </div>
+    </nav>
+
     <!-- ============================================================ Hero -->
-    <section class="hero" id="home">
+    <section class="hero view-hire" id="home">
       <div class="container">
         <p class="eyebrow">A software consultancy in Gothenburg · Since 2023</p>
         <h1 class="hero__h1">Your in-house software team.<br><em>Without the hiring.</em></h1>
@@ -464,7 +477,7 @@
     </section>
 
     <!-- ============================================================ What we do -->
-    <section class="section" id="services">
+    <section class="section view-hire" id="services">
       <div class="container">
         <div class="section__head">
           <div>
@@ -540,7 +553,7 @@
     </section>
 
     <!-- ============================================================ How working with us goes -->
-    <section class="band--inset inverse" aria-labelledby="how-it-goes">
+    <section class="band--inset inverse view-hire" aria-labelledby="how-it-goes">
       <div class="section__head">
         <div>
           <p class="eyebrow">How we work</p>
@@ -573,7 +586,7 @@
     </section>
 
     <!-- ============================================================ A few recent projects -->
-    <section class="section" id="work">
+    <section class="section view-hire" id="work">
       <div class="container">
         <div class="section__head">
           <div>
@@ -643,7 +656,7 @@
     </section>
 
     <!-- ============================================================ Who we are -->
-    <section class="section section--surface">
+    <section class="section section--surface view-hire">
       <div class="container">
         <div class="section__head">
           <div>
@@ -680,7 +693,7 @@
     </section>
 
     <!-- ============================================================ Where we are so far -->
-    <section class="section">
+    <section class="section view-hire">
       <div class="container">
         <div class="section__head">
           <div>
@@ -718,7 +731,7 @@
     <!-- The FAQ structured data in the head is generated from this markup (data-faq), so
          each answer is written to stand alone: one h3, then p and li elements, flat (no p
          inside an li, no nested list). -->
-    <section class="section section--surface" id="faq" aria-labelledby="faq-title">
+    <section class="section section--surface view-hire" id="faq" aria-labelledby="faq-title">
       <div class="container">
         <div class="section__head">
           <div>
@@ -793,7 +806,7 @@
     </section>
 
     <!-- ============================================================ Further reading -->
-    <section class="section" id="further-reading" aria-labelledby="further-reading-title">
+    <section class="section view-hire" id="further-reading" aria-labelledby="further-reading-title">
       <div class="container">
         <div class="section__head">
           <div>
@@ -813,24 +826,169 @@
       </div>
     </section>
 
-    <!-- ============================================================ Working at Vynatix -->
-    <section class="section">
+    <!-- ============================================================ Joiner view: hero -->
+    <section class="page-hero view-join" aria-labelledby="join-title">
       <div class="container">
-        <div class="section__head section__head--only">
+        <p class="eyebrow">For senior engineers</p>
+        <h2 class="page-hero__h1" id="join-title">Stay independent.<br><em>Without going it alone.</em></h2>
+        <p class="page-hero__lede">Vynatix is a consultancy built and run by senior engineers. You stay freelance and you keep your work. We find and qualify the assignments, and you choose which ones to take.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--lg" href="contact.html">Start a conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <a class="btn btn--lg btn--secondary" href="membership.html">Read about membership</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: what you get -->
+    <section class="section view-join">
+      <div class="container">
+        <div class="section__head">
           <div>
-            <p class="eyebrow">For senior engineers</p>
+            <p class="eyebrow">What you get</p>
             <h2 class="section__h2">Independence, with a firm behind you.</h2>
           </div>
-          <div>
-            <p class="section__lead">If you are senior, you have worked freelance or are thinking about it, and you would rather keep your independence without doing all your own sales and admin, we would like to talk. We find and qualify the assignments, you choose which ones to take, and there are no lock-ins, no non-competes, and no claim on your work beyond what we deliver together.</p>
-            <p class="u-mt-6 u-mb-0"><a class="more" href="membership.html"><span>There is more on the membership page</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+        </div>
+        <div class="caps caps--2" data-from="membership.html">
+          <div class="cap">
+            <span class="cap__num">01</span>
+            <h3>Senior assignments, vetted</h3>
+            <p>We decline work that does not match the level of our members. Scope, autonomy and technical depth are real, not junior work dressed up.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">02</span>
+            <h3>A transparent revenue split</h3>
+            <p>What lands with you and what covers the collective, visible on every assignment. No aggregated year-end numbers.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">03</span>
+            <h3>Shared infrastructure</h3>
+            <p>Contracts, invoicing, legal reviews, insurance, payment chasing. The things that eat a solo consultant's week, handled.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">04</span>
+            <h3>A peer network worth having</h3>
+            <p>Senior engineers who sharpen each other's architecture, review each other's contracts, and team up on larger assignments when it makes sense.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">05</span>
+            <h3>Brand credibility</h3>
+            <p>Walk into enterprise Nordic conversations as Vynatix. The doors that open for a collective rarely open for a solo operator.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">06</span>
+            <h3>No lock-ins</h3>
+            <p>No non-competes. No exclusivity clauses. No claim on your IP beyond the specific deliverables of each assignment.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ============================================================ Joiner view: the work -->
+    <section class="section section--surface view-join">
+      <div class="container">
+        <div class="section__head section__head--only">
+          <div>
+            <p class="eyebrow">The work</p>
+            <h2 class="section__h2">What members work on</h2>
+          </div>
+          <div>
+            <p class="section__lead">Right now that means in-car software on Android Automotive and the build pipelines behind it, at Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside.</p>
+            <p class="u-mt-6 u-mb-0"><a class="more" href="work.html"><span>See the work</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: how it works -->
+    <section class="section view-join">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">How it works</p>
+            <h2 class="section__h2">From first conversation to first assignment.</h2>
+          </div>
+        </div>
+        <div class="caps caps--5" data-from="membership.html">
+          <div class="cap">
+            <span class="cap__num">First step</span>
+            <h3>Intro conversation</h3>
+            <p>Thirty minutes. We calibrate both ways, your work, your goals, how we operate. Zero pressure.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Next</span>
+            <h3>Fit, both ways</h3>
+            <p>Technical and cultural conversations with current members. You meet the people, we learn how you work.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Onboarding</span>
+            <h3>Contracts and setup</h3>
+            <p>Contracts, infrastructure, introductions across the collective. A few weeks, depending on you.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Then</span>
+            <h3>First assignment</h3>
+            <p>We source and qualify options matched to your profile. You review, approve, engage. We stay in the loop.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Ongoing</span>
+            <h3>Membership</h3>
+            <p>Assignments, peer community, regular transparency reviews. Leave whenever, on your terms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: who this works for -->
+    <section class="section section--surface view-join">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Who this works for</p>
+            <h2 class="section__h2">A collective, not an agency.</h2>
+          </div>
+          <p class="section__lead">The model only works when both sides are invested.</p>
+        </div>
+        <div class="two-up" data-from="membership.html">
+          <div class="panel">
+            <h3 class="two-up__h3">This is for you if</h3>
+            <ul>
+              <li>You are a senior-plus engineer or designer with 7+ years of real delivery behind you</li>
+              <li>You are already freelance, or seriously considering the move</li>
+              <li>You are after both independence and a community of peers, rather than one or the other</li>
+              <li>You work in or near Android, AAOS, automotive, embedded, backend, platform or product design</li>
+              <li>You are done with non-technical management telling you how to engineer</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3 class="two-up__h3">This is not for you if</h3>
+            <ul>
+              <li>You want traditional full-time employment with benefits</li>
+              <li>You need daily management</li>
+              <li>You are earlier than the senior track</li>
+              <li>You are looking for a recruiter to place you into a client's org chart</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: closing call to action -->
+    <section class="cta-band band--inset inverse view-join" aria-labelledby="join-cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">Let us talk</p>
+          <h2 class="cta-band__h2" id="join-cta-title">A thirty-minute conversation, <em>no pitch, no pressure.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede" data-from="membership.html">Tell us about your work, what you want next, and what you will not compromise on. We will tell you honestly whether Vynatix is the right fit, and what joining would look like if it is.</p>
+          <a class="btn btn--lg btn--tertiary" href="contact.html">Start a conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact"><a href="membership.html">Read the full membership page</a></p>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================================================ Let us talk -->
-    <section class="cta-band band--inset inverse" id="contact" aria-labelledby="cta-title">
+    <section class="cta-band band--inset inverse view-hire" id="contact" aria-labelledby="cta-title">
       <div class="cta-band__inner">
         <div>
           <p class="eyebrow">Let us talk</p>

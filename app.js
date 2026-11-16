@@ -227,6 +227,35 @@
   }
 })();
 
+// Audience switch (English home page): tell assistive technology which side is showing.
+// The switch itself is two plain links and CSS :target (styles.css, "Audience switch"), so it works
+// without this script, and nothing is stored: the address is the only state. This only mirrors that
+// state into aria-current, which CSS cannot set, and no style depends on it.
+(function () {
+  function init() {
+    var links = document.querySelectorAll('.audience__link');
+    if (!links.length) return;
+
+    function mark() {
+      var join = location.hash === '#join';
+      for (var i = 0; i < links.length; i++) {
+        var isJoin = links[i].classList.contains('audience__link--join');
+        if (isJoin === join) links[i].setAttribute('aria-current', 'true');
+        else links[i].removeAttribute('aria-current');
+      }
+    }
+
+    mark();
+    window.addEventListener('hashchange', mark);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
 // Consent and analytics: Google Analytics 4, loaded only after an explicit Accept.
 //
 // Nothing from Google is requested, and no Google cookie is set, until the

@@ -1441,6 +1441,65 @@ html.consent-open .hero ~ section { content-visibility: visible; }
 .consent-panel .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
 
 /* ---------------------------------------------------------------
+   Audience switch (home page, English)
+   Two plain links above the hero. The fragment is the state and nothing is
+   stored: #join shows the joiner view, any other address the client view, so
+   the switch works with JavaScript off, can be linked to, and Back undoes it.
+   Both anchors are earlier siblings of every section in main, which is what
+   lets the general sibling combinator do the swap without :has(). Only
+   display: none is ever written, so a section keeps its own display value.
+   The selected look follows :target, never aria-current (script adds that
+   later, and the page must look the same without it).
+   --------------------------------------------------------------- */
+.view-anchor { display: block; height: 0; }
+#join:not(:target) ~ .view-join { display: none; }
+#join:target ~ .view-hire { display: none; }
+
+.audience { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+.audience__bar {
+  display: flex;
+  gap: var(--space-1);
+  padding-block: var(--space-3);
+}
+.audience__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--md-sys-color-surface-container);
+  color: var(--text-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.audience__link:hover { background: var(--md-sys-color-surface-container-high); color: var(--text-body); }
+.audience__link:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+#join:not(:target) ~ .audience .audience__link--hire,
+#join:target ~ .audience .audience__link--join {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+/* The joiner view opens with the page-hero component. Its headline is an h2
+   (the page keeps one h1, the client hero's) at the h1 size, its two buttons
+   sit in the home hero's flex row, and the hero is rendered at once, not
+   deferred like the sections after the client hero (.hero ~ section). */
+h2.page-hero__h1 { font-size: clamp(40px, 6vw, var(--text-h1)); }
+.page-hero .hero__ctas { margin-top: var(--space-8); }
+.page-hero .hero__ctas .btn { margin-top: 0; }
+.page-hero.view-join { content-visibility: visible; }
+
+/* The joiner view's own skip link: "Skip to content" normally points at #main,
+   and following that would drop :target and flip the page back to the client
+   view. Without :has() the normal link stays and the view flips; nothing breaks. */
+.skip-link--join { display: none; }
+html:has(#join:target) .skip-link { display: none; }
+html:has(#join:target) .skip-link--join { display: block; }
+
+/* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything
    with colour, type or background belongs in a named component above.
    --------------------------------------------------------------- */

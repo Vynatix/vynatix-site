@@ -71,8 +71,9 @@ highlights the things most worth keeping front-of-mind.
   editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
-  (theme draw and toggle, the hero background draw, mobile nav, analytics consent;
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
+  (theme draw and toggle, the hero background draw, mobile nav, the audience switch's
+  `aria-current`, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
   only) and no CDN/animation stack. **Nothing on
   the site moves on its own, with one exception: the iris background (a quarter of
@@ -86,7 +87,7 @@ highlights the things most worth keeping front-of-mind.
   third-party script means widening the CSP in **every page** first (see the
   analytics bullet).
 - **Analytics is Google Analytics 4 behind opt-in consent, and it is off.**
-  `var GA_ID = 'G-XXXXXXXXXX';` in the fourth IIFE of `app.js` is an inert
+  `var GA_ID = 'G-XXXXXXXXXX';` in the fifth IIFE of `app.js` is an inert
   placeholder: no bar, no storage, no request. Beside it, `PURGE_ONLY` is the
   emergency stop, `false` except during an exit. Google is never requested, and
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
@@ -111,6 +112,13 @@ highlights the things most worth keeping front-of-mind.
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
+- **The English home page has two views, picked by the address, with nothing stored.** A bar above the hero
+  ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
+  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`). Every
+  top-level `<section>` of `<main>` carries exactly one of `view-hire` or `view-join`; the only same-page links
+  are `#main`, `#hire` and `#join` (a `:target` view survives one fragment); the joiner view is lifted word for
+  word from `membership.html` (`data-from`) and adds no fact; `sv.html` has none. `tools/verify/audience.js`
+  enforces it. Details in AGENTS.md, *Audience switch*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no

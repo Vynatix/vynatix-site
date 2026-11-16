@@ -67,17 +67,28 @@ root [AGENTS.md](../AGENTS.md), *Hero backgrounds*.
 
 ## Photography
 
-`case-volvo-trucks`, `case-volvo-cars` and `case-regulated-ai` are the three
-case covers on the home page, self-hosted rather than hotlinked so no visitor IP
-is disclosed to a third party. Each ships as a `.jpg` plus a `.webp` sibling
-encoded from it; `index.html` offers the WebP first through `<picture>` and
-keeps the JPEG as the fallback. **Replace both files together** — a stale
-`.webp` will be served in preference to a fresh `.jpg`. They are shown in full
-colour with no filter, tint or overlay, as the system's photography rules
-require for case-study imagery.
+The home page carries five photographs, self-hosted rather than hotlinked so no
+visitor IP is disclosed to a third party: three case covers, one in each service
+chapter (`case-trucks-forest-road`, `case-ai-archive-volumes`,
+`case-cars-marshalling-yard`), and two captioned photographs
+(`photo-balance-weights` beside the comparison table, `photo-gothenburg-canal` in
+Who we are). Each ships as a 1200px `.jpg` plus a `.webp` sibling; `index.html`
+offers the WebP first through `<picture>` and keeps the JPEG as the fallback.
+**Replace both files together, under a new name** — a stale `.webp` will be served
+in preference to a fresh `.jpg`, and images are not version-stamped, so a changed
+picture under an old name reaches returning visitors late or never. They are shown
+in full colour with no filter, tint or overlay, as the system's photography rules
+require for case-study imagery, and no text is set on top of one.
 
-Sources and the outstanding photographer attribution are in `CREDITS.md`
-(excluded from the published site, like this file).
+They are stock photographs that illustrate the work; none shows a client system.
+The page says so (the line under the chapters and the two captions), and a new
+photograph keeps to that: a caption or alt text says what the camera saw, never
+that it is the client's product. Check a candidate at full size for third-party
+names, badges and number plates before it ships (the truck photograph was
+retouched for that reason; see `CREDITS.md`).
+
+Sources, photographers and what was changed are in `CREDITS.md` (excluded from the
+published site, like this file).
 
 ## App icons
 

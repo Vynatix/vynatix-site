@@ -380,38 +380,80 @@ anchors, `#hire` and `#join`, come first in `<main>`, so the general sibling com
 does the swap (`#join:target ~ .view-hire` and `#join:not(:target) ~ .view-join` are
 `display: none`, in `styles.css`, "Audience switch"). That is why it works with JavaScript
 off, can be linked to from a recruiting post, is undone by Back, and needs no storage key
-(so neither privacy notice is touched). The selected look follows `:target`, never
-`aria-current`, so the page, and the hero strip `bg-draw.js` check 5 compares with and
-without JavaScript, looks the same either way. `app.js` only mirrors the state into
-`aria-current` for assistive technology.
+(so neither privacy notice is touched). With script, `app.js` adds three things and no style
+depends on the last two: `js-view-join` on `<html>`, set in the blocking head from the
+address, so that a fresh load of `#join` has the joiner view in force before the first
+paint (the browser only sets `:target` after parsing, so on a slow connection the client
+hero would otherwise paint first and swap); `aria-current` on the selected link; and focus
+kept on the link that was pressed (a fragment link clears it, which would put the next Tab
+on the link before). While the class is there it decides and the `:target` rules step aside;
+it covers the percent-encoded `#%6Aoin` and `#join:~:text=...` spellings that `:target`
+misses. The selected look follows the same decision, never `aria-current`, so the page, and
+the hero strip `bg-draw.js` check 5 compares with and without JavaScript, looks the same either
+way. The selected link is told apart by an underline and a primary border as well as its fill
+(the containers sit close together in some looks, and forced colours drop fills).
 
 Rules that keep it working:
 
-- **Every top-level `<section>` of `<main>` carries exactly one of `view-hire` or
-  `view-join`.** A new section on the home page is one or the other; a section with neither
-  would show in both views.
+- **Every child of `<main>` but the two anchors and the bar is a `<section>` carrying exactly
+  one of `view-hire` or `view-join`.** A new section on the home page is one or the other; a
+  section with neither would show in both views.
+- **Order is part of the markup.** Adjacent-sibling selectors ignore `display: none`
+  (`.band--inset + .band--inset` once added 24px above the client closing band because the
+  hidden joiner band came before it). The client sections come first, the client closing band
+  (`#contact`) is the last of them, and the joiner sections follow; `audience.js` checks the
+  band's margin.
 - **One fragment at a time.** `:target` holds a single fragment, so any other same-page link
-  on the home page (a `#faq` deep link, say) would drop the view without a word. The only
-  same-page links are `#main`, `#hire` and `#join`, and `audience.js` fails on any other. The
-  normal skip link points at `#main`, so the joiner view has its own (`.skip-link--join`,
-  `href="#join"`, shown by `:has(#join:target)`); without `:has()` the normal one stays and
-  following it returns to the client view.
+  on the home page (a `#faq` deep link, or `index.html#faq`) would drop the view without a
+  word. The only same-page links are `#main`, `#hire` and `#join`, and `audience.js` fails on
+  any other. The normal skip link points at `#main`, so the joiner view has its own
+  (`.skip-link--join`, `href="#join"`, shown by `js-view-join` or `:has(#join:target)`);
+  without either the normal one stays and following it returns to the client view. The consent
+  bar goes after the last skip link, so it follows whichever is shown.
 - **One `h1`.** `seo.js` counts hidden headings, so the joiner view opens with an `h2` styled
   as the page hero's (`h2.page-hero__h1`). No `data-faq`, no second `.clients__list` in it.
 - **The joiner view says nothing new.** Its blocks are lifted word for word from
   `membership.html` and marked `data-from="membership.html"`; `audience.js` fails if a marked
-  sentence is not on that page, so a membership edit that rewords one is a two-file change.
-  The only new wording is the headline, the lede, the "The work" section and the labels.
-  Every link in it goes to `contact.html`, `membership.html` or `work.html`. A new fact is an
-  owner decision as everywhere else (*Drafts*).
+  sentence is not a whole element of that page, so a membership edit that rewords one is a
+  two-file change. Text outside a lifted block must be on the review list in `audience.js`
+  (`NEW`, `HOME`, or a `membership.html` element), so a new sentence cannot slip in unseen.
+  The new wording is the headline "Stay independent. Without going it alone.", the lede, the
+  "The work" eyebrow and its heading "What members work on", and the link labels ("See the
+  work", "Read about membership", "Read the full membership page", "Start a conversation").
+  Carried from the home page: the eyebrow "For senior engineers", the heading "Independence,
+  with a firm behind you." and the hero's sentence about the current work. Every link in it
+  goes to `contact.html`, `membership.html` or `work.html`. A new fact is an owner decision as
+  everywhere else (*Drafts*).
 - **English only.** `sv.html` has none of it: there is no Swedish membership page to lift from.
   A Swedish joiner view is new published text, drafted outside the repository first.
 - **The hero is not touched.** The bar sits above it; `check:bg` stays green (the bar moves the
   hero down by its own height and the art moves with it). The joiner view draws no hero art:
-  the client hero is hidden, and `audience.js` proves that landing on `#join` and then switching
-  gives the same hero, in each of the four backgrounds, as a direct load.
+  the client hero is hidden, and `audience.js` proves that landing on `#join`, moving the pointer
+  and then switching gives the same hero, in each of the four backgrounds, as a direct load. The
+  dial drops its animation when the address changes and does nothing while its hero has no box
+  (a hidden headline has no `::after`, and Chromium does not give a lost animation back).
+- **The menu.** On the narrow layout the open mobile menu covers the bar, which is
+  `visibility: hidden` while it is open so nothing under the panel takes focus.
 - **Audited as a page of its own.** `a11y.js` (axe and the contrast sweep) and `screenshot.js`
   take `index.html#join` too, because both skip what is not displayed.
+
+Known limits, by design (the owner chose a view in the page over a page of its own):
+
+- A link preview, the tab title and a bookmark of `index.html#join` come from the page's head,
+  which describes the client offer. A recruiting post that needs a correct card should link
+  `membership.html`. Once `#hire` or `#join` is posted publicly it is a permanent address;
+  `urls.lock` covers files only, so keep both working.
+- The joiner view has no visible `h1` (the page's one `h1` is in the hidden client hero),
+  and its text is not a target for text-fragment links or a snippet's "read more" jump.
+  `membership.html` is the citable home of that text.
+- After a load on a fragment the browser starts Tab at the target, so on `#join` the first Tab
+  lands on the bar rather than on the joiner view's skip link.
+- With JavaScript off on a narrow screen the header is not sticky, and following `#join`
+  scrolls the page by the `scroll-padding-top` reserve; this is how any anchor behaves there.
+- The bar adds its own height above the client hero, so at 1440x900 in the Teal and Monochrome
+  looks (a three-line headline) the hero's buttons sit across the fold where they used to clear
+  it. Narrowing the bar would mean smaller touch targets; the owner asked for a slim bar and
+  can trade that off.
 
 `tools/verify/audience.js` is in `npm run check`.
 
@@ -1070,8 +1112,8 @@ add third-party font/CDN requests for fonts.
   both themes. `tools/README.md` documents the repeatable checks — a visual
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
   an off-origin request check (`requests.js`), the random-scheme check
-  (`theme.js`), the version-stamp check (`stamp.js --check`) and its stale-cache
-  proof (`stale-cache.js`), the search, structured-data and copy check
+  (`theme.js`), the audience switch on the home page (`audience.js`), the version-stamp
+  check (`stamp.js --check`) and its stale-cache proof (`stale-cache.js`), the search, structured-data and copy check
   (`seo.js`), the hero background draw and its isolation (`bg-draw.js`) with one
   guard per background (`bg-weave.js`, `bg-sheet.js`, `bg-dial.js`, `bg-iris.js`),
   the accessibility suite with its contrast sweep (`a11y.js`), the static CSP sync

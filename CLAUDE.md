@@ -114,11 +114,15 @@ highlights the things most worth keeping front-of-mind.
   supplies; never fill one in.
 - **The English home page has two views, picked by the address, with nothing stored.** A bar above the hero
   ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
-  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`). Every
-  top-level `<section>` of `<main>` carries exactly one of `view-hire` or `view-join`; the only same-page links
-  are `#main`, `#hire` and `#join` (a `:target` view survives one fragment); the joiner view is lifted word for
-  word from `membership.html` (`data-from`) and adds no fact; `sv.html` has none. `tools/verify/audience.js`
-  enforces it. Details in AGENTS.md, *Audience switch*.
+  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`); with
+  script `app.js` adds `js-view-join` in the head (so a load on `#join` never paints the client hero first),
+  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar is a
+  `<section>` carrying exactly one of `view-hire` or `view-join`, and the client closing band comes before the
+  joiner sections (adjacent-sibling rules ignore `display: none`); the only same-page links are `#main`,
+  `#hire` and `#join` (a `:target` view survives one fragment); the joiner view's blocks are lifted word for
+  word from `membership.html` (`data-from`) and any other text in it is on the review list in `audience.js`;
+  `sv.html` has none. `tools/verify/audience.js` enforces it. Details and known limits in AGENTS.md,
+  *Audience switch*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
@@ -145,7 +149,7 @@ highlights the things most worth keeping front-of-mind.
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
   `.js-theme` for the theme toggle, `.js-consent` once the consent module is
-  active). Copy follows the system's content rules: no
+  active, `.js-view-join` while the address is the home page's `#join`). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 
 ## Verifying work

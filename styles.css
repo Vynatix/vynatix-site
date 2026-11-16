@@ -921,6 +921,7 @@ a.clients__item:has(.clients__mark):hover {
   letter-spacing: var(--tracking-display);
   margin: var(--space-3) 0 0;
   max-width: 18ch;
+  overflow-wrap: anywhere;   /* a long word at enlarged text must wrap, not run out of the card */
 }
 .cta-band__actions {
   display: flex;
@@ -942,7 +943,7 @@ a.clients__item:has(.clients__mark):hover {
   margin: 0;
 }
 @media (max-width: 904px) {
-  .cta-band__inner { grid-template-columns: 1fr; gap: var(--space-8); }
+  .cta-band__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
 }
 
 /* ---------------------------------------------------------------
@@ -1448,12 +1449,17 @@ html.consent-open .hero ~ section { content-visibility: visible; }
    Both anchors are earlier siblings of every section in main, which is what
    lets the general sibling combinator do the swap without :has(). Only
    display: none is ever written, so a section keeps its own display value.
-   The selected look follows :target, never aria-current (script adds that
-   later, and the page must look the same without it).
+   With script, app.js puts js-view-join on <html> from the address in the
+   blocking head (the browser sets :target only after parsing, which on a slow
+   connection would paint the client hero first); while that class is there it
+   decides, and the :target rules step aside. The selected look follows the same
+   decision, never aria-current (script adds that later, and the page must look
+   the same without it).
    --------------------------------------------------------------- */
 .view-anchor { display: block; height: 0; }
-#join:not(:target) ~ .view-join { display: none; }
-#join:target ~ .view-hire { display: none; }
+html:not(.js-view-join) #join:not(:target) ~ .view-join { display: none; }
+html:not(.js-view-join) #join:target ~ .view-hire { display: none; }
+html.js-view-join .view-hire { display: none; }
 
 .audience { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
 .audience__bar {
@@ -1461,11 +1467,15 @@ html.consent-open .hero ~ section { content-visibility: visible; }
   gap: var(--space-1);
   padding-block: var(--space-3);
 }
+/* A hairline on every link so the unselected one still reads as a control where the
+   container tone is close to the page's. The border sits inside the 44px, so the bar's
+   height does not depend on it. */
 .audience__link {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding-inline: var(--space-5);
+  border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--radius-full);
   background: var(--md-sys-color-surface-container);
   color: var(--text-body);
@@ -1478,10 +1488,26 @@ html.consent-open .hero ~ section { content-visibility: visible; }
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
-#join:not(:target) ~ .audience .audience__link--hire,
-#join:target ~ .audience .audience__link--join {
+/* The selected link is told apart by more than its fill (the containers sit close together in
+   some looks, and Windows high contrast removes fills): a primary border and the header's own
+   underline for the current item, which both survive forced colours. */
+html:not(.js-view-join) #join:not(:target) ~ .audience .audience__link--hire,
+html:not(.js-view-join) #join:target ~ .audience .audience__link--join,
+html.js-view-join .audience__link--join {
   background: var(--md-sys-color-secondary-container);
   color: var(--md-sys-color-on-secondary-container);
+  border-color: var(--md-sys-color-primary);
+  text-decoration: underline 2px var(--indicator);
+  text-underline-offset: 6px;
+}
+@media (forced-colors: active) {
+  html:not(.js-view-join) #join:not(:target) ~ .audience .audience__link--hire,
+  html:not(.js-view-join) #join:target ~ .audience .audience__link--join,
+  html.js-view-join .audience__link--join { border-width: 3px; }
+}
+/* On the narrow layout the open menu covers the bar; its links must not take focus under it. */
+@media (max-width: 904px) {
+  html:has(.site-header__nav.open) .audience { visibility: hidden; }
 }
 /* The joiner view opens with the page-hero component. Its headline is an h2
    (the page keeps one h1, the client hero's) at the h1 size, its two buttons
@@ -1494,8 +1520,12 @@ h2.page-hero__h1 { font-size: clamp(40px, 6vw, var(--text-h1)); }
 
 /* The joiner view's own skip link: "Skip to content" normally points at #main,
    and following that would drop :target and flip the page back to the client
-   view. Without :has() the normal link stays and the view flips; nothing breaks. */
+   view. Without :has() the normal link stays and the view flips; nothing breaks.
+   The two selectors stay in separate rules: one :has() the browser does not know
+   would otherwise void the whole list. */
 .skip-link--join { display: none; }
+html.js-view-join .skip-link { display: none; }
+html.js-view-join .skip-link--join { display: block; }
 html:has(#join:target) .skip-link { display: none; }
 html:has(#join:target) .skip-link--join { display: block; }
 

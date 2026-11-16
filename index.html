@@ -271,7 +271,7 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=c7003e51">
+<link rel="stylesheet" href="styles.css?v=dba85f96">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
 <link rel="stylesheet" href="hero-bg.css?v=ebac486b">
@@ -288,10 +288,10 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=7fca33e0"></script>
+<script src="app.js?v=bd46ef72"></script>
 <!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
      tile and the iris's arming must be in place before the first paint. -->
-<script src="hero-bg.js?v=d28eff84"></script>
+<script src="hero-bg.js?v=185cbf88"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -350,7 +350,7 @@
          view, anything else the client view. Nothing is stored. -->
     <span class="view-anchor" id="hire"></span>
     <span class="view-anchor" id="join"></span>
-    <nav class="audience" aria-label="Audience">
+    <nav class="audience" aria-label="Hire or join">
       <div class="container audience__bar">
         <a class="audience__link audience__link--hire" href="#hire">Hire a team</a>
         <a class="audience__link audience__link--join" href="#join">Join the team</a>
@@ -826,6 +826,26 @@
       </div>
     </section>
 
+    <!-- ============================================================ Let us talk -->
+    <section class="cta-band band--inset inverse view-hire" id="contact" aria-labelledby="cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">Let us talk</p>
+          <h2 class="cta-band__h2" id="cta-title">Let us build it <em>with you.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">Tell us what you are trying to build, or which of your teams needs another senior engineer. We will come back within one working day, and tell you plainly whether we are a fit.</p>
+          <a class="btn btn--lg btn--tertiary" href="contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Vynatix AB, Mailbox 1611, 411 42 Gothenburg<br>
+            <a href="privacy.html">Privacy notice</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================================================ Joiner view: hero -->
     <section class="page-hero view-join" aria-labelledby="join-title">
       <div class="container">
@@ -983,26 +1003,6 @@
           <p class="cta-band__lede" data-from="membership.html">Tell us about your work, what you want next, and what you will not compromise on. We will tell you honestly whether Vynatix is the right fit, and what joining would look like if it is.</p>
           <a class="btn btn--lg btn--tertiary" href="contact.html">Start a conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <p class="cta-band__contact"><a href="membership.html">Read the full membership page</a></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================ Let us talk -->
-    <section class="cta-band band--inset inverse view-hire" id="contact" aria-labelledby="cta-title">
-      <div class="cta-band__inner">
-        <div>
-          <p class="eyebrow">Let us talk</p>
-          <h2 class="cta-band__h2" id="cta-title">Let us build it <em>with you.</em></h2>
-        </div>
-        <div class="cta-band__actions">
-          <p class="cta-band__lede">Tell us what you are trying to build, or which of your teams needs another senior engineer. We will come back within one working day, and tell you plainly whether we are a fit.</p>
-          <a class="btn btn--lg btn--tertiary" href="contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
-          <p class="cta-band__contact">
-            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
-            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
-            Vynatix AB, Mailbox 1611, 411 42 Gothenburg<br>
-            <a href="privacy.html">Privacy notice</a>
-          </p>
         </div>
       </div>
     </section>

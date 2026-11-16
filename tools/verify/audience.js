@@ -24,14 +24,14 @@
 //  7. The switch and its classes exist on index.html only (the Swedish home and every other page have none).
 //  8. A visitor who lands on #join and then switches (no reload) sees the same hero, in each of the four
 //     backgrounds, as one who loaded the page directly (the dial answering the pointer afterwards, too), with
-//     no console error; #join logs no warning (an unused font preload, say) in any of the three looks;
+//     no console error; #join logs no warning (an unused font preload, say) in three themes;
 //     and, in the dial, B stays where the pointer left it when the address changes with the hero showing, and
-//     answers the pointer again after a round trip through the joiner view (the animation does not survive
-//     display: none). BGS narrows 8a and 8c; THEMES is not read (8a, 8c, 9b, 9c and 9e run in the light
-//     look, 8b in three, 9a in all six).
+//     after a round trip through the joiner view it is at rest and the first move obeys the slew limit (the
+//     animation does not survive display: none). BGS narrows 8a and 8c (8c runs once, when the dial is among them); THEMES is not read:
+//     9a sweeps all six themes, 8b runs in three, and every other check is pinned to the light theme.
 //  9. Found in review, each a regression this file now catches:
 //     a. the selected link differs from the other by more than its fill (an underline and a primary border,
-//        which survive Windows high contrast), in all six looks and under forced colours, and it does not
+//        which survive Windows high contrast), in all six themes and under forced colours, and it does not
 //        change width when it is selected;
 //     b. a fresh load of #join has js-view-join on <html> and no client view at DOMContentLoaded (set in the
 //        head; the browser only sets :target after parsing, so a slow connection would paint the client hero
@@ -39,8 +39,9 @@
 //        aria-current (Chromium already matches them with :target; the script keeps other engines in step),
 //        and #JOIN stays the client view;
 //     c. Enter on a link keeps focus on it with a visible ring, also on the link already selected (no
-//        hashchange follows), a modified click leaves nothing armed for a later Back, and the next Tab goes
-//        into the new view;
+//        hashchange follows); a mouse press leaves it focused with no ring and no scroll, from either
+//        address; a modified click leaves nothing armed for a later Back; and the next Tab goes into the
+//        new view;
 //     d. the open mobile menu leaves nothing of the bar focusable under it;
 //     e. the client view's closing band follows a plain section with no extra margin (a hidden joiner band
 //        before it would add one), and neither closing band overflows at enlarged text on a phone.
@@ -197,6 +198,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
+    await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     // Resolved, so index.html#faq and /#faq count as same-page links too.
     const hrefs = await page.evaluate(() => {
@@ -221,9 +223,9 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
       const w = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT);
       for (let n; (n = w.nextNode());) {
         const t = n.textContent.replace(/\s+/g, ' ').trim(), e = n.parentElement;
-        if (t && e.closest('.view-join') && !e.closest('svg, script, style, h2, h3, p, li, a.btn, span.cap__num')) out.push(`${e.tagName}: ${t.slice(0, 50)}`);
+        if (t && e.closest('.view-join') && !e.closest('script, style, h2, h3, p, li, a.btn, span.cap__num') && !(e.closest('svg') && !e.closest('svg title, svg desc, svg text'))) out.push(`${e.tagName}: ${t.slice(0, 50)}`);
       }
-      out.push(...[...document.querySelectorAll('.view-join [aria-label], .view-join [title], .view-join [alt]')].map((e) => `${e.tagName} attribute: ${e.getAttribute('aria-label') || e.getAttribute('title') || e.getAttribute('alt')}`));
+      out.push(...[...document.querySelectorAll('.view-join[aria-label], .view-join [aria-label], .view-join[title], .view-join [title], .view-join[alt], .view-join [alt]')].map((e) => `${e.tagName} attribute: ${e.getAttribute('aria-label') || e.getAttribute('title') || e.getAttribute('alt')}`));
       return out;
     });
     ok(unread.length === 0, 'the joiner view has no text the review below cannot read (only h2, h3, p, li, button labels and cap numbers carry words)', unread.join(' | '));
@@ -315,16 +317,30 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.waitForTimeout(400);
     const angle = () => page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('#home .hero__h1'), '::after').rotate) || 0);
     const settle = async (x) => { await page.mouse.move(x, 500, { steps: 6 }); await page.waitForTimeout(500); return angle(); };
-    const press = async (sel) => { await page.focus(sel); await page.keyboard.press('Enter'); await page.waitForTimeout(150); };
+    const press = async (sel) => { await page.focus(sel); await page.keyboard.press('Enter'); await page.waitForTimeout(150); return page.evaluate(() => location.hash); };
+    const GAIN = 6 / 252 * 180 / Math.PI;   // the dial's travel in degrees at k = 1 (hero-bg.js)
     const far = await settle(1400);
     ok(far > 0.9, 'dial: the pointer at the right edge turns B (the probe works)', `${far}deg`);
-    await press('.audience__link--hire');   // '' to #hire: the address changes, the hero stays
+    const h1 = await press('.audience__link--hire');   // '' to #hire: the address changes, the hero stays
     const kept = await angle();
-    ok(Math.abs(kept - far) < 0.05, 'dial: an address change with the hero showing leaves B where the pointer put it', `${far}deg before, ${kept}deg after`);
-    await press('.audience__link--join');
-    await press('.audience__link--hire');
+    ok(h1 === '#hire' && Math.abs(kept - far) < 0.05, 'dial: an address change with the hero showing leaves B where the pointer put it', `${far}deg before, ${kept}deg after, hash "${h1}"`);
+    const h2 = await press('.audience__link--join');
+    const h3 = await press('.audience__link--hire');
     const rest = await angle();
-    ok(Math.abs(rest) < 0.01, 'dial: after a round trip through the joiner view B is at rest', `${rest}deg`);
+    ok(h2 === '#join' && h3 === '#hire' && Math.abs(rest) < 0.01, 'dial: after a round trip through the joiner view B is at rest', `${rest}deg, hashes "${h2}" "${h3}"`);
+    // The first move after the hero returns starts from rest and obeys the slew limit (a stale k from before the
+    // joiner view would make B jump), read on consecutive frames as bg-dial.js does.
+    const frames = await page.evaluate(() => new Promise((resolve) => {
+      const out = []; let n = 0;
+      const el = document.querySelector('#home .hero__h1');
+      const read = () => parseFloat(getComputedStyle(el, '::after').rotate) || 0;
+      out.push(read());
+      window.dispatchEvent(new PointerEvent('pointermove', { clientX: window.innerWidth - 1, clientY: 5, pointerType: 'mouse' }));
+      const tick = () => { out.push(read()); if (++n < 14) requestAnimationFrame(tick); else resolve(out); };
+      requestAnimationFrame(tick);
+    }));
+    let maxStep = 0; for (let i = 1; i < frames.length; i++) maxStep = Math.max(maxStep, Math.abs(frames[i] - frames[i - 1]));
+    ok(frames[0] === 0 && maxStep <= 0.35 * GAIN + 0.01 && frames[frames.length - 1] > 0.9 * GAIN, 'dial: the first move after the round trip starts at rest and moves B by at most 0.35 of its travel a frame', `from ${frames[0]}deg, largest step ${maxStep.toFixed(3)}deg (limit ${(0.35 * GAIN).toFixed(3)}), ends at ${frames[frames.length - 1]}deg`);
     const again = await settle(1300);
     ok(again > 0.9, 'dial: and it follows the pointer again', `${again}deg`);
     ok(errors.length === 0, 'dial: no script errors', errors.join(' | '));
@@ -391,6 +407,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, forcedColors: 'active' });
     const page = await ctx.newPage();
+    await page.addInitScript(pinTheme, pin('light', 'sheet'));
     const bad = [];
     const widths = {};
     for (const [url, sel, other] of [['index.html', 'audience__link--hire', 'audience__link--join'], ['index.html#join', 'audience__link--join', 'audience__link--hire']]) {
@@ -402,9 +419,10 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
       if (on.width === off.width) bad.push(`${url}: border widths ${on.width} and ${off.width}`);
       widths[url] = { [sel]: on.w, [other]: off.w };
     }
-    for (const c of ['audience__link--hire', 'audience__link--join']) {
-      const a = widths['index.html'][c], b = widths['index.html#join'][c];
-      if (Math.abs(a - b) > 0.5) bad.push(`${c} is ${a}px wide unselected and ${b}px selected, so it moves its neighbour`);
+    // [where the link is selected, where it is not]
+    for (const [c, [on, off]] of Object.entries({ 'audience__link--hire': ['index.html', 'index.html#join'], 'audience__link--join': ['index.html#join', 'index.html'] })) {
+      const a = widths[on][c], b = widths[off][c];
+      if (Math.abs(a - b) > 0.5) bad.push(`${c} is ${a}px wide selected and ${b}px unselected, so it moves its neighbour`);
     }
     ok(bad.length === 0, 'forced colours: the selected link keeps an underline and a heavier border, and its width', bad.join(' | '));
     await ctx.close();
@@ -471,15 +489,34 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     ok(/audience__link--hire/.test(f.cls) && f.ring, 'Enter on "Hire a team" while it is selected keeps focus on it too', JSON.stringify(f));
     // A modified click opens another tab and changes nothing here; it must not leave the link armed, or the
     // next Back to that address would pull focus onto it.
-    await page.click('.audience__link--join', { modifiers: ['Control'] });
+    await page.click('.audience__link--join', { modifiers: ['ControlOrMeta'] });
     await page.waitForTimeout(200);
+    const opened = ctx.pages().length - 1;
     for (const other of ctx.pages()) if (other !== page) await other.close();
     await page.bringToFront();
+    const before = await page.evaluate(() => location.hash);
     await page.goBack();
     await page.waitForFunction(() => location.hash === '#join', null, { timeout: 2000 }).catch(() => {});
     await page.waitForTimeout(150);
     f = await focused();
+    const landed = await page.evaluate(() => location.hash);
+    ok(opened === 1 && before === '#hire' && landed === '#join', 'the modified click opened a tab, left this address alone, and Back returned to #join (the step is meaningful)', `tabs opened ${opened}, before "${before}", landed "${landed}"`);
     ok(!/audience__link--join/.test(f.cls), 'a modified click does not pull focus onto its link on a later Back', JSON.stringify(f));
+    // A pointer press: the link ends up focused (a fragment link clears it) but shows no ring, from another
+    // address and from the one it already names, and the page does not scroll.
+    await page.goto(BASE + 'index.html', { waitUntil: 'load' });
+    for (const [sel, hash, what] of [
+      ['.audience__link--join', '#join', '"Join the team" from the plain address'],
+      ['.audience__link--join', '#join', '"Join the team" while it is selected'],
+      ['.audience__link--hire', '#hire', '"Hire a team" from #join'],
+      ['.audience__link--hire', '#hire', '"Hire a team" while it is selected'],
+    ]) {
+      await page.click(sel);
+      await page.waitForFunction((h) => location.hash === h, hash, { timeout: 2000 }).catch(() => {});
+      await page.waitForTimeout(150);
+      f = await page.evaluate(() => ({ cls: document.activeElement.className, ring: document.activeElement.matches(':focus-visible'), y: scrollY }));
+      ok(f.cls.indexOf(sel.slice(1)) >= 0 && !f.ring && f.y === 0, `a mouse press on ${what} leaves focus on the link, with no ring and no scroll`, JSON.stringify(f));
+    }
     await ctx.close();
   }
 
@@ -487,6 +524,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
+    await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const vis = () => page.evaluate(() => getComputedStyle(document.querySelector('.audience')).visibility);
     const before = await vis();

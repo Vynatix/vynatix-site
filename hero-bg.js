@@ -197,10 +197,10 @@
   }
 
   function onHash() {
-    if (!anim || !hidden()) return;
-    anim.cancel();
+    if (!hidden()) return;
+    if (anim) anim.cancel();
     anim = null;
-    cur = 0;
+    cur = 0;       // also with no animation: a resize below 1200px drops it and keeps cur
     target = 0;
     forget();
   }

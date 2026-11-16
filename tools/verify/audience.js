@@ -46,8 +46,9 @@
 //        address; a modified click leaves nothing armed for a later Back; and the next Tab goes into the
 //        new view;
 //     d. the open mobile menu leaves nothing of the bar focusable under it;
-//     e. the client view's closing band follows a plain section with no extra margin (a hidden joiner band
-//        before it would add one), and neither closing band overflows at enlarged text on a phone.
+//     e. the client view's closing band follows a client section that is not a band (a hidden joiner band
+//        before it would add a margin: adjacent-sibling rules ignore display: none), and neither closing
+//        band overflows at enlarged text on a phone.
 const { PAGES, BASE, readPage, launch, pinTheme, ALL_THEMES, BGS: BGS_LIST } = require('./_common');
 const { PNG } = require('pngjs');
 
@@ -544,14 +545,17 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await ctx.close();
   }
 
-  // ---- 9e. Closing bands: no extra margin from a hidden sibling, no overflow at enlarged text ------------------------
+  // ---- 9e. Closing bands: no hidden band before the client one, no overflow at enlarged text ---------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
     await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    const mt = await page.evaluate(() => getComputedStyle(document.getElementById('contact')).marginTop);
-    ok(mt === '0px', 'the client view\'s closing band has no top margin (the hidden joiner band is not its previous sibling)', mt);
+    const band = await page.evaluate(() => {
+      const c = document.getElementById('contact'), p = c.previousElementSibling;
+      return { prev: p ? p.className : null, prevClient: !!p && p.classList.contains('view-hire'), prevBand: !!p && p.classList.contains('band--inset'), marginTop: getComputedStyle(c).marginTop };
+    });
+    ok(band.prevClient && !band.prevBand, 'the client view\'s closing band follows a client section that is not a band (a hidden joiner band before it would add a margin)', JSON.stringify(band));
     await ctx.close();
     const TEXT_SCALE = (f) => {
       const all = [document.documentElement, ...document.querySelectorAll('body *')];

@@ -407,7 +407,8 @@ Rules that keep it working:
   (`.band--inset + .band--inset` once added 24px above the client closing band because the
   hidden joiner band came before it). The client sections come first, the client closing band
   (`#contact`) is the last of them, and the joiner sections follow; `audience.js` reads one
-  consequence of it, the band's top margin at 1280px, and the rest is on whoever adds a section.
+  consequence of it, that the band's previous sibling is a client section and not a band, and the
+  rest is on whoever adds a section.
 - **One fragment at a time.** `:target` holds a single fragment, and every fragment but `#join`
   is the client view. So a link inside the client view to an id inside it (the contents row,
   `#services`, `#faq`) stays in the view, while a same-page link from anywhere else (the joiner

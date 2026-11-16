@@ -227,7 +227,9 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     const { ctx, page, requests } = await open(THEMES[0], 1440, { bg });
     await page.mouse.move(5, 5, { steps: 4 }); await settle(page, 300);
     const asked = requests.filter((u) => MASK.test(u)).length;
-    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement).length);
+    // The dial's own animations are script-made; a CSSTransition on a pseudo-element is the theme's colour change
+    // (0.01ms under reduced motion), which a sample can catch still registered. Every count below leaves it out.
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && !(x instanceof CSSTransition)).length);
     check(asked === 0 && anims === 0, `S  ${bg} drawn: no dial mask requested, no animation on a pseudo-element after pointer moves`, `mask requests ${asked}, pseudo animations ${anims}`);
     await ctx.close();
   }
@@ -436,7 +438,7 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     const { ctx, page } = await open(T, 1366, { height: 1024, touch: true });
     const fine = await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches);
     await page.tap('.theme-toggle'); await page.waitForTimeout(120);
-    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && x.playState === 'running').length);
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && !(x instanceof CSSTransition) && x.playState === 'running').length);
     check(fine === false && anims === 0, 'M  touch: tapping the theme toggle does not turn the dial', `fine pointer ${fine}, animations ${anims}`);
     await ctx.close();
   }
@@ -445,7 +447,7 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     const { ctx, page } = await open(T, 1440);
     await page.evaluate(() => scrollTo(0, 500)); await settle(page, 250);
     await page.evaluate(() => document.querySelector('.theme-toggle').click()); await page.waitForTimeout(120);
-    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && x.playState === 'running').length);
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && !(x instanceof CSSTransition) && x.playState === 'running').length);
     check(anims === 0, 'M  toggle while the arc is under the header: B is left alone', `animations ${anims}`);
     await ctx.close();
   }
@@ -471,7 +473,7 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     await page.mouse.move(1, 5, { steps: 4 }); await settle(page, 400);
     await page.evaluate(() => document.querySelector('.theme-toggle').click()); await page.waitForTimeout(150);
     const a = await pseudo(page, '::after'), b = await pseudo(page, '::before');
-    const dialAnims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement).length);
+    const dialAnims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && !(x instanceof CSSTransition)).length);
     const frames = (await page.evaluate(() => window.__raf)) - frames0;
     check(parseFloat(a.rotate) === 0 && dialAnims === 0 && frames === 0 && a.animation === 'none' && b.animation === 'none' && a.content !== 'none', 'M  reduced motion: the dial is drawn and still; the pointer and the toggle start no animation and no frame', `angle ${a.rotate}, dial animations ${dialAnims}, frames ${frames}`);
     await ctx.close();
@@ -480,7 +482,7 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
     const { ctx, page } = await open(T, 1366, { height: 1024, touch: true });
     const a = await pseudo(page);
     await page.touchscreen.tap(1300, 300); await settle(page, 300);
-    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement).length);
+    const anims = await page.evaluate(() => document.getAnimations().filter((x) => x.effect && x.effect.pseudoElement && !(x instanceof CSSTransition)).length);
     check(a.content !== 'none' && parseFloat(a.rotate) === 0 && anims === 0, 'M  touch at 1366px: the dial is drawn and still', `angle ${a.rotate}, animations ${anims}`);
     await ctx.close();
   }

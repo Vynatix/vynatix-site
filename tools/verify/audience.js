@@ -290,10 +290,14 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     };
     const direct = await shoot('index.html', false);
     const switched = await shoot('index.html#join', true);   // the click moves the pointer while the hero was hidden
+    // The strip includes the bar. When a pill's style changes in place (the switched path) Chromium sometimes
+    // rasterises two pixels of its rounded border one unit off in a channel (about one run in five; two direct
+    // loads never differ), so a channel may differ by 2. The art moving or turning differs by tens.
+    const TOL = 2;
     let n = 0;
     if (direct.png.width !== switched.png.width || direct.png.height !== switched.png.height) n = -1;
     else for (let i = 0; i < direct.png.data.length; i += 4) {
-      if (direct.png.data[i] !== switched.png.data[i] || direct.png.data[i + 1] !== switched.png.data[i + 1] || direct.png.data[i + 2] !== switched.png.data[i + 2]) n++;
+      if (Math.abs(direct.png.data[i] - switched.png.data[i]) > TOL || Math.abs(direct.png.data[i + 1] - switched.png.data[i + 1]) > TOL || Math.abs(direct.png.data[i + 2] - switched.png.data[i + 2]) > TOL) n++;
     }
     ok(n === 0, `${bg}: landing on #join and switching to "Hire a team" draws the hero exactly as a direct load does`, n < 0 ? 'sizes differ' : `${n} differing pixels`);
     ok(direct.errors.length + switched.errors.length === 0, `${bg}: no script errors on either path`, [...direct.errors, ...switched.errors].join(' | '));

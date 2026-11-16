@@ -1503,7 +1503,10 @@ html.js-view-join .audience__link--join {
 @media (forced-colors: active) {
   html:not(.js-view-join) #join:not(:target) ~ .audience .audience__link--hire,
   html:not(.js-view-join) #join:target ~ .audience .audience__link--join,
-  html.js-view-join .audience__link--join { border-width: 3px; }
+  html.js-view-join .audience__link--join {
+    border-width: 3px;
+    padding-inline: calc(var(--space-5) - 2px);   /* the link keeps its width when it is selected */
+  }
 }
 /* On the narrow layout the open menu covers the bar; its links must not take focus under it. */
 @media (max-width: 904px) {
@@ -1526,8 +1529,8 @@ h2.page-hero__h1 { font-size: clamp(40px, 6vw, var(--text-h1)); }
 .skip-link--join { display: none; }
 html.js-view-join .skip-link { display: none; }
 html.js-view-join .skip-link--join { display: block; }
-html:has(#join:target) .skip-link { display: none; }
-html:has(#join:target) .skip-link--join { display: block; }
+html:has(#join.view-anchor:target) .skip-link { display: none; }
+html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 
 /* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything

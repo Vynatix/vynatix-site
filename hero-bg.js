@@ -187,16 +187,21 @@
   }
 
   // The audience switch hides the whole hero (display: none) in the joiner view. A hidden headline has no
-  // ::after to animate, so nothing is made or driven while it is hidden, and any animation made before is
-  // dropped when the address changes (its pseudo-element went with the hero, and Chromium does not give it
-  // back), so the first pointer move after the hero returns makes a new one.
+  // ::after to animate, so nothing is made or driven while it is hidden, and an animation made before is
+  // dropped, with B put back at rest, as the address changes to hide the hero (its pseudo-element went with
+  // the hero, and Chromium does not give it back), so the first pointer move after the hero returns makes a
+  // new one from rest. A change of address that leaves the hero showing (the skip link, a first press of
+  // "Hire a team") touches nothing. This listener runs after app.js's, so the view is already switched.
   function hidden() {
     return !el.getClientRects().length;
   }
 
   function onHash() {
-    if (anim) anim.cancel();
+    if (!anim || !hidden()) return;
+    anim.cancel();
     anim = null;
+    cur = 0;
+    target = 0;
     forget();
   }
 

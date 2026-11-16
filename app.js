@@ -277,15 +277,26 @@
 
   function init() {
     var found = document.querySelectorAll('.audience__link');
-    if (!found.length) return;
+    // On a spelling of the path the head test does not know (an extensionless /index) the whole
+    // enhancement stays off and :target decides alone, as with script blocked.
+    if (!onHome || !found.length) return;
     links = Array.prototype.slice.call(found);
     links.forEach(function (a) {
       a.addEventListener('click', function (e) {
-        pressed = a;
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var href = a.getAttribute('href');
         // A plain click moves the view at once, a moment before the hashchange event the browser queues
         // for the address; Back and Forward, which have no click, follow the event.
-        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        apply(a.getAttribute('href') === '#join');
+        apply(href === '#join');
+        if (location.hash === href) {
+          // Already the address: no hashchange follows, yet the fragment navigation still clears focus
+          // to the page, so give it back once the click has run its course.
+          window.setTimeout(function () {
+            if (document.activeElement !== a) a.focus({ preventScroll: true });
+          }, 0);
+        } else {
+          pressed = a;   // onHash gives focus back; only a click that changes the address arms it
+        }
       });
     });
     sync();

@@ -61,7 +61,8 @@ highlights the things most worth keeping front-of-mind.
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. The skip link and the `<symbol>` block are copy-pasted into every
-  `*.html` file — there is no include system — so a change to either is made in **all** pages.
+  `*.html` file — there is no include system — so a change to either is made in **all** pages
+  (the home page also has a second skip link, for its joiner view).
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
   `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
@@ -73,7 +74,7 @@ highlights the things most worth keeping front-of-mind.
   (rename one if a stale copy would show).
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
   (theme draw and toggle, the hero background draw, mobile nav, the audience switch's
-  `aria-current`, analytics consent;
+  `js-view-join`, `aria-current` and focus, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
   only) and no CDN/animation stack. **Nothing on
   the site moves on its own, with one exception: the iris background (a quarter of

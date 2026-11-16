@@ -3,11 +3,14 @@
 //   node verify/audience.js
 //
 // The switch is two plain links and CSS :target (styles.css, "Audience switch"): #join shows the joiner
-// view, any other address the client view, nothing is stored, and app.js only mirrors the state into
-// aria-current. What this proves:
+// view, any other address the client view, and nothing is stored. app.js adds three things on top, none of
+// them needed to switch: js-view-join on <html> from the address in the head (so a load on #join never paints
+// the client hero first), aria-current on the selected link, and focus kept on the link pressed. What this
+// proves:
 //  1. Each view shows exactly its own sections: the default address shows every .view-hire section and no
-//     .view-join one, #join the reverse, and every top-level section of main has exactly one of the two
-//     classes. The same with JavaScript off, because the switch must not depend on the script.
+//     .view-join one, #join the reverse, and every child of main but the two anchors and the bar is a
+//     section with exactly one of the two classes. The same with JavaScript off, because the switch must not
+//     depend on the script, skip links and selected link included.
 //  2. The switch moves both ways without a reload, and Back undoes it.
 //  3. aria-current follows the view (JavaScript on).
 //  4. The joiner view's skip link keeps the view (the normal one points at #main and would drop :target), and
@@ -15,18 +18,29 @@
 //  5. Every same-page link on the home page is #main, #hire or #join. :target holds one fragment at a time, so
 //     any other in-page link (a #faq deep link, say) would silently reset the view; add it here deliberately.
 //  6. The joiner view says nothing new: every block marked data-from="membership.html" is found word for word
-//     in that page's main, and every link in the joiner view goes to contact, membership or work.
+//     in that page's main, every other h2, h3, p, li, button label and cap number is on the review list below,
+//     any text outside those tags fails (so a new tag is added to the reader on purpose), and every link in
+//     the joiner view goes to contact, membership or work.
 //  7. The switch and its classes exist on index.html only (the Swedish home and every other page have none).
 //  8. A visitor who lands on #join and then switches (no reload) sees the same hero, in each of the four
 //     backgrounds, as one who loaded the page directly (the dial answering the pointer afterwards, too), with
-//     no console error; and #join logs no warning (an unused font preload, say) in any of the three looks.
+//     no console error; #join logs no warning (an unused font preload, say) in any of the three looks;
+//     and, in the dial, B stays where the pointer left it when the address changes with the hero showing, and
+//     answers the pointer again after a round trip through the joiner view (the animation does not survive
+//     display: none). BGS narrows 8a and 8c; THEMES is not read (8a, 8c, 9b, 9c and 9e run in the light
+//     look, 8b in three, 9a in all six).
 //  9. Found in review, each a regression this file now catches:
 //     a. the selected link differs from the other by more than its fill (an underline and a primary border,
-//        which survive Windows high contrast), in all six looks and under forced colours;
-//     b. a fresh load of #join has no client view at DOMContentLoaded (js-view-join, set in the head; the
-//        browser only sets :target after parsing, so a slow connection would paint the client hero first);
-//        the percent-encoded and text-fragment spellings of #join agree between view and aria-current;
-//     c. Enter on a link keeps focus on it, and the next Tab goes into the new view;
+//        which survive Windows high contrast), in all six looks and under forced colours, and it does not
+//        change width when it is selected;
+//     b. a fresh load of #join has js-view-join on <html> and no client view at DOMContentLoaded (set in the
+//        head; the browser only sets :target after parsing, so a slow connection would paint the client hero
+//        first); the percent-encoded and text-fragment spellings of #join agree between view, class and
+//        aria-current (Chromium already matches them with :target; the script keeps other engines in step),
+//        and #JOIN stays the client view;
+//     c. Enter on a link keeps focus on it with a visible ring, also on the link already selected (no
+//        hashchange follows), a modified click leaves nothing armed for a later Back, and the next Tab goes
+//        into the new view;
 //     d. the open mobile menu leaves nothing of the bar focusable under it;
 //     e. the client view's closing band follows a plain section with no extra margin (a hidden joiner band
 //        before it would add one), and neither closing band overflows at enlarged text on a phone.
@@ -46,7 +60,7 @@ const norm = (t) => String(t).replace(/\s+/g, ' ').trim();
 // The words the joiner view may carry that are not inside a [data-from] block. This is the owner's review
 // list: anything else outside a lifted block fails. A string is one of
 //  - NEW: wording written for the switch (approved with the plan; keep AGENTS.md, Audience switch, in step);
-//  - HOME: already on the client view of this page (the joiner view reuses a sentence or a heading);
+//  - HOME_SENTENCES: a sentence the client view of this page already carries, word for word;
 //  - MEMBERSHIP: an element on membership.html, word for word (a heading or eyebrow lifted without data-from).
 const NEW = new Set([
   'Stay independent. Without going it alone.',
@@ -57,8 +71,8 @@ const NEW = new Set([
   'Read about membership',
   'Read the full membership page',
   'Start a conversation',
-]);
-const HOME = new Set([
+  // Carried over from the old "For senior engineers" section of the home page, which the joiner view
+  // absorbed: neither string is on the client view any more, and membership.html words the heading differently.
   'For senior engineers',
   'Independence, with a firm behind you.',
 ]);
@@ -138,9 +152,20 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
     const skips = await page.evaluate(() => [...document.querySelectorAll('.skip-link')].map((a) => ({
       href: a.getAttribute('href'), shown: getComputedStyle(a).display !== 'none' })));
-    const wantSkip = js ? (skips.length === 2 && skips[0].href === '#main' && !skips[0].shown && skips[1].href === '#join' && skips[1].shown) : true;
+    const wantSkip = skips.length === 2 && skips[0].href === '#main' && !skips[0].shown && skips[1].href === '#join' && skips[1].shown;
+    // Without script the two :has() rules decide (with it, js-view-join does), so both are looked at.
+    ok(wantSkip, `${tag}: in the joiner view only the skip link that keeps the view is shown`, JSON.stringify(skips));
+    {
+      const deco = () => page.evaluate(() => [...document.querySelectorAll('.audience__link')].map((a) => /underline/.test(getComputedStyle(a).textDecorationLine)));
+      const atJoin = await deco();
+      await page.goto(BASE + 'index.html', { waitUntil: 'load' });
+      const atHire = await deco();
+      const plain = await page.evaluate(() => [...document.querySelectorAll('.skip-link')].filter((a) => getComputedStyle(a).display !== 'none').map((a) => a.getAttribute('href')));
+      ok(atJoin[1] && !atJoin[0] && atHire[0] && !atHire[1], `${tag}: the selected link is the underlined one in each view`, `#join ${JSON.stringify(atJoin)}, plain ${JSON.stringify(atHire)}`);
+      ok(plain.length === 1 && plain[0] === '#main', `${tag}: on the plain address the only skip link shown is the one to #main`, plain.join(','));
+      await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
+    }
     if (js) {
-      ok(wantSkip, `${tag}: in the joiner view only the skip link that keeps the view is shown`, JSON.stringify(skips));
       await page.focus('.skip-link--join');
       await page.keyboard.press('Enter');
       s = await page.evaluate(state);
@@ -187,34 +212,48 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
     const READ = () => {
       const text = (e) => { const c = e.cloneNode(true); c.querySelectorAll('br').forEach((b) => b.replaceWith(' ')); return c.textContent; };
-      return [...document.querySelectorAll('.view-join h2, .view-join h3, .view-join p, .view-join li, .view-join a.btn')]
+      return [...document.querySelectorAll('.view-join h2, .view-join h3, .view-join p, .view-join li, .view-join a.btn, .view-join span.cap__num')]
         .map((e) => ({ text: text(e), from: (e.closest('[data-from]') || {}).getAttribute ? e.closest('[data-from]').getAttribute('data-from') : null }));
     };
+    // Text the reader above cannot see: anything outside those tags (a new element type, say) fails until it is added on purpose.
+    const unread = await page.evaluate(() => {
+      const out = [];
+      const w = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT);
+      for (let n; (n = w.nextNode());) {
+        const t = n.textContent.replace(/\s+/g, ' ').trim(), e = n.parentElement;
+        if (t && e.closest('.view-join') && !e.closest('svg, script, style, h2, h3, p, li, a.btn, span.cap__num')) out.push(`${e.tagName}: ${t.slice(0, 50)}`);
+      }
+      out.push(...[...document.querySelectorAll('.view-join [aria-label], .view-join [title], .view-join [alt]')].map((e) => `${e.tagName} attribute: ${e.getAttribute('aria-label') || e.getAttribute('title') || e.getAttribute('alt')}`));
+      return out;
+    });
+    ok(unread.length === 0, 'the joiner view has no text the review below cannot read (only h2, h3, p, li, button labels and cap numbers carry words)', unread.join(' | '));
     const joinParts = (await page.evaluate(READ)).map((x) => ({ ...x, text: norm(x.text) }));
     const homeText = norm(await page.evaluate(() => [...document.querySelectorAll('.view-hire')].map((e) => e.textContent).join(' ')));
     const sources = {};
     const elementsOf = async (rel) => {
       if (!sources[rel]) {
         await page.goto(BASE + rel, { waitUntil: 'load' });
-        sources[rel] = new Set((await page.evaluate(() => [...document.querySelectorAll('main h1, main h2, main h3, main p, main li')].map((e) => {
+        sources[rel] = new Set((await page.evaluate(() => [...document.querySelectorAll('main h1, main h2, main h3, main p, main li, main span.cap__num')].map((e) => {
           const c = e.cloneNode(true); c.querySelectorAll('br').forEach((b) => b.replaceWith(' ')); return c.textContent;
         }))).map(norm));
       }
       return sources[rel];
     };
     const lifted = joinParts.filter((x) => x.from);
+    const froms = await page.evaluate(() => [...document.querySelectorAll('.view-join [data-from]')].map((e) => e.getAttribute('data-from')));
+    ok(froms.length > 0 && froms.every((f) => f === 'membership.html'), 'every data-from mark in the joiner view names membership.html', [...new Set(froms)].join(', '));
     const wrong = [];
     for (const x of lifted) if (!(await elementsOf(x.from)).has(x.text)) wrong.push(x.text.slice(0, 70));
     ok(lifted.length >= 20, 'the joiner view marks its lifted blocks (data-from)', `${lifted.length} parts`);
     ok(wrong.length === 0, 'every lifted sentence is a whole element of membership.html, word for word', wrong.join(' | '));
 
     // Everything outside a lifted block is on the review list: wording written for the switch (NEW), a
-    // sentence or heading the client view already carries (HOME), or a membership.html element (a heading or
+    // sentence the client view already carries (HOME_SENTENCES), or a membership.html element (a heading or
     // eyebrow lifted without a data-from mark).
     const member = await elementsOf('membership.html');
-    const unlisted = joinParts.filter((x) => !x.from && !NEW.has(x.text) && !HOME.has(x.text) && !member.has(x.text) && !HOME_SENTENCES.some((h) => x.text === h && homeText.includes(h)))
+    const unlisted = joinParts.filter((x) => !x.from && !NEW.has(x.text) && !member.has(x.text) && !HOME_SENTENCES.some((h) => x.text === h && homeText.includes(h)))
       .map((x) => x.text.slice(0, 70));
-    ok(unlisted.length === 0, 'every other piece of joiner text is on the review list (new wording, the home page\'s own, or a membership.html element)', unlisted.join(' | '));
+    ok(unlisted.length === 0, 'every other piece of joiner text is on the review list (new wording, a sentence the client view carries, or a membership.html element)', unlisted.join(' | '));
     ok(joinParts.length >= 40, 'the joiner view was read in full', `${joinParts.length} parts`);
 
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
@@ -231,6 +270,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.waitForTimeout(700);
     return PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 96, width: 1440, height: 804 }, animations: 'disabled' }));
   };
+  if (BGS.length < 4) console.log(`note: BGS narrows 8a and 8c to ${BGS.join(', ')}`);
   for (const bg of BGS) {
     const shoot = async (url, click) => {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -257,6 +297,34 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     }
     ok(n === 0, `${bg}: landing on #join and switching to "Hire a team" draws the hero exactly as a direct load does`, n < 0 ? 'sizes differ' : `${n} differing pixels`);
     ok(direct.errors.length + switched.errors.length === 0, `${bg}: no script errors on either path`, [...direct.errors, ...switched.errors].join(' | '));
+  }
+
+  // ---- 8c. The dial's B: left alone when the address changes with the hero showing, alive after the joiner view ---
+  // Keyboard presses, not clicks: a click moves the pointer, which would turn B on its own.
+  if (BGS.includes('dial')) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.addInitScript(pinTheme, pin('light', 'dial'));
+    await page.goto(BASE + 'index.html', { waitUntil: 'load' });
+    await page.waitForTimeout(400);
+    const angle = () => page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('#home .hero__h1'), '::after').rotate) || 0);
+    const settle = async (x) => { await page.mouse.move(x, 500, { steps: 6 }); await page.waitForTimeout(500); return angle(); };
+    const press = async (sel) => { await page.focus(sel); await page.keyboard.press('Enter'); await page.waitForTimeout(150); };
+    const far = await settle(1400);
+    ok(far > 0.9, 'dial: the pointer at the right edge turns B (the probe works)', `${far}deg`);
+    await press('.audience__link--hire');   // '' to #hire: the address changes, the hero stays
+    const kept = await angle();
+    ok(Math.abs(kept - far) < 0.05, 'dial: an address change with the hero showing leaves B where the pointer put it', `${far}deg before, ${kept}deg after`);
+    await press('.audience__link--join');
+    await press('.audience__link--hire');
+    const rest = await angle();
+    ok(Math.abs(rest) < 0.01, 'dial: after a round trip through the joiner view B is at rest', `${rest}deg`);
+    const again = await settle(1300);
+    ok(again > 0.9, 'dial: and it follows the pointer again', `${again}deg`);
+    ok(errors.length === 0, 'dial: no script errors', errors.join(' | '));
+    await ctx.close();
   }
 
   // ---- 8b. #join logs nothing in any of the three looks (an unused font preload warns a few seconds after load) -----
@@ -292,7 +360,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     return [...document.querySelectorAll('.audience__link')].map((a) => {
       const cs = getComputedStyle(a);
       const border = rgb(cs.borderTopColor);
-      return { cls: a.className.replace('audience__link ', ''), deco: cs.textDecorationLine, border: cs.borderTopColor, width: cs.borderTopWidth,
+      return { cls: a.className.replace('audience__link ', ''), deco: cs.textDecorationLine, border: cs.borderTopColor, width: cs.borderTopWidth, w: a.getBoundingClientRect().width,
         borderVsPage: border && page ? Math.round(ratio(border, page) * 100) / 100 : null };
     });
   };
@@ -320,6 +388,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, forcedColors: 'active' });
     const page = await ctx.newPage();
     const bad = [];
+    const widths = {};
     for (const [url, sel, other] of [['index.html', 'audience__link--hire', 'audience__link--join'], ['index.html#join', 'audience__link--join', 'audience__link--hire']]) {
       await page.goto(BASE + url, { waitUntil: 'load' });
       await page.waitForTimeout(150);
@@ -327,8 +396,13 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
       const on = links.find((l) => l.cls === sel), off = links.find((l) => l.cls === other);
       if (!/underline/.test(on.deco) || /underline/.test(off.deco)) bad.push(`${url}: underline ${on.deco} vs ${off.deco}`);
       if (on.width === off.width) bad.push(`${url}: border widths ${on.width} and ${off.width}`);
+      widths[url] = { [sel]: on.w, [other]: off.w };
     }
-    ok(bad.length === 0, 'forced colours: the selected link keeps an underline and a heavier border', bad.join(' | '));
+    for (const c of ['audience__link--hire', 'audience__link--join']) {
+      const a = widths['index.html'][c], b = widths['index.html#join'][c];
+      if (Math.abs(a - b) > 0.5) bad.push(`${c} is ${a}px wide unselected and ${b}px selected, so it moves its neighbour`);
+    }
+    ok(bad.length === 0, 'forced colours: the selected link keeps an underline and a heavier border, and its width', bad.join(' | '));
     await ctx.close();
   }
 
@@ -342,42 +416,66 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.addInitScript(() => {
       document.addEventListener('DOMContentLoaded', () => {
         const d = (sel) => { const e = document.querySelector(sel); return e ? getComputedStyle(e).display : 'missing'; };
-        window.__atDcl = { hero: d('#home'), join: d('.page-hero.view-join'), target: !!document.querySelector(':target') };
+        window.__atDcl = { hero: d('#home'), join: d('.page-hero.view-join'), cls: document.documentElement.classList.contains('js-view-join') };
       });
     });
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
     const dcl = await page.evaluate(() => window.__atDcl);
-    ok(dcl && dcl.hero === 'none' && dcl.join !== 'none', 'a load on #join has the joiner view in force by DOMContentLoaded (no client-hero first paint)', JSON.stringify(dcl));
+    ok(dcl && dcl.cls && dcl.hero === 'none' && dcl.join !== 'none', 'a load on #join has js-view-join on <html> and the joiner view in force by DOMContentLoaded (no client-hero first paint)', JSON.stringify(dcl));
+    const klass = () => page.evaluate(() => document.documentElement.classList.contains('js-view-join'));
     for (const [url, label] of [['index.html#%6Aoin', 'percent-encoded #join'], ['index.html#join:~:text=Senior', '#join with a text fragment']]) {
       await page.goto(BASE + url, { waitUntil: 'load' });
       await page.waitForTimeout(150);
       const s = await page.evaluate(state);
-      ok(isJoin(s) && s.current[1] === 'true' && s.current[0] === null, `${label}: the joiner view and aria-current agree`, `${brief(s)}, current ${JSON.stringify(s.current)}`);
+      ok(isJoin(s) && (await klass()) && s.current[1] === 'true' && s.current[0] === null, `${label}: the joiner view, js-view-join and aria-current agree`, `${brief(s)}, class ${await klass()}, current ${JSON.stringify(s.current)}`);
+    }
+    await page.goto(BASE + 'index.html#JOIN', { waitUntil: 'load' });
+    await page.waitForTimeout(150);
+    {
+      const s = await page.evaluate(state);
+      ok(isHire(s) && !(await klass()) && s.current[0] === 'true' && s.current[1] === null, '#JOIN (another case) is not the joiner view', `${brief(s)}, class ${await klass()}, current ${JSON.stringify(s.current)}`);
     }
     await ctx.close();
   }
 
-  // ---- 9c. Focus stays on the link pressed, and the next Tab goes into the new view -----------------------------------
+  // ---- 9c. Focus stays on the link pressed, with its ring, and the next Tab goes into the new view -----------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
     await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    await page.focus('.audience__link--join');
-    await page.keyboard.press('Enter');
-    await page.waitForFunction(() => location.hash === '#join', null, { timeout: 2000 }).catch(() => {});
-    await page.waitForTimeout(100);
-    let f = await page.evaluate(() => document.activeElement.className);
-    ok(/audience__link--join/.test(f), 'Enter on "Join the team" keeps focus on it', f);
+    const focused = () => page.evaluate(() => ({ cls: document.activeElement.className, ring: document.activeElement.matches(':focus-visible'), inJoin: !!document.activeElement.closest('.view-join') }));
+    const enter = async (sel, hash) => {
+      await page.focus(sel);
+      await page.keyboard.press('Enter');
+      if (hash !== null) await page.waitForFunction((h) => location.hash === h, hash, { timeout: 2000 }).catch(() => {});
+      await page.waitForTimeout(150);
+      return focused();
+    };
+    let f = await enter('.audience__link--join', '#join');
+    ok(/audience__link--join/.test(f.cls) && f.ring, 'Enter on "Join the team" keeps focus on it, with its ring', JSON.stringify(f));
+    // The link that is already selected: the address does not change, so no hashchange follows, yet the
+    // fragment navigation still clears focus to the page.
+    f = await enter('.audience__link--join', null);
+    ok(/audience__link--join/.test(f.cls) && f.ring, 'Enter on the link that is already selected keeps focus on it too', JSON.stringify(f));
     await page.keyboard.press('Tab');
-    f = await page.evaluate(() => { const a = document.activeElement; return { inJoin: !!a.closest('.view-join'), cls: a.className }; });
+    f = await focused();
     ok(f.inJoin, 'the next Tab goes into the joiner view', JSON.stringify(f));
-    await page.focus('.audience__link--hire');
-    await page.keyboard.press('Enter');
-    await page.waitForFunction(() => location.hash === '#hire', null, { timeout: 2000 }).catch(() => {});
-    await page.waitForTimeout(100);
-    f = await page.evaluate(() => document.activeElement.className);
-    ok(/audience__link--hire/.test(f), 'Enter on "Hire a team" keeps focus on it', f);
+    f = await enter('.audience__link--hire', '#hire');
+    ok(/audience__link--hire/.test(f.cls) && f.ring, 'Enter on "Hire a team" keeps focus on it, with its ring', JSON.stringify(f));
+    f = await enter('.audience__link--hire', null);
+    ok(/audience__link--hire/.test(f.cls) && f.ring, 'Enter on "Hire a team" while it is selected keeps focus on it too', JSON.stringify(f));
+    // A modified click opens another tab and changes nothing here; it must not leave the link armed, or the
+    // next Back to that address would pull focus onto it.
+    await page.click('.audience__link--join', { modifiers: ['Control'] });
+    await page.waitForTimeout(200);
+    for (const other of ctx.pages()) if (other !== page) await other.close();
+    await page.bringToFront();
+    await page.goBack();
+    await page.waitForFunction(() => location.hash === '#join', null, { timeout: 2000 }).catch(() => {});
+    await page.waitForTimeout(150);
+    f = await focused();
+    ok(!/audience__link--join/.test(f.cls), 'a modified click does not pull focus onto its link on a later Back', JSON.stringify(f));
     await ctx.close();
   }
 
@@ -400,6 +498,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
+    await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const mt = await page.evaluate(() => getComputedStyle(document.getElementById('contact')).marginTop);
     ok(mt === '0px', 'the client view\'s closing band has no top margin (the hidden joiner band is not its previous sibling)', mt);
@@ -417,6 +516,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     for (const [url, w] of [['index.html', 360], ['index.html', 390], ['index.html#join', 360], ['index.html#join', 390]]) {
       const c = await browser.newContext({ viewport: { width: w, height: 800 } });
       const pg = await c.newPage();
+      await pg.addInitScript(pinTheme, pin('light', 'sheet'));
       await pg.goto(BASE + url, { waitUntil: 'load' });
       await pg.evaluate(() => document.querySelectorAll('.cta-band').forEach((b) => b.scrollIntoView()));
       await pg.evaluate(TEXT_SCALE, 1.75);

@@ -1,32 +1,48 @@
 # Image credits
 
-The three case-study cover photos are from Unsplash and are served
-first-party from `assets/` (they are no longer hotlinked, so no visitor
-IP is disclosed to a third party). Used under the
+The five photographs on the home page are from Unsplash and are served
+first-party from `assets/` (they are not hotlinked, so no visitor IP is
+disclosed to a third party). Used under the
 [Unsplash License](https://unsplash.com/license).
 
-| File | Source |
-|---|---|
-| `case-volvo-trucks.jpg` | https://unsplash.com/photos/1693359052846-df85e44a2ec1 |
-| `case-volvo-cars.jpg` | https://unsplash.com/photos/1647427060118-4911c9821b82 |
-| `case-regulated-ai.jpg` | https://unsplash.com/photos/1744640326166-433469d102f2 |
+| File | Where on the home page | Photographer | Source |
+|---|---|---|---|
+| `case-trucks-forest-road.jpg` | Application development chapter, Volvo Trucks case | Roberto Hanas | https://unsplash.com/photos/gray-cargo-truck-on-road-during-daytime-cJKUzAgHwpA |
+| `case-ai-archive-volumes.jpg` | AI engineering chapter, regulated client case | Anna Auza | https://unsplash.com/photos/a-group-of-white-signs-on-a-metal-rack-FuFaLog6qN0 |
+| `case-cars-marshalling-yard.jpg` | Cloud platforms chapter, Volvo Cars case | Patrick Federi | https://unsplash.com/photos/an-aerial-view-of-a-highway-with-multiple-lanes-RshUMrKap-0 |
+| `photo-balance-weights.jpg` | How we work, beside the comparison table | Angelo Casto | https://unsplash.com/photos/a-scale-with-a-bowl-on-top-of-it-i0OUCubcdMU |
+| `photo-gothenburg-canal.jpg` | Who we are | Claudio Schwarz | https://unsplash.com/photos/a-river-running-through-a-city-next-to-tall-buildings-787vVS9UD7Q |
 
-Each was downloaded from `images.unsplash.com/<id>?auto=format&fit=crop&w=900&q=80`
-(900px wide, progressive JPEG) — the exact rendition the pages used to hotlink.
-The `.webp` sibling of each file was then encoded locally from that JPEG through
-Chromium (quality 0.80, ~40% smaller) and is offered first via `<picture>`; the
-JPEG remains as the fallback. Hotlinking used to hand modern browsers a WebP via
-Unsplash's `auto=format`, so this keeps that benefit while staying first-party.
+Each was downloaded on 16 November 2026 through Unsplash's download endpoint (which
+records the download for the photographer) at 2000px wide, then resized to 1200px
+wide and saved as a progressive JPEG (quality 80; the marshalling yard at 68,
+because its fine detail is costly) and as a WebP sibling (quality 78; the yard at
+62). `index.html` offers the WebP first via `<picture>` and keeps the JPEG as the
+fallback.
 
-**Source URLs above are constructed from the CDN id, not verified photo pages.**
-The id is the one fact we hold: the images were fetched from
-`https://images.unsplash.com/photo-<id>`. Automated lookup of the canonical photo
-page is blocked (Unsplash serves a bot-check to non-browser clients and its
-oEmbed endpoint now needs an API key), so the photographer must be identified by
-searching Unsplash for the id from a normal browser.
+**What was changed in a photograph.**
 
-**TODO:** add the photographer for each image. The Unsplash License does not
-require attribution, but crediting the photographer is good practice.
+- `case-trucks-forest-road`: the haulier's name on the truck's sun visor and its
+  number plate were blurred out. Neither is a Vynatix client, and a third party's
+  name has no place on a case cover. The Volvo mark on the grille is left as it
+  was; Volvo Trucks is named on the page with consent (see *Client marks*).
+- `photo-gothenburg-canal`: cropped to 16:9 from the top of the frame, which drops
+  part of the dark water in the foreground.
+- The other three are resized only.
+
+**These are illustrations, not pictures of client work.** The truck is a Volvo, but
+it is not shown to carry the software in the case; the archive, the marshalling yard
+and the balance are analogies. The home page says so under the chapters and in the
+two captions. The canal photograph is captioned "A canal in central Gothenburg";
+the view is recognisably Stora Hamnkanalen with the tower of the German Church, but
+Unsplash carries no location for it, so the caption does not name the canal.
+
+The Unsplash License does not require attribution; the page credits the
+photographers anyway, in the line under the chapters and in the two captions.
+
+The three covers these replaced (`case-volvo-trucks`, `case-volvo-cars`,
+`case-regulated-ai`) were removed on the same day; their photographers were never
+identified.
 
 ## Client marks
 

@@ -588,7 +588,7 @@ a.clients__item:has(.clients__mark):hover {
 
 /* Inset inverse bands: a rounded band on the primary, aligned with the
    container's content edges, with the canvas showing around it (the kit's
-   field-note band). The home page's "How it goes" statement and every page's
+   field-note band). The home page's "How we work" steps and every page's
    call-to-action band use it, so the inverse surface never runs straight into
    the inverse footer as one wall. */
 .band--inset {
@@ -1146,7 +1146,7 @@ dl.metrics { margin: 0; }
 .case__points > li { margin: 0 0 var(--space-2); }
 .case__points > li:last-child { margin-bottom: 0; }
 
-/* Who we are: a three-column comparison table. The caption is a visible title
+/* How we work: a three-column comparison table. The caption is a visible title
    above it; the first and last columns drop their outer padding so the text
    lines up with the paragraphs around it; the row headers read as labels, not
    as the small capitals of the column headers. */
@@ -1439,6 +1439,262 @@ html.consent-open .hero ~ section { content-visibility: visible; }
 }
 .consent-panel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .consent-panel .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
+
+/* ---------------------------------------------------------------
+   Home page: the contents row, the work index, the service chapters,
+   photographs with a caption, the question list and the reading list.
+   The English home page only (sv.html keeps the older stack of sections).
+   --------------------------------------------------------------- */
+
+/* On this page: a still row of anchor links between the hero and the first
+   section. Plain links, so it works without JavaScript and nothing scrolls on
+   its own. Not a <section>, so the content-visibility rule above leaves it alone. */
+.toc { border-top: 1px solid var(--md-sys-color-outline-variant); }
+.toc > .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-10);
+  padding-block: var(--space-5);
+}
+.toc .eyebrow { margin: 0; }
+.toc__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-6);
+}
+.toc__list a {
+  display: inline-block;
+  padding-block: var(--space-2);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--text-body);
+  text-decoration: none;
+}
+.toc__list a:hover {
+  color: var(--md-sys-color-primary);
+  text-decoration: underline 1px var(--indicator);
+  text-underline-offset: 0.25em;
+}
+
+/* A section that opens with an inset band (How we work): the band sits where
+   the section's top padding would be, so the gap above it is the previous
+   section's bottom padding alone. */
+.section--band { padding-top: 0; }
+.section--band > .container { margin-top: var(--space-16); }
+@media (max-width: 599px) {
+  .section--band > .container { margin-top: var(--space-12); }
+}
+
+/* Selected work, at a glance: the three published projects, one row each, in
+   the columns of the section heading above it. Each row is one link to the
+   chapter that carries the project. */
+.work-index {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-16);
+  align-items: start;
+  scroll-margin-top: var(--space-24);
+}
+.work-index__h {
+  font-size: var(--text-h5);
+  line-height: var(--leading-headline);
+  letter-spacing: var(--tracking-headline);
+  margin: var(--space-3) 0 var(--space-4);
+}
+.work-index__lead {
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-muted);
+  margin: 0;
+}
+.work-index__list { border-top: 1px solid var(--md-sys-color-outline); }
+.work-index__row {
+  display: grid;
+  grid-template-columns: 11rem 1fr auto;
+  gap: var(--space-2) var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  text-decoration: none;
+}
+.work-index__svc,
+.work-index__meta {
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.work-index__svc { color: var(--text-accent); }
+.work-index__meta { color: var(--text-muted); }
+.work-index__case {
+  font-family: var(--font-subhead, var(--font-display));
+  font-weight: 600;
+  font-size: var(--text-h6);
+  line-height: var(--leading-headline);
+  letter-spacing: var(--tracking-headline);
+  color: var(--text-display);
+}
+.work-index__row:hover .work-index__case {
+  color: var(--primary-hover);
+  text-decoration: underline 1px var(--indicator);
+  text-underline-offset: 0.2em;
+}
+@media (max-width: 904px) {
+  .work-index { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+@media (max-width: 599px) {
+  .work-index__row { grid-template-columns: 1fr; gap: var(--space-1); }
+}
+
+/* A service chapter: the writing and its "What we build" panel in one column,
+   the project that shows it in the other. In source order (and on a phone) the
+   writing comes first, then the project, then the list. Every other chapter
+   flips, so the photographs alternate sides down the page. */
+.chapter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "text case" "panel case";
+  gap: var(--space-8) var(--space-16);
+  align-items: start;
+  margin-top: var(--space-16);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  scroll-margin-top: var(--space-16);
+}
+.chapter--flip { grid-template-areas: "case text" "case panel"; }
+.chapter__text { grid-area: text; }
+.chapter__case { grid-area: case; }
+.chapter__panel { grid-area: panel; }
+.chapter__text > :last-child { margin-bottom: 0; }
+.chapter .more { margin-top: var(--space-2); }
+@media (min-width: 905px) {
+  .chapter__case .case__img { aspect-ratio: 3 / 2; }
+}
+@media (max-width: 904px) {
+  .chapter,
+  .chapter--flip {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: "text" "case" "panel";
+    gap: var(--space-8);
+    margin-top: var(--space-12);
+    padding-top: var(--space-12);
+  }
+}
+/* Under the last chapter: the two onward links, and whose photographs these are. */
+.chapter-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-16);
+  margin-top: var(--space-16);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+.chapter-foot__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-8);
+  margin: 0;
+  max-width: none;
+}
+.photo-note {
+  margin: 0;
+  max-width: 56ch;
+  font-size: var(--text-caption);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+
+/* A photograph with its caption: full colour, no filter or overlay, and the
+   caption says what the camera saw and who took it. */
+.photo { margin: 0; }
+.photo img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  background: var(--md-sys-color-surface-container-highest);
+}
+.photo figcaption {
+  margin-top: var(--space-3);
+  font-size: var(--text-caption);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+.two-up blockquote + .photo { margin-top: var(--space-10); }
+/* The four facts beside a photograph: the tiles' own grid, then the link. */
+.two-up .metrics { margin-bottom: var(--space-6); }
+
+/* Common questions: one row per question, a rule on top. On a wide screen the
+   question takes the heading column and the answer the lead's column, so a
+   reader scans the questions down the left edge. The answer stays flat markup
+   (h3, then p, ul and ol), which the FAQ structured data is generated from, so
+   the two columns come from a float, not from a wrapper. */
+.qa__item {
+  display: flow-root;
+  padding-block: var(--space-8);
+  border-top: 1px solid var(--md-sys-color-outline);
+}
+.qa__item:last-child { padding-bottom: 0; }
+.qa__item > h3 {
+  font-size: var(--text-h5);
+  line-height: var(--leading-headline);
+  letter-spacing: var(--tracking-headline);
+  margin: 0 0 var(--space-4);
+}
+.qa__item > p,
+.qa__item > ul,
+.qa__item > ol { margin-top: 0; margin-bottom: var(--space-3); }
+.qa__item > p,
+.qa__item li {
+  font-size: var(--text-body-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-muted);
+  max-width: 65ch;
+}
+.qa__item > :last-child { margin-bottom: 0; }
+.qa__item li:last-child { margin-bottom: 0; }
+@media (min-width: 905px) {
+  .qa__item > h3 {
+    float: left;
+    width: calc((100% - var(--space-16)) / 3);
+    margin-bottom: 0;
+  }
+  .qa__item > :not(h3) { margin-left: calc((100% - var(--space-16)) / 3 + var(--space-16)); }
+}
+
+/* Further reading: two columns of entries, a rule on top of each, the title as
+   the link. */
+.reads {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-10) var(--space-16);
+}
+/* .list-reset zeroes a list item's padding with more weight than one class, so
+   the entry is named through its list (as ol.caps > li.cap is, above). */
+.reads > .read {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--md-sys-color-outline);
+}
+.read__h {
+  font-size: var(--text-h6);
+  line-height: var(--leading-headline);
+  letter-spacing: var(--tracking-headline);
+  margin: 0 0 var(--space-3);
+}
+.read p {
+  margin: 0;
+  font-size: var(--text-body-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-muted);
+}
+@media (max-width: 904px) {
+  .reads { grid-template-columns: 1fr; gap: var(--space-8); }
+}
 
 /* ---------------------------------------------------------------
    Utilities — pure spacing, on the scale. Keep this list short; anything

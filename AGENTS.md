@@ -21,8 +21,9 @@ against the roles and components the system defines.
 ## Layout
 
 ```
-index.html          Home — hero (one of four drawn backgrounds), still client list, services,
-                    work cards, metrics, CTA band
+index.html          Home — hero (one of four drawn backgrounds), still client list, contents row,
+                    service chapters (each with its case card), how we work with the comparison
+                    table, who we are with the metrics, questions, further reading, CTA band
 about.html          Company / team
 services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
@@ -64,8 +65,8 @@ app.js              All client behaviour (vanilla JS, IIFEs, no modules): the th
                     (see Analytics)
 hero-bg.css         The four hero backgrounds' rules (only index.html links it)
 hero-bg.js          The scripts of the backgrounds that need one (only index.html links it)
-assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted case
-                    photos (jpg + webp), app icons, the masks of the sheet and dial
+assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
+                    photographs (jpg + webp), app icons, the masks of the sheet and dial
                     hero backgrounds (bg-<id>-*.svg)
 fonts/              Self-hosted woff2 subsets of the system's faces, plus licences
 favicon.svg/.ico    Theme-aware SVG icon (Forest / Cream) + 16/32/48 ICO fallback
@@ -593,6 +594,33 @@ av kundernas organisationer inom Android Automotive, AI och molnplattformar, med
 Volvo Trucks och Volvo Cars bland kunderna.") If a fact in it changes, change it
 everywhere, including LinkedIn, the registries and `llms.txt`.
 
+**The English home page** is ordered by what a visitor is checking, and the work sits
+beside the service it shows. After the hero comes a contents row (`.toc`, a `<nav>` of
+plain anchor links, one per section, in page order: add or rename a section and this
+row changes with it). Then:
+
+- `#services`, one section for the services and the published work. Under the heading,
+  the `#work` row (`.work-index`) lists the three projects at a glance, each row a link
+  to its chapter. Each service is a `.chapter` (`#application-development`,
+  `#ai-engineering`, `#cloud-platforms`): the writing, the case card (`.case`, one link
+  to `work.html`) and the "What we build" panel, in that source order, which is also the
+  phone order; on a wide screen the card takes one column and every other chapter flips
+  (`.chapter--flip`). A fourth published project needs a decision first, because a
+  chapter holds one card.
+- `#how-we-work` (`.section--band`), the four steps on the inverse band and, under it,
+  the comparison table, the capacity and Gothenburg paragraphs and the pull quote:
+  everything about the terms of working with us, in one place.
+- `#who-we-are`, the company sentence, then the four metric tiles beside a photograph.
+- `#faq` (`.qa`), one row per question; on a wide screen the question sits in the
+  heading column and the answer in the lead's column. The answer markup stays flat
+  (`h3`, then `p`, `ul`, `ol`), so the two columns come from a float, not a wrapper.
+- `#further-reading` (`.reads`), `#engineers`, then the call-to-action band (`#contact`).
+
+The same facts recur across these sections on purpose (each block is written to be
+quoted alone, and the FAQ feeds the structured data word for word), so a rearrangement
+moves sentences; it does not delete or merge them without the owner. Nothing here
+needs JavaScript and nothing moves.
+
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
 is translated, and, while the consent module is active, the footer's "Cookie
@@ -609,9 +637,10 @@ page the footer's Legal column therefore deliberately holds one Swedish item, th
 relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
 "Accessibility"); the shared footer is English by design, and the link has to match
 the Swedish bar and notice. Without JavaScript it reverts to English. The
-two home pages are not mirror images: the comparison table in Who we are and
+two home pages are not mirror images: the comparison table in How we work and
 the Further reading section exist only on the English home page (sv.html has the
-Guider section instead). The Further reading items on index.html repeat the
+Guider section instead), and so do the contents row, the service chapters and the
+photographs (see *The English home page* below). The Further reading items on index.html repeat the
 linked pages' `<title>` (without the brand suffix) and meta description word for
 word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
@@ -956,9 +985,13 @@ places where inline SVG cannot go (email, documents) and for regenerating the
 icons. The system holds the other inks (teal, ink, cloud, champagne, charcoal,
 paper) for the other directions.
 
-The three case photos (`case-*.jpg` with `.webp` siblings, see
-`assets/CREDITS.md`) are shown in full colour with no filter or overlay, as the
-system's photography rules require for case-study imagery. The client mark in
+The five photographs on the home page (`case-*.jpg` and `photo-*.jpg`, each with a
+`.webp` sibling, see `assets/CREDITS.md`) are shown in full colour with no filter
+or overlay, as the system's photography rules require for case-study imagery. They
+are stock photographs that illustrate the work, and the page says so: the chapters
+end with a line naming the photographers, and the two standalone photographs carry
+a caption that says what the camera saw and who took it. No text is set on a
+photograph, and none is used as an uncaptioned band. The client mark in
 the home-page list is an inline SVG `<symbol>` in `index.html`, referenced with
 `<use>` and filled with `currentColor` (provenance in `assets/CREDITS.md`).
 

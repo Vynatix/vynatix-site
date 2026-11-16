@@ -289,11 +289,18 @@
         // for the address; Back and Forward, which have no click, follow the event.
         apply(href === '#join');
         if (location.hash === href) {
-          // Already the address: no hashchange follows, yet the fragment navigation still clears focus
-          // to the page, so give it back once the click has run its course.
-          window.setTimeout(function () {
-            if (document.activeElement !== a) a.focus({ preventScroll: true });
-          }, 0);
+          // Already the address: no hashchange follows, yet the fragment navigation still clears focus to
+          // the page (at once in Chromium, a task later in Firefox), so give it back when that blur
+          // arrives. A short window only: a blur to another element, or later, is the visitor's.
+          var regain = function (ev) {
+            a.removeEventListener('blur', regain);
+            if (ev.relatedTarget) return;
+            window.setTimeout(function () {
+              if (document.activeElement === document.body) a.focus({ preventScroll: true });
+            }, 0);
+          };
+          a.addEventListener('blur', regain);
+          window.setTimeout(function () { a.removeEventListener('blur', regain); }, 300);
         } else {
           pressed = a;   // onHash gives focus back; only a click that changes the address arms it
         }

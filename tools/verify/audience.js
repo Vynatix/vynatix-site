@@ -8,15 +8,18 @@
 // the client hero first), aria-current on the selected link, and focus kept on the link pressed. What this
 // proves:
 //  1. Each view shows exactly its own sections: the default address shows every .view-hire section and no
-//     .view-join one, #join the reverse, and every child of main but the two anchors and the bar is a
-//     section with exactly one of the two classes. The same with JavaScript off, because the switch must not
-//     depend on the script, skip links and selected link included.
+//     .view-join one, #join the reverse, and every child of main but the two anchors and the bar (the
+//     sections, and the contents row) carries exactly one of the two classes. The same with JavaScript off,
+//     because the switch must not depend on the script, skip links and selected link included.
 //  2. The switch moves both ways without a reload, and Back undoes it.
 //  3. aria-current follows the view (JavaScript on).
 //  4. The joiner view's skip link keeps the view (the normal one points at #main and would drop :target), and
 //     the normal one is first on the plain address.
-//  5. Every same-page link on the home page is #main, #hire or #join. :target holds one fragment at a time, so
-//     any other in-page link (a #faq deep link, say) would silently reset the view; add it here deliberately.
+//  5. Every same-page link on the home page is #main, #hire or #join, or sits in the client view and points at
+//     an id in it (the contents row). :target holds one fragment at a time and any fragment but #join is the
+//     client view, so those stay in the view; a link from anywhere else (the joiner view, the header, the
+//     footer) to any other fragment would silently drop the view, and a link in the client view to an id in the
+//     joiner view would show the wrong one.
 //  6. The joiner view says nothing new: every block marked data-from="membership.html" is found word for word
 //     in that page's main, every other h2, h3, p, li, button label and cap number is on the review list below,
 //     any text outside those tags fails (so a new tag is added to the reader on purpose), and every link in
@@ -91,7 +94,7 @@ const state = () => {
   const join = secs.filter((s) => s.classList.contains('view-join'));
   return {
     total: secs.length,
-    untagged: secs.filter((s) => s.tagName !== 'SECTION' || s.classList.contains('view-hire') === s.classList.contains('view-join')).length,
+    untagged: secs.filter((s) => s.classList.contains('view-hire') === s.classList.contains('view-join')).length,
     hire: hire.length, hireShown: hire.filter(shown).length,
     join: join.length, joinShown: join.filter(shown).length,
     hash: location.hash,
@@ -126,7 +129,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
 
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     let s = await page.evaluate(state);
-    ok(s.total > 0 && s.untagged === 0, `${tag}: every child of main (but the anchors and the switch) is a section with exactly one view class`, `${s.untagged} of ${s.total} are not`);
+    ok(s.total > 0 && s.untagged === 0, `${tag}: every child of main (but the anchors and the switch) carries exactly one view class`, `${s.untagged} of ${s.total} are not`);
     ok(isHire(s), `${tag}: the plain address shows the client view and none of the joiner view`, brief(s));
 
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
@@ -201,14 +204,19 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await page.addInitScript(pinTheme, pin('light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     // Resolved, so index.html#faq and /#faq count as same-page links too.
-    const hrefs = await page.evaluate(() => {
+    const links = await page.evaluate(() => {
       const here = location.pathname.replace(/index\.html$/, '');
-      return [...document.querySelectorAll('a[href]')].map((a) => new URL(a.getAttribute('href'), location.href))
-        .filter((u) => u.origin === location.origin && u.pathname.replace(/index\.html$/, '') === here && u.hash)
-        .map((u) => u.hash);
+      return [...document.querySelectorAll('a[href]')].map((a) => ({ a, u: new URL(a.getAttribute('href'), location.href) }))
+        .filter(({ u }) => u.origin === location.origin && u.pathname.replace(/index\.html$/, '') === here && u.hash)
+        .map(({ a, u }) => {
+          let id = u.hash.slice(1); try { id = decodeURIComponent(id); } catch (e) { /* keep it */ }
+          const target = document.getElementById(id);
+          return { hash: u.hash, inClient: !!a.closest('.view-hire'), targetInClient: !!(target && target.closest('.view-hire')) };
+        });
     });
-    const stray = hrefs.filter((h) => !SAME_PAGE.has(h));
-    ok(stray.length === 0, 'every same-page link on the home page is #main, #hire or #join (a view lives in one fragment)', stray.join(', '));
+    const stray = links.filter((l) => !SAME_PAGE.has(l.hash) && !(l.inClient && l.targetInClient)).map((l) => l.hash);
+    ok(stray.length === 0, 'every same-page link on the home page is #main, #hire or #join, or stays inside the client view (a view lives in one fragment)', stray.join(', '));
+    ok(links.filter((l) => l.inClient && l.targetInClient).length >= 5, 'the client view\'s own same-page links (the contents row) were read', `${links.filter((l) => l.inClient && l.targetInClient).length} links`);
 
     // Every text block of the joiner view, read where it is visible (the #join address), with <br> as a space.
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });

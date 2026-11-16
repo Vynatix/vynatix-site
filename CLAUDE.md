@@ -117,10 +117,11 @@ highlights the things most worth keeping front-of-mind.
   ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
   joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`); with
   script `app.js` adds `js-view-join` in the head (so a load on `#join` never paints the client hero first),
-  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar is a
-  `<section>` carrying exactly one of `view-hire` or `view-join`, and the client closing band comes before the
-  joiner sections (adjacent-sibling rules ignore `display: none`); the only same-page links are `#main`,
-  `#hire` and `#join` (a `:target` view survives one fragment); the joiner view's blocks are lifted word for
+  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar (the
+  sections, and the contents row) carries exactly one of `view-hire` or `view-join`, and the client closing band
+  comes before the joiner sections (adjacent-sibling rules ignore `display: none`); a `:target` view survives
+  one fragment, and any fragment but `#join` is the client view, so same-page links inside the client view (the
+  contents row) are fine and every other one is `#main`, `#hire` or `#join`; the joiner view's blocks are lifted word for
   word from `membership.html` (`data-from`) and any other text in it is on the review list in `audience.js`;
   `sv.html` has none. `tools/verify/audience.js` enforces it. Details and known limits in AGENTS.md,
   *Audience switch*.

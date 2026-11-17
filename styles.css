@@ -1201,8 +1201,9 @@ dl.metrics { margin: 0; }
 
 /* How we work: a three-column comparison table. The caption is a visible title
    above it; the first and last columns drop their outer padding so the text
-   lines up with the paragraphs around it; the row headers read as labels, not
-   as the small capitals of the column headers. */
+   lines up with the paragraphs around it (on a wide screen the Vynatix column is
+   the exception: it sits on a tint, with its own padding); the row headers read as
+   labels, not as the small capitals of the column headers. */
 .compare {
   margin: 0 0 var(--space-5);
   line-height: var(--leading-normal);
@@ -1229,6 +1230,43 @@ dl.metrics { margin: 0; }
 }
 .compare td { color: var(--text-body); }
 .compare td:nth-of-type(1) { color: var(--text-muted); }
+/* On a wide screen the comparison is the argument of the section, so it takes the wide
+   two thirds: the pull quote, the balance photograph and the two short paragraphs' column
+   sits first in the narrow third (neither column has a link, so focus order is unaffected).
+   The Vynatix answers sit on a tint at the display colour; the typical answers stay muted. */
+@media (min-width: 905px) {
+  .terms .two-up { grid-template-columns: 1fr 2fr; }
+  .terms .two-up > :last-child { order: -1; }
+  .terms blockquote {
+    font-size: var(--text-h5);
+    padding-inline: var(--space-6) 0;
+  }
+  .compare {
+    font-size: var(--text-body-md);
+    margin-bottom: var(--space-8);
+  }
+  .compare caption {
+    font-family: var(--font-subhead, var(--font-display));
+    font-size: var(--text-h5);
+    letter-spacing: var(--tracking-headline);
+    padding-bottom: var(--space-5);
+  }
+  .compare th,
+  .compare td { padding-block: var(--space-4); }
+  .compare tbody th { width: 24%; font-size: var(--text-body-md); }
+  .compare td:nth-of-type(1) { width: 32%; }
+  .compare thead th:last-child,
+  .compare td:last-child {
+    padding-inline: var(--space-6);
+    background: var(--md-sys-color-surface-container-low);
+  }
+  .compare td:last-child { color: var(--text-display); font-weight: 500; }
+  .compare thead th:last-child {
+    color: var(--text-accent);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .compare tbody tr:last-child td:last-child { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+}
 /* On a phone each row keeps the comparison side by side, which is its point: the row
    header across the top, then the typical answer and Vynatix's answer in two columns,
    under the two column names shown once above the first row (the "Topic" header is for
@@ -1606,9 +1644,39 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
    The English home page only (sv.html keeps the older stack of sections).
    --------------------------------------------------------------- */
 
-/* On this page: a still row of anchor links between the hero and the first
-   section. Plain links, so it works without JavaScript and nothing scrolls on
-   its own. Not a <section>, so the content-visibility rule above leaves it alone. */
+/* One column line and one heading scale for the home page (both views and the client closing
+   band; other pages keep the shared rules). From 905px every two-column block splits in halves,
+   so the right-hand column of a heading, a list, a card, the steps and the closing band all start
+   on one line. The questions keep their thirds below 1240px, where halves would narrow every
+   answer and lengthen the list; their heading follows them, so question and lead still share a
+   column. Section titles take token ends (40 to 56px) and chapter titles one step below (32px),
+   so a section title never reads smaller than the titles inside it. */
+@media (min-width: 905px) {
+  :is(.view-hire, .view-join) .section__head { grid-template-columns: 1fr 1fr; }
+  #faq.view-hire .section__head { grid-template-columns: 1fr 2fr; }
+  :is(.view-hire, .view-join) .section__h2 {
+    font-size: clamp(var(--text-h3), 3.9vw, var(--text-h2));
+    max-width: 20ch;
+  }
+  .view-hire .band--inset .caps { column-gap: var(--space-16); }
+  #contact .cta-band__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+  #contact .cta-band__h2 {
+    font-size: clamp(var(--text-h2), 5vw, var(--text-h1));
+    max-width: 12ch;
+  }
+}
+@media (min-width: 1240px) {
+  #faq.view-hire .section__head { grid-template-columns: 1fr 1fr; }
+}
+
+/* On this page: a row of anchor links between the hero and the first section, in page
+   order. Plain links, so it works without JavaScript and nothing scrolls on its own. Not a
+   <section>, so the content-visibility rule above leaves it alone. From 1024px, in browsers
+   with scroll-target-group, it also pins under the header (block below). */
 .toc { border-top: 1px solid var(--md-sys-color-outline-variant); }
 .toc > .container {
   display: flex;
@@ -1636,22 +1704,86 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   text-decoration: underline 1px var(--indicator);
   text-underline-offset: 0.25em;
 }
+/* The pinned contents row: from 1024px, and only where the browser has scroll-target-group
+   and :target-current (other browsers keep the row above unchanged), the row sticks under
+   the header for the rest of a long page, and a rail under its links fills up to the section
+   the reader is in. It is driven by the reader's scroll alone: no script, no transition, no
+   animation object. The row keeps the same in-flow size in both states, so sticking never
+   moves the page; only paint changes, inside the stuck query: the header's glass, the rail
+   and the current link in the primary colour. While it is pinned the anchor reserve grows
+   by the row's height, so a focused link or a jump target never lands under it. */
+@media (min-width: 1024px) {
+  @supports (scroll-target-group: auto) and selector(:target-current) {
+    html:has(.toc) { scroll-padding-top: calc(var(--space-24) + var(--space-12) + var(--space-2)); }
+    .toc {
+      position: sticky;
+      top: calc(var(--space-24) - var(--space-2) - var(--space-4));
+      z-index: 45;
+      container-type: scroll-state;
+      border-top-color: transparent;
+      pointer-events: none;
+    }
+    .toc > .container {
+      position: relative;
+      width: calc(100% - 2 * var(--space-6));
+      column-gap: var(--space-6);
+    }
+    .toc > .container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-top: 1px solid var(--md-sys-color-outline-variant);
+    }
+    .toc a { pointer-events: auto; }
+    .toc__list { scroll-target-group: auto; gap: 0; }
+    .toc__list li + li { padding-inline-start: var(--space-4); }
+    @container scroll-state(stuck: top) {
+      .toc > .container::before {
+        inset-block: var(--space-4);
+        pointer-events: auto;   /* the glass takes its own clicks; the strips above and below it do not */
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--radius-lg);
+        background: var(--glass-tint-surface);
+        -webkit-backdrop-filter: var(--glass-blur-regular);
+        backdrop-filter: var(--glass-blur-regular);
+        box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l2);
+      }
+      .toc__list li { box-shadow: inset 0 -2px 0 var(--md-sys-color-outline-variant); }
+      .toc__list li:has(~ li > a:target-current),
+      .toc__list li:has(> a:target-current) { box-shadow: inset 0 -2px 0 var(--indicator); }
+      .toc__list a:target-current { color: var(--md-sys-color-primary); }
+    }
+  }
+}
 
 /* A section that opens with an inset band (How we work): the band sits where
    the section's top padding would be, so the gap above it is the previous
-   section's bottom padding alone. */
+   section's bottom padding alone. After a tonal band (Further reading) that bottom
+   padding is inside the tint, so the band takes its own top padding back. */
 .section--band { padding-top: 0; }
 .section--band > .container { margin-top: var(--space-16); }
+.section--surface + .section--band { padding-top: var(--space-24); }
 @media (max-width: 599px) {
   .section--band > .container { margin-top: var(--space-12); }
+  .section--surface + .section--band { padding-top: var(--space-16); }
+}
+/* The questions are the longest section on the home page: their first guess for the deferred
+   rendering above is nearer their real height (2,300px wide, 3,500px on a phone) than the
+   shared 1,000px, so a jump to them lands where it should and axe-core reads the colours
+   right. The contents row only exists on the English home page, so sv.html keeps the default. */
+.toc ~ #faq { contain-intrinsic-size: auto 2400px; }
+@media (max-width: 599px) {
+  .toc ~ #faq { contain-intrinsic-size: auto 3500px; }
 }
 
 /* Selected work, at a glance: the three published projects, one row each, in
    the columns of the section heading above it. Each row is one link to the
-   chapter that carries the project. */
+   chapter that carries the project. On a wide screen a row reads as an index line:
+   the service and the client on top, the headline alone underneath on one line. */
 .work-index {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-16);
   align-items: start;
   scroll-margin-top: var(--space-24);
@@ -1701,6 +1833,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   text-decoration: underline 1px var(--indicator);
   text-underline-offset: 0.2em;
 }
+@media (min-width: 905px) {
+  .work-index__row { grid-template-columns: 1fr auto; }
+  .work-index__case { grid-column: 1 / -1; grid-row: 2; }
+}
 @media (max-width: 904px) {
   .work-index { grid-template-columns: 1fr; gap: var(--space-6); }
 }
@@ -1708,30 +1844,53 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .work-index__row { grid-template-columns: 1fr; gap: var(--space-1); }
 }
 
-/* A service chapter: the writing and its "What we build" panel in one column,
-   the project that shows it in the other. In source order (and on a phone) the
-   writing comes first, then the project, then the list. Every other chapter
-   flips, so the photographs alternate sides down the page. */
+/* A service chapter: the writing beside its "What we build" panel, then the project that
+   shows it as one wide card closing the chapter, photograph and result side by side, so the
+   proof is the largest thing in the chapter. In source order (and on a phone) the writing
+   comes first, then the project, then the list; on a wide screen keyboard focus therefore
+   steps from the card back up to the list's link. Every other chapter flips its card, so
+   the photographs alternate sides down the page. */
 .chapter {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
-  grid-template-areas: "text case" "panel case";
-  gap: var(--space-8) var(--space-16);
+  grid-template-rows: auto auto;
+  grid-template-areas: "text panel" "case case";
+  gap: var(--space-12) var(--space-16);
   align-items: start;
   margin-top: var(--space-16);
   padding-top: var(--space-16);
   border-top: 1px solid var(--md-sys-color-outline-variant);
   scroll-margin-top: var(--space-16);
 }
-.chapter--flip { grid-template-areas: "case text" "case panel"; }
 .chapter__text { grid-area: text; }
 .chapter__case { grid-area: case; }
-.chapter__panel { grid-area: panel; }
+.chapter__panel { grid-area: panel; align-self: stretch; }
 .chapter__text > :last-child { margin-bottom: 0; }
 .chapter .more { margin-top: var(--space-2); }
 @media (min-width: 905px) {
-  .chapter__case .case__img { aspect-ratio: 3 / 2; }
+  .chapter__case { flex-direction: row; }
+  .chapter--flip .chapter__case { flex-direction: row-reverse; }
+  .chapter__case .case__img {
+    position: relative;
+    flex: 0 0 50%;
+    aspect-ratio: auto;
+    min-height: 18rem;
+  }
+  .chapter__case .case__img img {
+    position: absolute;
+    inset: 0;
+  }
+  .chapter__case .case__body {
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-8);
+  }
+  .chapter__case.case h3 { font-size: var(--text-h4); }
+  .chapter__case .case__body > p:not(.case__meta, .case__metric),
+  .chapter__case .case__points { font-size: var(--text-body-md); }
+  .chapter__case.case .case__metric { margin-top: var(--space-2); font-size: var(--text-h2); }
+  .chapter__case.case .case__metric--text { font-size: var(--text-h4); }
+  .chapter .two-up__h3 { font-size: var(--text-h4); }
 }
 @media (max-width: 904px) {
   .chapter,
@@ -1786,12 +1945,52 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   color: var(--text-muted);
 }
 .two-up blockquote + .photo { margin-top: var(--space-10); }
-/* The four facts beside a photograph: the tiles' own grid, then the link. */
+/* Metric tiles in a two-up column (work.html): the tiles' own grid, then what follows. */
 .two-up .metrics { margin-bottom: var(--space-6); }
+/* Who we are: the company sentence beside the Gothenburg photograph, then the four facts
+   across the full width under their own small heading, the figures at display size. */
+.who__top { align-items: center; }
+.who__top .section__h2 { margin-bottom: var(--space-6); }
+.glance {
+  margin-top: var(--space-16);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+.glance__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  align-items: end;
+  margin-bottom: var(--space-8);
+}
+.glance__head .two-up__h3 { font-size: var(--text-h5); margin-bottom: 0; }
+.glance__head .two-up__body { margin: 0; color: var(--text-muted); }
+.glance .metrics { gap: var(--space-6); margin-bottom: var(--space-6); }
+.glance .metric { padding: var(--space-6); }
+.glance .metric__lbl { font-family: var(--font-sans); letter-spacing: var(--tracking-eyebrow); }
+.glance .metric__val { font-size: var(--text-h1); margin-block: var(--space-4) var(--space-3); }
+.glance .metric__ctx { font-size: var(--text-body-sm); }
+@media (max-width: 1239px) {
+  .glance .metric__val { font-size: var(--text-h2); }
+}
+@media (max-width: 904px) {
+  .glance { margin-top: var(--space-12); }
+  .glance__head { grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-6); }
+  .glance .metrics { gap: var(--space-3); }
+  .glance .metric { padding: var(--space-5); }
+  .glance .metric__val { font-size: var(--text-h3); margin-block: var(--space-3) var(--space-2); }
+}
+/* A phone: still two by two (the shared rule stacks metric grids in one column). */
+@media (max-width: 599px) {
+  .glance .metrics { grid-template-columns: repeat(2, 1fr); }
+  .glance .metric { padding: var(--space-4); }
+  .glance .metric__val { font-size: var(--text-h4); }
+}
 
 /* Common questions: one row per question, a rule on top. On a wide screen the
-   question takes the heading column and the answer the lead's column, so a
-   reader scans the questions down the left edge. The answer stays flat markup
+   question takes the heading column and the answer the lead's column (thirds up to
+   1239px, halves from 1240px, as the heading above), so a reader scans the questions
+   down the left edge. The answer stays flat markup
    (h3, then p, ul and ol), which the FAQ structured data is generated from, so
    the two columns come from a float, not from a wrapper. */
 .qa__item {
@@ -1825,6 +2024,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     margin-bottom: 0;
   }
   .qa__item > :not(h3) { margin-left: calc((100% - var(--space-16)) / 3 + var(--space-16)); }
+}
+@media (min-width: 1240px) {
+  .qa__item > h3 { width: calc((100% - var(--space-16)) / 2); }
+  .qa__item > :not(h3) { margin-left: calc((100% - var(--space-16)) / 2 + var(--space-16)); }
 }
 
 /* Further reading: two columns of entries, a rule on top of each, the title as
@@ -1863,8 +2066,9 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 
 /* The home page between a phone and a laptop (600 to 904px): its own tier rather than the
    phone stack stretched to 720px. Parallel blocks sit two-up; from 720px each chapter's
-   case card sits beside its "What we build" list, and the Gothenburg photograph beside the
-   four facts. Source order (writing, card, list) is unchanged, so is the reading order. */
+   case card sits beside its "What we build" list, and the company sentence beside the
+   Gothenburg photograph. Source order (writing, card, list) is unchanged, so is the
+   reading order. */
 @media (min-width: 600px) and (max-width: 904px) {
   #how-we-work .caps--2,
   .view-join .caps--2,
@@ -1886,18 +2090,9 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     grid-template-areas: "text text" "case panel";
     gap: var(--space-8) var(--space-6);
   }
-  #who-we-are .two-up { grid-template-columns: 1fr 1fr; gap: var(--space-6); align-items: center; }
-  #who-we-are .metrics--2 { gap: var(--space-3); }
-  #who-we-are .metric { padding: var(--space-4); }
-  #who-we-are .metric__val { font-size: var(--text-h4); }
+  .who__top { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
 }
 
-/* The home page on a phone: the four facts as a two-by-two grid, not four rows. */
-@media (max-width: 599px) {
-  #who-we-are .metrics--2 { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
-  #who-we-are .metric { padding: var(--space-4); }
-  #who-we-are .metric__val { font-size: var(--text-h4); }
-}
 /* From 360px each step's numeral sits beside its headline instead of on a row of its own. */
 @media (min-width: 360px) and (max-width: 599px) {
   :is(#how-we-work, .view-join) .caps--2 > .cap {

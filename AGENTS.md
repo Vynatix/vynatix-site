@@ -710,28 +710,50 @@ everywhere, including LinkedIn, the registries and `llms.txt`.
 
 **The English home page** is ordered by what a visitor is checking, and the work sits
 beside the service it shows. After the hero comes a contents row (`.toc`, a `<nav>` of
-plain anchor links, one per section, in page order: add or rename a section and this
-row changes with it). Then:
+plain anchor links, one per section, in page order: add, rename or move a section and this
+row changes with it). From 1024px, in browsers with `scroll-target-group` and
+`:target-current`, the row pins under the header and a rail under its links fills up to the
+section the reader is in; it changes paint only (the same in-flow size in both states, no
+script, no animation object), and other browsers keep the plain row. Then, in this order
+(proof and the four facts first, then the terms right before the questions and the call to
+action that act on them):
 
 - `#services`, one section for the services and the published work. Under the heading,
   the `#work` row (`.work-index`) lists the three projects at a glance, each row a link
   to its chapter. Each service is a `.chapter` (`#application-development`,
   `#ai-engineering`, `#cloud-platforms`): the writing, the case card (`.case`, one link
   to `work.html`) and the "What we build" panel, in that source order, which is also the
-  phone order; on a wide screen the card takes one column and every other chapter flips
-  (`.chapter--flip`). A fourth published project needs a decision first, because a
-  chapter holds one card.
+  phone order. On a wide screen the writing sits beside the panel and the case card closes
+  the chapter at full width, photograph and result side by side (every other chapter,
+  `.chapter--flip`, puts the photograph on the right), so the proof is the largest thing in
+  the chapter; keyboard focus steps from the card back up to the panel's link. A fourth
+  published project needs a decision first, because a chapter holds one card.
+- `#who-we-are` (`.section--surface`), the company sentence beside the Gothenburg photograph
+  (`.who__top`), then the four metric tiles across the full width under their own small
+  heading (`.glance`).
+- `#further-reading` (`.reads`, also `.section--surface`, so the two join as one tonal band).
 - `#how-we-work` (`.section--band`), the four steps on the inverse band and, under it,
-  the comparison table, the capacity and Gothenburg paragraphs and the pull quote:
-  everything about the terms of working with us, in one place.
-- `#who-we-are`, the company sentence, then the four metric tiles beside a photograph.
+  the comparison table (in the wide two thirds on a wide screen, the Vynatix column on a
+  tint), the capacity and Gothenburg paragraphs and the pull quote: everything about the
+  terms of working with us, in one place. After a tonal band it takes its top padding back
+  (`.section--surface + .section--band`).
 - `#faq` (`.qa`), one row per question; on a wide screen the question sits in the
-  heading column and the answer in the lead's column. The answer markup stays flat
-  (`h3`, then `p`, `ul`, `ol`), so the two columns come from a float, not a wrapper.
-- `#further-reading` (`.reads`), then the call-to-action band (`#contact`). The old
-  `#engineers` section ("For senior engineers") is the joiner view's opening now (see
-  *Audience switch*), and the contents row links to it as `#join`. The contents row and every
-  section above carry `view-hire`: the joiner view replaces them, hero included.
+  heading column and the answer in the lead's column (thirds up to 1239px, halves from
+  1240px, heading and rows together). The answer markup stays flat (`h3`, then `p`, `ul`,
+  `ol`), so the two columns come from a float, not a wrapper. Its first guess for the
+  deferred rendering is its own (`.toc ~ #faq`), near its real height.
+- The call-to-action band (`#contact`), directly after the last answer ("How do we start a
+  project"). The old `#engineers` section ("For senior engineers") is the joiner view's
+  opening now (see *Audience switch*), and the contents row links to it as `#join`. The
+  contents row and every section above carry `view-hire`: the joiner view replaces them,
+  hero included.
+
+From 905px the home page keeps one column line: every two-column block (section heads, the
+work index, the chapters, the two-ups, the steps and the client closing band) splits in
+halves, so their right-hand columns start on one line, and section titles take token ends
+(40 to 56px) with chapter titles one step below (32px). These rules are scoped to the home
+page (`.view-hire`, `.view-join`, `#contact`): `.section__head`, `.section__h2` and the
+`.cta-band` classes are shared with other pages, which keep the thirds.
 
 The same facts recur across these sections on purpose (each block is written to be
 quoted alone, and the FAQ feeds the structured data word for word), so a rearrangement

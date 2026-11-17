@@ -266,7 +266,7 @@ the headline), height `4.5lh`; left is the lede box's right edge plus 24px (the
 pseudo-element is set in `font: var(--text-type-lede)`, so `56ch` is the lede's
 measure); right is the header's right edge, `max(24px, (100% - 1200px) / 2)`, where a
 16px three-cord selvedge sits. Ink is `tertiary` 45% into `on-surface`, the ramp is
-20, 48, 72 and 82% at 10, 26, 46 and 70% of the width, the ground is 24%, the
+12, 28, 42 and 48% at 10, 26, 46 and 70% of the width (lowered from 20, 48, 72 and 82% so the cloth sits a step lighter than the headline), the ground is 24%, the
 vertical fade 14% and 82%. Off under forced colours, more contrast, reduced
 transparency and print. Hand-fitted: 1.12, 4.5, 56ch, the ramp, ground and fades,
 the 1100px breakpoint. `bg-weave.js`.
@@ -395,8 +395,11 @@ does not in step. `#JOIN` is not `#join`. On a spelling of the path the head tes
 know (an extensionless `/index`) the whole enhancement stays off and `:target` decides
 alone, as with script blocked. The selected look follows the same decision, never `aria-current`, so the page, and
 the hero strip `bg-draw.js` check 5 compares with and without JavaScript, looks the same either
-way. The selected link is told apart by an underline and a primary border as well as its fill
-(the containers sit close together in some looks, and forced colours drop fills).
+way. The two links form one segmented control (they touch, share the middle hairline and
+square their inner corners), and only the selected half is filled: an unselected fill could sit
+darker than the selected one in some looks. The selected link is told apart by an underline and a
+primary border as well as its fill (the containers sit close together in some looks, and forced
+colours drop fills).
 
 Rules that keep it working:
 
@@ -533,7 +536,12 @@ the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both h
 header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
-when current, one small primary button and two icon buttons.
+when current, one small primary button and two icon buttons. On a phone the links fold into
+the menu, but the "Get in touch" button stays in the bar from 360px (enhanced header only:
+without JavaScript the wrapped nav shows the link, and under 360px it sits in the menu), so a
+reader can act from any depth of a long page. The print layer at the end of
+`styles.css` prints the header once, without its controls, and keeps marks, buttons and bands
+in colour.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
@@ -591,7 +599,9 @@ afterthought — preserve it:
 - **Controls that need JS must not sit dead without it.** The pattern is to
   hide them in CSS and let `app.js` opt in by adding a class to `<html>`:
   `.js-nav` for the collapsible mobile nav (without it the nav stays visible
-  and wraps under the bar) and `.js-theme` for the theme toggle (it keeps its
+  and wraps under the bar; `app.js` sets it in the blocking head, so a phone never paints the
+  wrapped nav and then jumps, and takes it back off at `DOMContentLoaded` if the page has no
+  menu button or nav) and `.js-theme` for the theme toggle (it keeps its
   place but is invisible until it can work). The consent module follows the same
   rule by building its markup only when it can work: the bar and the in-page
   panel do not exist without JavaScript, with blocked storage, or while the ID is
@@ -727,6 +737,16 @@ The same facts recur across these sections on purpose (each block is written to 
 quoted alone, and the FAQ feeds the structured data word for word), so a rearrangement
 moves sentences; it does not delete or merge them without the owner. Nothing here
 needs JavaScript and nothing moves.
+
+Between a phone and a laptop (600 to 904px) the home page has its own tier rather than the
+phone stack stretched wide: the steps, the joiner benefits and steps and the reading list sit
+two-up, the pull quote beside the balance photograph, and from 720px each chapter's case card
+beside its "What we build" list and the Gothenburg photograph beside the four facts. On a phone
+the client hero's lede is one type step smaller and the client row closer, so both buttons sit
+on the first screen of a 390x844 phone (the sheet art is placed from these boxes: run
+`npm run check:bg`); the four facts form a two-by-two grid; the comparison keeps the two
+answers side by side under column names shown once (the table's ARIA roles keep it a table
+once its rows are grids); and from 360px each step's numeral sits beside its headline.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link

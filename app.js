@@ -189,14 +189,20 @@
 
 // Mobile nav — toggle the menu open/closed from the menu button.
 (function () {
+  // Opt into the collapsible mobile nav at once, here in the blocking head, so a phone
+  // never paints the wrapped no-JS nav first and then collapses it (on a slow load that
+  // moved the whole page about 115px under the reader). Without this class the nav stays
+  // visible and wraps, so a no-JS visitor on a phone still has every link. init() takes
+  // the class back off on a page with no menu button or nav, so no control sits dead.
+  document.documentElement.classList.add('js-nav');
+
   function init() {
     var toggle = document.querySelector('.mobile-toggle');
     var nav = document.querySelector('.site-header__nav');
-    if (!toggle || !nav) return;
-
-    // Opt into the collapsible mobile nav. Without this class the nav stays
-    // visible and wraps, so a no-JS visitor on a phone still has every link.
-    document.documentElement.classList.add('js-nav');
+    if (!toggle || !nav) {
+      document.documentElement.classList.remove('js-nav');
+      return;
+    }
 
     function setOpen(open) {
       nav.classList.toggle('open', open);

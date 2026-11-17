@@ -74,7 +74,8 @@
     left: var(--weave-from);
     right: var(--weave-edge);
     /* The cords of the selvedge (a heavy one and two lighter) on the right 16px, then the ink
-       ramp over the rest: the cloth is faint where it starts and full strength by its middle. */
+       ramp over the rest: the cloth is faint where it starts and reaches about half strength,
+       which keeps it a step lighter than the headline so the eye starts on the words. */
     background:
       linear-gradient(to left,
         var(--weave-ink) 0 3px, transparent 3px 7px,
@@ -83,10 +84,10 @@
         right / 16px 100% no-repeat,
       linear-gradient(to right,
         transparent 0,
-        color-mix(in srgb, var(--weave-ink) 20%, transparent) 10%,
-        color-mix(in srgb, var(--weave-ink) 48%, transparent) 26%,
-        color-mix(in srgb, var(--weave-ink) 72%, transparent) 46%,
-        color-mix(in srgb, var(--weave-ink) 82%, transparent) 70%)
+        color-mix(in srgb, var(--weave-ink) 12%, transparent) 10%,
+        color-mix(in srgb, var(--weave-ink) 28%, transparent) 26%,
+        color-mix(in srgb, var(--weave-ink) 42%, transparent) 46%,
+        color-mix(in srgb, var(--weave-ink) 48%, transparent) 70%)
         left / calc(100% - 16px) 100% no-repeat;
     /* The mask, top layer first: the fade at the top and bottom, intersected with the threads, the
        ground (a quarter of full strength everywhere, so the cloth has a tone between its threads)

@@ -255,6 +255,11 @@ h1 em, h2 em {
    app.js adds .js-theme to <html>; without JS the page keeps its default theme. */
 .theme-toggle { visibility: hidden; }
 .js-theme .theme-toggle { visibility: visible; }
+/* The toggle has no transition of its own. Under reduced motion the system gives every
+   element a 0.01ms transition on all properties, which would turn this visibility switch
+   into a brief transition whenever the toggle was styled before js-theme arrived. */
+.theme-toggle,
+.theme-toggle * { transition-property: none; }
 .theme-toggle .icon--light { display: none; }
 .theme-toggle[aria-pressed="true"] .icon--dark { display: none; }
 .theme-toggle[aria-pressed="true"] .icon--light { display: block; }

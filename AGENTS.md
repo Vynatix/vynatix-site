@@ -196,6 +196,55 @@ theme. The dark theme is a parallel environment, not an inverted light one: the
 inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit on
 `md-sys-color-inverse-surface`, which is light in the dark theme.
 
+**Liquid Glass.** The site's surfaces are glass (an owner decision of 17 November
+2026), in one fenced block at the end of `styles.css`, built only from the system's
+glass kit: `--glass-tint-surface`, `--glass-blur-*`, `--glass-specular` and the
+shadows, plus role tokens in `color-mix()`. The pieces:
+
+- **The backdrop.** `body::before` is a fixed, still layer of four soft radial pools
+  in the theme's roles (surface-container-highest, tertiary, primary, secondary)
+  behind every page, so the glass has something to refract. It never moves. The
+  canvas colour stays on `<body>`, and the gradients sit on pseudo-elements only,
+  never on an element that holds text, so `a11y.js` can still resolve the background
+  behind text. (Its sweep walks up to the first opaque background and skips text
+  under a gradient, so a gradient on a text container would hide that text from the
+  check.) `.section--surface` is a translucent band without blur, so the backdrop
+  shows through it.
+- **The header** keeps the system's glass on itself, with the chrome blur, a softer
+  edge and a sheen on `::after`. The header is a stacking context, so it is the
+  backdrop root for everything inside it: a glass layer inside it (a `::before`, the
+  open mobile menu) could only blur the header's own contents. That is why the open
+  menu keeps its solid pane (with the glass edge, radius and lit edge).
+- **Cards**: `.panel`, `.metric`, `.case` and `.consent-panel` are glass with the
+  thin blur (there can be a dozen on a page), a hairline edge, the specular edge,
+  `shadow-l2` and a sheen on `::before`. The system reserves glass for chrome; the
+  owner extended it to these cards. Under text only `--glass-tint-surface` is used
+  (mixed 40% toward `surface-bright`, so the pane is a step lighter than the canvas
+  in both themes), never the primary or accent tints.
+- **Buttons** keep the system's radius. The filled ones keep their solid fill and
+  gain the specular edge; `.btn--secondary` is clear glass. On an inverse band the
+  band's own button rules win. Capsules (`radius-full`) were tried and fail
+  `bg-iris.js`: with the iris drawn, the hero buttons' long anti-aliased curves over
+  the backdrop render 6 to 12 levels differently, which the guard's on/off diff
+  reads as art inside the button boxes (it does with `visibility: hidden` as well as
+  `display: none`). Capsules would need that guard's method changed first, which is
+  an owner decision.
+- **Solid on purpose**: the inverse bands (CTA band, editorial band, footer), the
+  consent bar (a legal control, kept compact and solid) and the banners.
+- **Rules**: `backdrop-filter` only on leaf surfaces, never on `main`, a section or a
+  view wrapper (it creates a containing block and a backdrop root, which would break
+  the sticky header, the `:target` views and nested glass). Under
+  `prefers-reduced-transparency` the system turns every tint solid and drops the blur
+  and the edge, and this block removes the backdrop and the sheens. In print the
+  backdrop, sheens, blur and shadows go.
+- **Contrast**: `a11y.js` measures text against the nearest opaque background (the
+  canvas), not the composited glass. The glass panes are about 80% opaque and lighter
+  than the canvas, so composited contrast is at least as good, and a composited
+  pixel measurement (10th-percentile backdrop pixel behind each text box, text made
+  transparent, in both themes at 1440 and 390 px, twelve pages) found all text at AA
+  when the block was added. Re-measure by hand when a tint or the backdrop
+  changes.
+
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a
 seeded woven cloth), `sheet` (the headline's drafting sheet), `dial` (a vernier

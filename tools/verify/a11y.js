@@ -179,7 +179,7 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   for (const bg of ALL_BGS) {
     const ctx = await armed(browser, { reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, { theme: 'light', bg });
+    await page.addInitScript(pinTheme, { theme: 'mono-light', bg });
     if (bg === 'iris') await page.addInitScript(() => { try { sessionStorage.setItem('vynatix-bg-iris-idle', '200'); } catch (e) { /* blocked */ } });
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     await page.mouse.move(300, 450, { steps: 6 });

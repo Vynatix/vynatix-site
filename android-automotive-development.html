@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="mono-light">
 <head>
 <meta charset="utf-8">
 <!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
@@ -222,8 +222,8 @@
 <!-- /seo -->
 <!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
      colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
-     The markup names the Forest light theme, which is what a visitor without JavaScript
-     sees; app.js draws a colour scheme at random for each visit (see its header). -->
+     The markup names the Monochrome light theme, the site's one colour scheme; app.js
+     switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
 <link rel="stylesheet" href="styles.css?v=752cd087">
@@ -236,11 +236,11 @@
 <!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
      scheme and the light/dark choice, not the OS preference alone, so a media-gated
      value would contradict the rendered page. -->
-<meta name="theme-color" content="#EFE8DA">
+<meta name="theme-color" content="#F5F1EA">
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=ab94ae56"></script>
+<script src="app.js?v=2dff081d"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>

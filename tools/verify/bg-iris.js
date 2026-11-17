@@ -1,6 +1,6 @@
 // Hero background "iris": clearance, contrast and placement guard for the home hero.
 //
-//   cd tools && BASE=http://localhost:8000/ THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/bg-iris.js
+//   cd tools && BASE=http://localhost:8000/ THEMES=mono-light,mono-dark node verify/bg-iris.js
 //
 // What it proves, per theme, with the page drawn as the iris (the script pins { theme, bg: 'iris' }):
 //   B  clearance   The art (the disc, its scales, the lit arc, the inner dial, everything .iris draws) keeps CLEAR px (24)

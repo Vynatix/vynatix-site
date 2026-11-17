@@ -151,7 +151,7 @@ function clean(env, name) {
     const stripped = raw.slice(0, cut);
 
     const run = async (rel, { arm = {}, strip = false, seed = false }) => {
-      const env = await armedContext(browser, { theme: 'light', consent: seed ? 'granted' : undefined, spy: true, arm: strip ? { inert: true } : arm });
+      const env = await armedContext(browser, { theme: 'mono-light', consent: seed ? 'granted' : undefined, spy: true, arm: strip ? { inert: true } : arm });
       if (strip) await env.ctx.route((u) => u.pathname.endsWith('/app.js'), (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: stripped }));
       await env.ctx.addCookies([{ name: '_ga', value: 'keep', url: BASE }, { name: '_ga_TEST000000', value: 'keep', url: BASE }]);
       const page = await open(env.ctx, rel);
@@ -523,7 +523,7 @@ function clean(env, name) {
   // ---------------------------------------------------------------------------------------------
   await scenario('PROMINENCE: Decline and Accept are equals, and the bar is not a dialog', async () => {
     for (const [rel, vw, vh] of [['index.html', 390, 844], ['index.html', 1440, 900], ['sv.html', 390, 844], ['sv.html', 1440, 900]]) {
-      const env = await armedContext(browser, { viewport: { width: vw, height: vh }, theme: 'light' });
+      const env = await armedContext(browser, { viewport: { width: vw, height: vh }, theme: 'mono-light' });
       const page = await open(env.ctx, rel);
       const d = await page.evaluate(() => {
         const bar = document.getElementById('consent-bar');
@@ -565,7 +565,7 @@ function clean(env, name) {
     // after it. (A load on #join starts Tab at the fragment target, so this reads the document order of
     // what can take focus instead of pressing Tab.)
     for (const vw of [390, 1440]) {
-      const env = await armedContext(browser, { viewport: { width: vw, height: 900 }, theme: 'light' });
+      const env = await armedContext(browser, { viewport: { width: vw, height: 900 }, theme: 'mono-light' });
       const page = await open(env.ctx, 'index.html#join');
       const d = await page.evaluate(() => {
         const shown = (e) => e.getClientRects().length > 0;
@@ -811,7 +811,7 @@ function clean(env, name) {
     // normalises it), so this suite also passes in the exit state where the file ships true. What ships is
     // release-gate.js's to check; here the build with the stop on is made from the normalised one.
     ck((app.src.match(PURGE_DECL) || []).length === 1, 'app.js declares PURGE_ONLY on exactly one line (var PURGE_ONLY = true|false;)');
-    const env = await armedContext(browser, { theme: 'light', consent: 'granted' });
+    const env = await armedContext(browser, { theme: 'mono-light', consent: 'granted' });
     const base = rewriteGaIdSource(await (await env.ctx.request.get(BASE + 'app.js')).text(), TEST_ID);
     const purgeBody = normalisePurgeOnly(base, true);
     ck(/var PURGE_ONLY = false;/.test(base) && /var PURGE_ONLY = true;/.test(purgeBody) && !/var PURGE_ONLY = false;/.test(purgeBody), 'the harness can serve the module with PURGE_ONLY false (every normal run) and true (the stop)');

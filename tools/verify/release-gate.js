@@ -7,7 +7,7 @@
 // script can see: a [[CONFIRM ...]] marker, a draft banner (and a marker on a page that has lost its banner), an
 // unticked box in sections 1 to 9 of tools/PRE-FLIP-CHECKLIST.md or a blank fill-in field in its header or sign-off
 // block, PURGE_ONLY not false, a policy constant that is not 365 days, a notice that does not say 12 months /
-// 12 månader or does not name the three storage keys, a notice date that is not the `mod` in tools/seo-head.py or is
+// 12 månader or does not name the two storage keys, a notice date that is not the `mod` in tools/seo-head.py or is
 // older than 14 days, a stale "no analytics" sentence, a missing footer link, a CSP that differs, a snapshot that is
 // not current. Each line is `ok` or `FAIL`, with the file it is about.
 //
@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const {
-  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, LOOK_KEY, readApp, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
+  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, readApp, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
   stripJsComments, todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
 } = require('./_common');
 const csp = require('./csp');
@@ -243,7 +243,7 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   const py = tryRead(SEO_HEAD);
   const sitemap = tryRead('sitemap.xml');
   const pages = {};
-  const keys = [app.consentKey, THEME_KEY, LOOK_KEY];
+  const keys = [app.consentKey, THEME_KEY];
   for (const lang of Object.keys(NOTICE_PAGES)) {
     const rel = NOTICE_PAGES[lang];
     const html = tryRead(rel);
@@ -268,7 +268,7 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
     const text = html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
     add('lifetime-' + rel, rel, text.includes(words), `says "${words}" (the cookie and answer lifetime, 365 days in app.js)`, text.includes(words) ? '' : `no "${words}" in the visible text`);
     const lost = app.consentKey ? pub.storageKeyProblems(html, keys) : ['CONSENT_KEY (not found in app.js)'];
-    add('keys-' + rel, rel, lost.length === 0, `names the three storage keys in <code> (${keys.join(', ')})`, lost.length ? `missing: ${lost.join(', ')}` : '');
+    add('keys-' + rel, rel, lost.length === 0, `names the two storage keys in <code> (${keys.join(', ')})`, lost.length ? `missing: ${lost.join(', ')}` : '');
 
     // dates (T4)
     const seen = visibleDate(html, lang);
@@ -543,7 +543,7 @@ function selfTest() {
   t(ok(sub(EN, /12 months/g, '24 months'), 'lifetime-' + EN) === false, 'T3: the English notice without "12 months" fails');
   t(ok(sub(SV, /12 månader/g, '24 månader'), 'lifetime-' + SV) === false, 'T3: the Swedish notice without "12 månader" fails');
   t(ok(sub(SV, /12 månader/g, '12 months'), 'lifetime-' + SV) === false, 'T3: "12 months" does not satisfy the Swedish notice');
-  for (const k of ['vynatix-consent', 'vynatix-theme', 'vynatix-look']) {
+  for (const k of ['vynatix-consent', 'vynatix-theme']) {
     t(ok({ [EN]: ready[EN].split(`<code>${k}</code>`).join(`<em>${k}</em>`) }, 'keys-' + EN) === false, `T3: the English notice without <code>${k}</code> fails`);
     t(ok({ [SV]: ready[SV].split(`<code>${k}</code>`).join(k) }, 'keys-' + SV) === false, `T3: the Swedish notice without <code>${k}</code> fails`);
   }

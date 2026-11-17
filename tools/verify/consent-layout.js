@@ -1,7 +1,7 @@
 // Layout and accessibility of the consent bar, measured in a real browser with the module armed
 // (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted).
-//   node verify/consent-layout.js                 about two minutes, every theme: light,dark,teal-light,teal-dark,mono-light,mono-dark
-//   THEMES=light,dark node verify/consent-layout.js   only the themes named
+//   node verify/consent-layout.js                 about two minutes, both themes: mono-light,mono-dark
+//   THEMES=mono-dark node verify/consent-layout.js    only the themes named
 //   FULL=1 node verify/consent-layout.js          more viewports, pages and Tab sweeps
 //
 // The bar is fixed to the bottom of the viewport, so the numbers that matter are measured, never assumed:
@@ -24,7 +24,7 @@ const C = require('./_consent');
 
 const { sleep, snap, armedContext, open, barButton: btn } = C;
 const FULL = !!process.env.FULL;
-const THEMES = process.env.THEMES ? ENV_THEMES : ALL_THEMES;           // the role tokens have to hold in all six; THEMES= narrows it
+const THEMES = process.env.THEMES ? ENV_THEMES : ALL_THEMES;           // both of the site's themes; THEMES= narrows it
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const PAGES_L = FULL ? ['index.html', 'sv.html', 'android-automotive-consultancies-gothenburg.html'] : ['index.html', 'sv.html'];
 const VIEWPORTS = [[320, 568], [360, 640], [390, 844], [768, 1024], [1440, 900], [320, 256]];

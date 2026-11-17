@@ -1,20 +1,17 @@
-// The random colour scheme. The site draws one of three brand directions
-// (Forest, Teal, Monochrome) at random for each visit and keeps it until the
-// tab closes; light or dark follows the visitor's choice or their system. This
-// proves the draw is random, the visit is stable, the toggle works inside it,
-// nothing flashes, bad or blocked storage is survived, and the headline faces
-// the home page preloads are the ones it uses. The colour draw is what this tests, so it is
-// never pinned; the hero background is (pinBg, the sheet), so the home page is the same one
-// every run.
+// The one colour scheme. The site shows Monochrome only (mono-light, mono-dark); light or dark follows
+// the visitor's choice from the toggle or their system. This proves every page and every visit is
+// Monochrome, the toggle flips light and dark and is remembered (a choice stored before the site went
+// Monochrome, such as "dark" or "teal-dark", keeps its light/dark half), nothing flashes, bad or blocked
+// storage is survived, the retired colour-scheme key is never written, and the headline faces the home
+// page preloads are the ones it uses. The hero background is pinned (pinBg, the sheet), so the home
+// page is the same one every run.
 //
 // Every context is armed (armGa): the consent module is live with the dummy ID and Google is stubbed, so each
 // test runs with the consent bar in the page, as a first-time visitor sees it. That is what proves the bar
 // neither flashes the wrong theme, nor adds a preload, nor trips over blocked or poisoned storage.
 const { BASE, ALL_THEMES, armGa, pinBg, launch } = require('./_common');
 
-const PAGES = ['index', 'about', 'services', 'work', 'membership', 'contact', 'privacy', 'terms', 'accessibility'];
-const LOOKS = ['forest', 'teal', 'mono'];
-const lookOf = (theme) => (theme.startsWith('teal') ? 'teal' : theme.startsWith('mono') ? 'mono' : 'forest');
+const PAGES = ['index', 'about', 'services', 'work', 'membership', 'contact', 'privacy', 'terms', 'accessibility', 'sv', 'integritet'];
 const isDark = (theme) => /dark$/.test(theme);
 
 (async () => {
@@ -46,47 +43,22 @@ const isDark = (theme) => /dark$/.test(theme);
     await ctx.close();
   }
 
-  // 1. Every fresh visit draws a direction; across many visits all three appear.
+  // 1. Every page, in many fresh visits, is Monochrome, and the retired colour-scheme key is never written.
   {
     const ctx = await armed();
-    const tally = { forest: 0, teal: 0, mono: 0 };
-    let bad = 0;
-    for (let i = 0; i < 36; i++) {
+    const bad = [];
+    for (let i = 0; i < 12; i++) {
       const page = await ctx.newPage();                  // a new tab is a new visit
-      await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
+      await page.goto(url(PAGES[i % PAGES.length]), { waitUntil: 'domcontentloaded' });
       const s = await state(page);
-      if (!ALL_THEMES.includes(s.theme) || !LOOKS.includes(s.look) || lookOf(s.theme) !== s.look) bad++;
-      else tally[s.look]++;
+      if (!ALL_THEMES.includes(s.theme) || s.look !== null) bad.push(`${PAGES[i % PAGES.length]}: ${s.theme}, look ${s.look}`);
       await page.close();
     }
-    check(bad === 0 && LOOKS.every((l) => tally[l] > 0), 'a fresh visit draws a colour scheme, and across 36 visits all three appear', JSON.stringify(tally));
+    check(bad.length === 0, 'every visit to every page shows a Monochrome theme and writes no vynatix-look', bad.join(' | '));
     await ctx.close();
   }
 
-  // 2. Within one visit the scheme never changes: ten page loads and a reload.
-  {
-    const ctx = await armed();
-    let allStable = true, detail = [];
-    for (let visit = 0; visit < 6; visit++) {
-      const page = await ctx.newPage();
-      await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
-      const first = (await state(page)).theme;
-      const seen = new Set([first]);
-      for (const p of PAGES.concat(['index'])) {
-        await page.goto(url(p), { waitUntil: 'domcontentloaded' });
-        seen.add((await state(page)).theme);
-      }
-      await page.reload({ waitUntil: 'domcontentloaded' });
-      seen.add((await state(page)).theme);
-      if (seen.size !== 1) allStable = false;
-      detail.push(first);
-      await page.close();
-    }
-    check(allStable, 'the scheme is stable across all nine pages and a reload within a visit', `six visits drew ${detail.join(', ')}`);
-    await ctx.close();
-  }
-
-  // 3. The toggle flips light and dark inside the drawn scheme, and the choice carries on.
+  // 2. The toggle flips light and dark within Monochrome, and the choice carries on to later pages and visits.
   {
     const ctx = await armed();
     const page = await ctx.newPage();
@@ -96,19 +68,33 @@ const isDark = (theme) => /dark$/.test(theme);
     const b = await state(page);
     await page.goto(url('work'), { waitUntil: 'domcontentloaded' });
     const c = await state(page);
-    const flipped = isDark(a.theme) !== isDark(b.theme) && lookOf(a.theme) === lookOf(b.theme);
-    check(flipped && b.pressed === String(isDark(b.theme)) && c.theme === b.theme,
-      'the toggle flips light/dark inside the drawn scheme and survives navigation', `${a.theme} -> ${b.theme} -> ${c.theme}`);
-    // a later visit (a new tab) keeps the light/dark choice but draws the scheme again
+    const flipped = isDark(a.theme) !== isDark(b.theme) && ALL_THEMES.includes(a.theme) && ALL_THEMES.includes(b.theme);
+    check(flipped && b.pressed === String(isDark(b.theme)) && c.theme === b.theme && b.stored === b.theme,
+      'the toggle flips mono-light and mono-dark, stores it and survives navigation', `${a.theme} -> ${b.theme} -> ${c.theme}, stored ${b.stored}`);
     const darks = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 4; i++) {
       const p2 = await ctx.newPage();
       await p2.goto(url('index'), { waitUntil: 'domcontentloaded' });
       darks.push(isDark((await state(p2)).theme));
       await p2.close();
     }
-    check(darks.every((d) => d === isDark(b.theme)), 'a later visit keeps the visitor\'s light/dark choice', `choice ${isDark(b.theme) ? 'dark' : 'light'}, eight visits ${darks.map((d) => (d ? 'dark' : 'light')).join(',')}`);
+    check(darks.every((d) => d === isDark(b.theme)), 'a later visit keeps the visitor\'s light/dark choice', `choice ${isDark(b.theme) ? 'dark' : 'light'}, four visits ${darks.map((d) => (d ? 'dark' : 'light')).join(',')}`);
     await ctx.close();
+  }
+
+  // 3. A light/dark choice stored before the site went Monochrome keeps its light/dark half.
+  {
+    const bad = [];
+    for (const [stored, want] of [['light', 'mono-light'], ['dark', 'mono-dark'], ['teal-light', 'mono-light'], ['teal-dark', 'mono-dark'], ['mono-dark', 'mono-dark']]) {
+      const ctx = await armed({ colorScheme: isDark(want) ? 'light' : 'dark' });   // the system says the opposite
+      const page = await ctx.newPage();
+      await page.addInitScript((v) => { try { localStorage.setItem('vynatix-theme', v); } catch (e) {} }, stored);
+      await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
+      const s = await state(page);
+      if (s.theme !== want) bad.push(`${stored} -> ${s.theme}`);
+      await ctx.close();
+    }
+    check(bad.length === 0, 'a stored legacy choice (light, dark, teal-light, teal-dark) keeps its light or dark half in Monochrome', bad.join(' | '));
   }
 
   // 4. Nothing flashes: the theme on the page when the <body> is created is the final one.
@@ -131,9 +117,9 @@ const isDark = (theme) => /dark$/.test(theme);
     await ctx.close();
   }
 
-  // 5. Storage that cannot hold the draw leaves the site on Forest, not re-rolling per page.
-  {
-    const ctx = await armed();
+  // 5. Blocked storage: the site stays Monochrome, follows the system and throws nothing.
+  for (const scheme of ['light', 'dark']) {
+    const ctx = await armed({ colorScheme: scheme });
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -147,24 +133,24 @@ const isDark = (theme) => /dark$/.test(theme);
       await page.goto(url(p), { waitUntil: 'domcontentloaded' });
       seen.add((await page.evaluate(() => document.documentElement.dataset.theme)));
     }
-    const ok = [...seen].every((t) => lookOf(t) === 'forest') && seen.size <= 2 && errors.length === 0;
-    check(ok, 'blocked storage: the site stays on Forest and throws nothing', `themes ${[...seen].join(', ')}${errors.length ? '; errors ' + errors.join(' | ') : ''}`);
+    const ok = seen.size === 1 && seen.has(`mono-${scheme}`) && errors.length === 0;
+    check(ok, `blocked storage on a ${scheme}-mode system: mono-${scheme} on every page, nothing thrown`, `themes ${[...seen].join(', ')}${errors.length ? '; errors ' + errors.join(' | ') : ''}`);
     await ctx.close();
   }
 
-  // 6. A stored value that is not a known scheme is discarded, never used.
+  // 6. A stored choice that is not a known theme is discarded, never used.
   {
     const ctx = await armed();
     const bad = [];
-    for (const poison of ['teal-light', '__proto__', '"><img src=x>', '', 'constructor']) {
+    for (const poison of ['forest', '__proto__', '"><img src=x>', '', 'constructor', 'mono-dark"']) {
       const page = await ctx.newPage();
-      await page.addInitScript((v) => { try { sessionStorage.setItem('vynatix-look', v); } catch (e) {} }, poison);
+      await page.addInitScript((v) => { try { localStorage.setItem('vynatix-theme', v); sessionStorage.setItem('vynatix-look', 'teal'); } catch (e) {} }, poison);
       await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
       const s = await state(page);
-      if (!LOOKS.includes(s.look) || !ALL_THEMES.includes(s.theme) || lookOf(s.theme) !== s.look) bad.push(poison);
+      if (s.theme !== 'mono-light') bad.push(`${JSON.stringify(poison)} -> ${s.theme}`);
       await page.close();
     }
-    check(bad.length === 0, 'an unknown stored scheme is replaced by a valid draw', bad.length ? 'accepted: ' + bad.join(' | ') : '5 bad values');
+    check(bad.length === 0, 'an unknown stored choice (and a leftover vynatix-look) is ignored: the light system gets mono-light', bad.length ? 'accepted: ' + bad.join(' | ') : '6 bad values');
     await ctx.close();
   }
 
@@ -178,40 +164,39 @@ const isDark = (theme) => /dark$/.test(theme);
     await ctx.close();
   }
 
-  // 8. Without JavaScript the page keeps the Forest light theme its markup names.
+  // 8. Without JavaScript the page keeps the Monochrome light theme its markup names.
   {
     const ctx = await armed({ javaScriptEnabled: false });
-    const page = await ctx.newPage();
-    await page.goto(url('index'), { waitUntil: 'domcontentloaded' });
-    const t = await page.evaluate(() => document.documentElement.getAttribute('data-theme')).catch(() => null);
-    const attr = t || await page.$eval('html', (el) => el.getAttribute('data-theme'));
-    check(attr === 'light', 'no JavaScript: the Forest light theme', attr);
+    const bad = [];
+    for (const p of PAGES) {
+      const page = await ctx.newPage();
+      await page.goto(url(p), { waitUntil: 'domcontentloaded' });
+      const attr = await page.$eval('html', (el) => el.getAttribute('data-theme'));
+      if (attr !== 'mono-light') bad.push(`${p}: ${attr}`);
+      await page.close();
+    }
+    check(bad.length === 0, 'no JavaScript: every page names the Monochrome light theme', bad.join(' | '));
     await ctx.close();
   }
 
-  // 9. The home page preloads the headline faces of the drawn scheme, and uses them.
-  for (const [look, theme, files] of [
-    ['forest', 'light', ['fraunces-variable-latin', 'fraunces-italic-variable-latin']],
-    ['teal', 'teal-light', ['instrument-serif-400-latin', 'instrument-serif-400-italic-latin']],
-    ['mono', 'mono-dark', ['geist-variable-latin', 'fraunces-italic-variable-latin']],
-  ]) {
+  // 9. The home page preloads the Monochrome headline faces, and uses them.
+  for (const theme of ALL_THEMES) {
+    const files = ['geist-variable-latin', 'fraunces-italic-variable-latin'];
     const ctx = await armed();
     const page = await ctx.newPage();
     const warnings = [];
     page.on('console', (m) => { if (/preload/i.test(m.text())) warnings.push(m.text().slice(0, 140)); });
-    await page.addInitScript((t) => {
-      try { sessionStorage.setItem('vynatix-look', t.look); localStorage.setItem('vynatix-theme', t.theme); } catch (e) {}
-    }, { look, theme });
+    await page.addInitScript((t) => { try { localStorage.setItem('vynatix-theme', t); } catch (e) {} }, theme);
     await page.goto(url('index'), { waitUntil: 'load' });
     await page.waitForTimeout(4500);                      // the browser reports unused preloads a few seconds after load
     const hrefs = await page.evaluate(() => [...document.querySelectorAll('link[rel="preload"][as="font"]')].map((l) => l.getAttribute('href')));
     const want = files.map((f) => `fonts/${f}.woff2`);
     const ok = want.every((w) => hrefs.includes(w)) && hrefs.length === want.length && warnings.length === 0;
-    check(ok, `${look}: preloads ${files.join(' + ')} and uses them`, `${hrefs.join(', ')}${warnings.length ? '; ' + warnings.join(' | ') : ''}`);
+    check(ok, `${theme}: preloads ${files.join(' + ')} and uses them`, `${hrefs.join(', ')}${warnings.length ? '; ' + warnings.join(' | ') : ''}`);
     await ctx.close();
   }
 
-  // 10. Other pages preload nothing (the draw only matters for the home headline).
+  // 10. Other pages preload nothing (only the home headline needs one).
   {
     const ctx = await armed();
     const page = await ctx.newPage();
@@ -221,7 +206,7 @@ const isDark = (theme) => /dark$/.test(theme);
     await ctx.close();
   }
 
-  console.log(problems === 0 ? '\nPASS — the random colour scheme behaves' : `\nFAIL — ${problems} problem(s)`);
+  console.log(problems === 0 ? '\nPASS — the one colour scheme behaves' : `\nFAIL — ${problems} problem(s)`);
   await browser.close();
   process.exit(problems === 0 ? 0 : 1);
 })().catch((e) => { console.error(e); process.exit(1); });

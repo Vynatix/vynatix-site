@@ -25,20 +25,24 @@ highlights the things most worth keeping front-of-mind.
   `colors_and_type.css` (the system's helpers and components, verbatim), then
   `styles.css` (the site's own layer). In `styles.css` use **role tokens only**
   (`var(--md-sys-color-primary)`, `var(--text-muted)`, `var(--space-6)`): no raw
-  hex, no palette tokens, no `[data-theme]` selectors, so every rule holds in all
-  six themes. **No inline `style=""`** — the CSP pins `style-src 'self'`.
-- **Six themes, one drawn at random per visit.** `app.js` loads in the `<head>`
-  (no `defer`, so there is no flash) and draws Forest, Teal or Monochrome once
-  per visit, kept in `sessionStorage` (`vynatix-look`); light or dark follows the
-  toggle (`localStorage`, `vynatix-theme`; the analytics choice is the third key,
-  `vynatix-consent`) or the system preference, and the
-  toggle flips within the drawn direction. Blocked storage or no JS means
-  Forest. The markup's `<html data-theme="light">` is the no-JS default. The
-  inverse bands (CTA band, editorial band, footer) are light in the dark themes
-  by design. Because the theme is random, any check that needs one pins it with
-  `pinTheme` (`tools/verify/_common.js`, which also pins the hero background), and
-  a component change has to hold in all six (`THEMES=…` on the check scripts). Logo
-  files, favicon, app icons and manifest colours stay Forest.
+  hex, no palette tokens, no `[data-theme]` selectors, so every rule holds in
+  both themes. **No inline `style=""`** — the CSP pins `style-src 'self'`.
+- **One colour scheme, Monochrome, in Liquid Glass.** The site shows only the
+  system's Monochrome direction (`mono-light`, `mono-dark`); the Forest and Teal
+  blocks stay in `tokens.css` (read-only) but no page uses them, and the random
+  draw and its `vynatix-look` key are retired (`publish.js` fails if either comes
+  back). `app.js` loads in the `<head>` (no `defer`, so there is no flash); light or
+  dark follows the toggle (`localStorage`, `vynatix-theme`, of which only the
+  light/dark half is read, so older ids such as `dark` still count; the analytics
+  choice is the second key, `vynatix-consent`) or the system preference. The
+  markup's `<html data-theme="mono-light">` is the no-JS default. Surfaces are
+  Liquid Glass, built from the system's own glass tokens (`--glass-tint-surface`,
+  `--glass-blur-*`, `--glass-specular`) over a still backdrop of soft role-token
+  light; see AGENTS.md, *Liquid Glass*. The inverse bands (CTA band, editorial band,
+  footer) stay solid and are light in the dark theme by design. Checks pin a theme
+  with `pinTheme` (`tools/verify/_common.js`, which also pins the hero background),
+  and a component change has to hold in both (`THEMES=…` narrows a run). Logo
+  files, favicon, app icons and manifest colours are still Forest.
 - **One of four hero backgrounds, drawn at random per visit.** `weave`, `sheet`,
   `dial` and `iris` decorate the English home hero; `app.js` keeps the pick in
   `sessionStorage` (`vynatix-bg`) and sets `data-bg` on `<html>` before first paint;

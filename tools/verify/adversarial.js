@@ -211,7 +211,7 @@ async function routeAttacker(ctx) {
   record('negative control is real: gtm.js loads when the CSP is bypassed', gtmControl === 'LOADED', `result=${gtmControl}`);
   record('script-src lets the one pinned /gtag/js path through', gtag === 'LOADED', `result=${gtag}, violations=${v8.filter((v) => /gtag/.test(v)).join(';') || 'none'}`);
 
-  // 9. Poisoned stored values (the light/dark choice, the drawn colour scheme, the drawn hero background,
+  // 9. Poisoned stored values (the light/dark choice, the retired colour-scheme key, the drawn hero background,
   //    the weave's seed and the consent answer) must be rejected, not reflected into the DOM or into a style.
   //    The consent module is live here, so a bar proves the page really ran it.
   //    (The iris's test hook, vynatix-bg-iris-idle, is read as a number.)
@@ -229,7 +229,7 @@ async function routeAttacker(ctx) {
   await page.waitForTimeout(400);
   const poison = await page.evaluate(() => ({
     theme: document.documentElement.getAttribute('data-theme'),
-    look: sessionStorage.getItem('vynatix-look'),
+    look: document.documentElement.outerHTML.indexOf('__xss=2') < 0,
     bg: document.documentElement.getAttribute('data-bg'),
     bgStored: sessionStorage.getItem('vynatix-bg'),
     xss: window.__xss || false,
@@ -237,7 +237,7 @@ async function routeAttacker(ctx) {
     bar: !!document.getElementById('consent-bar'),
   }));
   record('storage poisoning rejected',
-    ALL_THEMES.includes(poison.theme) && ['forest', 'teal', 'mono'].includes(poison.look) &&
+    ALL_THEMES.includes(poison.theme) && poison.look &&
     ALL_BGS.includes(poison.bg) && poison.bg === poison.bgStored && !poison.xss && !poison.node
       && poison.bar && ga.google().length === before,
     JSON.stringify(poison) + `, google requests ${ga.google().length - before}`);

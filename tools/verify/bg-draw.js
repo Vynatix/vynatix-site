@@ -55,8 +55,8 @@ function instrument() {
 }
 // Reaches one background through the site's own draw (app.js picks it and writes the keys), by making Math.random
 // return a fixed value before any page script runs: 0.1 is the weave, 0.3 the sheet, 0.6 the dial, 0.9 the iris
-// (the draw is floor(random * 4) over weave, sheet, dial, iris). The colour draw takes the same value, so these
-// also give Forest, Forest, Teal and Monochrome; nothing here depends on it.
+// (the draw is floor(random * 4) over weave, sheet, dial, iris). The site has one colour scheme, so nothing else
+// takes the value.
 const R = { weave: 0.1, sheet: 0.3, dial: 0.6, iris: 0.9 };
 const forceDraw = (page, bg) => page.addInitScript((r) => { Math.random = () => r; }, R[bg]);
 const tally = (calls) => calls.reduce((m, c) => { m[c] = (m[c] || 0) + 1; return m; }, {});
@@ -147,7 +147,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     const shot = async (opts, pin) => {
       const ctx = await browser.newContext(Object.assign({ viewport: { width: 1440, height: 900 } }, opts));
       const page = await ctx.newPage();
-      if (pin) await page.addInitScript(pinTheme, { theme: 'light', bg: 'sheet' });
+      if (pin) await page.addInitScript(pinTheme, { theme: 'mono-light', bg: 'sheet' });
       await page.goto(HOME, { waitUntil: 'load' });
       await page.waitForTimeout(600);
       const attr = await page.$eval('html', (el) => el.hasAttribute('data-bg'));
@@ -165,7 +165,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       }
     } else n = -1;
     check(off.attr === false, 'no JavaScript: <html> has no data-bg attribute', `has attribute: ${off.attr}`);
-    check(n === 0, 'no JavaScript: the hero below the header is pixel-identical to the sheet drawn on purpose (Forest light, 1440x900)', n < 0 ? 'sizes differ' : `${n} differing pixels`);
+    check(n === 0, 'no JavaScript: the hero below the header is pixel-identical to the sheet drawn on purpose (Monochrome light, 1440x900)', n < 0 ? 'sizes differ' : `${n} differing pixels`);
   }
 
   // ---- 6. First paint: data-bg is set before the body exists, so the art is never added after the page shows. --
@@ -214,7 +214,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       page.on('response', (r) => { if (r.status() >= 400) failed.push(`${r.status()} ${r.url()}`); });
       page.on('pageerror', (e) => errs.push(e.message));
       page.on('console', (m) => { if (/Content Security Policy|Refused to/i.test(m.text())) csp.push(m.text().slice(0, 120)); });
-      if (ids.includes(mode)) await page.addInitScript(pinTheme, { theme: 'light', bg: mode });
+      if (ids.includes(mode)) await page.addInitScript(pinTheme, { theme: 'mono-light', bg: mode });
       if (mode === 'blocked storage') await page.addInitScript(() => {
         const block = { get() { throw new DOMException('blocked', 'SecurityError'); } };
         Object.defineProperty(window, 'sessionStorage', block); Object.defineProperty(window, 'localStorage', block);
@@ -239,7 +239,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       const page = await ctx.newPage();
       const got = new Set();
       page.on('request', (r) => { const m = /\/assets\/(bg-[a-z0-9-]+\.svg)/.exec(r.url()); if (m) got.add(m[1]); });
-      await page.addInitScript(pinTheme, { theme: 'light', bg });
+      await page.addInitScript(pinTheme, { theme: 'mono-light', bg });
       for (const p of ['sv', 'about', 'services', 'work', 'contact']) await page.goto(url(p), { waitUntil: 'load' });
       if (got.size) bad.push(`${bg}: ${[...got].join(', ')}`);
       await ctx.close();
@@ -305,7 +305,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       for (const bg of ids) {
         const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
         const p = await ctx.newPage();
-        await p.addInitScript(pinTheme, { theme: 'teal-dark', bg });
+        await p.addInitScript(pinTheme, { theme: 'mono-dark', bg });
         await p.goto(url(page), { waitUntil: 'load' });
         await p.evaluate(async () => { try { await document.fonts.ready; } catch (e) { /* no-op */ } });
         await p.waitForTimeout(250);
@@ -326,7 +326,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
         if (n !== 0) bad.push(`${page}.html ${w}px ${bg} against sheet: ${n < 0 ? 'size differs' : n + ' px'}`);
       }
     }
-    check(bad.length === 0, `other pages: sv.html and about.html are pixel-identical in all four draws (${plural(shots, 'full-page capture')}, Teal dark, 1440 and 390 wide)`, bad.join(' | '));
+    check(bad.length === 0, `other pages: sv.html and about.html are pixel-identical in all four draws (${plural(shots, 'full-page capture')}, Monochrome dark, 1440 and 390 wide)`, bad.join(' | '));
   }
 
   // ---- 10. Storage: the site writes exactly the keys privacy.html lists, and never the iris's test hook. -----
@@ -334,7 +334,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
   // alone long enough to open: the hook shortens the silence to 300 ms), the theme toggle is pressed, and every
   // write and removal is compared with the keys the site is allowed to write.
   {
-    const KEYS = { 'session vynatix-look': 'always', 'session vynatix-bg': 'always', 'session vynatix-bg-seed': 'weave', 'session vynatix-bg-iris': 'iris', 'local vynatix-theme': 'toggle' };
+    const KEYS = { 'session vynatix-bg': 'always', 'session vynatix-bg-seed': 'weave', 'session vynatix-bg-iris': 'iris', 'local vynatix-theme': 'toggle' };
     const bad = [], writes = {};
     for (const bg of ids) {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -356,7 +356,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       writes[bg] = wrote;
       await ctx.close();
     }
-    check(bad.length === 0, 'storage: the home page writes only vynatix-look and vynatix-bg, the weave\'s vynatix-bg-seed, the iris\'s vynatix-bg-iris (once its opening has begun) and the toggle\'s vynatix-theme (local), and removes nothing',
+    check(bad.length === 0, 'storage: the home page writes only vynatix-bg, the weave\'s vynatix-bg-seed, the iris\'s vynatix-bg-iris (once its opening has begun) and the toggle\'s vynatix-theme (local), and removes nothing',
       bad.join(' | ') || ids.map((bg) => `${bg}: ${writes[bg].map((k) => k.replace('vynatix-', '')).join(' ')}`).join('; '));
 
     // What the site writes is what privacy.html says it writes; the iris's test hook is not stored data.
@@ -392,7 +392,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     const trial = async (value) => {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
       const page = await ctx.newPage();
-      await page.addInitScript(pinTheme, { theme: 'light', bg: 'iris' });
+      await page.addInitScript(pinTheme, { theme: 'mono-light', bg: 'iris' });
       if (value !== null) await page.addInitScript((v) => { try { sessionStorage.setItem('vynatix-bg-iris-idle', v); } catch (e) { /* blocked */ } }, value);
       await page.goto(HOME, { waitUntil: 'load' });
       await page.waitForTimeout(3200);

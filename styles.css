@@ -1414,7 +1414,9 @@ dl.metrics { margin: 0; }
      columns cannot hold the longest link (under about 350px, or with enlarged text) they
      fall back to one, so a word is never split and nothing runs past the edge. */
   .site-footer__grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.25em), 1fr));   /* em, so it follows enlarged text */
+    /* Two columns at most (a wide phone would otherwise fit three and leave the fourth group
+       alone on a row), one where two cannot hold the longest link; em, so it follows enlarged text. */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, max(9.25em, (100% - var(--space-6)) / 2)), 1fr));
     gap: var(--space-8) var(--space-6);
   }
 }

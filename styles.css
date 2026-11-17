@@ -321,7 +321,7 @@ h1 em, h2 em {
     border-inline-start: 2px solid var(--indicator);
     padding-inline-start: var(--space-3);
   }
-  /* Where the header button is hidden (under 360px, and on any phone without the
+  /* Where the header button is hidden (under 375px, and on any phone without the
      enhanced header) the menu's contact link is the only call to action, so it takes
      the button shape inside the open menu. */
   .js-nav .site-header__nav.open .site-header__menu-cta .site-header__link {
@@ -338,17 +338,29 @@ h1 em, h2 em {
   .site-header__cta { display: none; }
   .site-header__menu-cta { display: list-item; }
 }
-/* From 360px the enhanced phone header has room for its button beside the menu and the
-   theme toggle, so a reader can get in touch from any depth of a long page, not only at
-   the top and the bottom. Without JavaScript the wrapped nav already shows the link (and
-   tools/verify/a11y.js needs every header link visible there); under 360px the button
-   stays in the menu. The menu button never shrinks to make room. */
-@media (min-width: 360px) and (max-width: 599px) {
+/* From 375px the enhanced phone header has room for its button beside the menu and the
+   theme toggle (in every look: the Teal and Monochrome labels are wider), so a reader can
+   get in touch from any depth of a long page, not only at the top and the bottom. Without
+   JavaScript the wrapped nav already shows the link (and tools/verify/a11y.js needs every
+   header link visible there); under 375px the button stays in the menu. The menu button
+   never shrinks to make room, and with enlarged text the label wraps rather than spilling
+   out of the bar. */
+@media (min-width: 375px) and (max-width: 599px) {
   .js-nav .site-header__inner { gap: var(--space-1); padding-inline-end: var(--space-2); }
-  .js-nav .site-header__tools { gap: 0; }
+  .js-nav .site-header__tools { gap: 0; min-width: 0; }
   .js-nav .mobile-toggle { flex: none; }
-  .js-nav .site-header__cta { display: inline-flex; min-height: 44px; }
+  .js-nav .site-header__cta {
+    display: inline-flex;
+    min-height: 44px;
+    min-width: 0;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.15;
+  }
   .js-nav .site-header__menu-cta { display: none; }
+}
+@media (min-width: 380px) and (max-width: 599px) {
+  .js-nav .site-header__inner { padding-inline-end: var(--space-4); }
 }
 
 /* ---------------------------------------------------------------
@@ -451,6 +463,7 @@ h1 em, h2 em {
      The sheet art is placed from these boxes: run npm run check:bg after changing them. */
   .hero.view-hire .eyebrow { text-wrap: balance; }
   .hero.view-hire .hero__lede { font-size: var(--text-body-lg); margin-bottom: var(--space-8); }
+  .hero.view-hire .hero__ctas { column-gap: var(--space-3); }   /* both buttons on one row at 390 in every look */
 }
 
 /* Client marks: a still row. The system forbids ambient loops and
@@ -534,18 +547,16 @@ a.clients__item:focus-visible { border-radius: var(--radius-xs); }
 /* The two named clients (an iron mark and a name) take the body colour: in muted text
    they were the lightest marks in the row, though they are the clients the page names. */
 .clients__item:not(:has(.clients__mark)) { color: var(--text-body); }
-/* From 1024px the fourteen sit in two flush rows of seven: equal gaps, the first column on
-   the content's left edge and the last on its right. Narrower, the row wraps as before. */
+/* From 1024px the fourteen sit in two flush rows of seven, the first mark on the content's
+   left edge and the last on its right, with even gaps inside each row: a zero-height break
+   after the seventh mark ends the first row. Narrower, the row wraps as before. */
 @media (min-width: 1024px) {
   .clients__list {
-    display: grid;
-    grid-template-columns: repeat(7, auto);
     justify-content: space-between;
-    justify-items: center;
-    gap: var(--space-2) var(--space-4);
+    gap: var(--space-1) var(--space-4);   /* the break line adds its own row gap, so this one is small */
   }
-  .clients__list > li:nth-child(7n + 1) { justify-self: start; }
-  .clients__list > li:nth-child(7n) { justify-self: end; }
+  .clients__list::after { content: ""; flex-basis: 100%; order: 1; }
+  .clients__list > li:nth-child(n + 8) { order: 2; }
 }
 /* A link that is only its logo takes no underline: the mark is the link, and
    the colour change on hover and focus is the state. The name is still read
@@ -1231,8 +1242,9 @@ dl.metrics { margin: 0; }
 .compare td { color: var(--text-body); }
 .compare td:nth-of-type(1) { color: var(--text-muted); }
 /* On a wide screen the comparison is the argument of the section, so it takes the wide
-   two thirds: the pull quote, the balance photograph and the two short paragraphs' column
-   sits first in the narrow third (neither column has a link, so focus order is unaffected).
+   two thirds: the column of the pull quote and the balance photograph sits first, in the
+   narrow third, and the two short paragraphs stay under the table (neither column has a
+   link, so focus order is unaffected).
    The Vynatix answers sit on a tint at the display colour; the typical answers stay muted. */
 @media (min-width: 905px) {
   .terms .two-up { grid-template-columns: 1fr 2fr; }
@@ -1279,7 +1291,7 @@ dl.metrics { margin: 0; }
   .compare tbody { display: block; }
   .compare tr {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));   /* a long word wraps in its column, never widens the table */
     column-gap: var(--space-4);
   }
   .compare thead th {
@@ -1393,8 +1405,13 @@ dl.metrics { margin: 0; }
 @media (max-width: 599px) {
   .site-footer { padding-block: var(--space-16) var(--space-6); }
   /* The four link groups stay two-up on a phone (the brand block spans both columns, from
-     the rule above): a single column made the footer longer than a screen. */
-  .site-footer__grid { gap: var(--space-8) var(--space-6); }
+     the rule above): a single column made the footer longer than a screen. Where two
+     columns cannot hold the longest link (under about 350px, or with enlarged text) they
+     fall back to one, so a word is never split and nothing runs past the edge. */
+  .site-footer__grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.25em), 1fr));   /* em, so it follows enlarged text */
+    gap: var(--space-8) var(--space-6);
+  }
 }
 
 /* The four hero backgrounds (one drawn per visit, home page only) are not here: they are in
@@ -1590,6 +1607,9 @@ html.js-view-join .view-hire { display: none; }
   margin-inline-start: -1px;
 }
 .audience__link:hover { background: var(--md-sys-color-surface-container-high); color: var(--text-body); }
+/* Its fill stops inside its border, so on hover it does not cover the shared edge it overlaps. */
+.audience__link--join,
+.audience__link--join:hover { background-clip: padding-box; }
 .audience__link:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
@@ -1658,7 +1678,8 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     font-size: clamp(var(--text-h3), 3.9vw, var(--text-h2));
     max-width: 20ch;
   }
-  .view-hire .band--inset .caps { column-gap: var(--space-16); }
+  .view-hire .band--inset .caps,
+  .view-join .caps--2 { column-gap: var(--space-16); }
   #contact .cta-band__inner {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-16);
@@ -1669,13 +1690,23 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     max-width: 12ch;
   }
 }
+/* In the thirds the questions keep below 1240px, their heading keeps the shared size, so
+   "Common questions" stays on one line. */
+@media (min-width: 905px) and (max-width: 1239px) {
+  #faq.view-hire .section__h2 { font-size: clamp(var(--text-h4), 3.4vw, var(--text-h2)); }
+}
 @media (min-width: 1240px) {
   #faq.view-hire .section__head { grid-template-columns: 1fr 1fr; }
+}
+/* The closing headline breaks before its italic phrase, not inside its first clause. */
+@media (min-width: 1024px) {
+  #contact .cta-band__h2 { max-width: none; }
+  #contact .cta-band__h2 em { display: block; }
 }
 
 /* On this page: a row of anchor links between the hero and the first section, in page
    order. Plain links, so it works without JavaScript and nothing scrolls on its own. Not a
-   <section>, so the content-visibility rule above leaves it alone. From 1024px, in browsers
+   <section>, so the content-visibility rule above leaves it alone. From 1280px, in browsers
    with scroll-target-group, it also pins under the header (block below). */
 .toc { border-top: 1px solid var(--md-sys-color-outline-variant); }
 .toc > .container {
@@ -1704,17 +1735,22 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   text-decoration: underline 1px var(--indicator);
   text-underline-offset: 0.25em;
 }
-/* The pinned contents row: from 1024px, and only where the browser has scroll-target-group
-   and :target-current (other browsers keep the row above unchanged), the row sticks under
-   the header for the rest of a long page, and a rail under its links fills up to the section
-   the reader is in. It is driven by the reader's scroll alone: no script, no transition, no
-   animation object. The row keeps the same in-flow size in both states, so sticking never
-   moves the page; only paint changes, inside the stuck query: the header's glass, the rail
-   and the current link in the primary colour. While it is pinned the anchor reserve grows
-   by the row's height, so a focused link or a jump target never lands under it. */
-@media (min-width: 1024px) {
+/* The pinned contents row: from 1280px wide and 521px tall (narrower, the seven links can wrap
+   in some looks; shorter, header and row would take a third of the screen), and only where the
+   browser has scroll-target-group and :target-current (other browsers keep the row above
+   unchanged), the row sticks under the header for the rest of a long page, and a rail under its
+   links fills up to the section the reader is in. It is driven by the reader's scroll alone: no
+   script, no animation object, and no colour transition on its links. The row keeps the same
+   in-flow size in both states, so sticking never moves the page; only paint changes, inside the
+   stuck query: the header's glass, the rail, and the current link underlined in the indicator
+   colour (the body colour keeps its contrast on the glass, and the underline survives forced
+   colours). Where it can pin, the anchor reserve grows by the row's height, so a focused link or
+   a jump target never lands under it; the joiner view, which hides the row, keeps the normal
+   reserve. */
+@media (min-width: 1280px) and (min-height: 521px) {
   @supports (scroll-target-group: auto) and selector(:target-current) {
     html:has(.toc) { scroll-padding-top: calc(var(--space-24) + var(--space-12) + var(--space-2)); }
+    html:has(.toc):is(.js-view-join, :has(#join.view-anchor:target)) { scroll-padding-top: var(--space-24); }
     .toc {
       position: sticky;
       top: calc(var(--space-24) - var(--space-2) - var(--space-4));
@@ -1731,16 +1767,16 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     .toc > .container::before {
       content: '';
       position: absolute;
-      inset: 0;
+      inset: 0 var(--space-6);   /* at rest the hairline spans the content, as the hero's rule does */
       z-index: -1;
       border-top: 1px solid var(--md-sys-color-outline-variant);
     }
-    .toc a { pointer-events: auto; }
+    .toc a { pointer-events: auto; transition-property: text-decoration-thickness; }
     .toc__list { scroll-target-group: auto; gap: 0; }
     .toc__list li + li { padding-inline-start: var(--space-4); }
     @container scroll-state(stuck: top) {
       .toc > .container::before {
-        inset-block: var(--space-4);
+        inset: var(--space-4) 0;
         pointer-events: auto;   /* the glass takes its own clicks; the strips above and below it do not */
         border: 1px solid var(--md-sys-color-outline-variant);
         border-radius: var(--radius-lg);
@@ -1752,7 +1788,12 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
       .toc__list li { box-shadow: inset 0 -2px 0 var(--md-sys-color-outline-variant); }
       .toc__list li:has(~ li > a:target-current),
       .toc__list li:has(> a:target-current) { box-shadow: inset 0 -2px 0 var(--indicator); }
-      .toc__list a:target-current { color: var(--md-sys-color-primary); }
+      .toc__list a:hover { color: var(--text-body); }
+      .toc__list a:target-current {
+        color: var(--text-body);
+        text-decoration: underline 2px var(--indicator);
+        text-underline-offset: 0.3em;
+      }
     }
   }
 }
@@ -1970,8 +2011,23 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 .glance .metric__lbl { font-family: var(--font-sans); letter-spacing: var(--tracking-eyebrow); }
 .glance .metric__val { font-size: var(--text-h1); margin-block: var(--space-4) var(--space-3); }
 .glance .metric__ctx { font-size: var(--text-body-sm); }
+@media (min-width: 1024px) {
+  .glance .metrics { column-gap: var(--space-16); }   /* the third tile starts on the column line */
+}
 @media (max-width: 1239px) {
   .glance .metric__val { font-size: var(--text-h2); }
+}
+/* Where a tile's label wraps to two lines, the figures in its row still line up. */
+@supports (grid-template-rows: subgrid) {
+  @media (max-width: 904px) {
+    .glance .metric {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+      align-content: start;
+    }
+  }
 }
 @media (max-width: 904px) {
   .glance { margin-top: var(--space-12); }
@@ -1980,9 +2036,11 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .glance .metric { padding: var(--space-5); }
   .glance .metric__val { font-size: var(--text-h3); margin-block: var(--space-3) var(--space-2); }
 }
-/* A phone: still two by two (the shared rule stacks metric grids in one column). */
+/* A phone: still two by two (the shared rule stacks metric grids in one column), and one
+   column wherever two tiles cannot fit their labels (enlarged text, zoom, a very narrow
+   screen). */
 @media (max-width: 599px) {
-  .glance .metrics { grid-template-columns: repeat(2, 1fr); }
+  .glance .metrics { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(8.5em, (100% - var(--space-3)) / 2)), 1fr)); }
   .glance .metric { padding: var(--space-4); }
   .glance .metric__val { font-size: var(--text-h4); }
 }
@@ -2090,6 +2148,11 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     grid-template-areas: "text text" "case panel";
     gap: var(--space-8) var(--space-6);
   }
+  /* The card is as tall as its list (the AI list is long), the photograph taking the extra
+     height, so no column ends hundreds of pixels before the other. */
+  .chapter__case { align-self: stretch; }
+  .chapter__case .case__img { position: relative; flex: 1 0 auto; }
+  .chapter__case .case__img img { position: absolute; inset: 0; }
   .who__top { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
 }
 
@@ -2111,17 +2174,34 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .toc__list a { padding-block: var(--space-3); }
   :is(.view-hire, .view-join) .more { padding-block: var(--space-3); }
   :is(.view-hire, .view-join) :is(.two-up, .chapter) .more { margin-top: calc(var(--space-2) - var(--space-3)); }
+  .cta-band:is(.view-hire, .view-join) .cta-band__contact {
+    display: grid;
+    grid-auto-rows: minmax(44px, auto);
+    justify-items: start;
+    align-items: center;
+  }
+  .cta-band:is(.view-hire, .view-join) .cta-band__contact br { display: none; }
   .cta-band:is(.view-hire, .view-join) .cta-band__contact a {
+    display: inline-flex;
+    align-items: center;
+    align-self: stretch;
+  }
+  .read__h a {
     display: inline-block;
     padding-block: var(--space-3);
+    margin-block: calc(-1 * var(--space-3));
   }
 }
 
 /* ---------------------------------------------------------------
    Print — a page saved as PDF or printed to pass round
-   The header prints once at the top, without its controls; marks, buttons and bands keep
-   their colours (a client mark is a mask over a background colour, which browsers drop by
-   default, so without this most logos vanish); blocks and their headings stay together.
+   The header prints once at the top, without its controls. Only what carries meaning in its
+   colour keeps it: the inverse bands, the filled buttons and the client marks (a mark is a
+   mask over a background colour, which browsers drop by default, so without this most logos
+   vanish). Tonal surfaces, cards, panels and outlined buttons print the browser's economical
+   way, so a dark theme does not print as black slabs. Cards, lists and numbered steps stay
+   whole and a heading stays with what follows it; larger blocks may break, so no page is left
+   half empty.
    --------------------------------------------------------------- */
 @media print {
   .site-header { position: static; box-shadow: none; }
@@ -2131,32 +2211,23 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .audience,
   .skip-link { display: none !important; }
   .inverse,
-  .btn,
-  .clients__mark,
-  .metric,
-  .case,
-  .panel,
-  .section--surface {
+  .btn:not(.btn--secondary, .btn--ghost),
+  .clients__mark {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .section__head,
   .toc,
   .chapter__text,
   .chapter__case,
   .chapter__panel,
-  .two-up > *,
   .cap,
   .qa__item,
   .read,
   .metric,
   .photo,
-  .compare tr,
-  .cta-band { break-inside: avoid; }
+  .compare tr { break-inside: avoid; }
   h2,
-  h3,
-  .eyebrow,
-  .section__head { break-after: avoid; }
+  h3 { break-after: avoid; }
 }
 
 /* ---------------------------------------------------------------

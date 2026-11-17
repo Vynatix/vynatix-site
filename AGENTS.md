@@ -22,8 +22,8 @@ against the roles and components the system defines.
 
 ```
 index.html          Home — hero (one of four drawn backgrounds), still client list, contents row,
-                    service chapters (each with its case card), how we work with the comparison
-                    table, who we are with the metrics, questions, further reading, CTA band
+                    service chapters (each with its case card), who we are with the metrics,
+                    further reading, how we work with the comparison table, questions, CTA band
 about.html          Company / team
 services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
@@ -537,11 +537,15 @@ header's logo and contact-detail markup is part of the `HEADER` template. The Le
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons. On a phone the links fold into
-the menu, but the "Get in touch" button stays in the bar from 360px (enhanced header only:
-without JavaScript the wrapped nav shows the link, and under 360px it sits in the menu), so a
-reader can act from any depth of a long page. The print layer at the end of
-`styles.css` prints the header once, without its controls, and keeps marks, buttons and bands
-in colour.
+the menu, but the "Get in touch" button stays in the bar from 375px (enhanced header only:
+without JavaScript the wrapped nav shows the link, and under 375px it sits in the menu; with
+enlarged text its label wraps rather than leaving the bar), so a reader can act from any depth
+of a long page. The menu button's listeners are delegated from the document in the blocking
+head, so it works from the moment it is painted. On a phone the footer's link groups sit two-up
+where two columns fit, one column where they do not. The print layer at the end of `styles.css`
+prints the header once, without its controls, and keeps the inverse bands, the filled buttons
+and the client marks in colour; tonal surfaces, cards and outlined buttons print the browser's
+economical way, so a dark theme does not print as black slabs.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
@@ -711,10 +715,12 @@ everywhere, including LinkedIn, the registries and `llms.txt`.
 **The English home page** is ordered by what a visitor is checking, and the work sits
 beside the service it shows. After the hero comes a contents row (`.toc`, a `<nav>` of
 plain anchor links, one per section, in page order: add, rename or move a section and this
-row changes with it). From 1024px, in browsers with `scroll-target-group` and
-`:target-current`, the row pins under the header and a rail under its links fills up to the
-section the reader is in; it changes paint only (the same in-flow size in both states, no
-script, no animation object), and other browsers keep the plain row. Then, in this order
+row changes with it). From 1280px wide and 521px tall, in browsers with `scroll-target-group`
+and `:target-current`, the row pins under the header and a rail under its links fills up to the
+section the reader is in, the current link underlined; it changes paint only (the same in-flow
+size in both states, no script, no animation object, no colour transition), and other browsers,
+narrower and shorter screens keep the plain row. Where it can pin, the anchor reserve
+(`scroll-padding-top`) grows by its height; the joiner view, which hides it, keeps 96px. Then, in this order
 (proof and the four facts first, then the terms right before the questions and the call to
 action that act on them):
 
@@ -749,9 +755,12 @@ action that act on them):
   hero included.
 
 From 905px the home page keeps one column line: every two-column block (section heads, the
-work index, the chapters, the two-ups, the steps and the client closing band) splits in
-halves, so their right-hand columns start on one line, and section titles take token ends
-(40 to 56px) with chapter titles one step below (32px). These rules are scoped to the home
+work index, the chapters, the two-ups, the steps, the joiner benefits, the four facts from
+1024px and the client closing band) splits in halves, so their right-hand columns start on one
+line, and section titles take token ends (40 to 56px) with chapter titles one step below
+(32px). Two exceptions, on purpose: the comparison takes two thirds of `.terms` (the quote and
+photograph the narrow third), and the questions keep thirds up to 1239px, their heading with
+them at the shared title size so "Common questions" stays on one line. These rules are scoped to the home
 page (`.view-hire`, `.view-join`, `#contact`): `.section__head`, `.section__h2` and the
 `.cta-band` classes are shared with other pages, which keep the thirds.
 
@@ -763,12 +772,22 @@ needs JavaScript and nothing moves.
 Between a phone and a laptop (600 to 904px) the home page has its own tier rather than the
 phone stack stretched wide: the steps, the joiner benefits and steps and the reading list sit
 two-up, the pull quote beside the balance photograph, and from 720px each chapter's case card
-beside its "What we build" list and the Gothenburg photograph beside the four facts. On a phone
-the client hero's lede is one type step smaller and the client row closer, so both buttons sit
-on the first screen of a 390x844 phone (the sheet art is placed from these boxes: run
-`npm run check:bg`); the four facts form a two-by-two grid; the comparison keeps the two
-answers side by side under column names shown once (the table's ARIA roles keep it a table
-once its rows are grids); and from 360px each step's numeral sits beside its headline.
+beside its "What we build" list (the card as tall as the list, its photograph taking the extra
+height) and the company sentence beside the Gothenburg photograph. On a phone the client hero's
+lede is one type step smaller, its buttons a step closer and the client row closer, so both
+buttons sit on the first screen of a 390x844 phone in every look (the sheet art is placed from
+these boxes: run `npm run check:bg`); the four facts form a two-by-two grid (one column where
+two cannot fit, and their figures line up in a row); the comparison keeps the two answers side
+by side under column names shown once (the table's ARIA roles keep it a table once its rows are
+grids); and from 360px each step's numeral sits beside its headline. The onward links (the
+contents row, read-more links, the reading-list titles and the closing bands' contact lines) are
+44px or more tall under 905px.
+
+On a wide screen keyboard focus in each service chapter goes from the writing to the wide case
+card and then back up to the "What we build" panel: the source order (writing, card, list) is
+kept because it is the phone's reading order. Moving the panel before the card in the markup
+would make the desktop order straight and change the phone order to writing, list, card; that
+is the owner's call.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link

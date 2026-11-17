@@ -271,10 +271,10 @@
      sees; app.js draws a colour scheme at random for each visit (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=74e10cf1">
+<link rel="stylesheet" href="styles.css?v=752cd087">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
-<link rel="stylesheet" href="hero-bg.css?v=ebac486b">
+<link rel="stylesheet" href="hero-bg.css?v=c545788d">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -288,7 +288,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=d3af5867"></script>
+<script src="app.js?v=ab94ae56"></script>
 <!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
      tile and the iris's arming must be in place before the first paint. -->
 <script src="hero-bg.js?v=11457e09"></script>
@@ -477,16 +477,17 @@
     </section>
 
     <!-- ============================================================ On this page -->
-    <!-- A still contents row: plain anchor links to the sections below, in page order. -->
+    <!-- The contents row: plain anchor links to the sections below, in page order. From 1024px it pins under
+         the header where the browser supports it (styles.css, "The pinned contents row"). -->
     <nav class="toc view-hire" aria-labelledby="toc-label">
       <div class="container">
         <p class="eyebrow eyebrow--muted" id="toc-label">On this page</p>
         <ul class="toc__list list-reset">
           <li><a href="#services">Services and work</a></li>
-          <li><a href="#how-we-work">How we work</a></li>
           <li><a href="#who-we-are">Who we are</a></li>
-          <li><a href="#faq">Common questions</a></li>
           <li><a href="#further-reading">Further reading</a></li>
+          <li><a href="#how-we-work">How we work</a></li>
+          <li><a href="#faq">Common questions</a></li>
           <li><a href="#join">For senior engineers</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -639,6 +640,92 @@
       </div>
     </section>
 
+    <!-- ============================================================ Who we are, and where we are so far -->
+    <!-- The company sentence beside the Gothenburg photograph, then the four facts across the
+         full width under their own small heading, so the figures, not the label, carry the block. -->
+    <section class="section section--surface view-hire" id="who-we-are" aria-labelledby="who-title">
+      <div class="container">
+        <div class="two-up who__top">
+          <div>
+            <p class="eyebrow">Who we are</p>
+            <h2 class="section__h2" id="who-title">An agency that works from the inside</h2>
+            <p class="section__lead">Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients. You get an engineering team that works from inside your organisation, without having to build one.</p>
+          </div>
+          <figure class="photo">
+            <picture>
+              <source srcset="assets/photo-gothenburg-canal.webp" type="image/webp">
+              <img src="assets/photo-gothenburg-canal.jpg" alt="A canal in central Gothenburg, with stone buildings along both quays and a church tower" width="1200" height="675" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>A canal in central Gothenburg. Photograph by Claudio Schwarz, from Unsplash.</figcaption>
+          </figure>
+        </div>
+
+        <div class="glance">
+          <div class="glance__head">
+            <div>
+              <p class="eyebrow">By the numbers</p>
+              <h3 class="two-up__h3">At a glance</h3>
+            </div>
+            <p class="two-up__body">Four facts we would put first in any conversation about working with us.</p>
+          </div>
+          <dl class="metrics">
+            <div class="metric">
+              <dt class="metric__lbl">Founded</dt>
+              <dd class="metric__val">2023</dd>
+              <dd class="metric__ctx">In Gothenburg, part of Ultra Group.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Volvo companies</dt>
+              <dd class="metric__val">2</dd>
+              <dd class="metric__ctx">Volvo Trucks and Volvo Cars.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Code ownership</dt>
+              <dd class="metric__val">100%</dd>
+              <dd class="metric__ctx">You own every line we write.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Reply time</dt>
+              <dd class="metric__val">1</dd>
+              <dd class="metric__ctx">Working day, our typical reply time.</dd>
+            </div>
+          </dl>
+          <a class="more" href="about.html"><span>More about us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Further reading -->
+    <section class="section section--surface view-hire" id="further-reading" aria-labelledby="further-reading-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Read on</p>
+            <h2 class="section__h2" id="further-reading-title">Further reading</h2>
+          </div>
+          <p class="section__lead">Longer pages for buyers comparing consultancies in Gothenburg or planning a project on Android Automotive or AI. The consultancies list names the Gothenburg firms that work on Android Automotive, with the source for each entry.</p>
+        </div>
+        <ul class="reads list-reset">
+          <li class="read">
+            <h3 class="read__h"><a href="android-automotive-consultancies-gothenburg.html">Software consultancies in Gothenburg working on Android Automotive (2026)</a></h3>
+            <p>Gothenburg consultancies that name Android Automotive themselves, alphabetical, with sources. Compiled by Vynatix, which is listed. Checked 18 October 2026.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="android-automotive-development.html">Android Automotive development in Gothenburg</a></h3>
+            <p>Vynatix builds Android Automotive (AAOS) software in Gothenburg, embedded in your team, and shipped Volvo Trucks' in-cab radio and media player to production.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="ai-engineering.html">AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment</a></h3>
+            <p>Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="choose-a-software-consultancy.html">How to choose a software consultancy</a></h3>
+            <p>Vynatix in Gothenburg on choosing a software consultancy: the questions to ask, the warning signs and when a larger firm is the better choice.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ============================================================ How working with us goes -->
     <!-- The four steps on the inverse band, then the comparison with a typical consultancy:
          everything about the terms of working with us sits in this one section. -->
@@ -702,57 +789,6 @@
               </picture>
               <figcaption>A shop balance and its brass weights. Photograph by Angelo Casto, from Unsplash.</figcaption>
             </figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================ Who we are, and where we are so far -->
-    <section class="section section--surface view-hire" id="who-we-are" aria-labelledby="who-title">
-      <div class="container">
-        <div class="section__head">
-          <div>
-            <p class="eyebrow">Who we are</p>
-            <h2 class="section__h2" id="who-title">An agency that works from the inside</h2>
-          </div>
-          <p class="section__lead">Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients. You get an engineering team that works from inside your organisation, without having to build one.</p>
-        </div>
-
-        <div class="two-up">
-          <figure class="photo">
-            <picture>
-              <source srcset="assets/photo-gothenburg-canal.webp" type="image/webp">
-              <img src="assets/photo-gothenburg-canal.jpg" alt="A canal in central Gothenburg, with stone buildings along both quays and a church tower" width="1200" height="675" loading="lazy" decoding="async">
-            </picture>
-            <figcaption>A canal in central Gothenburg. Photograph by Claudio Schwarz, from Unsplash.</figcaption>
-          </figure>
-          <div>
-            <p class="eyebrow">By the numbers</p>
-            <h3 class="two-up__h3">At a glance</h3>
-            <p class="two-up__body">Four facts we would put first in any conversation about working with us.</p>
-            <dl class="metrics metrics--2">
-              <div class="metric">
-                <dt class="metric__lbl">Founded</dt>
-                <dd class="metric__val">2023</dd>
-                <dd class="metric__ctx">In Gothenburg, part of Ultra Group.</dd>
-              </div>
-              <div class="metric">
-                <dt class="metric__lbl">Volvo companies</dt>
-                <dd class="metric__val">2</dd>
-                <dd class="metric__ctx">Volvo Trucks and Volvo Cars.</dd>
-              </div>
-              <div class="metric">
-                <dt class="metric__lbl">Code ownership</dt>
-                <dd class="metric__val">100%</dd>
-                <dd class="metric__ctx">You own every line we write.</dd>
-              </div>
-              <div class="metric">
-                <dt class="metric__lbl">Reply time</dt>
-                <dd class="metric__val">1</dd>
-                <dd class="metric__ctx">Working day, our typical reply time.</dd>
-              </div>
-            </dl>
-            <a class="more" href="about.html"><span>More about us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
         </div>
       </div>
@@ -834,37 +870,6 @@
             <p>Email Vynatix at <a href="mailto:front.disk@vynatix.com?subject=Project">front.disk@vynatix.com</a> or call <a href="tel:+46720710676">+46&nbsp;72&nbsp;071&nbsp;06&nbsp;76</a>. Start the subject line with Project so we can route it, and tell us what you are trying to build or which team needs a senior engineer. We usually reply within one working day.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ============================================================ Further reading -->
-    <section class="section section--surface view-hire" id="further-reading" aria-labelledby="further-reading-title">
-      <div class="container">
-        <div class="section__head">
-          <div>
-            <p class="eyebrow">Read on</p>
-            <h2 class="section__h2" id="further-reading-title">Further reading</h2>
-          </div>
-          <p class="section__lead">Longer pages for buyers comparing consultancies in Gothenburg or planning a project on Android Automotive or AI. The consultancies list names the Gothenburg firms that work on Android Automotive, with the source for each entry.</p>
-        </div>
-        <ul class="reads list-reset">
-          <li class="read">
-            <h3 class="read__h"><a href="android-automotive-consultancies-gothenburg.html">Software consultancies in Gothenburg working on Android Automotive (2026)</a></h3>
-            <p>Gothenburg consultancies that name Android Automotive themselves, alphabetical, with sources. Compiled by Vynatix, which is listed. Checked 18 October 2026.</p>
-          </li>
-          <li class="read">
-            <h3 class="read__h"><a href="android-automotive-development.html">Android Automotive development in Gothenburg</a></h3>
-            <p>Vynatix builds Android Automotive (AAOS) software in Gothenburg, embedded in your team, and shipped Volvo Trucks' in-cab radio and media player to production.</p>
-          </li>
-          <li class="read">
-            <h3 class="read__h"><a href="ai-engineering.html">AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment</a></h3>
-            <p>Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.</p>
-          </li>
-          <li class="read">
-            <h3 class="read__h"><a href="choose-a-software-consultancy.html">How to choose a software consultancy</a></h3>
-            <p>Vynatix in Gothenburg on choosing a software consultancy: the questions to ask, the warning signs and when a larger firm is the better choice.</p>
-          </li>
-        </ul>
       </div>
     </section>
 

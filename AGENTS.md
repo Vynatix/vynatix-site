@@ -22,8 +22,8 @@ against the roles and components the system defines.
 
 ```
 index.html          Home — hero (one of four drawn backgrounds), still client list, contents row,
-                    service chapters (each with its case card), how we work with the comparison
-                    table, who we are with the metrics, questions, further reading, CTA band
+                    service chapters (each with its case card), who we are with the metrics,
+                    further reading, how we work with the comparison table, questions, CTA band
 about.html          Company / team
 services.html       Application dev, AI engineering, cloud platforms
 work.html           Selected case studies
@@ -266,7 +266,7 @@ the headline), height `4.5lh`; left is the lede box's right edge plus 24px (the
 pseudo-element is set in `font: var(--text-type-lede)`, so `56ch` is the lede's
 measure); right is the header's right edge, `max(24px, (100% - 1200px) / 2)`, where a
 16px three-cord selvedge sits. Ink is `tertiary` 45% into `on-surface`, the ramp is
-20, 48, 72 and 82% at 10, 26, 46 and 70% of the width, the ground is 24%, the
+12, 28, 42 and 48% at 10, 26, 46 and 70% of the width (lowered from 20, 48, 72 and 82% so the cloth sits a step lighter than the headline), the ground is 24%, the
 vertical fade 14% and 82%. Off under forced colours, more contrast, reduced
 transparency and print. Hand-fitted: 1.12, 4.5, 56ch, the ramp, ground and fades,
 the 1100px breakpoint. `bg-weave.js`.
@@ -395,8 +395,11 @@ does not in step. `#JOIN` is not `#join`. On a spelling of the path the head tes
 know (an extensionless `/index`) the whole enhancement stays off and `:target` decides
 alone, as with script blocked. The selected look follows the same decision, never `aria-current`, so the page, and
 the hero strip `bg-draw.js` check 5 compares with and without JavaScript, looks the same either
-way. The selected link is told apart by an underline and a primary border as well as its fill
-(the containers sit close together in some looks, and forced colours drop fills).
+way. The two links form one segmented control (they touch, share the middle hairline and
+square their inner corners), and only the selected half is filled: an unselected fill could sit
+darker than the selected one in some looks. The selected link is told apart by an underline and a
+primary border as well as its fill (the containers sit close together in some looks, and forced
+colours drop fills).
 
 Rules that keep it working:
 
@@ -533,7 +536,16 @@ the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both h
 header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
-when current, one small primary button and two icon buttons.
+when current, one small primary button and two icon buttons. On a phone the links fold into
+the menu, but the "Get in touch" button stays in the bar from 375px (enhanced header only:
+without JavaScript the wrapped nav shows the link, and under 375px it sits in the menu; with
+enlarged text its label wraps rather than leaving the bar), so a reader can act from any depth
+of a long page. The menu button's listeners are delegated from the document in the blocking
+head, so it works from the moment it is painted. On a phone the footer's link groups sit two-up
+where two columns fit, one column where they do not. The print layer at the end of `styles.css`
+prints the header once, without its controls, and keeps the inverse bands, the filled buttons
+and the client marks in colour; tonal surfaces, cards and outlined buttons print the browser's
+economical way, so a dark theme does not print as black slabs.
 
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
@@ -591,7 +603,9 @@ afterthought — preserve it:
 - **Controls that need JS must not sit dead without it.** The pattern is to
   hide them in CSS and let `app.js` opt in by adding a class to `<html>`:
   `.js-nav` for the collapsible mobile nav (without it the nav stays visible
-  and wraps under the bar) and `.js-theme` for the theme toggle (it keeps its
+  and wraps under the bar; `app.js` sets it in the blocking head, so a phone never paints the
+  wrapped nav and then jumps, and takes it back off at `DOMContentLoaded` if the page has no
+  menu button or nav) and `.js-theme` for the theme toggle (it keeps its
   place but is invisible until it can work). The consent module follows the same
   rule by building its markup only when it can work: the bar and the in-page
   panel do not exist without JavaScript, with blocked storage, or while the ID is
@@ -700,33 +714,80 @@ everywhere, including LinkedIn, the registries and `llms.txt`.
 
 **The English home page** is ordered by what a visitor is checking, and the work sits
 beside the service it shows. After the hero comes a contents row (`.toc`, a `<nav>` of
-plain anchor links, one per section, in page order: add or rename a section and this
-row changes with it). Then:
+plain anchor links, one per section, in page order: add, rename or move a section and this
+row changes with it). From 1280px wide and 521px tall, in browsers with `scroll-target-group`
+and `:target-current`, the row pins under the header and a rail under its links fills up to the
+section the reader is in, the current link underlined; it changes paint only (the same in-flow
+size in both states, no script, no animation object, no colour transition), and other browsers,
+narrower and shorter screens keep the plain row. Where it can pin, the anchor reserve
+(`scroll-padding-top`) grows by its height; the joiner view, which hides it, keeps 96px. Then, in this order
+(proof and the four facts first, then the terms right before the questions and the call to
+action that act on them):
 
 - `#services`, one section for the services and the published work. Under the heading,
   the `#work` row (`.work-index`) lists the three projects at a glance, each row a link
   to its chapter. Each service is a `.chapter` (`#application-development`,
   `#ai-engineering`, `#cloud-platforms`): the writing, the case card (`.case`, one link
   to `work.html`) and the "What we build" panel, in that source order, which is also the
-  phone order; on a wide screen the card takes one column and every other chapter flips
-  (`.chapter--flip`). A fourth published project needs a decision first, because a
-  chapter holds one card.
+  phone order. On a wide screen the writing sits beside the panel and the case card closes
+  the chapter at full width, photograph and result side by side (every other chapter,
+  `.chapter--flip`, puts the photograph on the right), so the proof is the largest thing in
+  the chapter; keyboard focus steps from the card back up to the panel's link. A fourth
+  published project needs a decision first, because a chapter holds one card.
+- `#who-we-are` (`.section--surface`), the company sentence beside the Gothenburg photograph
+  (`.who__top`), then the four metric tiles across the full width under their own small
+  heading (`.glance`).
+- `#further-reading` (`.reads`, also `.section--surface`, so the two join as one tonal band).
 - `#how-we-work` (`.section--band`), the four steps on the inverse band and, under it,
-  the comparison table, the capacity and Gothenburg paragraphs and the pull quote:
-  everything about the terms of working with us, in one place.
-- `#who-we-are`, the company sentence, then the four metric tiles beside a photograph.
+  the comparison table (in the wide two thirds on a wide screen, the Vynatix column on a
+  tint), the capacity and Gothenburg paragraphs and the pull quote: everything about the
+  terms of working with us, in one place. After a tonal band it takes its top padding back
+  (`.section--surface + .section--band`).
 - `#faq` (`.qa`), one row per question; on a wide screen the question sits in the
-  heading column and the answer in the lead's column. The answer markup stays flat
-  (`h3`, then `p`, `ul`, `ol`), so the two columns come from a float, not a wrapper.
-- `#further-reading` (`.reads`), then the call-to-action band (`#contact`). The old
-  `#engineers` section ("For senior engineers") is the joiner view's opening now (see
-  *Audience switch*), and the contents row links to it as `#join`. The contents row and every
-  section above carry `view-hire`: the joiner view replaces them, hero included.
+  heading column and the answer in the lead's column (thirds up to 1239px, halves from
+  1240px, heading and rows together). The answer markup stays flat (`h3`, then `p`, `ul`,
+  `ol`), so the two columns come from a float, not a wrapper. Its first guess for the
+  deferred rendering is its own (`.toc ~ #faq`), near its real height.
+- The call-to-action band (`#contact`), directly after the last answer ("How do we start a
+  project"). The old `#engineers` section ("For senior engineers") is the joiner view's
+  opening now (see *Audience switch*), and the contents row links to it as `#join`. The
+  contents row and every section above carry `view-hire`: the joiner view replaces them,
+  hero included.
+
+From 905px the home page keeps one column line: every two-column block (section heads, the
+work index, the chapters, the two-ups, the steps, the joiner benefits, the four facts from
+1024px and the client closing band) splits in halves, so their right-hand columns start on one
+line, and section titles take token ends (40 to 56px) with chapter titles one step below
+(32px). Two exceptions, on purpose: the comparison takes two thirds of `.terms` (the quote and
+photograph the narrow third), and the questions keep thirds up to 1239px, their heading with
+them at the shared title size so "Common questions" stays on one line. These rules are scoped to the home
+page (`.view-hire`, `.view-join`, `#contact`): `.section__head`, `.section__h2` and the
+`.cta-band` classes are shared with other pages, which keep the thirds.
 
 The same facts recur across these sections on purpose (each block is written to be
 quoted alone, and the FAQ feeds the structured data word for word), so a rearrangement
 moves sentences; it does not delete or merge them without the owner. Nothing here
 needs JavaScript and nothing moves.
+
+Between a phone and a laptop (600 to 904px) the home page has its own tier rather than the
+phone stack stretched wide: the steps, the joiner benefits and steps and the reading list sit
+two-up, the pull quote beside the balance photograph, and from 720px each chapter's case card
+beside its "What we build" list (the card as tall as the list, its photograph taking the extra
+height) and the company sentence beside the Gothenburg photograph. On a phone the client hero's
+lede is one type step smaller, its buttons a step closer and the client row closer, so both
+buttons sit on the first screen of a 390x844 phone in every look (the sheet art is placed from
+these boxes: run `npm run check:bg`); the four facts form a two-by-two grid (one column where
+two cannot fit, and their figures line up in a row); the comparison keeps the two answers side
+by side under column names shown once (the table's ARIA roles keep it a table once its rows are
+grids); and from 360px each step's numeral sits beside its headline. The onward links (the
+contents row, read-more links, the reading-list titles and the closing bands' contact lines) are
+44px or more tall under 905px.
+
+On a wide screen keyboard focus in each service chapter goes from the writing to the wide case
+card and then back up to the "What we build" panel: the source order (writing, card, list) is
+kept because it is the phone's reading order. Moving the panel before the card in the markup
+would make the desktop order straight and change the phone order to writing, list, card; that
+is the owner's call.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link

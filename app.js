@@ -189,36 +189,49 @@
 
 // Mobile nav — toggle the menu open/closed from the menu button.
 (function () {
-  function init() {
-    var toggle = document.querySelector('.mobile-toggle');
-    var nav = document.querySelector('.site-header__nav');
-    if (!toggle || !nav) return;
+  // Opt into the collapsible mobile nav at once, here in the blocking head, so a phone
+  // never paints the wrapped no-JS nav first and then collapses it (on a slow load that
+  // moved the whole page about 115px under the reader). Without this class the nav stays
+  // visible and wraps, so a no-JS visitor on a phone still has every link. init() takes
+  // the class back off on a page with no menu button or nav, so no control sits dead.
+  document.documentElement.classList.add('js-nav');
 
-    // Opt into the collapsible mobile nav. Without this class the nav stays
-    // visible and wraps, so a no-JS visitor on a phone still has every link.
-    document.documentElement.classList.add('js-nav');
+  // The listeners are delegated from the document and registered here too, so the menu
+  // button works from the moment it is painted, not only once the page has been parsed.
+  function parts() {
+    return { toggle: document.querySelector('.mobile-toggle'), nav: document.querySelector('.site-header__nav') };
+  }
+  function setOpen(p, open) {
+    p.nav.classList.toggle('open', open);
+    p.toggle.setAttribute('aria-expanded', String(open));
+  }
 
-    function setOpen(open) {
-      nav.classList.toggle('open', open);
-      toggle.setAttribute('aria-expanded', String(open));
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var p = parts();
+    if (!p.toggle || !p.nav) return;
+    if (t.closest('.mobile-toggle')) {
+      setOpen(p, !p.nav.classList.contains('open'));
+    } else if (t.closest('.site-header__nav .site-header__link')) {
+      // Close the menu after following a link.
+      setOpen(p, false);
     }
+  });
 
-    toggle.addEventListener('click', function () {
-      setOpen(!nav.classList.contains('open'));
-    });
+  // Escape closes the menu and hands focus back to the button.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var p = parts();
+    if (p.toggle && p.nav && p.nav.classList.contains('open')) {
+      setOpen(p, false);
+      p.toggle.focus();
+    }
+  });
 
-    // Close the menu after following a link.
-    nav.addEventListener('click', function (e) {
-      if (e.target.closest('.site-header__link')) setOpen(false);
-    });
-
-    // Escape closes the menu and hands focus back to the button.
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('open')) {
-        setOpen(false);
-        toggle.focus();
-      }
-    });
+  function init() {
+    var p = parts();
+    if (!p.toggle || !p.nav) document.documentElement.classList.remove('js-nav');
   }
 
   if (document.readyState === 'loading') {

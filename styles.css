@@ -2381,8 +2381,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
    The page background is silk in the canvas's own colours: two soft layers
    of folds, fixed behind every page. body::before is the lit folds
    (surface-bright), body::after the shaded ones (surface-container-highest);
-   each takes its shape from an SVG mask (assets/silk-light.svg,
-   assets/silk-shade.svg), so the colour stays a role token and follows the
+   each takes its shape from a small image mask (assets/silk-light.png,
+   assets/silk-shade.png, written by tools/silk-masks.js; a raster because an
+   SVG's blur is costly to re-render at this size), so the colour stays a role
+   token and follows the
    theme. The canvas colour itself stays on <body>, so tools/verify/a11y.js
    still resolves the background behind text.
    The layers drift, slowly and in opposite senses, only while <html> has
@@ -2407,13 +2409,13 @@ body::after {
 }
 body::before {
   background: var(--md-sys-color-surface-bright);
-  -webkit-mask-image: url("assets/silk-light.svg");
-  mask-image: url("assets/silk-light.svg");
+  -webkit-mask-image: url("assets/silk-light.png");
+  mask-image: url("assets/silk-light.png");
 }
 body::after {
   background: var(--md-sys-color-surface-container-highest);
-  -webkit-mask-image: url("assets/silk-shade.svg");
-  mask-image: url("assets/silk-shade.svg");
+  -webkit-mask-image: url("assets/silk-shade.png");
+  mask-image: url("assets/silk-shade.png");
 }
 @keyframes silk-light {
   to { transform: translate3d(5%, -3.5%, 0) rotate(1.6deg) scale(1.05); }

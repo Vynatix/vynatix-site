@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="none">
-<!-- The lit folds. A mask for the silk background (styles.css, Silk waves): only its alpha is used, the colour comes from a role token. -->
-<defs><filter id="b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="38"/></filter></defs>
-<g fill="none" stroke="#fff" stroke-linecap="round" filter="url(#b)"><path d="M-200 180 C 300 -40, 700 420, 1100 180 S 1700 120, 1900 320" stroke-width="110" opacity="0.85"/><path d="M-200 520 C 250 380, 620 760, 1020 520 S 1600 360, 1900 640" stroke-width="140" opacity="0.7"/><path d="M-200 880 C 380 700, 760 1080, 1180 820 S 1650 760, 1900 940" stroke-width="120" opacity="0.8"/><path d="M300 -150 C 520 220, 240 560, 620 1150" stroke-width="70" opacity="0.45"/></g>
-</svg>

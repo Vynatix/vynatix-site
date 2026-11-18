@@ -42,7 +42,7 @@ highlights the things most worth keeping front-of-mind.
   elsewhere), its open menu is a glass sheet, buttons are capsules; cards
   and the consent bar stay solid, and the glass itself never moves. See AGENTS.md, *Liquid Glass*.
   Behind every page is a **silk background that drifts** (two masked layers on
-  `body::before`/`::after`, masks in `assets/silk-*.svg`, `transform` only), an owner
+  `body::before`/`::after`, masks in `assets/silk-*.png`, `transform` only), an owner
   decision and the site's one ambient loop. It runs only while `<html>` has `js-waves`
   and never under reduced motion; the footer's "Pause background motion" button
   (`localStorage`, `vynatix-motion`) is what makes it meet WCAG 2.2.2, so never ship

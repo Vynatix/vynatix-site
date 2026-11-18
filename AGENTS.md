@@ -251,8 +251,9 @@ decision of 18 November 2026, and the site's one ambient loop). In `styles.css`,
 after the Liquid Glass block:
 
 - **Two fixed layers**, `body::before` (lit folds, `surface-bright`) and `body::after`
-  (shaded folds, `surface-container-highest`), each shaped by an SVG mask
-  (`assets/silk-light.svg`, `assets/silk-shade.svg`), so the colour is a role token
+  (shaded folds, `surface-container-highest`), each shaped by a small image mask
+  (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
+  `tools/silk-masks.js`; only the alpha is used), so the colour is a role token
   and follows the theme. The canvas colour stays on `<body>`, so `a11y.js` still
   resolves the background behind text. `.section--surface` is 55% opaque so the silk
   runs through the tonal bands; cards, inverse bands and the footer are solid.
@@ -281,8 +282,17 @@ after the Liquid Glass block:
 - **Cost.** The header's lens and blur re-run on every frame of the drift. Headless
   software rendering under 4x CPU throttle gave a 33 ms median frame moving against
   17 ms still; it has not been measured on real devices.
+- **The home hero.** The silk runs behind the English home hero and its four
+  backgrounds (owner decision). The sheet's guides are faint by design, and where a
+  fold passes behind one it fades, in places entirely; that unevenness is accepted.
+  `bg-sheet.js` therefore measures registration (R) with the silk hidden (`hideSilk`),
+  because the guides cannot be found by pixel difference over a fold; its clearance
+  and contrast checks, and the other three guards, run with the silk in the page.
 - **History.** A tinted radial backdrop was tried on the 17th and failed `bg-iris.js`
-  with capsule hero buttons; the masked silk layers pass it in full.
+  with capsule hero buttons; the masked silk layers pass it in full. The masks were
+  first the SVGs themselves: re-rendering their 38px blur over a full-screen layer
+  stalled a theme toggle for a third of a second (and failed the dial's sweep test),
+  so they became small rasters.
 
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a

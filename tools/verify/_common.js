@@ -690,7 +690,22 @@ async function launch(opts = {}) {
     return pw[engine].launch(rest);
   }
   const executablePath = chromePath();
-  return pw.chromium.launch(Object.assign(executablePath ? { executablePath } : {}, opts));
+  const { liveSilk, ...rest } = opts;
+  const browser = await pw.chromium.launch(Object.assign(executablePath ? { executablePath } : {}, rest));
+  if (!liveSilk) stillSilk(browser);
+  return browser;
+}
+
+// The silk background draws itself live in WebGL, thirty frames a second (app.js, Silk waves). Under a headless,
+// software-rendered browser that is heavy enough to disturb timing tests, and a frame loop is exactly what the
+// at-rest checks forbid. So every context a check opens starts with the pause stored, whether or not the check pins
+// anything else, and the page shows the still silk. waves.js is the one check that asks for the live silk
+// (launch({ liveSilk: true })) and it tests the drawing, the button and every still state.
+function stillSilk(browser) {
+  const still = () => { try { localStorage.setItem('vynatix-motion', 'off'); } catch (e) { /* storage blocked */ } };
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (o) => { const ctx = await newContext(o); await ctx.addInitScript(still); return ctx; };
+  browser.newPage = async (o) => (await browser.newContext(o)).newPage();
 }
 
 module.exports = {

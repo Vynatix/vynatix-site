@@ -41,13 +41,16 @@ highlights the things most worth keeping front-of-mind.
   `.svg-defs` block, maps in `assets/glass-lens-*.svg`, Chromium only, blur
   elsewhere), its open menu is a glass sheet, buttons are capsules; cards
   and the consent bar stay solid, and the glass itself never moves. See AGENTS.md, *Liquid Glass*.
-  Behind every page is a **silk background that drifts** (two masked layers on
-  `body::before`/`::after`, masks in `assets/silk-*.png`, `transform` only), an owner
-  decision and the site's one ambient loop. It runs only while `<html>` has `js-waves`
-  and never under reduced motion; the footer's "Pause background motion" button
-  (`localStorage`, `vynatix-motion`) is what makes it meet WCAG 2.2.2, so never ship
-  one without the other. `pinTheme` and `pinBg` store the pause so pixel checks see
-  one pose; `tools/verify/waves.js` tests the drift unpinned. See AGENTS.md, *Silk waves*.
+  Behind every page is a **silk background drawn live**: `styles.css` paints a still
+  silk (two masked layers on `body::before`/`::after`, masks in `assets/silk-*.png`),
+  and `app.js` lays a `<canvas class="silk-canvas">` over it and draws moving folds in
+  a small WebGL shader, in colours read from the page. An owner decision and the
+  site's one ambient loop. The canvas exists only while drawing: no JavaScript,
+  reduced motion, a stored pause, no WebGL or a lost context all show the same still
+  silk. The footer's "Pause background motion" button (`localStorage`,
+  `vynatix-motion`) is what makes it meet WCAG 2.2.2, so never ship one without the
+  other. Every check runs with the pause stored (`stillSilk` in `_common.js`);
+  `tools/verify/waves.js` alone tests the live silk. See AGENTS.md, *Silk waves*.
   The inverse bands (CTA band, editorial band, footer) are light in the dark theme
   by design. Checks pin a theme
   with `pinTheme` (`tools/verify/_common.js`, which also pins the hero background),
@@ -92,8 +95,8 @@ highlights the things most worth keeping front-of-mind.
   button, and last, where `consent.js` expects it, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
   only) and no CDN/animation stack. **Two things on
-  the site move on their own, and no third may be added: the silk background drifts
-  until the visitor pauses it (above), and the iris background (a quarter of
+  the site move on their own, and no third may be added: the silk background is drawn
+  live until the visitor pauses it (above), and the iris background (a quarter of
   visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
   ends it.** The dial background answers the pointer (and sweeps once, for half a
   second, when the theme toggles with a mouse or trackpad); reduced motion removes all of it. The system

@@ -1,5 +1,5 @@
-// Writes the two masks of the silk background (styles.css, Silk waves): assets/silk-light.png and
-// assets/silk-shade.png. Each is a few soft folds drawn as blurred strokes; only the alpha is used (the colour
+// Writes the masks of the silk background (styles.css, Silk waves): assets/silk-light.png and
+// assets/silk-shade.png, and the grain tile assets/silk-grain.png (described where it is written, below). Each is a few soft folds drawn as blurred strokes; only the alpha is used (the colour
 // comes from a role token in styles.css). They are small rasters on purpose: the first version masked with the
 // SVG itself, and re-rendering its 38px blur over a full-screen layer stalled a theme toggle for a third of a
 // second. A 480x300 image scaled up is as soft and costs almost nothing to repaint.
@@ -41,4 +41,18 @@ const svg = (folds) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160
     console.log(`wrote assets/${name} (${buf.length} bytes)`);
   }
   await browser.close();
+
+  // The grain: a 128x128 tile of white whose alpha is random between 0 and GRAIN of 255, laid over each fold mask
+  // (styles.css composites the two masks). The folds span only 10 to 25 brightness levels across hundreds of
+  // pixels, so without it every level shows as a stripe (colour banding); the grain moves each pixel's alpha by
+  // up to about one output level, which dithers the stripes away. A fixed seed, so the file is reproducible.
+  const { PNG } = require('pngjs');
+  const N = 128, GRAIN = 28;
+  const png = new PNG({ width: N, height: N });
+  let seed = 0x5117c0de;
+  const rnd = () => { seed ^= seed << 13; seed >>>= 0; seed ^= seed >>> 17; seed ^= seed << 5; seed >>>= 0; return seed / 4294967296; };
+  for (let i = 0; i < N * N * 4; i += 4) { png.data[i] = png.data[i + 1] = png.data[i + 2] = 255; png.data[i + 3] = Math.floor(rnd() * (GRAIN + 1)); }
+  const grain = PNG.sync.write(png);
+  fs.writeFileSync(path.join(__dirname, '..', 'assets', 'silk-grain.png'), grain);
+  console.log(`wrote assets/silk-grain.png (${grain.length} bytes)`);
 })().catch((e) => { console.error(e); process.exit(1); });

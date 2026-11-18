@@ -246,51 +246,68 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
   scale 2 leaves part of a large backdrop blur unblurred in screenshots (scale 1 is
   correct), so judge blur on a real device.
 
-**Silk waves.** Behind every page is a silk background that drifts slowly (an owner
-decision of 18 November 2026, and the site's one ambient loop). In `styles.css`,
-after the Liquid Glass block:
+**Silk waves.** Behind every page is a silk background whose folds are drawn live
+(owner decisions of 18 November 2026: an ambient background, then "dynamic, not an
+animated static image"). It is the site's one ambient loop. Two parts:
 
-- **Two fixed layers**, `body::before` (lit folds, `surface-bright`) and `body::after`
-  (shaded folds, `surface-container-highest` with 8% of `on-surface`), each shaped by a small image mask
-  (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
-  `tools/silk-masks.js`; only the alpha is used), so the colour is a role token
-  and follows the theme. The canvas colour stays on `<body>`, so `a11y.js` still
-  resolves the background behind text. `.section--surface` is 55% opaque so the silk
-  runs through the tonal bands; cards, inverse bands and the footer are solid.
-- **The drift** is two keyframe animations of `transform` only: each layer travels a
-  slow circle at constant speed (40 s and 34 s, linear, opposite senses, about 17px a
-  second), so the folds slide over one another and never stall. The first version
-  moved 84px in 38 s, which nobody could see, and an eased one stalled at its turning
-  points, so `waves.js` now also requires that frames 2 s apart differ visibly, declared under `prefers-reduced-motion: no-preference`
-  and only for `.js-waves`, which the fifth IIFE of `app.js` sets in the head unless
-  the visitor has paused. The drift starts from the rest pose, so no JavaScript, a
-  stored pause and reduced motion all paint the same still silk.
+- **The still silk** (`styles.css`, after the Liquid Glass block): two fixed layers,
+  `body::before` (lit folds, `surface-bright`) and `body::after` (shaded folds,
+  `surface-container-highest` with 8% of `on-surface`), each shaped by a small image
+  mask (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
+  `tools/silk-masks.js`; only the alpha is used) plus a 128px grain mask
+  (`assets/silk-grain.png`) that dithers away colour banding. The canvas colour stays
+  on `<body>`, so `a11y.js` still resolves the background behind text.
+  `.section--surface` is 55% opaque so the silk runs through the tonal bands; cards,
+  inverse bands and the footer are solid. **This is every state but one**: no
+  JavaScript, reduced motion, forced colours, a stored pause, no WebGL, a lost WebGL
+  context. They all paint the same pixels.
+- **The live silk** (the fifth IIFE of `app.js`): when motion is wanted, a
+  `<canvas class="silk-canvas" aria-hidden="true">` is inserted as the first child of
+  `<body>` and a small WebGL fragment shader draws the folds about thirty times a
+  second: two domain-warped sine fields, lit where their sum is high and shaded where
+  it is low, so the folds form, lean and dissolve instead of sliding past. Its three
+  colours are read from the page (the body's background and the two still layers'
+  own, parsed from `rgb()` or `color(srgb …)`) and re-read when `data-theme` changes,
+  so it has no colour of its own. The last lines of the shader add up to one level of
+  noise per pixel, which is its dither. Every time term is a whole multiple of one
+  angle taken from the clock (a four-minute loop), so the pattern has no seam and
+  carries on across pages instead of restarting. The drawing buffer is capped at 1.3
+  million pixels and never uses the device pixel ratio. The still layers are hidden
+  (`.js-waves-live`), not removed, because the colours are read from them. Drawing
+  starts after the page is up, never in the blocking head.
 - **The pause control** is a `<button class="motion-toggle">` in the footer's Legal
   list (the `FOOTER` template in `tools/seo-head.py`), labelled "Pause background
   motion" or "Play background motion", hidden until `.js-motion` and absent under
-  reduced motion. The choice is `localStorage` `vynatix-motion` (`off` or `on`; any
-  other value means moving), named in both notices. **The loop and the button go
-  together**: WCAG 2.2.2 requires a way to stop motion that starts by itself and
-  lasts more than five seconds, and `accessibility.html` says where the button is. A
-  header placement would need pause and play icons from the design system's set,
-  which has none today.
-- **Checks.** `pinTheme` and `pinBg` store `off`, so every pixel check sees one pose;
-  `tools/verify/waves.js` is the unpinned check: a first visit drifts on every page,
-  only `transform` animates, the button stops and resumes it by keyboard and the
-  choice persists, reduced motion and no JavaScript are still with no button, the
-  three still states are pixel-identical, and blocked or poisoned storage is
-  survived. Text contrast was measured against composited pixels with the animation
-  seeked to 0, 10 and 20 s (twelve pages, both themes, 1440 and 390 px): all at
-  AA. Re-measure when a mask or a layer colour changes.
-- **Cost.** The header's lens and blur re-run on every frame of the drift. Headless
-  software rendering under 4x CPU throttle gave a 33 ms median frame moving against
-  17 ms still; it has not been measured on real devices.
+  reduced motion and forced colours. Pressing it stops the frame loop, removes the
+  canvas and shows the still silk. The choice is `localStorage` `vynatix-motion` (`off`
+  or `on`; any other value means moving), named in both notices. **The loop and the
+  button go together**: WCAG 2.2.2 requires a way to stop motion that starts by itself
+  and lasts more than five seconds, and `accessibility.html` says where the button is.
+  Where WebGL is refused the button is hidden too (no dead control); after a lost
+  context it reads "Play" and starts a fresh canvas. A header placement would need
+  pause and play icons from the design system's set, which has none today.
+- **Checks.** Every check opens its pages with the pause stored (`stillSilk` in
+  `_common.js` wraps `launch()`, and `pinTheme`/`pinBg` store it too): software WebGL
+  is heavy enough to disturb timing tests, and a frame loop is what the at-rest tests
+  forbid. `tools/verify/waves.js` alone asks for the live silk
+  (`launch({ liveSilk: true })`) and covers: a first visit draws on every page; frames
+  2 s apart differ visibly; no colour banding, live or still; the colours are the
+  page's own in both themes and follow a toggle mid-run; the button stops and resumes
+  by keyboard and the choice persists; reduced motion and a stored pause ask for not
+  one frame; no JavaScript; the four still states are pixel-identical; poisoned and
+  blocked storage; WebGL refused; a lost context. Text contrast was measured against
+  composited pixels over the live silk (twelve pages, both themes, 1440 and 390 px):
+  all at AA. The shader's tones are bounded by the same three colours as the still
+  silk. Re-measure when a tone or the shader's mix changes.
+- **Cost.** One full-screen fragment shader at about 30 fps, plus the header's lens
+  and blur re-running over it. Not measured on real devices; rAF stops in a hidden
+  tab.
 - **The home hero.** The silk runs behind the English home hero and its four
   backgrounds (owner decision). The sheet's guides are faint by design, and where a
   fold passes behind one it fades, in places entirely; that unevenness is accepted.
-  `bg-sheet.js` therefore measures registration (R) with the silk hidden (`hideSilk`),
-  because the guides cannot be found by pixel difference over a fold; its clearance
-  and contrast checks, and the other three guards, run with the silk in the page.
+  `bg-sheet.js` therefore measures registration (R) with the still silk hidden
+  (`hideSilk`); its clearance and contrast checks, and the other three guards, run
+  with the still silk in the page. None of them sees the live silk.
 - **The hero buttons have their own layer** (`.hero__ctas .btn { will-change:
   transform; }`). Over a backdrop that is not flat, Chromium anti-aliases a capsule's
   edge against the true backdrop in one compositing path and against the flat canvas
@@ -298,11 +315,11 @@ after the Liquid Glass block:
   enough). The edge pixels then differ by 6 to 12 levels, which `bg-iris.js` reads as
   art inside the buttons, and which is a faint halo for a visitor. A layer of their
   own makes it one path. Do not remove it without running `bg-iris.js` in full.
-- **History.** A tinted radial backdrop was tried on the 17th and failed `bg-iris.js`
-  with capsule hero buttons for the reason above, not yet understood then. The masks were
-  first the SVGs themselves: re-rendering their 38px blur over a full-screen layer
-  stalled a theme toggle for a third of a second (and failed the dial's sweep test),
-  so they became small rasters.
+- **History.** First the still layers themselves were animated with `transform`: too
+  slow to see at 84px in 38 s, then a visible circular drift, which the owner rejected
+  as "an animated static image"; the shader replaced it. A tinted radial backdrop was
+  tried on the 17th and failed `bg-iris.js` (the capsule-edge effect above). The masks
+  were first SVGs, whose blur stalled a theme toggle for a third of a second.
 
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a

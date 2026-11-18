@@ -2378,22 +2378,21 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 
 /* ---------------------------------------------------------------
    Silk waves
-   The page background is silk in the canvas's own colours: two soft layers
-   of folds, fixed behind every page. body::before is the lit folds
-   (surface-bright), body::after the shaded ones (surface-container-highest);
-   each takes its shape from a small image mask (assets/silk-light.png,
-   assets/silk-shade.png, written by tools/silk-masks.js; a raster because an
-   SVG's blur is costly to re-render at this size), so the colour stays a role
-   token and follows the
+   The page background is silk in the canvas's own colours. This file paints
+   the still silk: two soft layers of folds, fixed behind every page.
+   body::before is the lit folds, body::after the shaded ones; each takes its
+   shape from a small image mask (assets/silk-light.png, assets/silk-shade.png,
+   written by tools/silk-masks.js; a raster because an SVG's blur is costly to
+   re-render at this size), so the colour stays a role token and follows the
    theme. The canvas colour itself stays on <body>, so tools/verify/a11y.js
    still resolves the background behind text.
-   The layers drift, slowly and in opposite senses, only while <html> has
-   js-waves (app.js: JavaScript on and the visitor has not paused it) and
-   only without prefers-reduced-motion. The drift starts from the rest pose,
-   so no JavaScript, a pause and reduced motion all show the same still
-   silk. This is the site's one ambient loop, an owner decision; the footer's
-   "Pause background motion" button is what makes it meet WCAG 2.2.2, so the
-   two go together. Only transform is animated.
+   The motion is not here. When it is wanted, app.js lays a <canvas> over
+   these layers and draws the folds live in a shader, in colours it reads from
+   these very layers (see .silk-canvas below). The still silk is what shows
+   without JavaScript, under reduced motion, after a pause, and wherever
+   WebGL is missing. This is the site's one ambient loop, an owner decision;
+   the footer's "Pause background motion" button is what makes it meet WCAG
+   2.2.2, so the two go together.
    --------------------------------------------------------------- */
 body::before,
 body::after {
@@ -2403,41 +2402,42 @@ body::after {
   inset: -160px;
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* Two masks, added together: a fine grain tile over the folds. The folds span
+     only 10 to 25 brightness levels across hundreds of pixels, so on their own
+     every level shows as a stripe (colour banding); the grain shifts each pixel
+     by up to about one level, which dithers the stripes away. */
+  -webkit-mask-repeat: repeat, no-repeat;
+  mask-repeat: repeat, no-repeat;
+  -webkit-mask-size: 128px 128px, 100% 100%;
+  mask-size: 128px 128px, 100% 100%;
 }
 body::before {
   background: var(--md-sys-color-surface-bright);
-  -webkit-mask-image: url("assets/silk-light.png");
-  mask-image: url("assets/silk-light.png");
+  -webkit-mask-image: url("assets/silk-grain.png"), url("assets/silk-light.png");
+  mask-image: url("assets/silk-grain.png"), url("assets/silk-light.png");
 }
 body::after {
   /* A little of the text colour in the shaded folds, or the silk is too flat
      to see move in the light theme. */
   background: color-mix(in srgb, var(--md-sys-color-surface-container-highest) 92%, var(--md-sys-color-on-surface));
-  -webkit-mask-image: url("assets/silk-shade.png");
-  mask-image: url("assets/silk-shade.png");
+  -webkit-mask-image: url("assets/silk-grain.png"), url("assets/silk-shade.png");
+  mask-image: url("assets/silk-grain.png"), url("assets/silk-shade.png");
 }
-/* The drift has to be seen to be worth having: the first version moved 84px in
-   38 s, about two brightness levels of change in two seconds, which read as
-   still. Each layer now travels a slow circle at constant speed (about 17px a
-   second), in opposite senses, so the folds slide over one another and never
-   stall at a turning point. The layer does not turn: the second rotate undoes
-   the first, leaving a pure orbit, which the 160px margin covers. */
-@keyframes silk-light {
-  from { transform: rotate(0deg) translate3d(110px, 0, 0) rotate(0deg); }
-  to { transform: rotate(360deg) translate3d(110px, 0, 0) rotate(-360deg); }
+/* The live silk: app.js lays this canvas over the still layers and draws the
+   folds itself, so they form and dissolve rather than slide. It exists only
+   while it is drawing; the still layers step aside only once it is in place
+   (hidden, not removed: app.js reads its colours from them). */
+.silk-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
-@keyframes silk-shade {
-  from { transform: rotate(0deg) translate3d(-95px, 0, 0) rotate(0deg); }
-  to { transform: rotate(-360deg) translate3d(-95px, 0, 0) rotate(360deg); }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .js-waves body::before { animation: silk-light 40s linear infinite; }
-  .js-waves body::after { animation: silk-shade 34s linear infinite; }
-}
+.js-waves-live body::before,
+.js-waves-live body::after { visibility: hidden; }
 /* The hero's two buttons get a layer of their own. Over the silk, the browser
    anti-aliases a capsule's edge against the true backdrop in one compositing
    path and against the flat canvas colour in another, and which path it takes
@@ -2476,9 +2476,12 @@ body::after {
 @media print {
   body::before,
   body::after { content: none; }
+  .silk-canvas,
   .motion-item { display: none; }
 }
 @media (forced-colors: active) {
   body::before,
   body::after { content: none; }
+  .silk-canvas,
+  .js-motion .motion-item { display: none; }
 }

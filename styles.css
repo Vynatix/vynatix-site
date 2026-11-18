@@ -2399,7 +2399,8 @@ body::before,
 body::after {
   content: "";
   position: fixed;
-  inset: -12%;
+  /* The margin is what the drift needs to never show an edge. */
+  inset: -160px;
   z-index: -1;
   pointer-events: none;
   -webkit-mask-repeat: no-repeat;
@@ -2418,15 +2419,22 @@ body::after {
   mask-image: url("assets/silk-shade.png");
 }
 @keyframes silk-light {
-  to { transform: translate3d(5%, -3.5%, 0) rotate(1.6deg) scale(1.05); }
+  to { transform: translate3d(84px, -42px, 0) rotate(1.6deg) scale(1.05); }
 }
 @keyframes silk-shade {
-  to { transform: translate3d(-4.5%, 3%, 0) rotate(-1.3deg) scale(1.06); }
+  to { transform: translate3d(-76px, 36px, 0) rotate(-1.3deg) scale(1.06); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .js-waves body::before { animation: silk-light 38s ease-in-out infinite alternate; }
   .js-waves body::after { animation: silk-shade 47s ease-in-out infinite alternate; }
 }
+/* The hero's two buttons get a layer of their own. Over the silk, the browser
+   anti-aliases a capsule's edge against the true backdrop in one compositing
+   path and against the flat canvas colour in another, and which path it takes
+   depends on what else is composited (the iris, for one). The edge pixels then
+   differ by 6 to 12 levels, a faint halo, and tools/verify/bg-iris.js reads the
+   difference as art inside the buttons. Their own layer makes it one path. */
+.hero__ctas .btn { will-change: transform; }
 /* A tonal band lets the silk through. */
 .section--surface {
   background: color-mix(in srgb, var(--md-sys-color-surface-container-low) 55%, transparent);

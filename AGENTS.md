@@ -288,8 +288,15 @@ after the Liquid Glass block:
   `bg-sheet.js` therefore measures registration (R) with the silk hidden (`hideSilk`),
   because the guides cannot be found by pixel difference over a fold; its clearance
   and contrast checks, and the other three guards, run with the silk in the page.
+- **The hero buttons have their own layer** (`.hero__ctas .btn { will-change:
+  transform; }`). Over a backdrop that is not flat, Chromium anti-aliases a capsule's
+  edge against the true backdrop in one compositing path and against the flat canvas
+  colour in another, and the path depends on what else is composited (the iris is
+  enough). The edge pixels then differ by 6 to 12 levels, which `bg-iris.js` reads as
+  art inside the buttons, and which is a faint halo for a visitor. A layer of their
+  own makes it one path. Do not remove it without running `bg-iris.js` in full.
 - **History.** A tinted radial backdrop was tried on the 17th and failed `bg-iris.js`
-  with capsule hero buttons; the masked silk layers pass it in full. The masks were
+  with capsule hero buttons for the reason above, not yet understood then. The masks were
   first the SVGs themselves: re-rendering their 38px blur over a full-screen layer
   stalled a theme toggle for a third of a second (and failed the dial's sweep test),
   so they became small rasters.

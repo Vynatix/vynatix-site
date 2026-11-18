@@ -306,7 +306,9 @@
 // body::before and body::after). When motion is wanted, this block lays a
 // <canvas> over that still silk and draws the folds itself, frame by frame, in
 // a small WebGL shader: the folds are computed, so they form, lean and dissolve
-// rather than slide past as a picture would. The three colours are read from
+// rather than slide past as a picture would. The cloth also answers the
+// visitor: it gives way softly around the pointer and rides with the scroll
+// (listeners exist only while the canvas does). The three colours are read from
 // the page (the canvas colour and the two silk layers' own), so the shader
 // follows the theme and uses no colour of its own.
 //
@@ -326,10 +328,18 @@
   var quiet = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce), (forced-colors: active)') : null;
   var button = null, canvas = null, gl = null, uniforms = null, watcher = null;
   var frameId = 0, lastDraw = 0, unusable = false;
+  // What the silk answers to: the pointer (where it is, and how strongly it presses: 1 while it is over the
+  // page, 0 once it has left) and how far the page has scrolled. Each has a target, set by the listeners, and a
+  // current value that the frame loop eases towards it, so the cloth never jumps.
+  var want = { x: 0.5, y: 0.5, press: 0, scroll: 0 };
+  var have = { x: 0.5, y: 0.5, press: 0, scroll: 0 };
 
   var VERTEX = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  // Two warped sine fields make the folds: where their sum is high the cloth
-  // catches the light, where it is low it falls into shade. Every time term is
+  // Two sine fields make the folds, and three passes of warping, each finer
+  // and on its own slow beat, bend the space they are drawn in: that is what
+  // makes the cloth swirl and pour like liquid instead of sliding. Where the
+  // fields' sum is high the cloth catches the light, where it is low it falls
+  // into shade. Every time term is
   // a whole multiple of one angle, so the pattern loops without a seam. The
   // last lines add up to one level of noise per pixel, which keeps the 8-bit
   // output from showing each brightness level as a stripe (colour banding).
@@ -339,13 +349,16 @@
     '#else',
     'precision mediump float;',
     '#endif',
-    'uniform vec2 size;uniform float a;uniform vec3 c0;uniform vec3 c1;uniform vec3 c2;',
+    'uniform vec2 size;uniform float a;uniform vec3 c0;uniform vec3 c1;uniform vec3 c2;uniform vec3 m;uniform float s;',
     'void main(){',
     'vec2 u=gl_FragCoord.xy/size.y;',
+    'vec2 dm=u-m.xy;float f=m.z*exp(-dot(dm,dm)*7.);',   // the pointer: a soft press, about a third of the view across
+    'u+=dm*f*.4;u.y+=s;',                                // the cloth gives way around it, and rides with the scroll
     'vec2 q=vec2(u.x*.9-u.y*.44,u.x*.44+u.y*.9)*vec2(.8,2.3);',
-    'q+=.30*vec2(sin(q.y*1.6+a*3.),cos(q.x*1.9-a*2.));',
-    'q+=.16*vec2(sin(q.y*3.3-a*4.+1.3),cos(q.x*3.1+a*3.+.6));',
-    'float w=.6*sin(q.y*3.1+q.x*.9+a*5.)+.4*sin(q.y*5.3-q.x*1.7-a*4.+2.);',
+    'q+=.28*vec2(sin(q.y*1.5+a*7.),cos(q.x*1.8-a*5.));',
+    'q+=.17*vec2(sin(q.y*2.9-a*11.+1.3),cos(q.x*2.6+a*8.+.6));',
+    'q+=.09*vec2(sin(q.y*5.1+a*13.+2.1),cos(q.x*4.7-a*9.+4.));',
+    'float w=.6*sin(q.y*3.1+q.x*.9+a*6.)+.4*sin(q.y*5.3-q.x*1.7-a*10.+2.)+.5*f;',
     'float l=smoothstep(0.,1.,w);float d=smoothstep(0.,1.,-w);',
     'vec3 c=mix(c0,c1,.9*l*l);',
     'c=mix(c,c2,.8*d*d);',
@@ -389,16 +402,42 @@
     gl.viewport(0, 0, w, h);
     gl.uniform2f(uniforms.size, w, h);
   }
-  function draw() {
+  // Eased by elapsed time, not by frame count, so it feels the same at 60 and at 120 frames a second.
+  function ease(dt) {
+    var near = function (ms) { return 1 - Math.exp(-dt / ms); };
+    have.x += (want.x - have.x) * near(180); have.y += (want.y - have.y) * near(180);
+    have.press += (want.press - have.press) * near(320);
+    have.scroll += (want.scroll - have.scroll) * near(140);
+  }
+  function onPointer(e) {
+    var h = window.innerHeight || 1;
+    want.x = e.clientX / h; want.y = 1 - e.clientY / h;   // the shader's units: view heights, from the bottom left
+    if (!want.press) { have.x = want.x; have.y = want.y; } // arriving: press in where it is, do not sweep across
+    want.press = 1;
+  }
+  function onLeave() { want.press = 0; }
+  function onScroll() { want.scroll = (window.pageYOffset || 0) / (window.innerHeight || 1) * 0.22; }
+  function listen(on) {
+    var f = on ? 'addEventListener' : 'removeEventListener';
+    window[f]('pointermove', onPointer, { passive: true });
+    window[f]('scroll', onScroll, { passive: true });
+    document.documentElement[f]('pointerleave', onLeave);
+    window[f]('blur', onLeave);
+  }
+  function draw(dt) {
     fit();
+    ease(dt);
+    gl.uniform3f(uniforms.m, have.x, have.y, have.press);
+    gl.uniform1f(uniforms.s, have.scroll);
     gl.uniform1f(uniforms.a, (Date.now() % LOOP_MS) / LOOP_MS * 6.283185307179586);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
+  // Every frame the display offers: liquid has to be smooth, and a skipped frame shows as a stutter.
   function frame(now) {
     frameId = requestAnimationFrame(frame);
-    if (now - lastDraw < 30) return;      // about thirty frames a second is plenty for something this slow
+    var dt = Math.min(100, Math.max(0, now - lastDraw));
     lastDraw = now;
-    draw();
+    draw(dt);
   }
 
   function shader(type, source) {
@@ -430,7 +469,8 @@
     gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
     uniforms = {
       size: gl.getUniformLocation(program, 'size'), a: gl.getUniformLocation(program, 'a'),
-      c0: gl.getUniformLocation(program, 'c0'), c1: gl.getUniformLocation(program, 'c1'), c2: gl.getUniformLocation(program, 'c2')
+      c0: gl.getUniformLocation(program, 'c0'), c1: gl.getUniformLocation(program, 'c1'), c2: gl.getUniformLocation(program, 'c2'),
+      m: gl.getUniformLocation(program, 'm'), s: gl.getUniformLocation(program, 's')
     };
     return true;
   }
@@ -440,6 +480,7 @@
     frameId = 0;
     if (watcher) watcher.disconnect();
     watcher = null;
+    listen(false);
     root.classList.remove('js-waves-live');
     if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
     canvas = null; gl = null; uniforms = null;
@@ -460,7 +501,11 @@
       stop();
       label(false);
     });
-    draw();
+    onScroll();
+    have.scroll = want.scroll; want.press = 0; have.press = 0;
+    listen(true);
+    lastDraw = window.performance && performance.now ? performance.now() : 0;
+    draw(0);
     document.body.insertBefore(canvas, document.body.firstChild);
     root.classList.add('js-waves-live');   // only now does the still silk step aside
     if (window.MutationObserver) {

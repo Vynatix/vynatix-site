@@ -156,7 +156,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=29bacfe2"></script>
+<script src="app.js?v=0eb3d922"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -231,7 +231,7 @@
             <li>Every control is <strong>reachable and operable by keyboard</strong>, with a visible focus indicator.</li>
             <li>The client list on the home page is a <strong>plain, still list</strong>.</li>
             <li>The English home page opens with <strong>one of four decorative backgrounds</strong>, drawn at random for each visit and described in the next section. Screen readers skip them, they cannot take focus or catch a click, and they never lower the text below the AA contrast ratio.</li>
-            <li>The <strong>page background drifts slowly</strong> on every page. It is decorative, it is the only thing on the site that keeps moving on its own, and the <strong>Pause background motion</strong> button in the footer of every page stops it; the choice is remembered on your device. There is <strong>one other exception</strong> to stillness: the iris, one of those four backgrounds, opens an inner dial once per visit after 20 seconds without any input, and any input ends it at once. Everything else that moves answers you: short transitions on hover and focus, and the dial background, which follows the pointer. <strong>prefers-reduced-motion</strong> removes all of it.</li>
+            <li>The <strong>page background drifts slowly</strong> on every page. It also shifts gently around the pointer and as you scroll. It is decorative, it is the only thing on the site that keeps moving on its own, and the <strong>Pause background motion</strong> button in the footer of every page stops it; the choice is remembered on your device. There is <strong>one other exception</strong> to stillness: the iris, one of those four backgrounds, opens an inner dial once per visit after 20 seconds without any input, and any input ends it at once. Everything else that moves answers you: short transitions on hover and focus, and the dial background, which follows the pointer. <strong>prefers-reduced-motion</strong> removes all of it.</li>
             <li>Text meets the <strong>AA contrast ratio</strong> in both of the site's themes: one colour scheme, in a light and a dark version.</li>
             <li>The site works <strong>without JavaScript</strong>. Every page renders in full, the navigation stays visible on small screens instead of collapsing behind a menu button that could not open, and the four things that need JavaScript, the menu button, the theme toggle, the background motion button and the analytics consent bar, are hidden or not shown rather than left sitting dead. Without JavaScript the theme follows the page default, analytics is off, the page background is still, the home page shows the still drafting-sheet background, and the Cookie settings link in the footer opens the privacy notice.</li>
             <li>Semantic landmarks and headings, meaningful alternative text on images, and correct <code>aria-current</code>, <code>aria-expanded</code> and <code>aria-pressed</code> state on navigation and toggles.</li>

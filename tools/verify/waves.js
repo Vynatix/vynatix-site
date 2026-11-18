@@ -110,6 +110,35 @@ const KEY = 'vynatix-motion';
     await ctx.close();
   }
 
+  // 2b. The silk answers the visitor. With the page's clock frozen (so the pattern's own motion stands still), the
+  //     picture holds; moving the pointer changes it around the pointer and not far away; scrolling changes it too.
+  {
+    const { ctx, page, errors } = await open({ viewport: { width: 1280, height: 800 }, colorScheme: 'light' }, { fn: () => { Date.now = () => 1700000000000; } });
+    await go(page, 'terms');
+    await page.waitForTimeout(400);
+    const shot = async () => PNG.sync.read(await page.screenshot());
+    const share = (A, B, x0, x1, y0, y1) => { let n = 0, c = 0; for (let y = y0; y < y1; y += 2) for (let x = x0; x < x1; x += 2) { const i = (y * A.width + x) * 4; n++; if (Math.abs(A.data[i] - B.data[i]) >= 3) c++; } return c / n; };
+    const A = await shot(); await page.waitForTimeout(600); const B = await shot();
+    const idle = share(A, B, 0, 1280, 120, 800);
+    // The pointer goes to the text-free left margin; "far" is the right margin, a whole page width away.
+    await page.mouse.move(40, 420); await page.mouse.move(20, 400);
+    await page.waitForTimeout(1800);
+    const C = await shot();
+    const near = share(A, C, 4, 36, 300, 500), far = share(A, C, 1244, 1276, 141, 800);
+    check(idle < 0.01 && near > 0.15 && far < 0.05, 'the silk gives way around the pointer: with the clock frozen the picture holds, then changes near the pointer and not at the far edge', `idle ${(idle * 100).toFixed(1)}%, near ${(near * 100).toFixed(0)}%, far ${(far * 100).toFixed(1)}%`);
+    await page.mouse.wheel(0, 700);
+    await page.waitForTimeout(1500);
+    const D = await shot();
+    const scrolled = Math.max(share(C, D, 4, 36, 141, 800), share(C, D, 1244, 1276, 141, 800));   // either margin: one can be a flat stretch of cloth
+    check(scrolled > 0.15, 'the silk rides with the scroll: after scrolling, a text-free margin has changed', `${(scrolled * 100).toFixed(0)}%`);
+    await page.click('.motion-toggle');
+    await page.mouse.move(300, 300);
+    await page.waitForTimeout(300);
+    const s1 = await state(page), d1 = await drawing(page);
+    check(still(s1) && d1 === 0 && errors.length === 0, 'once paused, pointer moves draw nothing', `frames ${d1} ${errors.join(' | ')}`);
+    await ctx.close();
+  }
+
   // 3. The button stops the drawing at once, removes the canvas, shows the still silk, says so, and can be worked
   //    from the keyboard; the choice is stored and holds on the next page and after a reload; pressing again resumes.
   {

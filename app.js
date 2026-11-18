@@ -335,8 +335,11 @@
   var have = { x: 0.5, y: 0.5, press: 0, scroll: 0 };
 
   var VERTEX = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  // Two warped sine fields make the folds: where their sum is high the cloth
-  // catches the light, where it is low it falls into shade. Every time term is
+  // Two sine fields make the folds, and three passes of warping, each finer
+  // and on its own slow beat, bend the space they are drawn in: that is what
+  // makes the cloth swirl and pour like liquid instead of sliding. Where the
+  // fields' sum is high the cloth catches the light, where it is low it falls
+  // into shade. Every time term is
   // a whole multiple of one angle, so the pattern loops without a seam. The
   // last lines add up to one level of noise per pixel, which keeps the 8-bit
   // output from showing each brightness level as a stripe (colour banding).
@@ -352,9 +355,10 @@
     'vec2 dm=u-m.xy;float f=m.z*exp(-dot(dm,dm)*7.);',   // the pointer: a soft press, about a third of the view across
     'u+=dm*f*.4;u.y+=s;',                                // the cloth gives way around it, and rides with the scroll
     'vec2 q=vec2(u.x*.9-u.y*.44,u.x*.44+u.y*.9)*vec2(.8,2.3);',
-    'q+=.30*vec2(sin(q.y*1.6+a*3.),cos(q.x*1.9-a*2.));',
-    'q+=.16*vec2(sin(q.y*3.3-a*4.+1.3),cos(q.x*3.1+a*3.+.6));',
-    'float w=.6*sin(q.y*3.1+q.x*.9+a*5.)+.4*sin(q.y*5.3-q.x*1.7-a*4.+2.)+.3*f;',
+    'q+=.28*vec2(sin(q.y*1.5+a*7.),cos(q.x*1.8-a*5.));',
+    'q+=.17*vec2(sin(q.y*2.9-a*11.+1.3),cos(q.x*2.6+a*8.+.6));',
+    'q+=.09*vec2(sin(q.y*5.1+a*13.+2.1),cos(q.x*4.7-a*9.+4.));',
+    'float w=.6*sin(q.y*3.1+q.x*.9+a*6.)+.4*sin(q.y*5.3-q.x*1.7-a*10.+2.)+.5*f;',
     'float l=smoothstep(0.,1.,w);float d=smoothstep(0.,1.,-w);',
     'vec3 c=mix(c0,c1,.9*l*l);',
     'c=mix(c,c2,.8*d*d);',
@@ -398,10 +402,12 @@
     gl.viewport(0, 0, w, h);
     gl.uniform2f(uniforms.size, w, h);
   }
-  function ease() {
-    have.x += (want.x - have.x) * 0.08; have.y += (want.y - have.y) * 0.08;
-    have.press += (want.press - have.press) * 0.05;
-    have.scroll += (want.scroll - have.scroll) * 0.1;
+  // Eased by elapsed time, not by frame count, so it feels the same at 60 and at 120 frames a second.
+  function ease(dt) {
+    var near = function (ms) { return 1 - Math.exp(-dt / ms); };
+    have.x += (want.x - have.x) * near(180); have.y += (want.y - have.y) * near(180);
+    have.press += (want.press - have.press) * near(320);
+    have.scroll += (want.scroll - have.scroll) * near(140);
   }
   function onPointer(e) {
     var h = window.innerHeight || 1;
@@ -418,19 +424,20 @@
     document.documentElement[f]('pointerleave', onLeave);
     window[f]('blur', onLeave);
   }
-  function draw() {
+  function draw(dt) {
     fit();
-    ease();
+    ease(dt);
     gl.uniform3f(uniforms.m, have.x, have.y, have.press);
     gl.uniform1f(uniforms.s, have.scroll);
     gl.uniform1f(uniforms.a, (Date.now() % LOOP_MS) / LOOP_MS * 6.283185307179586);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
+  // Every frame the display offers: liquid has to be smooth, and a skipped frame shows as a stutter.
   function frame(now) {
     frameId = requestAnimationFrame(frame);
-    if (now - lastDraw < 30) return;      // about thirty frames a second is plenty for something this slow
+    var dt = Math.min(100, Math.max(0, now - lastDraw));
     lastDraw = now;
-    draw();
+    draw(dt);
   }
 
   function shader(type, source) {
@@ -497,7 +504,8 @@
     onScroll();
     have.scroll = want.scroll; want.press = 0; have.press = 0;
     listen(true);
-    draw();
+    lastDraw = window.performance && performance.now ? performance.now() : 0;
+    draw(0);
     document.body.insertBefore(canvas, document.body.firstChild);
     root.classList.add('js-waves-live');   // only now does the still silk step aside
     if (window.MutationObserver) {

@@ -259,7 +259,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       await p.addInitScript(instrument);
       await p.goto(at || url(page), { waitUntil: 'load' });
       await p.waitForTimeout(1500);        // at rest: no pointer, no key, no scroll
-      const r = await p.evaluate(() => ({ calls: window.__calls, animations: document.getAnimations().filter((a) => !(a.effect && a.effect.target === document.body && a.effect.pseudoElement && /^silk-/.test(a.animationName || ''))).length, bg: document.documentElement.getAttribute('data-bg') }));   // the silk background's two layers (body::before, ::after) are the site's one ambient loop, held by waves.js; everything else must be at rest
+      const r = await p.evaluate(() => ({ calls: window.__calls, animations: document.getAnimations().length, bg: document.documentElement.getAttribute('data-bg') }));   // the silk background is paused in every check but waves.js (_common.js, stillSilk), so nothing at all may run here
       await ctx.close();
       if (r.bg !== bg) throw new Error(`forced draw gave ${r.bg}, wanted ${bg}`);
       return { calls: tally(r.calls), animations: r.animations };
@@ -281,7 +281,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     check(!Object.keys(home.sheet.calls).some((k) => /^(frame|idle|animate|observer|timer)/.test(k)),
       'sheet: no script of its own, so no timer, frame, idle callback, observer or animation on the home page', JSON.stringify(home.sheet.calls));
     check(ids.every((bg) => home[bg].animations === 0 && !home[bg].calls.frame && !home[bg].calls.interval && !home[bg].calls.animate),
-      'at rest (1.5 s, no input) no draw has an animation, an interval, a frame request or a Web Animation (the silk background\'s two layers aside: waves.js holds those)', ids.map((bg) => `${bg} ${home[bg].animations}`).join(', '));
+      'at rest (1.5 s, no input, the silk background paused) no draw has an animation, an interval, a frame request or a Web Animation', ids.map((bg) => `${bg} ${home[bg].animations}`).join(', '));
     // Other pages: the same calls whichever background is drawn, so the scripts' own page tests hold.
     for (const page of ['sv', 'about']) {
       const calls = {};

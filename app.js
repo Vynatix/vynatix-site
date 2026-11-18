@@ -300,46 +300,200 @@
   }
 })();
 
-// Silk waves — the page background drifts, and the visitor can stop it.
+// Silk waves — the page background is drawn live, and the visitor can stop it.
 //
-// styles.css paints two soft layers of folds behind every page (body::before and
-// body::after) and, only while <html> carries js-waves, lets them drift slowly.
-// This block adds that class unless the visitor has paused the motion, and wires
-// the footer's "Pause background motion" button, which is hidden until js-motion
-// says it can work. The choice is kept in localStorage so every page agrees.
-// Without JavaScript, with a stored pause, or under prefers-reduced-motion (which
-// styles.css handles by itself: no animation, no button) the silk is still, in the
-// same pose the drift starts from. Any stored value but "off" means moving.
+// styles.css paints a still silk behind every page (two soft layers of folds,
+// body::before and body::after). When motion is wanted, this block lays a
+// <canvas> over that still silk and draws the folds itself, frame by frame, in
+// a small WebGL shader: the folds are computed, so they form, lean and dissolve
+// rather than slide past as a picture would. The three colours are read from
+// the page (the canvas colour and the two silk layers' own), so the shader
+// follows the theme and uses no colour of its own.
+//
+// The still silk is every other state, and no canvas exists in any of them:
+// no JavaScript, prefers-reduced-motion, forced colours, a stored pause, a
+// browser without WebGL, or a lost WebGL context. The footer's "Pause
+// background motion" button (hidden until js-motion says it can work) stops
+// the drawing and removes the canvas; the choice is kept in localStorage so
+// every page agrees. Any stored value but "off" means moving. The phase comes
+// from the clock, so the pattern carries on across pages instead of restarting.
 (function () {
   var root = document.documentElement;
   var MOTION_KEY = 'vynatix-motion';  // localStorage: "off" once paused, "on" once resumed
   var LABEL = { on: 'Pause background motion', off: 'Play background motion' };
+  var LOOP_MS = 240000;               // the whole pattern repeats seamlessly after four minutes
+  var MAX_PIXELS = 1300000;           // the drawing buffer is capped; the silk is soft, so CSS scales it up unseen
+  var quiet = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce), (forced-colors: active)') : null;
+  var button = null, canvas = null, gl = null, uniforms = null, watcher = null;
+  var frameId = 0, lastDraw = 0, unusable = false;
+
+  var VERTEX = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  // Two warped sine fields make the folds: where their sum is high the cloth
+  // catches the light, where it is low it falls into shade. Every time term is
+  // a whole multiple of one angle, so the pattern loops without a seam. The
+  // last lines add up to one level of noise per pixel, which keeps the 8-bit
+  // output from showing each brightness level as a stripe (colour banding).
+  var FRAGMENT = [
+    '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+    'precision highp float;',
+    '#else',
+    'precision mediump float;',
+    '#endif',
+    'uniform vec2 size;uniform float a;uniform vec3 c0;uniform vec3 c1;uniform vec3 c2;',
+    'void main(){',
+    'vec2 u=gl_FragCoord.xy/size.y;',
+    'vec2 q=vec2(u.x*.9-u.y*.44,u.x*.44+u.y*.9)*vec2(.8,2.3);',
+    'q+=.30*vec2(sin(q.y*1.6+a*3.),cos(q.x*1.9-a*2.));',
+    'q+=.16*vec2(sin(q.y*3.3-a*4.+1.3),cos(q.x*3.1+a*3.+.6));',
+    'float w=.6*sin(q.y*3.1+q.x*.9+a*5.)+.4*sin(q.y*5.3-q.x*1.7-a*4.+2.);',
+    'float l=smoothstep(0.,1.,w);float d=smoothstep(0.,1.,-w);',
+    'vec3 c=mix(c0,c1,.9*l*l);',
+    'c=mix(c,c2,.8*d*d);',
+    'vec2 g=mod(gl_FragCoord.xy,vec2(251.,241.));',
+    'c+=(fract(sin(dot(g,vec2(12.9898,78.233)))*43758.5453)-.5)/127.5;',
+    'gl_FragColor=vec4(c,1.);}'
+  ].join('\n');
 
   function stored() {
     try { return localStorage.getItem(MOTION_KEY); } catch (e) { return null; }
   }
-  function apply(moving, button) {
+  function label(moving) {
     root.classList.toggle('js-waves', moving);
     if (button) button.textContent = moving ? LABEL.on : LABEL.off;
   }
 
-  // First paint: the class is set before the body exists.
-  apply(stored() !== 'off', null);
+  // "rgb(245, 241, 234)" or "color(srgb 0.94 0.92 0.88)" to three numbers from 0 to 1.
+  function tone(text) {
+    var n = (text || '').match(/-?\d*\.?\d+(?:e-?\d+)?/g);
+    if (!n || n.length < 3) return null;
+    var unit = /^color\(/.test(text) ? 1 : 255;
+    return [n[0] / unit, n[1] / unit, n[2] / unit];
+  }
+  function readTones() {
+    if (!gl || !document.body) return false;
+    var c0 = tone(getComputedStyle(document.body).backgroundColor);
+    var c1 = tone(getComputedStyle(document.body, '::before').backgroundColor);
+    var c2 = tone(getComputedStyle(document.body, '::after').backgroundColor);
+    if (!c0 || !c1 || !c2) return false;
+    gl.uniform3f(uniforms.c0, c0[0], c0[1], c0[2]);
+    gl.uniform3f(uniforms.c1, c1[0], c1[1], c1[2]);
+    gl.uniform3f(uniforms.c2, c2[0], c2[1], c2[2]);
+    return true;
+  }
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight;
+    var k = Math.min(1, Math.sqrt(MAX_PIXELS / Math.max(1, w * h)));
+    w = Math.max(1, Math.round(w * k)); h = Math.max(1, Math.round(h * k));
+    if (canvas.width === w && canvas.height === h) return;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+    gl.uniform2f(uniforms.size, w, h);
+  }
+  function draw() {
+    fit();
+    gl.uniform1f(uniforms.a, (Date.now() % LOOP_MS) / LOOP_MS * 6.283185307179586);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  function frame(now) {
+    frameId = requestAnimationFrame(frame);
+    if (now - lastDraw < 30) return;      // about thirty frames a second is plenty for something this slow
+    lastDraw = now;
+    draw();
+  }
+
+  function shader(type, source) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+  }
+  // Builds the canvas and its program. False (and unusable, for good) when the browser cannot do it.
+  function build() {
+    canvas = document.createElement('canvas');
+    canvas.className = 'silk-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    try {
+      gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' });
+    } catch (e) { gl = null; }
+    if (!gl) return false;
+    var vs = shader(gl.VERTEX_SHADER, VERTEX), fs = shader(gl.FRAGMENT_SHADER, FRAGMENT);
+    var program = gl.createProgram();
+    if (!vs || !fs) return false;
+    gl.attachShader(program, vs); gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);   // one triangle over the whole view
+    var at = gl.getAttribLocation(program, 'p');
+    gl.enableVertexAttribArray(at);
+    gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
+    uniforms = {
+      size: gl.getUniformLocation(program, 'size'), a: gl.getUniformLocation(program, 'a'),
+      c0: gl.getUniformLocation(program, 'c0'), c1: gl.getUniformLocation(program, 'c1'), c2: gl.getUniformLocation(program, 'c2')
+    };
+    return true;
+  }
+
+  function stop() {
+    if (frameId) cancelAnimationFrame(frameId);
+    frameId = 0;
+    if (watcher) watcher.disconnect();
+    watcher = null;
+    root.classList.remove('js-waves-live');
+    if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    canvas = null; gl = null; uniforms = null;
+  }
+  function giveUp() {
+    unusable = true;
+    stop();
+    label(false);
+    root.classList.remove('js-motion');   // no dead button
+  }
+  // Starts the live silk if it is wanted and allowed. True when it is running.
+  function start() {
+    if (canvas) return true;
+    if (unusable || !document.body || (quiet && quiet.matches) || !root.classList.contains('js-waves')) return false;
+    if (!build() || !readTones()) { giveUp(); return false; }
+    canvas.addEventListener('webglcontextlost', function () {
+      // Phones drop contexts freely. Back to the still silk; the button offers to start again.
+      stop();
+      label(false);
+    });
+    draw();
+    document.body.insertBefore(canvas, document.body.firstChild);
+    root.classList.add('js-waves-live');   // only now does the still silk step aside
+    if (window.MutationObserver) {
+      watcher = new MutationObserver(function () { if (gl) readTones(); });
+      watcher.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+    frameId = requestAnimationFrame(frame);
+    return true;
+  }
+
+  // First paint: only the class, so the button's label is right; the drawing starts after the page is up.
+  label(stored() !== 'off');
 
   function init() {
-    var button = document.querySelector('.motion-toggle');
-    if (!button) return;
-    apply(root.classList.contains('js-waves'), button);
-    root.classList.add('js-motion');
-    button.addEventListener('click', function () {
-      var moving = !root.classList.contains('js-waves');
-      apply(moving, button);
-      try {
-        localStorage.setItem(MOTION_KEY, moving ? 'on' : 'off');
-      } catch (e) {
-        /* storage unavailable — the button still works for this page */
-      }
-    });
+    button = document.querySelector('.motion-toggle');
+    label(root.classList.contains('js-waves'));
+    if (!window.WebGLRenderingContext || !window.requestAnimationFrame) { giveUp(); return; }
+    if (button) {
+      root.classList.add('js-motion');
+      button.addEventListener('click', function () {
+        var moving = !root.classList.contains('js-waves');
+        label(moving);
+        if (moving) start(); else stop();
+        try {
+          localStorage.setItem(MOTION_KEY, moving ? 'on' : 'off');
+        } catch (e) {
+          /* storage unavailable — the button still works for this page */
+        }
+      });
+    }
+    if (quiet && quiet.addEventListener) quiet.addEventListener('change', function () { if (quiet.matches) stop(); else start(); });
+    // Not even one frame is asked for where nothing will be drawn (reduced motion, forced colours, a stored pause).
+    if (root.classList.contains('js-waves') && !(quiet && quiet.matches)) requestAnimationFrame(function () { setTimeout(start, 0); });
   }
 
   if (document.readyState === 'loading') {

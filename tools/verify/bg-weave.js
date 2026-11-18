@@ -18,7 +18,7 @@
 //   node verify/bg-weave.js                      (serve the repo root first, as for the other checks)
 //   THEMES=mono-light,mono-dark node verify/bg-weave.js
 //   WIDTHS=1100,1200,1440,1920  ZOOMS=1,1.25,1.5,2  SEED=7  SCROLLS=300,450,600,760  node verify/bg-weave.js
-const { BASE, THEMES, launch, pinTheme, BGS } = require('./_common.js');
+const { BASE, THEMES, launch, pinTheme, BGS, heroUnit } = require('./_common.js');
 // BGS (like THEMES) narrows a run: this guard is for the "weave" background only.
 if (!BGS.includes('weave')) { console.log('bg-weave: skipped, BGS={} does not include weave'.replace('{}', BGS.join(','))); process.exit(0); }
 const { PNG } = require('pngjs');
@@ -27,7 +27,7 @@ const WIDTHS = (process.env.WIDTHS || '1000,1100,1200,1440,1920').split(',').map
 const ZOOMS = (process.env.ZOOMS || '1,1.25,1.5,2').split(',').map(Number);
 const SCROLLS = (process.env.SCROLLS || '300,450,600,760').split(',').map(Number);
 const SEED = +(process.env.SEED || 7);
-const HEIGHT = 900;
+const HEIGHT = +(process.env.HEIGHT || 1248);   // the window's height: 1248px is the lowest at which the hero is at the design size with its client row (styles.css, Hero fit)
 const CLEAR = 24;        // px between the cloth and any text, button or the clients row
 const INK = 3;           // a pixel the cloth changes by at least this much in one channel is ink
 const SEARCH = 120;      // how far to look for the nearest ink, for the report
@@ -48,7 +48,7 @@ function collect() {
     while ((n = w.nextNode())) {
       if (!n.nodeValue.trim()) continue;
       const el = n.parentElement, cs = getComputedStyle(el);
-      if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+      if (cs.visibility === 'hidden' || cs.display === 'none' || el.closest('.sr-only')) continue;   // screen-reader text is not on screen: nothing to read behind it
       const rg = document.createRange(); rg.selectNodeContents(n);
       [...rg.getClientRects()].filter((r) => r.width > 1 && r.height > 1).forEach((r) => {
         const cls = String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '');
@@ -91,6 +91,10 @@ function zoomText(s) {
   const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
   els.forEach((e, i) => e.style.setProperty('font-size', (sizes[i] * s) + 'px'));
   document.documentElement.style.setProperty('--text-type-lede', '350 ' + (22 * s) + 'px/1.5 var(--font-body)');
+  // The hero carries two more font sizes in custom properties, which the art takes its ch and em from
+  // (styles.css, --hero-lede and --hero-em): real text zoom scales the fonts they set, so scale them here.
+  const hero = document.querySelector('.hero'), hcs = getComputedStyle(hero);
+  ['--hero-lede', '--hero-em'].forEach((v) => hero.style.setProperty(v, 'calc((' + hcs.getPropertyValue(v) + ') * ' + s + ')'));
 }
 
 // The field's used box and the layout it is derived from, in viewport pixels at scroll 0.
@@ -194,6 +198,8 @@ function behind(png, t) {
         if (zoom !== 1) { await page.evaluate(zoomText, zoom); await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); }
         const tag = `${theme} ${width}px${zoom !== 1 ? ' text x' + zoom : ''}`;
         const geo = await page.evaluate(geometry);
+        // The hero's unit: the clearance and the gaps are 24 of them (24px at the design size).
+        const u = await heroUnit(page), clear = +(CLEAR * u).toFixed(1);
         const { rects } = await page.evaluate(collect);
         const withCloth = await shot(page);
         const idx = await off(page);
@@ -208,7 +214,7 @@ function behind(png, t) {
         }
         if (n === 0 && zoom === 1 && wide) check(false, `B  ${tag}: the cloth is not drawn`, 'a wide page with the weave drawn must show it (broken mask, renamed token or unsupported feature?)');
         else if (n === 0) check(true, `B  ${tag}: no cloth drawn here`, 'the field has no room at this text size, as designed');
-        else check(min.d >= CLEAR, `B  ${tag}: nearest ink ${min.d === Infinity ? '>' + SEARCH : min.d.toFixed(1)}px (need ${CLEAR})`, min.d < CLEAR ? `to "${min.t}" at ${min.at}` : `${n} ink px`);
+        else check(min.d >= clear, `B  ${tag}: nearest ink ${min.d === Infinity ? '>' + SEARCH : min.d.toFixed(1)}px (need ${clear})`, min.d < clear ? `to "${min.t}" at ${min.at}` : `${n} ink px`);
         frames++;
 
         // G. geometry, at the unzoomed frames
@@ -217,11 +223,11 @@ function behind(png, t) {
           if (!wide) check(g.display === 'none', `G  ${tag}: the field is off below 1100px`, `display ${g.display}`);
           else {
             check(Math.abs(g.right - g.headerRight) < 1.5, `G  ${tag}: field right edge ${g.right.toFixed(1)} is the header's right edge ${g.headerRight.toFixed(1)}`);
-            check(Math.abs(g.left - (g.ledeRight + CLEAR)) < 1.5 || g.width === 0, `G  ${tag}: field left ${g.left.toFixed(1)} is the lede box right ${g.ledeRight.toFixed(1)} + ${CLEAR}`);
+            check(Math.abs(g.left - (g.ledeRight + clear)) < 1.5 || g.width === 0, `G  ${tag}: field left ${g.left.toFixed(1)} is the lede box right ${g.ledeRight.toFixed(1)} + ${clear}`);
             const top = g.h1Top + g.marginTop; // static top is the h1's top edge
-            check(top >= g.line1Bottom + CLEAR - 1, `G  ${tag}: field top ${top.toFixed(1)} is at least ${CLEAR}px below the headline's first line (${g.line1Bottom.toFixed(1)})`);
+            check(top >= g.line1Bottom + clear - 1, `G  ${tag}: field top ${top.toFixed(1)} is at least ${clear}px below the headline's first line (${g.line1Bottom.toFixed(1)})`);
             check(Math.abs(g.lh - g.h1LineHeight) < 0.6, `G  ${tag}: --weave-lh ${g.lh} is the headline's line height ${g.h1LineHeight}`);
-            check(top + g.height <= g.clientsTop - CLEAR + 1, `G  ${tag}: field bottom ${(top + g.height).toFixed(1)} is at least ${CLEAR}px above the clients row (${g.clientsTop.toFixed(1)})`);
+            check(top + g.height <= g.clientsTop - clear + 1, `G  ${tag}: field bottom ${(top + g.height).toFixed(1)} is at least ${clear}px above the clients row (${g.clientsTop.toFixed(1)})`);
           }
         }
 

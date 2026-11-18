@@ -271,10 +271,10 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=160c1b48">
+<link rel="stylesheet" href="styles.css?v=66f44f12">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
-<link rel="stylesheet" href="hero-bg.css?v=c545788d">
+<link rel="stylesheet" href="hero-bg.css?v=085744d5">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -362,12 +362,15 @@
     <!-- ============================================================ Hero -->
     <section class="hero view-hire" id="home">
       <div class="container">
+        <!-- The message: what the hero fit keeps on the first screen (styles.css, "Hero fit"). -->
+        <div class="hero__msg">
         <p class="eyebrow">A software consultancy in Gothenburg · Since 2023</p>
         <h1 class="hero__h1">Your in-house software team.<br><em>Without the hiring.</em></h1>
         <p class="hero__lede">Vynatix is a software consultancy in Gothenburg: senior engineers who work as part of your organisation rather than from the outside. Right now that means in-car software on Android Automotive and the build pipelines behind it, at Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside. We report our hours honestly every week, and we stay for as long as the assignment needs us.</p>
         <div class="hero__ctas">
           <a class="btn btn--lg" href="contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <a class="btn btn--lg btn--secondary" href="work.html">See the work</a>
+        </div>
         </div>
 
         <!-- Client marks: a still row. Only the first two are named, with the client's

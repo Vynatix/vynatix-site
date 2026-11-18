@@ -70,11 +70,23 @@ highlights the things most worth keeping front-of-mind.
   new names whenever regenerated. The art is placed from the layout and fitted by hand
   to the current headline copy ("Your in-house software team." / "Without the
   hiring."): **a change to the headline, the lede, the hero spacing or the clients row
-  can move art into text, and `npm run check:bg` (the five `tools/verify/bg-*.js`
-  guards) fails and says which rule.** Storage: `vynatix-bg`, `vynatix-bg-seed`
+  can move art into text, and `npm run check:bg` (the `tools/verify/bg-*.js`
+  guards, at the design size and on a scaled hero) fails and says which rule.** Storage: `vynatix-bg`, `vynatix-bg-seed`
   (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
   `vynatix-bg-iris-idle` is a read-only test hook. Per-background detail, constants,
   the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
+- **The home hero is fitted to the window, and its numbers are measured.** On both home pages the first
+  screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
+  size), and solves it from the window's height (`100svh`) so that the header, the audience bar and the
+  message end on the fold, with the clients' rule lying on it; from 1092px of height the client row is on the
+  first screen too, pinned to its bottom edge. Every vertical size in the hero is `calc(N * var(--hero-u))`
+  (N is the token the comment names), `hero-bg.css` multiplies the art's constants by the same unit, the
+  eyebrow and buttons keep their size and the lede stops at 18px (16px on a phone). Outside the envelope (a
+  window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the
+  plain scrolling one. An owner decision. **The solve's constants (`--hero-f1`, `--hero-k1`, `--hero-above`
+  and the rest) are facts about the current copy, the header and the hero's spacing: after changing any of
+  those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
+  `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,

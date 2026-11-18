@@ -22,7 +22,7 @@
 //                  distances in hero-bg.css clear the real text ends by 24px.
 // Exits non-zero on any failure. The page must be drawn as the sheet: the script pins { theme, bg: 'sheet' }.
 // Needs Playwright and pngjs (tools/package.json has both).
-const { BASE, THEMES, ALL_THEMES, pinTheme, launch, BGS } = require('./_common.js');
+const { BASE, THEMES, ALL_THEMES, pinTheme, launch, BGS, heroUnit } = require('./_common.js');
 // BGS (like THEMES) narrows a run: this guard is for the "sheet" background only.
 if (!BGS.includes('sheet')) { console.log('bg-sheet: skipped, BGS={} does not include sheet'.replace('{}', BGS.join(','))); process.exit(0); }
 const { PNG } = require('pngjs');
@@ -35,7 +35,7 @@ const HEADLINE_MIN = Number(process.env.HEADLINE_MIN || 3.5);
 const INK_MIN = Number(process.env.INK_MIN || 3);       // channel difference (of 255) that counts as ink
 const SCROLLS = (process.env.SCROLLS || '0,150,300,450,600').split(',').map(Number);
 const TOL = Number(process.env.TOL || 1.25);   // registration tolerance in px: a 2px rule snapped to the pixel grid is centred within 0.5px of its line, and the line itself may sit at a half pixel
-const HEIGHT = 900;
+const HEIGHT = +(process.env.HEIGHT || 1248);   // the window's height: 1248px is the lowest at which the hero is at the design size with its client row (styles.css, Hero fit)
 
 const failures = [];
 const fail = (msg) => { failures.push(msg); console.log('  FAIL ' + msg); };
@@ -83,6 +83,10 @@ function applyZoom(s) {
   els.forEach((e, i) => e.style.setProperty('font-size', (sizes[i] * s) + 'px', 'important'));
   const lede = getComputedStyle(document.documentElement).getPropertyValue('--text-type-lede');
   document.documentElement.style.setProperty('--text-type-lede', lede.replace(/(\d+(?:\.\d+)?)px/, (m, v) => (parseFloat(v) * s) + 'px'));
+  // The hero carries two more font sizes in custom properties, which the art takes its ch and em from
+  // (styles.css, --hero-lede and --hero-em): real text zoom scales the fonts they set, so scale them here.
+  const hero = document.querySelector('.hero'), hcs = getComputedStyle(hero);
+  ['--hero-lede', '--hero-em'].forEach((v) => hero.style.setProperty(v, 'calc((' + hcs.getPropertyValue(v) + ') * ' + s + ')'));
 }
 
 // Insert (and later remove) a CSSOM rule that switches parts of the sheet off. Returns a function that undoes it.
@@ -219,12 +223,13 @@ async function open(browser, theme, width, zoom) {
       const iGuides = await page.evaluate(hideSheet, 'guides'); const art = await shot(page, clip); await page.evaluate(unhide, iGuides);
       // B: clearance of the art from every text line box, every button and the clients row
       const textRects = boxes.groups.flatMap((g) => g.rects).concat(boxes.hero);
+      const clear = CLEAR * await heroUnit(page);   // 24 of the hero's unit: 24px at the design size
       const SEARCH = CLEAR + 100;
       const d = inkDistance(art, none, textRects, art.width, art.height, SEARCH);
       const dc = inkDistance(art, none, [boxes.clients], art.width, art.height, SEARCH);
       const tag = `${theme} ${width}px zoom ${zoom}`;
-      if (d.best < CLEAR) fail(`${tag}: art ink ${d.best.toFixed(1)}px from a text line box at (${d.at})`);
-      if (dc.best < CLEAR) fail(`${tag}: art ink ${dc.best.toFixed(1)}px from the clients row at (${dc.at})`);
+      if (d.best < clear) fail(`${tag}: art ink ${d.best.toFixed(1)}px from a text line box at (${d.at})`);
+      if (dc.best < clear) fail(`${tag}: art ink ${dc.best.toFixed(1)}px from the clients row at (${dc.at})`);
       // C: contrast behind the hero text
       await page.evaluate(hideText);
       const withSheet = await shot(page, clip);

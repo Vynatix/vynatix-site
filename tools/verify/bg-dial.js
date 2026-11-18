@@ -26,7 +26,7 @@
 //   node verify/bg-dial.js                      (serve the repo root first, as for the other checks)
 //   THEMES=mono-light,mono-dark node verify/bg-dial.js
 //   WIDTHS=1200,1440,1920  ZOOMS=1,1.25,1.5,2  STATES=rest,left,right  SCROLLS=300,450,600,760  node verify/bg-dial.js
-const { BASE, THEMES, launch, pinTheme, BGS } = require('./_common.js');
+const { BASE, THEMES, launch, pinTheme, BGS, heroUnit } = require('./_common.js');
 // BGS (like THEMES) narrows a run: this guard is for the "dial" background only.
 if (!BGS.includes('dial')) { console.log('bg-dial: skipped, BGS={} does not include dial'.replace('{}', BGS.join(','))); process.exit(0); }
 const { PNG } = require('pngjs');
@@ -36,7 +36,7 @@ const ZOOMS = (process.env.ZOOMS || '1,1.25,1.5,2').split(',').map(Number);
 const STATES = (process.env.STATES || 'rest,left,right').split(',');
 const SCROLLS = (process.env.SCROLLS || '300,450,600,760').split(',').map(Number);
 const HDR_K = (process.env.HDR_K || '-1,-0.5,0,0.5,1').split(',').map(Number);
-const HEIGHT = 900;
+const HEIGHT = +(process.env.HEIGHT || 1248);   // the window's height: 1248px is the lowest at which the hero is at the design size with its client row (styles.css, Hero fit)
 const CLEAR = 24;            // px between the arc and any text, button or the clients row
 const INK = 1;               // a pixel the arc changes by at least this much in one channel is ink
 const SEARCH = 120;          // how far to look for the nearest ink, for the report
@@ -61,7 +61,7 @@ function collect() {
     while ((n = w.nextNode())) {
       if (!n.nodeValue.trim()) continue;
       const el = n.parentElement, cs = getComputedStyle(el);
-      if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+      if (cs.visibility === 'hidden' || cs.display === 'none' || el.closest('.sr-only')) continue;   // screen-reader text is not on screen: nothing to read behind it
       const rg = document.createRange(); rg.selectNodeContents(n);
       [...rg.getClientRects()].filter((r) => r.width > 1 && r.height > 1).forEach((r) => {
         const cat = el.closest('.site-header') ? 'header' : el.closest('.hero__h1') ? 'headline' : el.closest('.hero__lede') ? 'lede'
@@ -102,6 +102,10 @@ function zoomText(s) {
   const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
   els.forEach((e, i) => e.style.setProperty('font-size', (sizes[i] * s) + 'px'));
   document.documentElement.style.setProperty('--text-type-lede', '350 ' + (22 * s) + 'px/1.5 var(--font-body)');
+  // The hero carries two more font sizes in custom properties, which the art takes its ch and em from
+  // (styles.css, --hero-lede and --hero-em): real text zoom scales the fonts they set, so scale them here.
+  const hero = document.querySelector('.hero'), hcs = getComputedStyle(hero);
+  ['--hero-lede', '--hero-em'].forEach((v) => hero.style.setProperty(v, 'calc((' + hcs.getPropertyValue(v) + ') * ' + s + ')'));
 }
 
 // The arc's used box and the layout it is derived from, in page pixels.
@@ -147,6 +151,21 @@ function inkMap(a, b) {
     if (Math.max(Math.abs(a.data[p] - b.data[p]), Math.abs(a.data[p + 1] - b.data[p + 1]), Math.abs(a.data[p + 2] - b.data[p + 2])) >= INK) { ink[i] = 1; n++; }
   }
   return { ink, n };
+}
+
+// Ink is what the arc's own box can paint. A pixel that differs between the two shots further than 16px from
+// that box (the turn moves the rim 6px) is the renderer redrawing something else once the arc's layer is
+// gone: with the pointer at an edge, a column of a client mark's edge a few levels apart, 200px under the
+// arc. G proves where the box is, so a dial drawn somewhere else fails there, not here.
+function inkNear(m, g, w, h) {
+  const x0 = Math.floor(g.left - 16), x1 = Math.ceil(g.right + 16), y0 = Math.floor(g.top - 16), y1 = Math.ceil(g.bottom + 16);
+  let n = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = y * w + x;
+    if (!m.ink[i]) continue;
+    if (x < x0 || x > x1 || y < y0 || y > y1) m.ink[i] = 0; else n++;
+  }
+  return { ink: m.ink, n };
 }
 
 // Worst contrast behind a text rectangle, per pixel, against the text's own colour.
@@ -257,11 +276,13 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
           if (stateK[state] != null) await toK(page, width, stateK[state]);
           const tag = `${theme} ${width}px${zoom !== 1 ? ' text x' + zoom : ''}, pointer ${state}`;
           const geo = await page.evaluate(geometry);
+          // The hero's unit: the clearance, the gaps and the box are multiples of it (the numbers above at the design size).
+          const u = await heroUnit(page), clear = +(CLEAR * u).toFixed(1), boxW = BOX_W * u, boxH = BOX_H * u, over = OVERHANG * u;
           const rects = await page.evaluate(collect);
           const withArc = await shot(page);
           const idx = await off(page);
           const without = await shot(page);
-          const { ink, n } = inkMap(withArc, without);
+          const { ink, n } = inkNear(inkMap(withArc, without), geo, withArc.width, withArc.height);
 
           // B. clearance
           let min = { d: Infinity, t: '', at: null };
@@ -272,7 +293,7 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
           if (n === 0 && zoom === 1) check(false, `B  ${tag}: the dial is not drawn`, 'a page with the dial drawn must show it (broken mask, renamed token or unsupported feature?)');
           else if (n === 0) check(true, `B  ${tag}: no ink in view`, 'the arc is pushed off the page by the lede at this text size, as designed');
           else {
-            check(min.d >= CLEAR, `B  ${tag}: nearest ink ${min.d === Infinity ? '>' + SEARCH : min.d.toFixed(1)}px (need ${CLEAR})`, min.d < CLEAR ? `to "${min.t}" at ${min.at}` : `${n} ink px`);
+            check(min.d >= clear, `B  ${tag}: nearest ink ${min.d === Infinity ? '>' + SEARCH : min.d.toFixed(1)}px (need ${clear})`, min.d < clear ? `to "${min.t}" at ${min.at}` : `${n} ink px`);
             if (!(theme in worstGap) || min.d < worstGap[theme]) worstGap[theme] = min.d;
           }
           frames++;
@@ -280,13 +301,13 @@ function behind(png, t, dy) {   // dy: how far the page has scrolled when t is p
           // G. geometry (unzoomed, at rest, once per theme and width)
           if (zoom === 1 && state === 'rest') {
             const g = geo;
-            const want = Math.max(g.ledeRight + CLEAR, g.contentRight - BOX_W + OVERHANG);
+            const want = Math.max(g.ledeRight + clear, g.contentRight - boxW + over);
             check(g.content !== 'none' && g.display === 'block' && g.pe === 'none', `G  ${tag}: both gratings drawn, display block, pointer-events none`, `${g.content} ${g.display} ${g.pe}`);
-            check(Math.abs(g.left - want) < 1.5, `G  ${tag}: left ${g.left.toFixed(1)} is the larger of the lede box right ${g.ledeRight.toFixed(1)} + ${CLEAR} and the container's right ${g.contentRight.toFixed(1)} less ${BOX_W} plus ${OVERHANG} (${want.toFixed(1)})`);
-            check(g.top >= g.line1Bottom + CLEAR - 1, `G  ${tag}: top ${g.top.toFixed(1)} is at least ${CLEAR}px below the headline's first line (${g.line1Bottom.toFixed(1)})`);
-            check(g.bottom <= g.clientsTop - CLEAR + 1, `G  ${tag}: bottom ${g.bottom.toFixed(1)} is at least ${CLEAR}px above the clients row (${g.clientsTop.toFixed(1)})`);
+            check(Math.abs(g.left - want) < 1.5, `G  ${tag}: left ${g.left.toFixed(1)} is the larger of the lede box right ${g.ledeRight.toFixed(1)} + ${clear} and the container's right ${g.contentRight.toFixed(1)} less ${boxW.toFixed(1)} plus ${OVERHANG} (${want.toFixed(1)})`);
+            check(g.top >= g.line1Bottom + clear - 1, `G  ${tag}: top ${g.top.toFixed(1)} is at least ${clear}px below the headline's first line (${g.line1Bottom.toFixed(1)})`);
+            check(g.bottom <= g.clientsTop - clear + 1, `G  ${tag}: bottom ${g.bottom.toFixed(1)} is at least ${clear}px above the clients row (${g.clientsTop.toFixed(1)})`);
             check(Math.abs(g.lh - g.h1LineHeight) < 0.6, `G  ${tag}: --dial-lh ${g.lh} is the headline's line height ${g.h1LineHeight}`);
-            check(g.width === BOX_W && g.height === BOX_H, `G  ${tag}: box ${g.width} by ${g.height} is the mask's (${BOX_W} by ${BOX_H})`);
+            check(Math.abs(g.width - boxW) < 0.5 && Math.abs(g.height - boxH) < 0.5, `G  ${tag}: box ${g.width} by ${g.height} is the mask's (${BOX_W} by ${BOX_H}, times the hero's unit ${u.toFixed(3)})`);
             check(g.right <= g.vw && g.sw === g.vw, `G  ${tag}: the box ends inside the page (${g.right.toFixed(1)} of ${g.vw}) and the page does not scroll sideways`, `scrollWidth ${g.sw}`);
             check(requests.filter((u) => MASK.test(u)).length === 2, `G  ${tag}: both masks requested`, String(requests.filter((u) => MASK.test(u)).length));
           }

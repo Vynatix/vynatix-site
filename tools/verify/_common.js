@@ -708,8 +708,18 @@ function stillSilk(browser) {
   browser.newPage = async (o) => (await browser.newContext(o)).newPage();
 }
 
+// The home hero is drawn in its own unit, --hero-u, which the hero fit scales to the window's height
+// (styles.css, "Hero fit"): 1 at the design size. The art's constants are multiples of it, so a guard
+// that compares a distance with one of them multiplies its number by this first.
+async function heroUnit(page) {
+  return page.evaluate(() => {
+    const hero = document.querySelector('.hero');
+    return (hero && parseFloat(getComputedStyle(hero).getPropertyValue('--hero-u'))) || 1;
+  });
+}
+
 module.exports = {
-  ROOT, PAGES, readRegistry, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, BGS, ALL_BGS, bgsFor, pinBg, pinTheme, launch, chromePath, pool,
+  ROOT, PAGES, readRegistry, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, BGS, ALL_BGS, bgsFor, pinBg, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,

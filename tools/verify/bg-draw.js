@@ -259,7 +259,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       await p.addInitScript(instrument);
       await p.goto(at || url(page), { waitUntil: 'load' });
       await p.waitForTimeout(1500);        // at rest: no pointer, no key, no scroll
-      const r = await p.evaluate(() => ({ calls: window.__calls, animations: document.getAnimations().length, bg: document.documentElement.getAttribute('data-bg') }));
+      const r = await p.evaluate(() => ({ calls: window.__calls, animations: document.getAnimations().filter((a) => !(a.effect && a.effect.target === document.body && a.effect.pseudoElement && /^silk-/.test(a.animationName || ''))).length, bg: document.documentElement.getAttribute('data-bg') }));   // the silk background's two layers (body::before, ::after) are the site's one ambient loop, held by waves.js; everything else must be at rest
       await ctx.close();
       if (r.bg !== bg) throw new Error(`forced draw gave ${r.bg}, wanted ${bg}`);
       return { calls: tally(r.calls), animations: r.animations };
@@ -281,7 +281,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
     check(!Object.keys(home.sheet.calls).some((k) => /^(frame|idle|animate|observer|timer)/.test(k)),
       'sheet: no script of its own, so no timer, frame, idle callback, observer or animation on the home page', JSON.stringify(home.sheet.calls));
     check(ids.every((bg) => home[bg].animations === 0 && !home[bg].calls.frame && !home[bg].calls.interval && !home[bg].calls.animate),
-      'at rest (1.5 s, no input) no draw has an animation, an interval, a frame request or a Web Animation', ids.map((bg) => `${bg} ${home[bg].animations}`).join(', '));
+      'at rest (1.5 s, no input) no draw has an animation, an interval, a frame request or a Web Animation (the silk background\'s two layers aside: waves.js holds those)', ids.map((bg) => `${bg} ${home[bg].animations}`).join(', '));
     // Other pages: the same calls whichever background is drawn, so the scripts' own page tests hold.
     for (const page of ['sv', 'about']) {
       const calls = {};
@@ -331,10 +331,10 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
 
   // ---- 10. Storage: the site writes exactly the keys privacy.html lists, and never the iris's test hook. -----
   // Each draw is reached through the site's own draw, the home page is used for a moment (and, for the iris, left
-  // alone long enough to open: the hook shortens the silence to 300 ms), the theme toggle is pressed, and every
+  // alone long enough to open: the hook shortens the silence to 300 ms), the theme toggle and the motion button are pressed, and every
   // write and removal is compared with the keys the site is allowed to write.
   {
-    const KEYS = { 'session vynatix-bg': 'always', 'session vynatix-bg-seed': 'weave', 'session vynatix-bg-iris': 'iris', 'local vynatix-theme': 'toggle' };
+    const KEYS = { 'session vynatix-bg': 'always', 'session vynatix-bg-seed': 'weave', 'session vynatix-bg-iris': 'iris', 'local vynatix-theme': 'toggle', 'local vynatix-motion': 'toggle' };
     const bad = [], writes = {};
     for (const bg of ids) {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -345,6 +345,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       await page.goto(HOME, { waitUntil: 'load' });
       await page.waitForTimeout(bg === 'iris' ? 3200 : 800);
       await page.click('.theme-toggle');
+      await page.click('.motion-toggle');                // the footer's background motion button
       await page.waitForTimeout(150);
       const calls = await page.evaluate(() => window.__calls || []);
       const wrote = [...new Set(calls.filter((c) => /^store /.test(c)))].map((c) => c.replace(/^store /, ''));
@@ -356,7 +357,7 @@ const diff = (a, b) => Object.keys(Object.assign({}, a, b)).filter((k) => (a[k] 
       writes[bg] = wrote;
       await ctx.close();
     }
-    check(bad.length === 0, 'storage: the home page writes only vynatix-bg, the weave\'s vynatix-bg-seed, the iris\'s vynatix-bg-iris (once its opening has begun) and the toggle\'s vynatix-theme (local), and removes nothing',
+    check(bad.length === 0, 'storage: the home page writes only vynatix-bg, the weave\'s vynatix-bg-seed, the iris\'s vynatix-bg-iris (once its opening has begun) the toggle\'s vynatix-theme and the motion button\'s vynatix-motion (both local), and removes nothing',
       bad.join(' | ') || ids.map((bg) => `${bg}: ${writes[bg].map((k) => k.replace('vynatix-', '')).join(' ')}`).join('; '));
 
     // What the site writes is what privacy.html says it writes; the iris's test hook is not stored data.

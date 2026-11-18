@@ -39,8 +39,15 @@ highlights the things most worth keeping front-of-mind.
   layer is Apple-style Liquid Glass and the content is never glass: the header is a
   floating capsule whose rim refracts the page (two `<filter>`s in every page's
   `.svg-defs` block, maps in `assets/glass-lens-*.svg`, Chromium only, blur
-  elsewhere), its open menu is a glass sheet, buttons are capsules; cards, bands
-  and the consent bar stay solid, and nothing moves. See AGENTS.md, *Liquid Glass*.
+  elsewhere), its open menu is a glass sheet, buttons are capsules; cards
+  and the consent bar stay solid, and the glass itself never moves. See AGENTS.md, *Liquid Glass*.
+  Behind every page is a **silk background that drifts** (two masked layers on
+  `body::before`/`::after`, masks in `assets/silk-*.svg`, `transform` only), an owner
+  decision and the site's one ambient loop. It runs only while `<html>` has `js-waves`
+  and never under reduced motion; the footer's "Pause background motion" button
+  (`localStorage`, `vynatix-motion`) is what makes it meet WCAG 2.2.2, so never ship
+  one without the other. `pinTheme` and `pinBg` store the pause so pixel checks see
+  one pose; `tools/verify/waves.js` tests the drift unpinned. See AGENTS.md, *Silk waves*.
   The inverse bands (CTA band, editorial band, footer) are light in the dark theme
   by design. Checks pin a theme
   with `pinTheme` (`tools/verify/_common.js`, which also pins the hero background),
@@ -79,23 +86,25 @@ highlights the things most worth keeping front-of-mind.
   editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
-  (theme draw and toggle, the hero background draw, mobile nav, the audience switch's
-  `js-view-join`, `aria-current` and focus, analytics consent;
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: six features
+  (theme toggle, the hero background draw, mobile nav, the audience switch's
+  `js-view-join`, `aria-current` and focus, the silk background's `js-waves` and pause
+  button, and last, where `consent.js` expects it, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
-  only) and no CDN/animation stack. **Nothing on
-  the site moves on its own, with one exception: the iris background (a quarter of
+  only) and no CDN/animation stack. **Two things on
+  the site move on their own, and no third may be added: the silk background drifts
+  until the visitor pauses it (above), and the iris background (a quarter of
   visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
   ends it.** The dial background answers the pointer (and sweeps once, for half a
   second, when the theme toggles with a mouse or trackpad); reduced motion removes all of it. The system
-  forbids auto-advancing strips and ambient loops, so the client list is still and
-  the iris is a single event, an owner decision whose limits must not be loosened.
+  forbids auto-advancing strips and ambient loops, so the client list is still,
+  the iris is a single event and the silk has a pause control: owner decisions whose limits must not be loosened.
   `app.js` is the only script every page loads (the home page adds `hero-bg.js`).
   The CSP pins `script-src` to `'self'` plus one Google path, so adding any other
   third-party script means widening the CSP in **every page** first (see the
   analytics bullet).
 - **Analytics is Google Analytics 4 behind opt-in consent, and it is off.**
-  `var GA_ID = 'G-XXXXXXXXXX';` in the fifth IIFE of `app.js` is an inert
+  `var GA_ID = 'G-XXXXXXXXXX';` in the last IIFE of `app.js` is an inert
   placeholder: no bar, no storage, no request. Beside it, `PURGE_ONLY` is the
   emergency stop, `false` except during an exit. Google is never requested, and
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
@@ -157,7 +166,7 @@ highlights the things most worth keeping front-of-mind.
 - **Progressive enhancement and accessibility are load-bearing:** no-JS users
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
-  `.js-theme` for the theme toggle, `.js-consent` once the consent module is
+  `.js-theme` for the theme toggle, `.js-motion` for the background motion button, `.js-consent` once the consent module is
   active, `.js-view-join` while the address is the home page's `#join`). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 

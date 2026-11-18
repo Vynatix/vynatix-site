@@ -118,6 +118,7 @@ function pinTheme(arg) {
     var bg = (arg && arg.bg) || 'sheet';
     var seed = arg && arg.seed != null ? arg.seed : (bg === 'weave' ? 7 : null);
     localStorage.setItem('vynatix-theme', theme);
+    localStorage.setItem('vynatix-motion', 'off');     // the silk background still: pixel checks need one pose (waves.js tests the drift)
     sessionStorage.setItem('vynatix-bg', bg);
     if (seed != null) sessionStorage.setItem('vynatix-bg-seed', String(seed));
   } catch (e) { /* storage blocked: the page follows the system's light/dark and shows the sheet */ }
@@ -129,6 +130,7 @@ function pinTheme(arg) {
 function pinBg(bg) {
   try {
     sessionStorage.setItem('vynatix-bg', bg || 'sheet');
+    localStorage.setItem('vynatix-motion', 'off');     // the silk background still, as pinTheme does
     if (bg === 'weave') sessionStorage.setItem('vynatix-bg-seed', '7');
   } catch (e) { /* storage blocked: the page falls back to the sheet */ }
 }

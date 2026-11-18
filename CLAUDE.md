@@ -35,11 +35,14 @@ highlights the things most worth keeping front-of-mind.
   dark follows the toggle (`localStorage`, `vynatix-theme`, of which only the
   light/dark half is read, so older ids such as `dark` still count; the analytics
   choice is the second key, `vynatix-consent`) or the system preference. The
-  markup's `<html data-theme="mono-light">` is the no-JS default. Surfaces are
-  Liquid Glass, built from the system's own glass tokens (`--glass-tint-surface`,
-  `--glass-blur-*`, `--glass-specular`) over a still backdrop of soft role-token
-  light; see AGENTS.md, *Liquid Glass*. The inverse bands (CTA band, editorial band,
-  footer) stay solid and are light in the dark theme by design. Checks pin a theme
+  markup's `<html data-theme="mono-light">` is the no-JS default. The controls
+  layer is Apple-style Liquid Glass and the content is never glass: the header is a
+  floating capsule whose rim refracts the page (two `<filter>`s in every page's
+  `.svg-defs` block, maps in `assets/glass-lens-*.svg`, Chromium only, blur
+  elsewhere), its open menu is a glass sheet, buttons are capsules; cards, bands
+  and the consent bar stay solid, and nothing moves. See AGENTS.md, *Liquid Glass*.
+  The inverse bands (CTA band, editorial band, footer) are light in the dark theme
+  by design. Checks pin a theme
   with `pinTheme` (`tools/verify/_common.js`, which also pins the hero background),
   and a component change has to hold in both (`THEMES=…` narrows a run). Logo
   files, favicon, app icons and manifest colours are still Forest.
@@ -64,7 +67,7 @@ highlights the things most worth keeping front-of-mind.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
-  which writes it into every page. The skip link and the `<symbol>` block are copy-pasted into every
+  which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
   `*.html` file — there is no include system — so a change to either is made in **all** pages
   (the home page also has a second skip link, for its joiner view).
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`

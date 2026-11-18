@@ -196,54 +196,55 @@ theme. The dark theme is a parallel environment, not an inverted light one: the
 inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit on
 `md-sys-color-inverse-surface`, which is light in the dark theme.
 
-**Liquid Glass.** The site's surfaces are glass (an owner decision of 17 November
-2026), in one fenced block at the end of `styles.css`, built only from the system's
-glass kit: `--glass-tint-surface`, `--glass-blur-*`, `--glass-specular` and the
-shadows, plus role tokens in `color-mix()`. The pieces:
+**Liquid Glass.** The site follows Apple's Liquid Glass as far as the web allows (an
+owner decision of 18 November 2026; a first pass on the 17th put frosted glass on the
+content cards over a tinted backdrop, which Apple's own rules exclude, and was
+replaced). One fenced block at the end of `styles.css`. The rules it follows:
 
-- **The backdrop.** `body::before` is a fixed, still layer of four soft radial pools
-  in the theme's roles (surface-container-highest, tertiary, primary, secondary)
-  behind every page, so the glass has something to refract. It never moves. The
-  canvas colour stays on `<body>`, and the gradients sit on pseudo-elements only,
-  never on an element that holds text, so `a11y.js` can still resolve the background
-  behind text. (Its sweep walks up to the first opaque background and skips text
-  under a gradient, so a gradient on a text container would hide that text from the
-  check.) `.section--surface` is a translucent band without blur, so the backdrop
-  shows through it.
-- **The header** keeps the system's glass on itself, with the chrome blur, a softer
-  edge and a sheen on `::after`. The header is a stacking context, so it is the
-  backdrop root for everything inside it: a glass layer inside it (a `::before`, the
-  open mobile menu) could only blur the header's own contents. That is why the open
-  menu keeps its solid pane (with the glass edge, radius and lit edge).
-- **Cards**: `.panel`, `.metric`, `.case` and `.consent-panel` are glass with the
-  thin blur (there can be a dozen on a page), a hairline edge, the specular edge,
-  `shadow-l2` and a sheen on `::before`. The system reserves glass for chrome; the
-  owner extended it to these cards. Under text only `--glass-tint-surface` is used
-  (mixed 40% toward `surface-bright`, so the pane is a step lighter than the canvas
-  in both themes), never the primary or accent tints.
-- **Buttons** keep the system's radius. The filled ones keep their solid fill and
-  gain the specular edge; `.btn--secondary` is clear glass. On an inverse band the
-  band's own button rules win. Capsules (`radius-full`) were tried and fail
-  `bg-iris.js`: with the iris drawn, the hero buttons' long anti-aliased curves over
-  the backdrop render 6 to 12 levels differently, which the guard's on/off diff
-  reads as art inside the button boxes (it does with `visibility: hidden` as well as
-  `display: none`). Capsules would need that guard's method changed first, which is
-  an owner decision.
-- **Solid on purpose**: the inverse bands (CTA band, editorial band, footer), the
-  consent bar (a legal control, kept compact and solid) and the banners.
-- **Rules**: `backdrop-filter` only on leaf surfaces, never on `main`, a section or a
-  view wrapper (it creates a containing block and a backdrop root, which would break
-  the sticky header, the `:target` views and nested glass). Under
-  `prefers-reduced-transparency` the system turns every tint solid and drops the blur
-  and the edge, and this block removes the backdrop and the sheens. In print the
-  backdrop, sheens, blur and shadows go.
-- **Contrast**: `a11y.js` measures text against the nearest opaque background (the
-  canvas), not the composited glass. The glass panes are about 80% opaque and lighter
-  than the canvas, so composited contrast is at least as good, and a composited
-  pixel measurement (10th-percentile backdrop pixel behind each text box, text made
-  transparent, in both themes at 1440 and 390 px, twelve pages) found all text at AA
-  when the block was added. Re-measure by hand when a tint or the backdrop
-  changes.
+- **Glass is the controls layer; content is never glass.** Pages, cards (`.panel`,
+  `.metric`, `.case`), bands and the consent bar keep the system's solid surfaces.
+  Only the header, its open menu and the outlined button are glass. There is no
+  page backdrop: the glass refracts the content that scrolls beneath it.
+- **The header is a floating capsule in two layers**, both pseudo-elements under its
+  content. `::before` is the lens: `backdrop-filter: url(#vx-lens)` bends the page at
+  the capsule's rim through an SVG displacement map (`assets/glass-lens-wide.svg`,
+  and `glass-lens-narrow.svg` with `#vx-lens-narrow` under 600px; red moves the
+  sample along x, green along y, 128 is rest, and the filter stretches the map to the
+  bar with `primitiveUnits="objectBoundingBox"`). `::after` is the body: a 10px blur,
+  the system tint thinned to about 64%, a sheen and a lit rim. Only Chromium renders
+  an SVG filter in `backdrop-filter`; Safari and Firefox paint nothing for the lens
+  layer and still get the blurred, tinted capsule from the other, which is why the
+  two are separate layers rather than one declaration.
+- **The two `<filter>` elements are in the `.svg-defs` block of every page**, beside
+  the wordmark `<symbol>` (copy-pasted, like it: change all 23 together). A
+  fragment-only `url(#id)` in an external stylesheet resolves against the page, and
+  the CSP allows the map as a same-origin image.
+- **The header is not a backdrop root.** A stacking context alone is not one; only
+  `filter`, `opacity`, `mask`, `clip-path`, `mix-blend-mode` or `backdrop-filter` on
+  the element itself make one. Keeping the glass on pseudo-elements lets the open
+  mobile menu, inside the header, blur the page as its own glass sheet (the regular
+  blur and a tint about nine tenths opaque, so its links stay readable even where a
+  browser fails to blur).
+- **Controls are capsules** (`radius-full`): the header and every `.btn`. The filled
+  button keeps its solid fill with a lit upper edge; `.btn--secondary` is clear
+  glass. Without JavaScript under 905px the header is two rows tall and takes
+  `radius-2xl` instead.
+- **Nothing moves.** Apple's glass has travelling highlights and a tint that adapts
+  to what is beneath it; the site's no-motion rule stands, so the rim and tint are
+  still.
+- **Reduced transparency and print**: the lens layer goes, the body turns into solid
+  `surface-container`, the menu and outlined button lose their blur. These are
+  explicit overrides, because literal blur values and a tint thinned with
+  `color-mix()` are not covered by the system's token swap.
+- **Contrast**: `a11y.js` resolves header text against the canvas, not the glass. A
+  composited measurement (labels made transparent, 5th-percentile pixel behind each
+  label, every 37px of scroll down five pages, both themes, 1440 and 390px) gave a
+  worst case of 5.2:1 for header labels and 11:1 for menu links when the block was
+  added. `bg-*.js` hold the header over the hero art. Re-measure by hand when the
+  tint, the blur or the map changes.
+- **Known limits**: no refraction outside Chromium; headless Chromium at device
+  scale 2 leaves part of a large backdrop blur unblurred in screenshots (scale 1 is
+  correct), so judge blur on a real device.
 
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a

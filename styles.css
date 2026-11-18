@@ -2414,19 +2414,29 @@ body::before {
   mask-image: url("assets/silk-light.png");
 }
 body::after {
-  background: var(--md-sys-color-surface-container-highest);
+  /* A little of the text colour in the shaded folds, or the silk is too flat
+     to see move in the light theme. */
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-highest) 92%, var(--md-sys-color-on-surface));
   -webkit-mask-image: url("assets/silk-shade.png");
   mask-image: url("assets/silk-shade.png");
 }
+/* The drift has to be seen to be worth having: the first version moved 84px in
+   38 s, about two brightness levels of change in two seconds, which read as
+   still. Each layer now travels a slow circle at constant speed (about 17px a
+   second), in opposite senses, so the folds slide over one another and never
+   stall at a turning point. The layer does not turn: the second rotate undoes
+   the first, leaving a pure orbit, which the 160px margin covers. */
 @keyframes silk-light {
-  to { transform: translate3d(84px, -42px, 0) rotate(1.6deg) scale(1.05); }
+  from { transform: rotate(0deg) translate3d(110px, 0, 0) rotate(0deg); }
+  to { transform: rotate(360deg) translate3d(110px, 0, 0) rotate(-360deg); }
 }
 @keyframes silk-shade {
-  to { transform: translate3d(-76px, 36px, 0) rotate(-1.3deg) scale(1.06); }
+  from { transform: rotate(0deg) translate3d(-95px, 0, 0) rotate(0deg); }
+  to { transform: rotate(-360deg) translate3d(-95px, 0, 0) rotate(360deg); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .js-waves body::before { animation: silk-light 38s ease-in-out infinite alternate; }
-  .js-waves body::after { animation: silk-shade 47s ease-in-out infinite alternate; }
+  .js-waves body::before { animation: silk-light 40s linear infinite; }
+  .js-waves body::after { animation: silk-shade 34s linear infinite; }
 }
 /* The hero's two buttons get a layer of their own. Over the silk, the browser
    anti-aliases a capsule's edge against the true backdrop in one compositing

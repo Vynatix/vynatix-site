@@ -68,6 +68,30 @@ const KEY = 'vynatix-motion';
     await ctx.close();
   }
 
+  // 2b. The drift can be seen. The first version moved 84px in 38 s: its transforms changed, so the test above
+  //     passed, yet two frames 2 s apart differed by at most 2 of 255 levels and it read as still. Here, with the
+  //     two animations seeked 2 s apart, at least 15% of the pixels of a plain page must change by 2 levels or more.
+  for (const scheme of ['light', 'dark']) {
+    const { PNG } = require('pngjs');
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
+    const page = await ctx.newPage();
+    await page.goto(url('terms'), { waitUntil: 'load' });
+    const at = async (t) => {
+      await page.evaluate((t) => document.getAnimations().forEach((a) => { if (a.effect && a.effect.target === document.body) { a.pause(); a.currentTime = t; } }), t);
+      return PNG.sync.read(await page.screenshot());
+    };
+    const worst = { share: 1, t: 0 };
+    for (const t of [4000, 13000, 27000]) {
+      const A = await at(t), B = await at(t + 2000);
+      let changed = 0;
+      for (let i = 0; i < A.data.length; i += 4) if (Math.abs(A.data[i] - B.data[i]) >= 2) changed++;
+      const share = changed / (A.data.length / 4);
+      if (share < worst.share) { worst.share = share; worst.t = t; }
+    }
+    check(worst.share >= 0.15, `the drift is visible (${scheme}): 2 s apart, at least 15% of the page's pixels change by 2 levels or more`, `lowest ${(worst.share * 100).toFixed(1)}% at ${worst.t / 1000} s`);
+    await ctx.close();
+  }
+
   // 3. The button stops the drift at once, in the rest pose, says so, and can be worked from the keyboard; the
   //    choice is stored and holds on the next page and after a reload; pressing again resumes.
   {

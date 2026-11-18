@@ -1,5 +1,5 @@
-// Site script. Five features, each in its own block below: the theme (a
-// colour scheme drawn at random for each visit), the home page's hero
+// Site script. Five features, each in its own block below: the theme (the
+// Monochrome scheme, light or dark), the home page's hero
 // background (also drawn at random for the visit), the mobile nav, the home
 // page's audience switch (a small enhancement of two plain links), and consent
 // for Google Analytics. The analytics block does nothing until the visitor has
@@ -7,67 +7,32 @@
 // and it is inert (no markup, no storage access, no listeners) while the
 // measurement ID is still the placeholder.
 //
-// Theme — a colour scheme picked at random for each visit, light or dark.
+// Theme — one colour scheme, Monochrome, light or dark.
 //
-// The design system has six themes over one set of colour roles: three brand
-// directions (Forest, Teal, Monochrome), each with a light and a dark theme.
-// On arrival the site picks one direction at random and keeps it for the rest
-// of the visit (sessionStorage), so moving between pages never changes the
-// look; a new tab or a later visit draws again. Light or dark is not random:
-// it follows the visitor's own choice from the toggle (localStorage) and,
-// without one, their operating-system preference. The toggle flips light and
-// dark within the direction the visit drew.
+// The design system has three brand directions (Forest, Teal, Monochrome),
+// each with a light and a dark theme. The site uses Monochrome only
+// (mono-light, mono-dark), set with the Liquid Glass surfaces in styles.css.
+// Light or dark follows the visitor's own choice from the toggle
+// (localStorage) and, without one, their operating-system preference.
 //
 // This file loads in the <head>, without defer, so the first block below sets
 // data-theme before the page paints. The CSP rules out an inline script, so a
-// small blocking file is the way to avoid a flash of the wrong theme. If
-// storage is blocked the pick cannot be kept, so the site stays on Forest
-// rather than redrawing on every page. Without JavaScript the page keeps the
-// Forest light theme its markup names.
+// small blocking file is the way to avoid a flash of the wrong theme. Without
+// JavaScript the page keeps the Monochrome light theme its markup names.
 (function () {
   var root = document.documentElement;
   var THEME_KEY = 'vynatix-theme';  // localStorage: the visitor's light/dark choice
-  var LOOK_KEY = 'vynatix-look';    // sessionStorage: the direction drawn for this visit
+  // Every id the toggle has ever stored is still read, for its light/dark half
+  // only, so a visitor who chose dark before the site went Monochrome keeps it.
   var THEMES = ['light', 'dark', 'teal-light', 'teal-dark', 'mono-light', 'mono-dark'];
-  var LOOKS = ['forest', 'teal', 'mono'];
-  var PREFIX = { forest: '', teal: 'teal-', mono: 'mono-' };
   // The canvas of each theme (md-sys-color-surface), for the browser chrome
   // colour before the body exists to be measured.
-  var CANVAS = {
-    'light': '#EFE8DA', 'dark': '#1B1A16',
-    'teal-light': '#F3F0E9', 'teal-dark': '#0D2A2C',
-    'mono-light': '#F5F1EA', 'mono-dark': '#14110F'
-  };
-  // The display face and its italic (the hero's accent line) each direction
-  // sets the headline in, in fonts/ as <name>-latin.woff2.
-  var DISPLAY_FACES = {
-    forest: ['fraunces-variable', 'fraunces-italic-variable'],
-    teal: ['instrument-serif-400', 'instrument-serif-400-italic'],
-    mono: ['geist-variable', 'fraunces-italic-variable']
-  };
+  var CANVAS = { 'mono-light': '#F5F1EA', 'mono-dark': '#14110F' };
+  // The display face and its italic (the hero's accent line), in fonts/ as
+  // <name>-latin.woff2.
+  var DISPLAY_FACES = ['geist-variable', 'fraunces-italic-variable'];
 
   function isDark(theme) { return /(^|-)dark$/.test(theme); }
-  // '' for Forest, 'teal-' or 'mono-' for the other directions.
-  function direction(theme) {
-    var i = theme.indexOf('-');
-    return i < 0 ? '' : theme.slice(0, i + 1);
-  }
-
-  // The direction for this visit: the one already drawn, else a fresh random
-  // pick, kept for the visit. Anything stored that is not one of the three is
-  // discarded rather than trusted.
-  function pickLook() {
-    try {
-      var stored = sessionStorage.getItem(LOOK_KEY);
-      if (LOOKS.indexOf(stored) < 0) {
-        stored = LOOKS[Math.floor(Math.random() * LOOKS.length)];
-        sessionStorage.setItem(LOOK_KEY, stored);
-      }
-      return stored;
-    } catch (e) {
-      return 'forest';
-    }
-  }
 
   function wantsDark() {
     var stored = null;
@@ -84,7 +49,7 @@
     var bg = '';
     try { bg = getComputedStyle(document.body).backgroundColor; } catch (e) { bg = ''; }
     if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return bg;
-    return CANVAS[theme] || CANVAS.light;
+    return CANVAS[theme] || CANVAS['mono-light'];
   }
 
   function applyTheme(theme, button) {
@@ -98,11 +63,11 @@
   }
 
   // The home page headline is the largest text on the site and sets one line
-  // in the display face and one in its italic; fetch both for the drawn
-  // direction now rather than after the stylesheet names them.
-  function preloadHeadlineFaces(look) {
+  // in the display face and one in its italic; fetch both now rather than
+  // after the stylesheet names them.
+  function preloadHeadlineFaces() {
     if (!/\/(index\.html)?$/.test(location.pathname) || !document.head) return;
-    DISPLAY_FACES[look].forEach(function (name) {
+    DISPLAY_FACES.forEach(function (name) {
       var link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'font';
@@ -113,24 +78,23 @@
     });
   }
 
-  // First paint: draw the direction, then set the theme before anything renders.
-  var look = pickLook();
-  applyTheme(PREFIX[look] + (wantsDark() ? 'dark' : 'light'), null);
-  preloadHeadlineFaces(look);
+  // First paint: set the theme before anything renders.
+  applyTheme(wantsDark() ? 'mono-dark' : 'mono-light', null);
+  preloadHeadlineFaces();
 
   // After the page is parsed: wire the toggle and settle the chrome colour
   // from the rendered background.
   function init() {
     var button = document.querySelector('.theme-toggle');
-    applyTheme(root.getAttribute('data-theme') || 'light', button);
+    applyTheme(root.getAttribute('data-theme') || 'mono-light', button);
     if (!button) return;
     // The toggle is invisible until it can work (styles.css), the same opt-in
     // the mobile nav uses, so it never sits dead for a no-JS visitor.
     root.classList.add('js-theme');
 
     button.addEventListener('click', function () {
-      var current = root.getAttribute('data-theme') || 'light';
-      var next = direction(current) + (isDark(current) ? 'light' : 'dark');
+      var current = root.getAttribute('data-theme') || 'mono-light';
+      var next = isDark(current) ? 'mono-light' : 'mono-dark';
       applyTheme(next, button);
       try {
         localStorage.setItem(THEME_KEY, next);

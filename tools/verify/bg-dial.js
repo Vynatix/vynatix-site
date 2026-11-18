@@ -24,7 +24,7 @@
 //      transparency and print leave a still or absent dial.
 //
 //   node verify/bg-dial.js                      (serve the repo root first, as for the other checks)
-//   THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/bg-dial.js
+//   THEMES=mono-light,mono-dark node verify/bg-dial.js
 //   WIDTHS=1200,1440,1920  ZOOMS=1,1.25,1.5,2  STATES=rest,left,right  SCROLLS=300,450,600,760  node verify/bg-dial.js
 const { BASE, THEMES, launch, pinTheme, BGS } = require('./_common.js');
 // BGS (like THEMES) narrows a run: this guard is for the "dial" background only.

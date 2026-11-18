@@ -91,7 +91,7 @@ const gaCookieObjects = async (ctx) => (await ctx.cookies()).filter((c) => c.nam
 
 async function runEngine(name, browser) {
   console.log(`\n== ${name} ${browser.version()}`);
-  const env = await armedContext(browser, { arm: { live: true, stripUpgrade: name === 'webkit' }, viewport: { width: 1280, height: 800 }, theme: 'light' });
+  const env = await armedContext(browser, { arm: { live: true, stripUpgrade: name === 'webkit' }, viewport: { width: 1280, height: 800 }, theme: 'mono-light' });
   const net = watchNetwork(env.ctx);
   const page = await open(env.ctx, 'index.html');
   await sleep(1500);
@@ -160,7 +160,7 @@ async function runBfcache(name) {
   const opts = { proxy: proxyOption() };
   if (name === 'chromium') Object.assign(opts, { ignoreDefaultArgs: ['--disable-back-forward-cache'], args: ['--enable-features=BackForwardCache'] });
   const browser = await launchEngine(name, opts);
-  const env = await armedContext(browser, { arm: { live: true, stripUpgrade: name === 'webkit' }, theme: 'light' });
+  const env = await armedContext(browser, { arm: { live: true, stripUpgrade: name === 'webkit' }, theme: 'mono-light' });
   const net = watchNetwork(env.ctx);
   const A = await env.ctx.newPage();
   await A.addInitScript(() => { window.addEventListener('pageshow', (e) => { (window.__ps = window.__ps || []).push(e.persisted); }); });

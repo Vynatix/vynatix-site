@@ -13,10 +13,11 @@
    - Colour comes from role tokens only (--md-sys-color-*, --text-*, --indicator,
      --focus-ring, --inverse-on-surface-variant, the status roles). No raw hex and
      no palette colours (--forest-*, --teal-*, --mono-*), so every rule holds in
-     all six themes: Forest (light, dark), Teal (teal-light, teal-dark) and
-     Monochrome (mono-light, mono-dark). Dark mode is never special-cased here.
+     both of the site's themes, Monochrome light and dark (and would hold in the
+     system's Forest and Teal themes too). Dark mode is never special-cased here.
    - Sizes come from the spacing scale (--space-*), the type scale (--text-*),
      --leading-*, --tracking-* and --radius-*.
+   - Surfaces are Liquid Glass (the last block of this file).
    - Components follow the system's cards: TopAppBar (glass), Button, Card,
      EditorialCard (.case), MetricCard (.metric), Banner, FocusRing, Logo.
    - Progressive enhancement is load-bearing: nothing is hidden pending JS, and
@@ -2245,3 +2246,159 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 .u-mt-6  { margin-top: var(--space-6); }
 .u-mt-12 { margin-top: var(--space-12); }
 .u-mb-0  { margin-bottom: 0; }
+
+/* ---------------------------------------------------------------
+   Liquid Glass
+   The site's surfaces are glass: translucent, blurred, with a lit edge,
+   floating over a still backdrop of soft light. Everything here is built
+   from the system's own glass kit (--glass-tint-surface, --glass-blur-*,
+   --glass-specular, the shadows), so under prefers-reduced-transparency
+   colors_and_type.css turns every tint solid and drops the blur and the
+   edge, and the backdrop and the sheen below go too.
+   The system reserves glass for chrome; the owner extended it to the
+   content cards (the panel, case, metric and consent-panel cards). Under
+   running text only --glass-tint-surface is used (about 80% canvas), never
+   the primary or accent tints. The inverse bands (CTA band, editorial
+   band, footer) and the consent bar stay solid.
+   Rules for this block:
+   - backdrop-filter only on leaf surfaces, never on main, a section or a
+     view wrapper: it makes a containing block and a backdrop root, which
+     would break the sticky header, the :target views and nested glass.
+   - Nothing moves. The backdrop is fixed and still.
+   - Gradients sit on pseudo-elements, never on an element that holds text,
+     so tools/verify/a11y.js can still resolve the background behind it.
+   --------------------------------------------------------------- */
+
+/* The backdrop: three soft pools of light in the theme's own roles, fixed
+   to the viewport behind every page. The canvas colour stays on <body>. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(55vmax 40vmax at 0% 0%, var(--md-sys-color-surface-container-highest), transparent 70%),
+    radial-gradient(45vmax 38vmax at 100% 30%, color-mix(in srgb, var(--md-sys-color-tertiary) 18%, transparent), transparent 70%),
+    radial-gradient(40vmax 32vmax at 70% 90%, color-mix(in srgb, var(--md-sys-color-primary) 7%, transparent), transparent 70%),
+    radial-gradient(50vmax 42vmax at 10% 100%, color-mix(in srgb, var(--md-sys-color-secondary) 22%, transparent), transparent 70%);
+}
+
+/* A tonal band lets the backdrop through, so the glass cards on it have
+   something to refract; the band itself carries no blur. */
+.section--surface {
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-low) 55%, transparent);
+}
+
+/* The header keeps the system's glass on itself (a glass layer inside it
+   could only blur the header's own contents: the header is a stacking
+   context, so it is the backdrop root for everything in it), with the
+   chrome blur, a softer edge and a sheen on ::after. For the same reason
+   the open mobile menu, which sits inside the header, cannot blur the page:
+   it keeps its solid pane, with the glass edge, radius and lit edge, so the
+   page never shows through behind its links. */
+.site-header {
+  -webkit-backdrop-filter: var(--glass-blur-chrome);
+  backdrop-filter: var(--glass-blur-chrome);
+  border-color: color-mix(in srgb, var(--md-sys-color-outline-variant) 70%, transparent);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l3);
+}
+:root:not(.js-nav) .site-header { position: relative; }
+@media (min-width: 905px) {
+  :root:not(.js-nav) .site-header { position: sticky; }
+}
+@media (max-width: 904px) {
+  .js-nav .site-header__nav.open {
+    background: var(--md-sys-color-surface-container-low);
+    border-color: color-mix(in srgb, var(--md-sys-color-outline-variant) 70%, transparent);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l3);
+  }
+}
+
+/* Glass cards. The thin blur: there can be a dozen on a page. */
+.panel,
+.metric,
+.case,
+.consent-panel,
+.section--surface .panel,
+.section--surface .metric,
+.section--surface .case {
+  position: relative;
+  isolation: isolate;
+  /* A step lighter than the canvas in both themes, so the glass reads as a
+     pane rather than a hole; still about 80% opaque over the backdrop. */
+  background: color-mix(in srgb, var(--glass-tint-surface), var(--md-sys-color-surface-bright) 40%);
+  -webkit-backdrop-filter: var(--glass-blur-thin);
+  backdrop-filter: var(--glass-blur-thin);
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant) 55%, transparent);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l2);
+}
+.case:hover,
+.section--surface .case:hover {
+  background: color-mix(in srgb, var(--glass-tint-surface), var(--md-sys-color-surface-bright) 65%);
+  box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l3);
+}
+/* The sheen: light caught on the upper edge of the glass, on a layer under
+   the card's content. */
+.site-header::after,
+.panel::before,
+.metric::before,
+.case::before,
+.consent-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--md-sys-color-surface-bright) 70%, transparent) 0%, transparent 50%);
+  pointer-events: none;
+}
+.consent-panel:empty::before { content: none; }
+
+/* Buttons keep the system's shape. The filled ones keep their solid fill
+   (their label pairs are measured on it) and gain the lit edge; the outlined
+   one becomes clear glass. On an inverse band the band's own button rules
+   still win. (Capsules were tried: their long anti-aliased curves over the
+   backdrop render a few levels differently when the iris layer is present,
+   which tools/verify/bg-iris.js reads as art inside the hero buttons.) */
+.btn:not(.btn--secondary, .btn--ghost) {
+  box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l1);
+}
+.btn--secondary {
+  --_bg: color-mix(in srgb, var(--md-sys-color-surface-bright) 40%, transparent);
+  --_brd: color-mix(in srgb, var(--md-sys-color-outline) 70%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur-ultra-thin);
+  backdrop-filter: var(--glass-blur-ultra-thin);
+  box-shadow: var(--glass-specular, var(--glass-specular-light));
+}
+.btn:focus-visible { box-shadow: 0 0 0 4px var(--md-sys-color-surface); }
+
+@media (prefers-reduced-transparency: reduce) {
+  body::before,
+  .site-header::after,
+  .panel::before,
+  .metric::before,
+  .case::before,
+  .consent-panel::before { content: none; }
+  .section--surface { background: var(--md-sys-color-surface-container-low); }
+}
+
+@media print {
+  body::before,
+  .site-header::after,
+  .panel::before,
+  .metric::before,
+  .case::before,
+  .consent-panel::before { content: none; }
+  .panel,
+  .metric,
+  .case,
+  .consent-panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+}

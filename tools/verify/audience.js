@@ -124,7 +124,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     const tag = js ? 'JavaScript on' : 'JavaScript off';
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: js });
     const page = await ctx.newPage();
-    if (js) await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    if (js) await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
 
@@ -202,7 +202,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     // Resolved, so index.html#faq and /#faq count as same-page links too.
     const links = await page.evaluate(() => {
@@ -288,7 +288,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
       const page = await ctx.newPage();
       const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      await page.addInitScript(pinTheme, pin('light', bg));
+      await page.addInitScript(pinTheme, pin('mono-light', bg));
       await page.goto(BASE + url, { waitUntil: 'load' });
       await page.waitForTimeout(400);
       if (click) await page.click('.audience__link--hire');
@@ -321,7 +321,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.addInitScript(pinTheme, pin('light', 'dial'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'dial'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     await page.waitForTimeout(400);
     const angle = () => page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('#home .hero__h1'), '::after').rotate) || 0);
@@ -356,8 +356,8 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     await ctx.close();
   }
 
-  // ---- 8b. #join logs nothing in any of the three looks (an unused font preload warns a few seconds after load) -----
-  for (const theme of ['light', 'teal-light', 'mono-light']) {
+  // ---- 8b. #join logs nothing in either theme (an unused font preload warns a few seconds after load) -----
+  for (const theme of ALL_THEMES) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
     const logs = [];
@@ -416,7 +416,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, forcedColors: 'active' });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     const bad = [];
     const widths = {};
     for (const [url, sel, other] of [['index.html', 'audience__link--hire', 'audience__link--join'], ['index.html#join', 'audience__link--join', 'audience__link--hire']]) {
@@ -441,7 +441,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     // At DOMContentLoaded Chromium has not set :target yet (it does so after parsing), which is the moment a
     // slow connection paints. The joiner view has to be in force by then, not a moment later.
     await page.addInitScript(() => {
@@ -473,7 +473,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const focused = () => page.evaluate(() => ({ cls: document.activeElement.className, ring: document.activeElement.matches(':focus-visible'), inJoin: !!document.activeElement.closest('.view-join') }));
     const enter = async (sel, hash) => {
@@ -533,7 +533,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const vis = () => page.evaluate(() => getComputedStyle(document.querySelector('.audience')).visibility);
     const before = await vis();
@@ -549,7 +549,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('light', 'sheet'));
+    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const band = await page.evaluate(() => {
       const c = document.getElementById('contact'), p = c.previousElementSibling;
@@ -570,7 +570,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     for (const [url, w] of [['index.html', 360], ['index.html', 390], ['index.html#join', 360], ['index.html#join', 390]]) {
       const c = await browser.newContext({ viewport: { width: w, height: 800 } });
       const pg = await c.newPage();
-      await pg.addInitScript(pinTheme, pin('light', 'sheet'));
+      await pg.addInitScript(pinTheme, pin('mono-light', 'sheet'));
       await pg.goto(BASE + url, { waitUntil: 'load' });
       await pg.evaluate(() => document.querySelectorAll('.cta-band').forEach((b) => b.scrollIntoView()));
       await pg.evaluate(TEXT_SCALE, 1.75);

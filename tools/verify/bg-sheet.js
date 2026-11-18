@@ -1,6 +1,6 @@
 // Hero background "sheet": clearance, contrast and registration guard for the home hero.
 //
-//   cd tools && BASE=http://localhost:8000/ THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/bg-sheet.js
+//   cd tools && BASE=http://localhost:8000/ THEMES=mono-light,mono-dark node verify/bg-sheet.js
 //
 // What it proves, per theme, at 390, 768, 1000, 1200, 1440 and 1920 wide (WIDTHS; from 1200 up also at text-only zoom
 // 1, 1.25, 1.5 and 2, ZOOMS; below that at zoom 1, because the A-frame is only drawn from 75rem):

@@ -134,7 +134,7 @@ function run(root = ROOT, pages = PAGES) {
   }
 
   // --- every storage key the scripts use, in both notices (the Swedish one is easy to forget when a key is added)
-  const scriptKeys = new Set([(app && app.consentKey) || CONSENT_KEY, THEME_KEY, LOOK_KEY]);
+  const scriptKeys = new Set([(app && app.consentKey) || CONSENT_KEY, THEME_KEY]);
   for (const f of ['app.js', 'hero-bg.js']) {
     const src = tryRead(f);
     if (src === null) continue;
@@ -149,7 +149,10 @@ function run(root = ROOT, pages = PAGES) {
     const lost = storageKeyProblems(html, keys);
     if (lost.length) keyBad.push(`${page} does not name ${lost.map((k) => '<code>' + k + '</code>').join(', ')}`);
   }
-  if (app) for (const k of [THEME_KEY, LOOK_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
+  if (app) for (const k of [THEME_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
+  // The retired colour-scheme draw: no script may write its key again, and no notice may still describe it.
+  for (const f of ['app.js', 'hero-bg.js']) { const src = tryRead(f); if (src && stripJsComments(src).includes(LOOK_KEY)) keyBad.push(`${f} uses ${LOOK_KEY}, the retired colour-scheme draw`); }
+  for (const page of Object.values(NOTICE_PAGES)) { const html = tryRead(page); if (html && html.includes(LOOK_KEY)) keyBad.push(`${page} still names ${LOOK_KEY}, which nothing writes now`); }
   add(keyBad.length === 0, `both notices name every storage key the scripts use (${keys.join(', ')}), each in <code>`, keyBad.join(' | '));
 
   // --- the site rules

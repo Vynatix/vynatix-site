@@ -16,7 +16,7 @@
 //   G  Geometry. The field's used box against the layout it is derived from.
 //
 //   node verify/bg-weave.js                      (serve the repo root first, as for the other checks)
-//   THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/bg-weave.js
+//   THEMES=mono-light,mono-dark node verify/bg-weave.js
 //   WIDTHS=1100,1200,1440,1920  ZOOMS=1,1.25,1.5,2  SEED=7  SCROLLS=300,450,600,760  node verify/bg-weave.js
 const { BASE, THEMES, launch, pinTheme, BGS } = require('./_common.js');
 // BGS (like THEMES) narrows a run: this guard is for the "weave" background only.

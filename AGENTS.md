@@ -156,49 +156,94 @@ harmless.)
 **Theming.** The design system has three brand directions, each with a light
 and a dark theme, over one set of roles: Forest Heritage (`light`, `dark`),
 Transformative Teal (`teal-light`, `teal-dark`) and Stockholm Monochrome
-(`mono-light`, `mono-dark`). **The site draws one direction at random for each
-visit.** `app.js` is loaded in the `<head>`, without `defer`, so its first
-block runs before the body exists and sets `data-theme` (and `theme-color`)
+(`mono-light`, `mono-dark`). **The site shows Monochrome only** (an owner
+decision of 17 November 2026; until then it drew one direction at random per
+visit). The Forest and Teal blocks stay in `tokens.css`, which is read-only here,
+but no page uses them. `app.js` is loaded in the `<head>`, without `defer`, so its
+first block runs before the body exists and sets `data-theme` (and `theme-color`)
 before anything paints; the CSP rules out an inline script, so a small blocking
 first-party file is the way to avoid a flash of the wrong theme. The rules:
 
-- The draw (`forest`, `teal` or `mono`, equal odds) is kept in `sessionStorage`
-  under `vynatix-look`, so every page of the visit matches; a new tab or a
-  later visit draws again. A stored value that is not one of the three is
-  discarded.
-- Light or dark is not random. It follows the visitor's toggle choice
-  (`localStorage`, `vynatix-theme`, whose full theme id is stored but only its
-  light/dark half is read) and, without one, `prefers-color-scheme`.
-- The toggle flips light and dark inside the direction the visit drew.
-- If storage is blocked the draw cannot be kept, so the page stays on Forest
-  rather than re-drawing on every navigation. Without JavaScript the markup's
-  own `<html data-theme="light">` (Forest light) is what shows.
+- Light or dark follows the visitor's toggle choice (`localStorage`,
+  `vynatix-theme`, which stores `mono-light` or `mono-dark`) and, without one,
+  `prefers-color-scheme`. Only the light/dark half of the stored id is read, and
+  every id the toggle has ever stored is accepted, so a visitor who chose `dark`
+  or `teal-dark` before the change keeps dark.
+- If storage is blocked the page follows the system. Without JavaScript the
+  markup's own `<html data-theme="mono-light">` is what shows, and the markup's
+  `theme-color` is the Monochrome light canvas.
+- The retired draw's `sessionStorage` key, `vynatix-look`, is never written;
+  `publish.js` fails if a script uses it again or a notice still names it, and
+  `theme.js` checks every visit.
 
-The theme and the consent choice write three keys in the visitor's own browser,
-and none is sent anywhere: `vynatix-look` (`sessionStorage`, the direction drawn for the visit,
-written without any click), `vynatix-theme` (`localStorage`, light or dark,
+The theme and the consent choice write two keys in the visitor's own browser,
+and neither is sent anywhere: `vynatix-theme` (`localStorage`, light or dark,
 written when the toggle is pressed) and `vynatix-consent` (`localStorage`, the
 analytics choice, written when Decline or Accept is pressed; see *Analytics*).
-Both notices already name all three keys and call the first two display
-preferences; whether that description is right, and whether the bar has to mention
-them, is for counsel to confirm (`tools/PRE-FLIP-CHECKLIST.md`, 4.2). The hero
-backgrounds write three more, `vynatix-bg`, `vynatix-bg-seed` and `vynatix-bg-iris`,
-in `sessionStorage` only (see *Hero backgrounds*, *Storage*); `privacy.html` lists them
-too. The one-line fallback, if the random draw has to go, is to pin `pickLook()` as
-described below.
-- On the home page `app.js` also preloads the headline faces of the drawn
-  direction (`DISPLAY_FACES`), so the hero is not blocked on a late font fetch.
-  Other pages add no preloads.
+Both notices name both keys and call the first a display preference; whether
+that description is right, and whether the bar has to mention it, is for counsel
+to confirm (`tools/PRE-FLIP-CHECKLIST.md`, 4.2). The hero backgrounds write three
+more, `vynatix-bg`, `vynatix-bg-seed` and `vynatix-bg-iris`, in `sessionStorage`
+only (see *Hero backgrounds*, *Storage*); `privacy.html` lists them too.
+- On the home page `app.js` also preloads the two headline faces
+  (`DISPLAY_FACES`: Geist and the Fraunces italic), so the hero is not blocked on
+  a late font fetch. Other pages add no preloads.
 
-To pin the site to one direction, replace `pickLook()`'s body with
-`return 'forest';` (or `'teal'`, `'mono'`); to draw on every page load instead
-of every visit, skip the `sessionStorage` read there. Everything that is
-Forest-only stays Forest whatever is drawn: the logo files in `assets/`, the
-favicon and app icons, the manifest colours and the markup's default
-`theme-color`. The inline wordmark and every page colour follow the theme.
-Each dark theme is a parallel environment, not an inverted light one: the
-inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit
-on `md-sys-color-inverse-surface`, which is light in the dark themes.
+What is Forest-only stays Forest: the logo files in `assets/`, the favicon and
+app icons and the manifest colours (a follow-up for the owner if the brand marks
+should go Monochrome too). The inline wordmark and every page colour follow the
+theme. The dark theme is a parallel environment, not an inverted light one: the
+inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit on
+`md-sys-color-inverse-surface`, which is light in the dark theme.
+
+**Liquid Glass.** The site's surfaces are glass (an owner decision of 17 November
+2026), in one fenced block at the end of `styles.css`, built only from the system's
+glass kit: `--glass-tint-surface`, `--glass-blur-*`, `--glass-specular` and the
+shadows, plus role tokens in `color-mix()`. The pieces:
+
+- **The backdrop.** `body::before` is a fixed, still layer of four soft radial pools
+  in the theme's roles (surface-container-highest, tertiary, primary, secondary)
+  behind every page, so the glass has something to refract. It never moves. The
+  canvas colour stays on `<body>`, and the gradients sit on pseudo-elements only,
+  never on an element that holds text, so `a11y.js` can still resolve the background
+  behind text. (Its sweep walks up to the first opaque background and skips text
+  under a gradient, so a gradient on a text container would hide that text from the
+  check.) `.section--surface` is a translucent band without blur, so the backdrop
+  shows through it.
+- **The header** keeps the system's glass on itself, with the chrome blur, a softer
+  edge and a sheen on `::after`. The header is a stacking context, so it is the
+  backdrop root for everything inside it: a glass layer inside it (a `::before`, the
+  open mobile menu) could only blur the header's own contents. That is why the open
+  menu keeps its solid pane (with the glass edge, radius and lit edge).
+- **Cards**: `.panel`, `.metric`, `.case` and `.consent-panel` are glass with the
+  thin blur (there can be a dozen on a page), a hairline edge, the specular edge,
+  `shadow-l2` and a sheen on `::before`. The system reserves glass for chrome; the
+  owner extended it to these cards. Under text only `--glass-tint-surface` is used
+  (mixed 40% toward `surface-bright`, so the pane is a step lighter than the canvas
+  in both themes), never the primary or accent tints.
+- **Buttons** keep the system's radius. The filled ones keep their solid fill and
+  gain the specular edge; `.btn--secondary` is clear glass. On an inverse band the
+  band's own button rules win. Capsules (`radius-full`) were tried and fail
+  `bg-iris.js`: with the iris drawn, the hero buttons' long anti-aliased curves over
+  the backdrop render 6 to 12 levels differently, which the guard's on/off diff
+  reads as art inside the button boxes (it does with `visibility: hidden` as well as
+  `display: none`). Capsules would need that guard's method changed first, which is
+  an owner decision.
+- **Solid on purpose**: the inverse bands (CTA band, editorial band, footer), the
+  consent bar (a legal control, kept compact and solid) and the banners.
+- **Rules**: `backdrop-filter` only on leaf surfaces, never on `main`, a section or a
+  view wrapper (it creates a containing block and a backdrop root, which would break
+  the sticky header, the `:target` views and nested glass). Under
+  `prefers-reduced-transparency` the system turns every tint solid and drops the blur
+  and the edge, and this block removes the backdrop and the sheens. In print the
+  backdrop, sheens, blur and shadows go.
+- **Contrast**: `a11y.js` measures text against the nearest opaque background (the
+  canvas), not the composited glass. The glass panes are about 80% opaque and lighter
+  than the canvas, so composited contrast is at least as good, and a composited
+  pixel measurement (10th-percentile backdrop pixel behind each text box, text made
+  transparent, in both themes at 1440 and 390 px, twelve pages) found all text at AA
+  when the block was added. Re-measure by hand when a tint or the backdrop
+  changes.
 
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a
@@ -875,8 +920,8 @@ hand-kept lists: when you edit `blog.html`, `index.html` or `sv.html`, move that
 generator. Swedish items on the Blog page carry `lang="sv"` (and `hreflang="sv"` on the link). Adding a Swedish
 post makes the `sv.html` guider lead ("Publicerade den 18 oktober 2026") false: fix it then. After the deploy,
 ping IndexNow for the post, its twin and the pages that now list it (`node tools/indexnow.js <slug>.html
-blog.html index.html`). Run `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark node verify/a11y.js`
-on the new page, because `accessibility.html` says every page is scanned in all six themes. A post adds no
+blog.html index.html`). Run `node verify/a11y.js` (both themes by default)
+on the new page, because `accessibility.html` says every page is scanned in both themes. A post adds no
 CSS, so no `npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
 `original=True` on the original, `original=False` on the translation (the English page is the original unless
 the registry says otherwise; `seo-head.py` refuses a pair with zero or two originals, and `seo.js` checks the
@@ -1061,8 +1106,8 @@ years). A returning visitor whose stored answer is still `granted` gets the same
 sequence on page load, without a press. Do not add a Google host to any `<link>`
 anywhere in the pages, and do not set `anonymize_ip` or `client_storage`.
 
-**The stored choice.** `vynatix-consent` in `localStorage`, beside `vynatix-theme`
-and `vynatix-look`, holds one plain string, `v1:granted:YYYY-MM-DD` or
+**The stored choice.** `vynatix-consent` in `localStorage`, beside `vynatix-theme`,
+holds one plain string, `v1:granted:YYYY-MM-DD` or
 `v1:denied:YYYY-MM-DD` (the UTC date of the click). It is valid for 365 days, then
 the bar asks again. It is parsed with an exact pattern and must be a real date,
 not in the future and not expired; anything else (a wrong version, an impossible
@@ -1238,19 +1283,18 @@ add third-party font/CDN requests for fonts.
   and the opt-in live test (`consent-live.js`); see *Analytics*.
   A new page also goes into `PAGES` in `tools/verify/_common.js` and into
   `sitemap.xml`; `publish.js` fails if a root `*.html` is missing from `PAGES`.
-  Because every visit draws its own scheme and its own hero
-  background, the checks that need a particular look pin it first (`pinTheme` in
+  Because every visit draws its own hero background (and light or
+  dark follows the system), the checks that need a particular look pin it first (`pinTheme` in
   `tools/verify/_common.js` sets the storage keys for the theme and for the
   background; the background defaults to the sheet and a pinned weave gets a fixed
   seed, so a caller that forgets still gets the same page every run; `pinBg` pins
   the background alone, `pinConsent` pins the analytics choice, and `armGa` arms
-  the consent module for checks that audit the bar). Before changing a component,
-  sweep all six themes:
-  `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark`. `BGS` does the
+  the consent module for checks that audit the bar). The checks run in both
+  themes (`mono-light,mono-dark`) by default; `THEMES` narrows a run. `BGS` does the
   same for the four backgrounds in the checks that visit the home page (default
   all four). Before changing the home hero, its copy, or the hero rules, run
   `npm run check:bg` and then the full sweep:
-  `THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark BGS=weave,sheet,dial,iris npm run check:bg`.
+  `BGS=weave,sheet,dial,iris npm run check:bg`.
 - **Re-syncing the design system.** When the system changes, copy its
   `project/colors_and_type.css` over the local one as is, and its
   `project/tokens.css` over the local one keeping the local `@font-face`

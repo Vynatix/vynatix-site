@@ -77,11 +77,11 @@ const NOTICE_PAGES = { en: 'privacy.html', sv: 'integritet.html' };
 
 const BASE = process.env.BASE || 'http://localhost:8000/';
 
-// The design system's six theme ids. The checks run on the Forest pair by
-// default; set THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark to
-// sweep every theme the role tokens have to hold in.
-const ALL_THEMES = ['light', 'dark', 'teal-light', 'teal-dark', 'mono-light', 'mono-dark'];
-const THEMES = (process.env.THEMES || 'light,dark').split(',').map((t) => t.trim()).filter(Boolean);
+// The site's two theme ids: Monochrome light and dark, its one colour scheme (the design
+// system's Forest and Teal themes stay in tokens.css but no page shows them). The checks run on
+// both by default; THEMES=mono-light or THEMES=mono-dark narrows a run.
+const ALL_THEMES = ['mono-light', 'mono-dark'];
+const THEMES = (process.env.THEMES || ALL_THEMES.join(',')).split(',').map((t) => t.trim()).filter(Boolean);
 for (const t of THEMES) {
   if (!ALL_THEMES.includes(t)) { console.error(`Unknown theme "${t}" (expected one of ${ALL_THEMES.join(', ')})`); process.exit(2); }
 }
@@ -92,7 +92,7 @@ for (const t of THEMES) {
 // every one of them ships, and the setting only multiplies loads of the home page (never the
 // other twenty-two), so the whole suite grows by a handful of page loads. BGS=sheet narrows a
 // run to the background the page shows without script; set BGS=weave,sheet,dial,iris with
-// THEMES=light,dark,teal-light,teal-dark,mono-light,mono-dark for the full sweep.
+// THEMES=mono-light,mono-dark for the full sweep.
 const ALL_BGS = ['weave', 'sheet', 'dial', 'iris'];
 const BGS = (process.env.BGS || ALL_BGS.join(',')).split(',').map((b) => b.trim()).filter(Boolean);
 for (const b of BGS) {
@@ -102,9 +102,9 @@ for (const b of BGS) {
 // the English home hero and every other page is identical in all four draws.
 const bgsFor = (page) => (page === 'index.html' || page === 'index' ? BGS : [undefined]);
 
-// The site draws one of three colour schemes at random per visit (sessionStorage
-// "vynatix-look") and takes light or dark from the visitor's choice (localStorage
-// "vynatix-theme"); it also draws one of four hero backgrounds (sessionStorage "vynatix-bg").
+// The site has one colour scheme, Monochrome, and takes light or dark from the visitor's choice
+// (localStorage "vynatix-theme", of which app.js reads only the light/dark half, so a legacy id
+// such as "light" still pins mono-light); it also draws one of four hero backgrounds (sessionStorage "vynatix-bg").
 // A check that needs a particular look has to set them before the page loads: pass this to
 // page.addInitScript(pinTheme, arg), where arg is a theme id or { theme, bg, seed }. The draw is
 // ALWAYS pinned: without a bg it is "sheet" (what the page shows without script), so a caller
@@ -117,12 +117,10 @@ function pinTheme(arg) {
     var theme = typeof arg === 'string' ? arg : arg.theme;
     var bg = (arg && arg.bg) || 'sheet';
     var seed = arg && arg.seed != null ? arg.seed : (bg === 'weave' ? 7 : null);
-    var m = /^(teal|mono)-/.exec(theme);
     localStorage.setItem('vynatix-theme', theme);
-    sessionStorage.setItem('vynatix-look', m ? m[1] : 'forest');
     sessionStorage.setItem('vynatix-bg', bg);
     if (seed != null) sessionStorage.setItem('vynatix-bg-seed', String(seed));
-  } catch (e) { /* storage blocked: the page falls back to Forest and the sheet */ }
+  } catch (e) { /* storage blocked: the page follows the system's light/dark and shows the sheet */ }
 }
 
 // For the checks that must not pin a theme (the colour draw is what they test) or that set
@@ -142,8 +140,9 @@ function pinBg(bg) {
 // POLICY_VERSION and CONSENT_KEY below still equal the ones in app.js.
 const CONSENT_KEY = 'vynatix-consent';
 const POLICY_VERSION = 'v1';
-// The other two keys the site writes (the theme IIFE in app.js). Both notices name all three in <code>.
+// The other key the site writes (the theme IIFE in app.js). Both notices name both in <code>.
 const THEME_KEY = 'vynatix-theme';
+// The key the retired colour-scheme draw used to write. Nothing may write it now, and the notices no longer name it.
 const LOOK_KEY = 'vynatix-look';
 
 // The Measurement ID every browser check runs with, and the shape app.js treats as "not set yet".

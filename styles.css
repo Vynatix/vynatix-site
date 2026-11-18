@@ -455,15 +455,24 @@ h1 em, h2 em {
   inherits: true;
   initial-value: 1px;
 }
+/* The hero's own em as a length (16px, more when the text is enlarged), for art that has to tell
+   enlarged text from a scaled hero (hero-bg.css, the sheet). */
+@property --hero-em0 {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 16px;
+}
 .hero {
   --hero-u: 1px;
   --hero-lede: max(var(--text-body-lg), calc(22 * var(--hero-u)));
   --hero-em: calc(16 * var(--hero-u));   /* the em of the art that is drawn in em (hero-bg.css) */
-  --hero-above: 78px;   /* what stands above the hero on the first screen: the header's bottom edge */
-  padding-block: calc(96 * var(--hero-u)) calc(64 * var(--hero-u));
+  --hero-em0: 1em;
+  --hero-pad: calc(96 * var(--hero-u));  /* above the eyebrow */
+  --hero-gap: calc(96 * var(--hero-u));  /* between the buttons and the clients' rule */
+  --hero-tag: max(var(--space-3), calc(24 * var(--hero-u)));   /* under the eyebrow, which keeps its size, so its gap stops at 12px */
+  padding-block: var(--hero-pad) calc(64 * var(--hero-u));
 }
-.audience ~ .hero { --hero-above: 147px; }   /* and the audience bar under it */
-.hero .eyebrow { margin-bottom: calc(24 * var(--hero-u)); }
+.hero .eyebrow { margin-bottom: var(--hero-tag); }
 .hero__h1 {
   font-size: clamp(calc(40 * var(--hero-u)), 8vw, calc(96 * var(--hero-u)));
   line-height: var(--leading-tight);
@@ -484,7 +493,7 @@ h1 em, h2 em {
   flex-wrap: wrap;
 }
 @media (max-width: 599px) {
-  .hero { padding-block: calc(64 * var(--hero-u)) calc(48 * var(--hero-u)); }
+  .hero { --hero-pad: calc(64 * var(--hero-u)); --hero-gap: var(--space-8); padding-bottom: calc(48 * var(--hero-u)); }
   /* The English client hero on a phone: the lede one type step smaller (same leading) and
      the client row closer, so both buttons sit on the first screen of a 390x844 phone and
      the clients' rule closes it. The eyebrow breaks into two even lines, not one word alone.
@@ -495,11 +504,110 @@ h1 em, h2 em {
   .hero.view-hire .hero__ctas { column-gap: var(--space-3); }   /* both buttons on one row at 390 in every look */
 }
 
+/* ---------------------------------------------------------------
+   Hero fit: the first screen is the hero
+   When the page loads, the header, the audience bar and the hero's message (eyebrow,
+   headline, lede, buttons) fill the window exactly, at any window size inside the
+   envelope below. Nothing is measured by script: the hero's unit is solved from the
+   window's height. With every vertical size a multiple of --hero-u, the hero's height is
+   a straight line in it, fixed + slope * u (the eyebrow and the buttons do not scale, and
+   the measures are in ch, so the headline and the lede keep their line counts), and so
+     u = (100svh - what stands above the hero - fixed) / slope.
+   There are two lines, because the lede stops at --text-body-lg and the rest goes on
+   shrinking (--hero-f1/k1 while it scales, f2/k2 once it has stopped: the smaller u is
+   the one in force), and under 1200px the headline is as wide as the window lets it be
+   (8vw), which takes its share (--hero-h of the slope, --hero-hw of height) out of the
+   line: the larger u of that pair is the one in force. All of it is in
+   one min(max(), max()).
+
+   Three states, by the window's height:
+   - Message. The message is fitted and the clients' rule lies on the fold, so the row
+     below starts the scroll and nothing is cut half way. 96px headline from about 1012px
+     of window height, 43px at the envelope's lower edge.
+   - Whole. From 1092px of height (1024px and wider) the client row fits as well: the unit
+     is solved for the whole hero, never under 0.82, and the row is pinned to the bottom
+     of the window with the spare room above its rule. From 1248px that is the design
+     size with more air.
+   - Natural. Outside the envelope the hero is the plain scrolling hero at the design
+     size: a window under 650px high (520px on a phone), which is also where browser zoom
+     lands, so zooming in always ends at full-size text, and any browser without svh or
+     without registered custom properties (transition-behavior stands for those, as it
+     does in hero-bg.css), paper, and a narrow window without script, where the header is
+     taller than the solve assumes.
+   min-height only, never height or overflow: enlarged text, a longer translation or a
+   fallback font make the hero taller than the window and it scrolls; nothing is clipped.
+
+   The numbers are measured facts about the current copy, like the art's constants
+   (hero-bg.css multiplies them by the same unit): three headline lines and six lede lines
+   in English, two and five in Swedish. tools/verify/hero-fit.js measures them again and
+   fails when the copy, a typeface or the spacing has moved them; refit them there.
+   --------------------------------------------------------------- */
+.hero {
+  --hero-above: 78px;   /* what stands above the hero on the first screen: the header's bottom edge */
+  --hero-room: calc(100svh - var(--hero-above));
+  --hero-min: 0.45px;
+  /* The Swedish hub's hero: two headline lines, five lede lines, its own bottom padding, no client row. */
+  --hero-f1: 66px;  --hero-k1: 633;
+  --hero-f2: 211px; --hero-k2: 458;
+  --hero-h: 201.6;  --hero-hw: 16.8vw;
+  --hero-fit: clamp(var(--hero-min),
+    min(max((var(--hero-room) - var(--hero-f1)) / var(--hero-k1), (var(--hero-room) - var(--hero-f1) - var(--hero-hw)) / (var(--hero-k1) - var(--hero-h))),
+        max((var(--hero-room) - var(--hero-f2)) / var(--hero-k2), (var(--hero-room) - var(--hero-f2) - var(--hero-hw)) / (var(--hero-k2) - var(--hero-h)))),
+    1px);
+}
+/* The English home hero, from its top edge to the clients' rule: three headline lines, six lede lines. */
+.audience ~ .hero {
+  --hero-above: 147px;   /* and the audience bar under the header */
+  --hero-f1: 66px;  --hero-k1: 799;
+  --hero-f2: 237px; --hero-k2: 591;
+  --hero-h: 302.4;  --hero-hw: 25.2vw;
+}
+@media (max-width: 767px) {
+  /* The lede wraps by the window here, not by its measure, so the headline's share is left in the
+     line: the unit comes out a little small and the message fits with room to spare. */
+  .hero, .audience ~ .hero { --hero-h: 0; --hero-hw: 0px; }
+}
+@media (max-width: 599px) {
+  /* A phone, fitted to the 390px layout: the headline goes from 40px to the 8vw it never goes under
+     and the lede from 18 to 16px, and past that only the spacing gives. Narrower phones have more
+     lede lines than these lines allow for, and scroll. */
+  .hero { --hero-min: 0.8px; --hero-f1: -383px; --hero-k1: 1268; --hero-f2: -383px; --hero-k2: 1268; }
+  .audience ~ .hero { --hero-min: 0.7px; --hero-f1: 118px; --hero-k1: 549; --hero-f2: 415px; --hero-k2: 177; }
+}
+@supports (height: 100svh) and (transition-behavior: allow-discrete) {
+  @media screen and (min-width: 600px) and (min-height: 650px), screen and (max-width: 599px) and (min-height: 520px) {
+    .hero { --hero-u: var(--hero-fit); }
+    /* Message: a hero without a client row (the Swedish hub's) ends on the fold, its message centred
+       in whatever room is left; with a client row, the row's rule lies on the fold. */
+    .hero { min-height: var(--hero-room); display: grid; align-content: center; }
+    .hero > .container { width: 100%; }
+    .audience ~ .hero { min-height: 0; display: block; }
+    .hero__msg { min-height: calc(var(--hero-room) - var(--hero-pad) - var(--hero-gap)); }
+  }
+  /* Whole: the client row is on the first screen, pinned to its bottom edge. */
+  @media screen and (min-width: 1024px) and (min-height: 1092px) {
+    .audience ~ .hero { --hero-fit: clamp(0.82px, max((var(--hero-room) - 237px) / 864, (var(--hero-room) - 237px - var(--hero-hw)) / (864 - var(--hero-h))), 1px); }
+  }
+  @media screen and (min-width: 1024px) and (min-height: 1092px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1250px) {
+    .audience ~ .hero { min-height: var(--hero-room); display: flex; flex-direction: column; }
+    .audience ~ .hero > .container { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
+    .audience ~ .hero .hero__msg { min-height: 0; }
+    .audience ~ .hero .clients { margin-top: auto; padding-top: var(--space-8); }
+    .audience ~ .hero .hero__ctas { margin-bottom: var(--hero-gap); }
+  }
+  /* Without script the narrow header is not sticky and lists its links, so what stands above the
+     hero is not --hero-above: the plain hero there. */
+  @media screen and (max-width: 904px) {
+    :root:not(.js-nav) .hero { --hero-u: 1px; min-height: 0; display: block; }
+    :root:not(.js-nav) .hero__msg { min-height: 0; }
+  }
+}
+
 /* Client marks: a still row. The system forbids ambient loops and
    auto-advancing strips on content surfaces, so the list simply wraps. Each
    named client links to its own site; the others are described, not named. */
 .clients {
-  margin-top: calc(96 * var(--hero-u));
+  margin-top: var(--hero-gap);
   padding-top: var(--space-8);
   border-top: 1px solid var(--md-sys-color-outline-variant);
 }
@@ -595,7 +703,7 @@ a.clients__item:has(.clients__mark):hover {
   text-decoration: none;
 }
 @media (max-width: 599px) {
-  .clients { margin-top: var(--space-8); padding-top: var(--space-6); }
+  .clients { padding-top: var(--space-6); }   /* its margin above is the hero's --hero-gap */
   .clients__list { gap: var(--space-2) var(--space-6); }
 }
 

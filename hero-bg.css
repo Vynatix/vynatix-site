@@ -273,8 +273,15 @@
     --sheet-h1: calc(7 * var(--hero-u));
     --sheet-h2: calc(13 * var(--hero-u));
     --sheet-h3: calc(19 * var(--hero-u));
-    /* The art is in em, and the hero's own unit sets the em (styles.css, --hero-em: 16 design pixels). */
+    /* The art is in em, and the hero's own unit sets the em (styles.css, --hero-em: 16 design pixels).
+       It hangs from the content's right edge, so a smaller hero leaves it where the column is, and
+       it grows from the content's left edge, as the text does, when the text alone is enlarged:
+       72 of the hero's own em (--hero-em0, 1152px) less 32 of the art's is 40em at the design size. The
+       eyebrow's line (21px) keeps its size when the hero is scaled, so the headline sits lower than
+       a scaled drawing has it: --sheet-drop moves the art down by that much (0 at the design size),
+       which keeps the apex on the headline's second baseline. */
     font-size: var(--hero-em);
+    --sheet-drop: calc(21px + var(--hero-tag) - 45 * var(--hero-u));
     content: "";
     content: "" / "";
     position: absolute;
@@ -324,7 +331,7 @@
       1px var(--sheet-h3),
       var(--sheet-rv0) 600px, var(--sheet-rv1) 600px, var(--sheet-rv2) 600px, var(--sheet-rv3) 600px;
     --sheet-mask-position:
-      calc(50% + 40em - 576px) 0,
+      calc(50% - 32em + 72 * var(--hero-em0) - 576px) var(--sheet-drop),
       50% calc(var(--sheet-rule-y) + var(--sheet-h3) - 1px), 50% calc(var(--sheet-rule-y) + var(--sheet-h3) - var(--sheet-h1)), 50% calc(var(--sheet-rule-y) + var(--sheet-h3) - var(--sheet-h2)), 50% var(--sheet-rule-y),
       calc(50% + min(50%, var(--container-max-laptop) / 2)) var(--sheet-rule-y),
       right 0 top 100px, right 0 top 100px, right 0 top 100px, right 0 top 100px;
@@ -344,8 +351,8 @@
     mask-image: var(--sheet-art-img);
     -webkit-mask-size: var(--sheet-art);
     mask-size: var(--sheet-art);
-    -webkit-mask-position: calc(50% + 40em - 576px) 0;
-    mask-position: calc(50% + 40em - 576px) 0;
+    -webkit-mask-position: calc(50% - 32em + 72 * var(--hero-em0) - 576px) var(--sheet-drop);
+    mask-position: calc(50% - 32em + 72 * var(--hero-em0) - 576px) var(--sheet-drop);
   }
   @media (min-width: 75rem) {
     :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { display: block; }

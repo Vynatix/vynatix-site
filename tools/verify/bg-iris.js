@@ -42,7 +42,7 @@ const INK_MIN = num(process.env.INK_MIN, 3);          // channel difference (of 
 const AIM = num(process.env.AIM, 90);                 // px, a little under one line of the headline
 const BLEED_MIN = num(process.env.BLEED_MIN, 0.25);
 const BLEED_MAX = num(process.env.BLEED_MAX, 0.65);
-const HEIGHT = num(process.env.HEIGHT, 900);
+const HEIGHT = num(process.env.HEIGHT, 1248);   // 1248px is the lowest window at which the hero is at the design size with its client row (styles.css, Hero fit)
 const GATE = 1280;
 const CHECKS = process.env.CHECKS || 'BCP';        // letters to run: B and P at zoom 1 and under zoom, C contrast (slowest)
 
@@ -119,6 +119,8 @@ function placement() {
     cx: still.l + still.w / 2, cy: still.t + still.h / 2, r: still.w / 2,
     italicEnd: [last.right + scrollX, (last.top + last.bottom) / 2 + scrollY], lh: parseFloat(getComputedStyle(q('.hero__h1')).lineHeight) * (parseFloat(getComputedStyle(em).fontSize) / parseFloat(getComputedStyle(q('.hero__h1')).fontSize)),
     angle, borderTop: parseFloat(getComputedStyle(q('.clients')).borderTopWidth),
+    // The hero's unit (styles.css, Hero fit): the art's constants and its clearance are multiples of it, 1 at the design size.
+    u: parseFloat(getComputedStyle(q('.hero')).getPropertyValue('--hero-u')) || 1,
   };
 }
 
@@ -266,11 +268,11 @@ async function frame(browser, theme, w, opts, label) {
       const bleed = (p.cx + p.r - p.vw) / (2 * p.r);
       const heroText = f.near;
       const msgs = [`clear ${heroText.min.toFixed(1)}px`, `inside ${heroText.inside}`, `bleed ${(bleed * 100).toFixed(0)}%`];
-      if (heroText.inside > 0 || heroText.min < CLEAR) fail(`${label}: nearest art ink to text is ${heroText.min.toFixed(1)}px (${heroText.inside} ink pixels inside text boxes), the floor is ${CLEAR}px, at ${heroText.at}`);
+      if (heroText.inside > 0 || heroText.min < CLEAR * p.u) fail(`${label}: nearest art ink to text is ${heroText.min.toFixed(1)}px (${heroText.inside} ink pixels inside text boxes), the floor is ${(CLEAR * p.u).toFixed(1)}px, at ${heroText.at}`);
       if (Math.abs(p.art.b - (p.clients.t + p.borderTop)) > 1.5 && Math.abs(p.art.b - p.clients.t) > 1.5) fail(`${label}: the art's bottom edge (${p.art.b.toFixed(1)}) is not on the clients rule (${p.clients.t.toFixed(1)})`);
-      if (p.art.l < p.lede.r + 24 - 0.5) fail(`${label}: the art's left edge (${p.art.l.toFixed(1)}) is nearer than 24px to the lede box (right edge ${p.lede.r.toFixed(1)})`);
+      if (p.art.l < p.lede.r + 24 * p.u - 0.5) fail(`${label}: the art's left edge (${p.art.l.toFixed(1)}) is nearer than ${(24 * p.u).toFixed(1)}px to the lede box (right edge ${p.lede.r.toFixed(1)})`);
       if (bleed < BLEED_MIN || bleed > BLEED_MAX) fail(`${label}: the disc runs ${(bleed * 100).toFixed(0)}% off the right edge, outside ${BLEED_MIN * 100} to ${BLEED_MAX * 100}%`);
-      if (AIM_WIDTHS.includes(w)) {
+      if (AIM_WIDTHS.includes(w) && p.u > 0.999) {   // the aim is fitted at the design size: a scaled hero keeps the disc on the right edge while the italic line ends further left
         const t = Math.sin(p.angle * Math.PI / 180);                 // compass angle: left and up for 180..360
         const dxdt = Math.sin(p.angle * Math.PI / 180), dydt = -Math.cos(p.angle * Math.PI / 180);
         const tt = (p.italicEnd[0] - p.cx) / dxdt; const y = p.cy + tt * dydt;
@@ -288,8 +290,8 @@ async function frame(browser, theme, w, opts, label) {
       if (!f.place || f.place.off) { if (f.ctx) await f.ctx.close(); console.log(`  ${w}px x${z}  art not drawn`); continue; }
       const p = f.place; const n = f.near;
       console.log(`  ${w}px x${z}  clear ${n.min === Infinity ? 'no art in the hero' : n.min.toFixed(1) + 'px'}  inside ${n.inside}  art px ${n.n}`);
-      if (n.inside > 0 || n.min < CLEAR) fail(`${label}: nearest art ink to text is ${n.min.toFixed(1)}px (${n.inside} inside), at ${n.at}`);
-      if (p.art.l < p.lede.r + 24 - 0.5) fail(`${label}: the art's left edge (${p.art.l.toFixed(1)}) is nearer than 24px to the lede box (${p.lede.r.toFixed(1)})`);
+      if (n.inside > 0 || n.min < CLEAR * p.u) fail(`${label}: nearest art ink to text is ${n.min.toFixed(1)}px (${n.inside} inside), at ${n.at}`);
+      if (p.art.l < p.lede.r + 24 * p.u - 0.5) fail(`${label}: the art's left edge (${p.art.l.toFixed(1)}) is nearer than ${(24 * p.u).toFixed(1)}px to the lede box (${p.lede.r.toFixed(1)})`);
       await f.ctx.close();
     }
     // C: contrast in the waiting, settled and event states at the laptop and the wide width

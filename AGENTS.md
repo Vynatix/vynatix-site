@@ -63,7 +63,7 @@ styles.css          Layer 3, the site's own: page chrome and components on the r
 app.js              All client behaviour (vanilla JS, IIFEs, no modules): the theme,
                     the hero background draw, the mobile nav, the audience switch's
                     small additions, and analytics consent (see Analytics)
-hero-bg.css         The four hero backgrounds' rules (only index.html links it)
+hero-bg.css         The four hero backgrounds' rules (only index.html links it), in the hero's unit
 hero-bg.js          The scripts of the backgrounds that need one (only index.html links it)
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
                     photographs (jpg + webp), app icons, the masks of the sheet and dial
@@ -485,7 +485,10 @@ page's, register the sheet's rules to the glyphs and place the dial and the iris
 **A change to the headline, the lede (its words or its measure), the hero's spacing, the
 clients row or a typeface can move the art into the text.** Run `npm run check:bg` after
 any such change: the guards fail and name the rule (clearance, contrast, registration,
-geometry or placement), and the constants of that background are the ones to refit.
+geometry or placement), and the constants of that background are the ones to refit. The
+constants are written in the hero's unit (`calc(N * var(--hero-u))`, see *Hero fit*): the
+numbers in this section are their values at the design size, which a window 1248px high or
+taller shows.
 
 **Guards.** `tools/verify/bg-draw.js` proves the draw (odds over fresh visits, a stable
 visit across pages including `sv.html`, a bad stored value discarded, blocked storage
@@ -503,6 +506,74 @@ placement of that background; the dial's guard also proves its motion, the iris'
 placement against the lede, the italic line and the bleed. All are in `npm run check`
 (`npm run check:bg` runs these five alone). `a11y.js` adds the reduced-motion proof for all
 four (nothing animates, by CSS or by the Web Animations API, and the iris is not armed).
+The guards run in a 1248px-high window, the design size; `bg-fit.js` runs them again on a
+scaled hero (see *Hero fit*), and a distance a guard compares (the 24px, the dial's box) is
+multiplied by the hero's unit first.
+
+**Hero fit.** When a home page loads, the first screen is the hero: the header, the audience
+bar and the hero's message (eyebrow, headline, lede, buttons) fill the window exactly, whatever
+its size, and the hero scales with the window's height to do it. An owner decision ("the hero
+should always scale to fit the browser screen when it loads"). Both home pages, `styles.css`,
+"Hero fit". No script, no new motion, nothing stored.
+
+- **One unit.** The hero is drawn in `--hero-u`, one design pixel: a registered length, `1px`
+  at the design size. Its padding, its gaps and the headline and lede sizes are
+  `calc(N * var(--hero-u))`, where N is the token the comment beside it names (a length cannot
+  multiply a length, so these are numbers, not `var(--space-*)`). The eyebrow and the buttons
+  keep their size at every scale and the lede never goes under `--text-body-lg` (18px; 16px
+  on a phone). `hero-bg.css` multiplies each background's constants by the same unit (the
+  24px gaps, the dial's box and centre, the iris's four numbers, the sheet's rulers and its
+  em through `--hero-em`), so the art keeps its place against the text as the hero scales.
+  The sheet's art hangs from the content's right edge and grows from its left when the text
+  alone is enlarged (`--hero-em0`), and `--sheet-drop` keeps its apex on the headline's second
+  baseline, because the eyebrow's line does not scale.
+- **The solve.** With every vertical size a multiple of the unit, the hero's height is a
+  straight line in it, so `u = (100svh - what stands above the hero - fixed) / slope`.
+  `--hero-above` is the header's bottom edge (78px) or the audience bar's (147px). There are
+  two lines per page (`--hero-f1`/`k1` while the lede scales, `f2`/`k2` once it has stopped at
+  its floor; `min()` picks) and, under 1200px, a second pair for a headline that is as wide as
+  the window allows (`--hero-h`, `--hero-hw`; `max()` picks). The numbers are measured facts
+  about the current copy: three headline lines and six lede lines in English, two and five in
+  Swedish. **A change to the headline, the lede, a typeface, the header's height or the hero's
+  spacing moves them**: `tools/verify/hero-fit.js` (check M) fails, prints the measured height
+  and names the pair to refit.
+- **Three states, by the window's height.** *Message*: the message is fitted and the clients'
+  rule lies on the fold, so the client row starts the scroll and is never cut half way
+  (`.hero__msg`, the wrapper round the message in `index.html`, takes the first screen's
+  height; the Swedish hub has no client row, so its hero ends on the fold with the message
+  centred). 96px headline from about 1012px of window height, 83px at 1440 by 900, 66px at
+  790, 43px at the envelope's lower edge. *Whole*: from 1092px of height at 1024px and wider
+  the unit is solved for the whole hero (never under 0.82) and the client row is pinned to the
+  bottom of the window, the spare room above its rule; from 1248px that is the design size with
+  more air. *Natural*: outside the envelope the hero is the plain scrolling hero at the design
+  size.
+- **The envelope.** The fit applies from 650px of window height at 600px and wider and from
+  520px on a phone, inside `@supports (height: 100svh) and (transition-behavior:
+  allow-discrete)` (the second stands for registered custom properties, as in `hero-bg.css`).
+  It is for screens only (paper has no fold), and without JavaScript at 904px and narrower the
+  hero is the plain one, because the header there is not sticky and lists its links, so it is
+  taller than `--hero-above`.
+  A lower window is where browser zoom lands (a 1440 by 900 window at 200 percent is 720 by
+  450), so zooming in always ends at full-size text. `min-height` only, never `height` or
+  `overflow`: enlarged text, a longer translation or a fallback font make the hero taller
+  than the window and it scrolls; nothing is clipped.
+- **Known limits.** A phone narrower than about 390px, or with less than about 660px of small
+  viewport height, has more lede than fits at 16px: the hero is as compact as its floors allow
+  (headline 31px) and the buttons can sit under the fold. Between 600 and 767px the lede wraps
+  by the window, so the unit comes out a little small and the message fits with room to spare.
+  A tall, narrow window (a tablet held upright) fits the message at full size and has air
+  under the buttons, because the client row does not fit whole. Inside the envelope the
+  headline is sized by the window, so browser zoom between 100 percent and the envelope's edge
+  enlarges the lede but not the headline (a 2560 by 1440 window leaves the envelope at about
+  220 percent). The iris's index mark aims at the end of the italic line at the design size
+  only: a scaled hero keeps the disc on the right edge while the italic line ends further
+  left.
+- **Checks.** `hero-fit.js` proves the lines against measurement (M), the fold at a table of
+  real windows on both home pages (F), the envelope's edges and browser zoom (E) and the
+  `@supports` gate (S). The four background guards run their full sweep in a 1248px-high
+  window (the design size, client row included) and `bg-fit.js` runs each again at 900, 790,
+  660 and 1100px, where they multiply their own distances by the unit they read from the page
+  (`heroUnit` in `_common.js`). Both are in `npm run check`.
 
 **Audience switch.** The English home page opens with a slim bar of two plain links, "Hire
 a team" and "Join the team" (`.audience`, right after the two anchors that open `<main>`), and the page has two views:
@@ -602,10 +673,10 @@ Known limits, by design (the owner chose a view in the page over a page of its o
   lands on the bar rather than on the joiner view's skip link.
 - With JavaScript off on a narrow screen the header is not sticky, and following `#join`
   scrolls the page by the `scroll-padding-top` reserve; this is how any anchor behaves there.
-- The bar adds its own height above the client hero, so at 1440x900 in the Teal and Monochrome
-  looks (a three-line headline) the hero's buttons sit across the fold where they used to clear
-  it. Narrowing the bar would mean smaller touch targets; the owner asked for a slim bar and
-  can trade that off.
+- The bar adds its own height above the client hero. The hero fit counts it (`--hero-above` is
+  147px on this page), so the buttons no longer sit across the fold at 1440x900: the hero is
+  a little smaller there instead (see *Hero fit*). A change to the bar's height has to move
+  that number, and `hero-fit.js` says so.
 
 `tools/verify/audience.js` is in `npm run check`.
 
@@ -1362,8 +1433,10 @@ add third-party font/CDN requests for fonts.
   an off-origin request check (`requests.js`), the random-scheme check
   (`theme.js`), the audience switch on the home page (`audience.js`), the version-stamp
   check (`stamp.js --check`) and its stale-cache proof (`stale-cache.js`), the search, structured-data and copy check
-  (`seo.js`), the hero background draw and its isolation (`bg-draw.js`) with one
-  guard per background (`bg-weave.js`, `bg-sheet.js`, `bg-dial.js`, `bg-iris.js`),
+  (`seo.js`), the hero fit (`hero-fit.js`: the first screen is the hero at every window size),
+  the hero background draw and its isolation (`bg-draw.js`) with one
+  guard per background (`bg-weave.js`, `bg-sheet.js`, `bg-dial.js`, `bg-iris.js`) and their
+  run on a scaled hero (`bg-fit.js`),
   the accessibility suite with its contrast sweep (`a11y.js`), the static CSP sync
   (`csp.js`), the "what ships" check (`publish.js`) and the consent behaviour and
   layout checks (`consent.js`, `consent-layout.js`). Two more run outside
@@ -1381,9 +1454,9 @@ add third-party font/CDN requests for fonts.
   the consent module for checks that audit the bar). The checks run in both
   themes (`mono-light,mono-dark`) by default; `THEMES` narrows a run. `BGS` does the
   same for the four backgrounds in the checks that visit the home page (default
-  all four). Before changing the home hero, its copy, or the hero rules, run
-  `npm run check:bg` and then the full sweep:
-  `BGS=weave,sheet,dial,iris npm run check:bg`.
+  all four). Before changing the home hero, its copy, the header's or the audience bar's
+  height, or the hero rules, run `node verify/hero-fit.js` (the fit's numbers) and
+  `npm run check:bg`, and then the full sweep: `BGS=weave,sheet,dial,iris npm run check:bg`.
 - **Re-syncing the design system.** When the system changes, copy its
   `project/colors_and_type.css` over the local one as is, and its
   `project/tokens.css` over the local one keeping the local `@font-face`

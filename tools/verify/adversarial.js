@@ -223,6 +223,7 @@ async function routeAttacker(ctx) {
     sessionStorage.setItem('vynatix-bg-seed', p(4));
     sessionStorage.setItem('vynatix-bg-iris-idle', p(5));
     localStorage.setItem('vynatix-consent', p(6));
+    localStorage.setItem('vynatix-motion', p(7));
   });
   const before = ga.google().length;
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -256,6 +257,7 @@ async function routeAttacker(ctx) {
   await page.evaluate(() => {
     localStorage.removeItem('vynatix-theme');
     localStorage.removeItem('vynatix-consent');
+    localStorage.removeItem('vynatix-motion');
     ['vynatix-look', 'vynatix-bg', 'vynatix-bg-seed', 'vynatix-bg-iris-idle'].forEach((k) => sessionStorage.removeItem(k));
   });
 

@@ -202,9 +202,9 @@ content cards over a tinted backdrop, which Apple's own rules exclude, and was
 replaced). One fenced block at the end of `styles.css`. The rules it follows:
 
 - **Glass is the controls layer; content is never glass.** Pages, cards (`.panel`,
-  `.metric`, `.case`), bands and the consent bar keep the system's solid surfaces.
-  Only the header, its open menu and the outlined button are glass. There is no
-  page backdrop: the glass refracts the content that scrolls beneath it.
+  `.metric`, `.case`) and the consent bar keep the system's solid surfaces.
+  Only the header, its open menu and the outlined button are glass. The glass
+  refracts the content that scrolls beneath it and the silk behind (*Silk waves*).
 - **The header is a floating capsule in two layers**, both pseudo-elements under its
   content. `::before` is the lens: `backdrop-filter: url(#vx-lens)` bends the page at
   the capsule's rim through an SVG displacement map (`assets/glass-lens-wide.svg`,
@@ -229,9 +229,9 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
   button keeps its solid fill with a lit upper edge; `.btn--secondary` is clear
   glass. Without JavaScript under 905px the header is two rows tall and takes
   `radius-2xl` instead.
-- **Nothing moves.** Apple's glass has travelling highlights and a tint that adapts
-  to what is beneath it; the site's no-motion rule stands, so the rim and tint are
-  still.
+- **The glass does not move.** Apple's glass has travelling highlights and a tint that
+  adapts to what is beneath it; here the rim and tint are still. (The silk behind the
+  page drifts; that is its own decision, with its own pause control.)
 - **Reduced transparency and print**: the lens layer goes, the body turns into solid
   `surface-container`, the menu and outlined button lose their blur. These are
   explicit overrides, because literal blur values and a tint thinned with
@@ -245,6 +245,61 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
 - **Known limits**: no refraction outside Chromium; headless Chromium at device
   scale 2 leaves part of a large backdrop blur unblurred in screenshots (scale 1 is
   correct), so judge blur on a real device.
+
+**Silk waves.** Behind every page is a silk background that drifts slowly (an owner
+decision of 18 November 2026, and the site's one ambient loop). In `styles.css`,
+after the Liquid Glass block:
+
+- **Two fixed layers**, `body::before` (lit folds, `surface-bright`) and `body::after`
+  (shaded folds, `surface-container-highest`), each shaped by a small image mask
+  (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
+  `tools/silk-masks.js`; only the alpha is used), so the colour is a role token
+  and follows the theme. The canvas colour stays on `<body>`, so `a11y.js` still
+  resolves the background behind text. `.section--surface` is 55% opaque so the silk
+  runs through the tonal bands; cards, inverse bands and the footer are solid.
+- **The drift** is two keyframe animations of `transform` only (38 s and 47 s,
+  alternate, opposite senses), declared under `prefers-reduced-motion: no-preference`
+  and only for `.js-waves`, which the fifth IIFE of `app.js` sets in the head unless
+  the visitor has paused. The drift starts from the rest pose, so no JavaScript, a
+  stored pause and reduced motion all paint the same still silk.
+- **The pause control** is a `<button class="motion-toggle">` in the footer's Legal
+  list (the `FOOTER` template in `tools/seo-head.py`), labelled "Pause background
+  motion" or "Play background motion", hidden until `.js-motion` and absent under
+  reduced motion. The choice is `localStorage` `vynatix-motion` (`off` or `on`; any
+  other value means moving), named in both notices. **The loop and the button go
+  together**: WCAG 2.2.2 requires a way to stop motion that starts by itself and
+  lasts more than five seconds, and `accessibility.html` says where the button is. A
+  header placement would need pause and play icons from the design system's set,
+  which has none today.
+- **Checks.** `pinTheme` and `pinBg` store `off`, so every pixel check sees one pose;
+  `tools/verify/waves.js` is the unpinned check: a first visit drifts on every page,
+  only `transform` animates, the button stops and resumes it by keyboard and the
+  choice persists, reduced motion and no JavaScript are still with no button, the
+  three still states are pixel-identical, and blocked or poisoned storage is
+  survived. Text contrast was measured against composited pixels with the animation
+  seeked to 0, 19, 38 and 47 s (twelve pages, both themes, 1440 and 390 px): all at
+  AA. Re-measure when a mask or a layer colour changes.
+- **Cost.** The header's lens and blur re-run on every frame of the drift. Headless
+  software rendering under 4x CPU throttle gave a 33 ms median frame moving against
+  17 ms still; it has not been measured on real devices.
+- **The home hero.** The silk runs behind the English home hero and its four
+  backgrounds (owner decision). The sheet's guides are faint by design, and where a
+  fold passes behind one it fades, in places entirely; that unevenness is accepted.
+  `bg-sheet.js` therefore measures registration (R) with the silk hidden (`hideSilk`),
+  because the guides cannot be found by pixel difference over a fold; its clearance
+  and contrast checks, and the other three guards, run with the silk in the page.
+- **The hero buttons have their own layer** (`.hero__ctas .btn { will-change:
+  transform; }`). Over a backdrop that is not flat, Chromium anti-aliases a capsule's
+  edge against the true backdrop in one compositing path and against the flat canvas
+  colour in another, and the path depends on what else is composited (the iris is
+  enough). The edge pixels then differ by 6 to 12 levels, which `bg-iris.js` reads as
+  art inside the buttons, and which is a faint halo for a visitor. A layer of their
+  own makes it one path. Do not remove it without running `bg-iris.js` in full.
+- **History.** A tinted radial backdrop was tried on the 17th and failed `bg-iris.js`
+  with capsule hero buttons for the reason above, not yet understood then. The masks were
+  first the SVGs themselves: re-rendering their 38px blur over a full-screen layer
+  stalled a theme toggle for a third of a second (and failed the dial's sweep test),
+  so they became small rasters.
 
 **Hero backgrounds.** The English home page's hero carries one of four decorative
 backgrounds, **drawn at random for each visit** like the colour scheme: `weave` (a
@@ -597,9 +652,11 @@ economical way, so a dark theme does not print as black slabs.
 guarded so a missing element is a no-op. Every page loads `app.js` from the
 `<head>`, and `app.js` is the only script on every page but the home page, which also
 loads `hero-bg.js` (the hero backgrounds): there is no CDN or animation stack. `app.js`
-has five features: the theme (the per-visit draw and the toggle), the hero background
+has six features: the theme (light or dark, and the toggle), the hero background
 draw, the mobile nav, the audience switch's additions (`js-view-join`, `aria-current` and
-focus; see *Audience switch*), and consent for Google Analytics (see *Analytics*). The small
+focus; see *Audience switch*), the silk background's drift and pause button (see *Silk
+waves*), and consent for Google Analytics (see *Analytics*), which stays the last block
+because `consent.js` cuts the file there to build its baseline. The small
 script of each background that needs one is in `hero-bg.js` (see *Hero backgrounds*).
 The only third-party script that can ever run is Google's `gtag.js`, which the consent feature
 injects itself, only once a real Measurement ID has been set and only for a visitor
@@ -1029,8 +1086,8 @@ This section holds the working rules. The reasoning and the cost are in
 `SECURITY-ASSESSMENT.md` (Round 6); the hard gate for switching it on is
 `tools/PRE-FLIP-CHECKLIST.md`.
 
-**What exists.** The fifth IIFE in `app.js`, after the theme, the hero background
-draw, the mobile nav and the audience switch.
+**What exists.** The last IIFE in `app.js`, after the theme, the hero background
+draw, the mobile nav, the audience switch and the silk background.
 When active it shows a compact, non-modal bar fixed to the bottom of the viewport
 on a first visit (`#consent-bar`: two buttons with the identical class string,
 Decline then Accept, so neither is favoured); reopens it from the footer's

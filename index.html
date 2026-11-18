@@ -271,7 +271,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=9eef2ac3">
+<link rel="stylesheet" href="styles.css?v=b10d0275">
 <!-- The hero backgrounds have their own stylesheet and script, linked by this page only, so the other
      nineteen pages never download them (AGENTS.md, Hero backgrounds). -->
 <link rel="stylesheet" href="hero-bg.css?v=c545788d">
@@ -288,7 +288,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=2dff081d"></script>
+<script src="app.js?v=561c1c4a"></script>
 <!-- hero-bg.js comes after app.js, which draws the background and sets data-bg, and runs here too: the weave's
      tile and the iris's arming must be in place before the first paint. -->
 <script src="hero-bg.js?v=11457e09"></script>
@@ -1109,6 +1109,7 @@
             <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
           </ul>
         </div>
       </div>

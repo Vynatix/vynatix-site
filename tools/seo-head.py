@@ -67,9 +67,9 @@ PAGES = {
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
   'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-06'),
-  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-17', alt={'sv': 'integritet.html'}),
+  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
-  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-17'),
+  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'android-automotive-development.html'}),
@@ -82,7 +82,7 @@ PAGES = {
   'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
   'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-06', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
-  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-17', alt={'en': 'privacy.html'}),
+  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-18', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
@@ -326,6 +326,7 @@ FOOTER = '''  <!-- ============================================================ 
             <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
           </ul>
         </div>
       </div>

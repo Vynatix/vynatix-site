@@ -184,12 +184,13 @@ cannot stand in for this section.
   (and the code is changed to say so before the flip).
   - Owner: Site owner, with Counsel.
   - Evidence: the reviewers' names and dates; the recorded decision.
-- [ ] **4.2 The storage-key decision is closed.** The site writes five keys. In
+- [ ] **4.2 The storage-key decision is closed.** The site writes six keys. In
   `sessionStorage`: the hero background's `vynatix-bg`, `vynatix-bg-seed` and
   `vynatix-bg-iris` (a random draw and two values for it), all written without any
-  click. In `localStorage`: `vynatix-theme` (written when the toggle is pressed) and
+  click. In `localStorage`: `vynatix-theme` (written when the toggle is pressed),
+  `vynatix-motion` (written when the footer's background motion button is pressed) and
   `vynatix-consent` (written when Decline or Accept is pressed). Both notices already
-  name all five and call the display ones display preferences. (The random
+  name all six and call the display ones display preferences. (The random
   colour-scheme draw and its `vynatix-look` key were retired on 17 November 2026,
   when the site moved to the one Monochrome scheme.)
   Counsel says in writing whether that is right or how each is to be treated

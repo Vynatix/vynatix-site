@@ -17,7 +17,8 @@
 //   R  registration  The headline guides sit on the glyphs: the baseline and cap rules of every visual line of the h1
 //                  (one or two roman lines, then the italic line) lie within TOL (1.25) px of the line's real baseline and cap
 //                  height, the second roman line is exactly one line height below the first, the italic line is one
-//                  line, and the rule is not drawn twice where the two sets coincide (Forest). Also that the hold
+//                  line, and the rule is not drawn twice where the two sets coincide (Forest). Measured with the
+//                  silk background hidden (see hideSilk). Also that the hold
 //                  distances in hero-bg.css clear the real text ends by 24px.
 // Exits non-zero on any failure. The page must be drawn as the sheet: the script pins { theme, bg: 'sheet' }.
 // Needs Playwright and pngjs (tools/package.json has both).
@@ -95,6 +96,15 @@ function hideSheet(which) {
   }[which];
   const i = sheet.insertRule(`${sel} { content: none !important; }`, sheet.cssRules.length);
   return i;
+}
+// The silk background (styles.css, Silk waves) off, for the registration measurement only. The guides are faint
+// by design, and where a fold of the silk passes behind one its difference from the page falls under INK_MIN, so
+// the rule cannot be found there. Registration is geometry (do the rules sit on the glyphs), which the backdrop
+// does not change, so R measures it on the flat canvas. An owner decision of 18 November 2026: the silk runs
+// behind the hero, and the guides are allowed to read unevenly over it. B and C keep the silk in the page.
+function hideSilk() {
+  const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
+  sheet.insertRule('body::before, body::after { content: none !important; }', sheet.cssRules.length);
 }
 function unhide(i) { const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || '')); sheet.deleteRule(i); }
 function hideText() {
@@ -257,6 +267,7 @@ async function open(browser, theme, width, zoom) {
     // ---- R: registration of the headline guides (zoom 1) ----
     {
       const { ctx, page } = await open(browser, theme, width, 1);
+      await page.evaluate(hideSilk);                     // see hideSilk: registration is measured on the flat canvas
       const L = await page.evaluate(headlineLines);
       const tag = `${theme} ${width}px`;
       if (L.ital.length !== 1) fail(`${tag}: the italic line wraps into ${L.ital.length} lines; its guides assume one`);

@@ -1,8 +1,10 @@
-// Site script. Five features, each in its own block below: the theme (the
+// Site script. Six features, each in its own block below: the theme (the
 // Monochrome scheme, light or dark), the home page's hero
 // background (also drawn at random for the visit), the mobile nav, the home
-// page's audience switch (a small enhancement of two plain links), and consent
-// for Google Analytics. The analytics block does nothing until the visitor has
+// page's audience switch (a small enhancement of two plain links), the silk
+// background's drift and its pause button, and last (tools/verify/consent.js
+// cuts the file there for its baseline, so it stays last) consent for Google
+// Analytics. The analytics block does nothing until the visitor has
 // accepted on the consent bar (a stored Accept from an earlier visit counts),
 // and it is inert (no markup, no storage access, no listeners) while the
 // measurement ID is still the placeholder.
@@ -289,6 +291,55 @@
   if (onHome) {
     sync();   // the class only: the links are not parsed yet
     window.addEventListener('hashchange', onHash);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+// Silk waves — the page background drifts, and the visitor can stop it.
+//
+// styles.css paints two soft layers of folds behind every page (body::before and
+// body::after) and, only while <html> carries js-waves, lets them drift slowly.
+// This block adds that class unless the visitor has paused the motion, and wires
+// the footer's "Pause background motion" button, which is hidden until js-motion
+// says it can work. The choice is kept in localStorage so every page agrees.
+// Without JavaScript, with a stored pause, or under prefers-reduced-motion (which
+// styles.css handles by itself: no animation, no button) the silk is still, in the
+// same pose the drift starts from. Any stored value but "off" means moving.
+(function () {
+  var root = document.documentElement;
+  var MOTION_KEY = 'vynatix-motion';  // localStorage: "off" once paused, "on" once resumed
+  var LABEL = { on: 'Pause background motion', off: 'Play background motion' };
+
+  function stored() {
+    try { return localStorage.getItem(MOTION_KEY); } catch (e) { return null; }
+  }
+  function apply(moving, button) {
+    root.classList.toggle('js-waves', moving);
+    if (button) button.textContent = moving ? LABEL.on : LABEL.off;
+  }
+
+  // First paint: the class is set before the body exists.
+  apply(stored() !== 'off', null);
+
+  function init() {
+    var button = document.querySelector('.motion-toggle');
+    if (!button) return;
+    apply(root.classList.contains('js-waves'), button);
+    root.classList.add('js-motion');
+    button.addEventListener('click', function () {
+      var moving = !root.classList.contains('js-waves');
+      apply(moving, button);
+      try {
+        localStorage.setItem(MOTION_KEY, moving ? 'on' : 'off');
+      } catch (e) {
+        /* storage unavailable — the button still works for this page */
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

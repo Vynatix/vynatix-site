@@ -2265,7 +2265,8 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
    The layers are pseudo-elements so the header itself has no backdrop-filter
    and is no backdrop root (a stacking context alone is not one): that lets
    the open menu, inside it, blur the page too.
-   Nothing here moves: no travelling highlights, no scroll-reactive tint.
+   The glass itself does not move: no travelling highlights, no
+   scroll-reactive tint. (The silk behind the page does; see Silk waves.)
    Under prefers-reduced-transparency, and in print, the glass is a solid
    surface.
    --------------------------------------------------------------- */
@@ -2373,4 +2374,101 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
 @media print {
   .site-header::before,
   .site-header::after { content: none; }
+}
+
+/* ---------------------------------------------------------------
+   Silk waves
+   The page background is silk in the canvas's own colours: two soft layers
+   of folds, fixed behind every page. body::before is the lit folds
+   (surface-bright), body::after the shaded ones (surface-container-highest);
+   each takes its shape from a small image mask (assets/silk-light.png,
+   assets/silk-shade.png, written by tools/silk-masks.js; a raster because an
+   SVG's blur is costly to re-render at this size), so the colour stays a role
+   token and follows the
+   theme. The canvas colour itself stays on <body>, so tools/verify/a11y.js
+   still resolves the background behind text.
+   The layers drift, slowly and in opposite senses, only while <html> has
+   js-waves (app.js: JavaScript on and the visitor has not paused it) and
+   only without prefers-reduced-motion. The drift starts from the rest pose,
+   so no JavaScript, a pause and reduced motion all show the same still
+   silk. This is the site's one ambient loop, an owner decision; the footer's
+   "Pause background motion" button is what makes it meet WCAG 2.2.2, so the
+   two go together. Only transform is animated.
+   --------------------------------------------------------------- */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  /* The margin is what the drift needs to never show an edge. */
+  inset: -160px;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+body::before {
+  background: var(--md-sys-color-surface-bright);
+  -webkit-mask-image: url("assets/silk-light.png");
+  mask-image: url("assets/silk-light.png");
+}
+body::after {
+  background: var(--md-sys-color-surface-container-highest);
+  -webkit-mask-image: url("assets/silk-shade.png");
+  mask-image: url("assets/silk-shade.png");
+}
+@keyframes silk-light {
+  to { transform: translate3d(84px, -42px, 0) rotate(1.6deg) scale(1.05); }
+}
+@keyframes silk-shade {
+  to { transform: translate3d(-76px, 36px, 0) rotate(-1.3deg) scale(1.06); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js-waves body::before { animation: silk-light 38s ease-in-out infinite alternate; }
+  .js-waves body::after { animation: silk-shade 47s ease-in-out infinite alternate; }
+}
+/* The hero's two buttons get a layer of their own. Over the silk, the browser
+   anti-aliases a capsule's edge against the true backdrop in one compositing
+   path and against the flat canvas colour in another, and which path it takes
+   depends on what else is composited (the iris, for one). The edge pixels then
+   differ by 6 to 12 levels, a faint halo, and tools/verify/bg-iris.js reads the
+   difference as art inside the buttons. Their own layer makes it one path. */
+.hero__ctas .btn { will-change: transform; }
+/* A tonal band lets the silk through. */
+.section--surface {
+  background: color-mix(in srgb, var(--md-sys-color-surface-container-low) 55%, transparent);
+}
+/* The pause control, in the footer's Legal list: a button that reads as one of
+   the list's links. Hidden until app.js can make it work (js-motion), and
+   absent under reduced motion, where nothing drifts. */
+.motion-item { display: none; }
+.js-motion .motion-item { display: list-item; }
+.motion-toggle {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--text-body-sm);
+  text-align: start;
+  cursor: pointer;
+}
+.motion-toggle:hover { text-decoration: underline; }
+.motion-toggle:focus-visible {
+  outline: 2px solid var(--md-sys-color-inverse-on-surface);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-motion .motion-item { display: none; }
+}
+@media print {
+  body::before,
+  body::after { content: none; }
+  .motion-item { display: none; }
+}
+@media (forced-colors: active) {
+  body::before,
+  body::after { content: none; }
 }

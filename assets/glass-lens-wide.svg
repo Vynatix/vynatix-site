@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" preserveAspectRatio="none">
+<!-- Displacement map for the header's lens (styles.css, Liquid Glass): red moves the sample along x, green along y, 128 is no movement. Stretched to the bar by the filter in each page. -->
+<defs>
+<linearGradient id="x" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#ff0000"/><stop offset="0.015" stop-color="#a00000"/><stop offset="0.03" stop-color="#800000"/><stop offset="0.97" stop-color="#800000"/><stop offset="0.985" stop-color="#600000"/><stop offset="1" stop-color="#000000"/></linearGradient>
+<linearGradient id="y" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#00ff00"/><stop offset="0.21" stop-color="#00a000"/><stop offset="0.42" stop-color="#008000"/><stop offset="0.5800000000000001" stop-color="#008000"/><stop offset="0.79" stop-color="#006000"/><stop offset="1" stop-color="#000000"/></linearGradient>
+</defs>
+<rect width="200" height="200" fill="#000080"/>
+<rect width="200" height="200" fill="url(#x)" style="mix-blend-mode:screen"/>
+<rect width="200" height="200" fill="url(#y)" style="mix-blend-mode:screen"/>
+</svg>

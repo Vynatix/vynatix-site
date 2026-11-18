@@ -251,14 +251,17 @@ decision of 18 November 2026, and the site's one ambient loop). In `styles.css`,
 after the Liquid Glass block:
 
 - **Two fixed layers**, `body::before` (lit folds, `surface-bright`) and `body::after`
-  (shaded folds, `surface-container-highest`), each shaped by a small image mask
+  (shaded folds, `surface-container-highest` with 8% of `on-surface`), each shaped by a small image mask
   (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
   `tools/silk-masks.js`; only the alpha is used), so the colour is a role token
   and follows the theme. The canvas colour stays on `<body>`, so `a11y.js` still
   resolves the background behind text. `.section--surface` is 55% opaque so the silk
   runs through the tonal bands; cards, inverse bands and the footer are solid.
-- **The drift** is two keyframe animations of `transform` only (38 s and 47 s,
-  alternate, opposite senses), declared under `prefers-reduced-motion: no-preference`
+- **The drift** is two keyframe animations of `transform` only: each layer travels a
+  slow circle at constant speed (40 s and 34 s, linear, opposite senses, about 17px a
+  second), so the folds slide over one another and never stall. The first version
+  moved 84px in 38 s, which nobody could see, and an eased one stalled at its turning
+  points, so `waves.js` now also requires that frames 2 s apart differ visibly, declared under `prefers-reduced-motion: no-preference`
   and only for `.js-waves`, which the fifth IIFE of `app.js` sets in the head unless
   the visitor has paused. The drift starts from the rest pose, so no JavaScript, a
   stored pause and reduced motion all paint the same still silk.
@@ -277,7 +280,7 @@ after the Liquid Glass block:
   choice persists, reduced motion and no JavaScript are still with no button, the
   three still states are pixel-identical, and blocked or poisoned storage is
   survived. Text contrast was measured against composited pixels with the animation
-  seeked to 0, 19, 38 and 47 s (twelve pages, both themes, 1440 and 390 px): all at
+  seeked to 0, 10 and 20 s (twelve pages, both themes, 1440 and 390 px): all at
   AA. Re-measure when a mask or a layer colour changes.
 - **Cost.** The header's lens and blur re-run on every frame of the drift. Headless
   software rendering under 4x CPU throttle gave a 33 ms median frame moving against

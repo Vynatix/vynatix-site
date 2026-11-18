@@ -441,20 +441,42 @@ h1 em, h2 em {
 /* ---------------------------------------------------------------
    Hero (home)
    --------------------------------------------------------------- */
-.hero { padding-block: var(--space-24) var(--space-16); }
-.hero .eyebrow { margin-bottom: var(--space-6); }
+/* The hero is drawn in its own unit so that it can be scaled to the window (see "Hero fit"
+   below, which is the only place the unit changes). --hero-u is one design pixel: 1px at the
+   design size, so every calc(N * var(--hero-u)) here is the token named beside it and the
+   hero without the fit is exactly the design. A length cannot multiply a length, which is why
+   these are numbers and not var(--space-*): the tokens are 96 = --space-24, 64 = --space-16,
+   48 = --space-12, 40 = --space-10, 32 = --space-8, 24 = --space-6; the headline runs from
+   40 = --text-h3 to 96 = --text-display-lg and the lede is 22 (--text-type-lede), never
+   under --text-body-lg. The eyebrow and the buttons keep their size at every scale.
+   hero-bg.css multiplies the art's constants by the same unit: change them together. */
+@property --hero-u {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+.hero {
+  --hero-u: 1px;
+  --hero-lede: max(var(--text-body-lg), calc(22 * var(--hero-u)));
+  --hero-em: calc(16 * var(--hero-u));   /* the em of the art that is drawn in em (hero-bg.css) */
+  --hero-above: 78px;   /* what stands above the hero on the first screen: the header's bottom edge */
+  padding-block: calc(96 * var(--hero-u)) calc(64 * var(--hero-u));
+}
+.audience ~ .hero { --hero-above: 147px; }   /* and the audience bar under it */
+.hero .eyebrow { margin-bottom: calc(24 * var(--hero-u)); }
 .hero__h1 {
-  font-size: clamp(var(--text-h3), 8vw, var(--text-display-lg));
+  font-size: clamp(calc(40 * var(--hero-u)), 8vw, calc(96 * var(--hero-u)));
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-display);
-  margin: 0 0 var(--space-8);
+  margin: 0 0 calc(32 * var(--hero-u));
   max-width: 18ch;
 }
 .hero__lede {
   font: var(--text-type-lede);
+  font-size: var(--hero-lede);
   color: var(--text-muted);
   max-width: 56ch;
-  margin: 0 0 var(--space-10);
+  margin: 0 0 calc(40 * var(--hero-u));
 }
 .hero__ctas {
   display: flex;
@@ -462,13 +484,14 @@ h1 em, h2 em {
   flex-wrap: wrap;
 }
 @media (max-width: 599px) {
-  .hero { padding-block: var(--space-16) var(--space-12); }
+  .hero { padding-block: calc(64 * var(--hero-u)) calc(48 * var(--hero-u)); }
   /* The English client hero on a phone: the lede one type step smaller (same leading) and
      the client row closer, so both buttons sit on the first screen of a 390x844 phone and
      the clients' rule closes it. The eyebrow breaks into two even lines, not one word alone.
      The sheet art is placed from these boxes: run npm run check:bg after changing them. */
+  .hero.view-hire { --hero-lede: max(var(--text-body-md), calc(18 * var(--hero-u))); }
   .hero.view-hire .eyebrow { text-wrap: balance; }
-  .hero.view-hire .hero__lede { font-size: var(--text-body-lg); margin-bottom: var(--space-8); }
+  .hero.view-hire .hero__lede { margin-bottom: calc(32 * var(--hero-u)); }
   .hero.view-hire .hero__ctas { column-gap: var(--space-3); }   /* both buttons on one row at 390 in every look */
 }
 
@@ -476,7 +499,7 @@ h1 em, h2 em {
    auto-advancing strips on content surfaces, so the list simply wraps. Each
    named client links to its own site; the others are described, not named. */
 .clients {
-  margin-top: var(--space-24);
+  margin-top: calc(96 * var(--hero-u));
   padding-top: var(--space-8);
   border-top: 1px solid var(--md-sys-color-outline-variant);
 }

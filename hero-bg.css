@@ -49,7 +49,7 @@
     --weave-edge: max(var(--space-6), calc((100% - var(--container-max-laptop)) / 2));
     --weave-text: calc(max(0px, (100% - var(--container-max-laptop)) / 2) + var(--space-6));
     /* The field starts one gap to the right of the lede box. */
-    --weave-from: calc(var(--weave-text) + min(56ch, min(100%, var(--container-max-laptop)) - 2 * var(--space-6)) + var(--space-6));
+    --weave-from: calc(var(--weave-text) + min(56ch, min(100%, var(--container-max-laptop)) - 2 * var(--space-6)) + 24 * var(--hero-u));
     /* The theme's own ink, warmed with the accent. */
     --weave-ink: color-mix(in srgb, var(--md-sys-color-tertiary) 45%, var(--md-sys-color-on-surface));
     --weave-mask: var(--md-sys-color-on-surface);
@@ -67,10 +67,11 @@
        steps down one line of the headline, a little more (a line of text paints a touch past its
        line box) and a gap. */
     top: auto;
-    margin-top: calc(var(--weave-lh) * 1.12 + var(--space-6));
+    margin-top: calc(var(--weave-lh) * 1.12 + 24 * var(--hero-u));
     height: calc(var(--weave-lh) * 4.5);
     /* Horizontal: the lede's own font, so that the ch in --weave-from is the lede's. */
     font: var(--text-type-lede);
+    font-size: var(--hero-lede);
     left: var(--weave-from);
     right: var(--weave-edge);
     /* The cords of the selvedge (a heavy one and two lighter) on the right 16px, then the ink
@@ -268,10 +269,12 @@
   :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after {
     --sheet-art: 0 0;
     --sheet-art-img: none;
-    --sheet-rule-y: 15px;
-    --sheet-h1: 7px;
-    --sheet-h2: 13px;
-    --sheet-h3: 19px;
+    --sheet-rule-y: calc(15 * var(--hero-u));
+    --sheet-h1: calc(7 * var(--hero-u));
+    --sheet-h2: calc(13 * var(--hero-u));
+    --sheet-h3: calc(19 * var(--hero-u));
+    /* The art is in em, and the hero's own unit sets the em (styles.css, --hero-em: 16 design pixels). */
+    font-size: var(--hero-em);
     content: "";
     content: "" / "";
     position: absolute;
@@ -284,7 +287,7 @@
   }
   @media (min-width: 600px) {
     :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::before,
-    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-rule-y: 32px; --sheet-h1: 9px; --sheet-h2: 17px; --sheet-h3: 27px; }
+    :root:is(:not([data-bg]), [data-bg="sheet"]) .hero:lang(en)::after { --sheet-rule-y: calc(32 * var(--hero-u)); --sheet-h1: calc(9 * var(--hero-u)); --sheet-h2: calc(17 * var(--hero-u)); --sheet-h3: calc(27 * var(--hero-u)); }
   }
   /* The art files are only asked for from 75rem up, where the A-frame is drawn at all. */
   @media (min-width: 75rem) {
@@ -413,19 +416,20 @@
       pointer-events: none;
       /* The lede's own font, so that ch and em below are the lede's. */
       font: var(--text-type-lede);
-      /* The circle's centre in the box (tools/dial-masks.py prints these). */
-      --dial-ox: 270.2px;
-      --dial-oy: 223.5px;
-      --dial-w: 186px;
+      font-size: var(--hero-lede);
+      /* The circle's centre in the box (tools/dial-masks.py prints these), in the hero's unit. */
+      --dial-ox: calc(270.2 * var(--hero-u));
+      --dial-oy: calc(223.5 * var(--hero-u));
+      --dial-w: calc(186 * var(--hero-u));
       /* The container's content width, 1152px from 1200px up, and the lede box's right edge in it. */
       --dial-content: calc(min(100vw, var(--container-max-laptop)) - 2 * var(--space-6));
       --dial-lede: min(56ch, var(--dial-content));
-      top: calc(var(--dial-lh) * 1.12 + var(--space-6));
-      --dial-from: calc(var(--dial-lede) + var(--space-6));
-      --dial-to: calc(var(--dial-content) - var(--dial-w) + 4px); /* the box overhangs the container's edge by 4px: the ends of the arc fade out before the box does */
+      top: calc(var(--dial-lh) * 1.12 + 24 * var(--hero-u));
+      --dial-from: calc(var(--dial-lede) + 24 * var(--hero-u));
+      --dial-to: calc(var(--dial-content) - var(--dial-w) + 4 * var(--hero-u)); /* the box overhangs the container's edge by 4px: the ends of the arc fade out before the box does */
       left: max(var(--dial-from), var(--dial-to));
       width: var(--dial-w);
-      height: 447px;
+      height: calc(447 * var(--hero-u));
       -webkit-mask-repeat: no-repeat;
       mask-repeat: no-repeat;
       -webkit-mask-size: 100% 100%;
@@ -497,10 +501,10 @@
     :root[data-bg="iris"]:lang(en) .hero { isolation: isolate; overflow-x: clip; }
     :root[data-bg="iris"]:lang(en) .hero .clients { position: relative; }
     :root[data-bg="iris"]:lang(en) .iris {
-      --iris-r: 400px;       /* the outer ring's radius */
-      --iris-bite: 285px;    /* how far the disc's left edge reaches into the column from its right edge */
-      --iris-bleed: 330px;   /* how far the disc runs off the right edge of a window wider than the column */
-      --iris-lift: 135px;    /* the centre's height above the clients rule */
+      --iris-r: calc(400 * var(--hero-u));       /* the outer ring's radius */
+      --iris-bite: calc(285 * var(--hero-u));    /* how far the disc's left edge reaches into the column from its right edge */
+      --iris-bleed: calc(330 * var(--hero-u));   /* how far the disc runs off the right edge of a window wider than the column */
+      --iris-lift: calc(135 * var(--hero-u));    /* the centre's height above the clients rule */
       /* Bronze pulled toward the ink: the lines hold on cream and on dark alike. */
       --iris-ink: color-mix(in srgb, var(--md-sys-color-tertiary) 70%, var(--md-sys-color-on-surface));
       --iris-accent: color-mix(in srgb, var(--md-sys-color-tertiary) 86%, var(--md-sys-color-on-surface));
@@ -509,9 +513,10 @@
       z-index: -1;
       /* The lede's own font, so that ch below is the lede's measure in whichever face the visit has. */
       font: var(--text-type-lede);
+      font-size: var(--hero-lede);
       left: max(
         100% - var(--iris-bite),
-        min(56ch, 100%) + var(--space-6),
+        min(56ch, 100%) + 24 * var(--hero-u),
         50vw + 50% + var(--iris-bleed) - 2 * var(--iris-r)
       );
       right: calc(50% - 50vw);

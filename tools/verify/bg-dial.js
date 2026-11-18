@@ -102,6 +102,10 @@ function zoomText(s) {
   const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
   els.forEach((e, i) => e.style.setProperty('font-size', (sizes[i] * s) + 'px'));
   document.documentElement.style.setProperty('--text-type-lede', '350 ' + (22 * s) + 'px/1.5 var(--font-body)');
+  // The hero carries two more font sizes in custom properties, which the art takes its ch and em from
+  // (styles.css, --hero-lede and --hero-em): real text zoom scales the fonts they set, so scale them here.
+  const hero = document.querySelector('.hero'), hcs = getComputedStyle(hero);
+  ['--hero-lede', '--hero-em'].forEach((v) => hero.style.setProperty(v, 'calc((' + hcs.getPropertyValue(v) + ') * ' + s + ')'));
 }
 
 // The arc's used box and the layout it is derived from, in page pixels.

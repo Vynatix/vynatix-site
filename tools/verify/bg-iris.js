@@ -94,6 +94,10 @@ function applyZoom(s) {
   els.forEach((e, i) => e.style.setProperty('font-size', (sizes[i] * s) + 'px', 'important'));
   const lede = getComputedStyle(document.documentElement).getPropertyValue('--text-type-lede');
   document.documentElement.style.setProperty('--text-type-lede', lede.replace(/(\d+(?:\.\d+)?)px/, (m, v) => (parseFloat(v) * s) + 'px'));
+  // The hero carries two more font sizes in custom properties, which the art takes its ch and em from
+  // (styles.css, --hero-lede and --hero-em): real text zoom scales the fonts they set, so scale them here.
+  const hero = document.querySelector('.hero'), hcs = getComputedStyle(hero);
+  ['--hero-lede', '--hero-em'].forEach((v) => hero.style.setProperty(v, 'calc((' + hcs.getPropertyValue(v) + ') * ' + s + ')'));
 }
 
 // Placement facts the P checks read.

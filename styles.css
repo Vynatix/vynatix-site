@@ -2403,22 +2403,26 @@ body::after {
   inset: -160px;
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* Two masks, added together: a fine grain tile over the folds. The folds span
+     only 10 to 25 brightness levels across hundreds of pixels, so on their own
+     every level shows as a stripe (colour banding); the grain shifts each pixel
+     by up to about one level, which dithers the stripes away. */
+  -webkit-mask-repeat: repeat, no-repeat;
+  mask-repeat: repeat, no-repeat;
+  -webkit-mask-size: 128px 128px, 100% 100%;
+  mask-size: 128px 128px, 100% 100%;
 }
 body::before {
   background: var(--md-sys-color-surface-bright);
-  -webkit-mask-image: url("assets/silk-light.png");
-  mask-image: url("assets/silk-light.png");
+  -webkit-mask-image: url("assets/silk-grain.png"), url("assets/silk-light.png");
+  mask-image: url("assets/silk-grain.png"), url("assets/silk-light.png");
 }
 body::after {
   /* A little of the text colour in the shaded folds, or the silk is too flat
      to see move in the light theme. */
   background: color-mix(in srgb, var(--md-sys-color-surface-container-highest) 92%, var(--md-sys-color-on-surface));
-  -webkit-mask-image: url("assets/silk-shade.png");
-  mask-image: url("assets/silk-shade.png");
+  -webkit-mask-image: url("assets/silk-grain.png"), url("assets/silk-shade.png");
+  mask-image: url("assets/silk-grain.png"), url("assets/silk-shade.png");
 }
 /* The drift has to be seen to be worth having: the first version moved 84px in
    38 s, about two brightness levels of change in two seconds, which read as

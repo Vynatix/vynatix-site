@@ -92,6 +92,29 @@ const KEY = 'vynatix-motion';
     await ctx.close();
   }
 
+  // 2c. No colour banding. The folds span only 10 to 25 brightness levels across hundreds of pixels, so without the
+  //     grain mask (assets/silk-grain.png) each level is a visible stripe: in the page's text-free left margin, 15%
+  //     or more of the pixels then sit in vertical runs of 12 or more identical pixels. With the grain it is none.
+  for (const scheme of ['light', 'dark']) {
+    const { PNG } = require('pngjs');
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
+    const page = await ctx.newPage();
+    await page.addInitScript((KEY) => { try { localStorage.setItem(KEY, 'off'); } catch (e) {} }, KEY);
+    await page.goto(url('terms'), { waitUntil: 'load' });
+    const g = PNG.sync.read(await page.screenshot());
+    let px = 0, flat = 0;
+    for (let x = 4; x < 36; x += 3) {
+      let run = 1;
+      for (let y = 141; y <= g.height; y++) {
+        const i = (y * g.width + x) * 4, j = i - g.width * 4;
+        if (y < g.height && g.data[i] === g.data[j] && g.data[i + 1] === g.data[j + 1] && g.data[i + 2] === g.data[j + 2]) run++;
+        else { px += run; if (run >= 12) flat += run; run = 1; }
+      }
+    }
+    check(flat / px < 0.03, `no colour banding (${scheme}): under 3% of the left margin's pixels sit in runs of 12 or more identical pixels`, `${(100 * flat / px).toFixed(1)}%`);
+    await ctx.close();
+  }
+
   // 3. The button stops the drift at once, in the rest pose, says so, and can be worked from the keyboard; the
   //    choice is stored and holds on the next page and after a reload; pressing again resumes.
   {

@@ -255,7 +255,11 @@ after the Liquid Glass block:
   (`assets/silk-light.png`, `assets/silk-shade.png`, 480x300, written by
   `tools/silk-masks.js`; only the alpha is used), so the colour is a role token
   and follows the theme. The canvas colour stays on `<body>`, so `a11y.js` still
-  resolves the background behind text. `.section--surface` is 55% opaque so the silk
+  resolves the background behind text. Over each fold mask sits a second mask, a
+  128px grain tile (`assets/silk-grain.png`, alpha 0 to 28 of 255, same generator):
+  the folds span only 10 to 25 brightness levels across hundreds of pixels, so
+  without it every level shows as a stripe (colour banding), and the grain dithers
+  the stripes away; `waves.js` checks for flat runs. `.section--surface` is 55% opaque so the silk
   runs through the tonal bands; cards, inverse bands and the footer are solid.
 - **The drift** is two keyframe animations of `transform` only: each layer travels a
   slow circle at constant speed (40 s and 34 s, linear, opposite senses, about 17px a

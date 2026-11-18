@@ -272,7 +272,12 @@ animated static image"). It is the site's one ambient loop. Two parts:
   noise per pixel, which is its dither. Every time term is a whole multiple of one
   angle taken from the clock (a four-minute loop), so the pattern has no seam and
   carries on across pages instead of restarting. The drawing buffer is capped at 1.3
-  million pixels and never uses the device pixel ratio. The still layers are hidden
+  million pixels and never uses the device pixel ratio. **It answers the visitor**
+  (owner request): the cloth gives way softly around the pointer (a Gaussian press
+  about a third of the view across, slightly lit) and rides with the scroll at about a
+  fifth of its speed. Both are eased in the frame loop, so nothing jumps; the
+  listeners (`pointermove`, `scroll`, `pointerleave`, `blur`, all passive) exist only
+  while the canvas does. Phone tilt is not used: it needs a permission prompt. The still layers are hidden
   (`.js-waves-live`), not removed, because the colours are read from them. Drawing
   starts after the page is up, never in the blocking head.
 - **The pause control** is a `<button class="motion-toggle">` in the footer's Legal
@@ -292,7 +297,9 @@ animated static image"). It is the site's one ambient loop. Two parts:
   forbid. `tools/verify/waves.js` alone asks for the live silk
   (`launch({ liveSilk: true })`) and covers: a first visit draws on every page; frames
   2 s apart differ visibly; no colour banding, live or still; the colours are the
-  page's own in both themes and follow a toggle mid-run; the button stops and resumes
+  page's own in both themes and follow a toggle mid-run; with the clock frozen the
+  picture holds, changes near the pointer and not at the far edge, and changes on
+  scroll; the button stops and resumes
   by keyboard and the choice persists; reduced motion and a stored pause ask for not
   one frame; no JavaScript; the four still states are pixel-identical; poisoned and
   blocked storage; WebGL refused; a lost context. Text contrast was measured against

@@ -44,7 +44,8 @@ highlights the things most worth keeping front-of-mind.
   Behind every page is a **silk background drawn live**: `styles.css` paints a still
   silk (two masked layers on `body::before`/`::after`, masks in `assets/silk-*.png`),
   and `app.js` lays a `<canvas class="silk-canvas">` over it and draws moving folds in
-  a small WebGL shader, in colours read from the page. An owner decision and the
+  a small WebGL shader, in colours read from the page; the cloth also gives way around
+  the pointer and rides with the scroll. An owner decision and the
   site's one ambient loop. The canvas exists only while drawing: no JavaScript,
   reduced motion, a stored pause, no WebGL or a lost context all show the same still
   silk. The footer's "Pause background motion" button (`localStorage`,

@@ -67,9 +67,9 @@ highlights the things most worth keeping front-of-mind.
   blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
   twenty-two pages never download them; the draw itself stays in `app.js`); the iris
   also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
-  new names whenever regenerated. The art is placed from the layout and fitted by hand
-  to the current headline copy ("Your in-house software team." / "Without the
-  hiring."): **a change to the headline, the lede, the hero spacing or the clients row
+  new names whenever regenerated. The art is placed from the layout and was fitted by hand
+  to a three-line headline over six lines of lede; the current headline ("Engineering" / "that compounds.")
+  is two lines over two, and the hero keeps the art's room instead (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
   can move art into text, and `npm run check:bg` (the `tools/verify/bg-*.js`
   guards, at the design size and on a scaled hero) fails and says which rule.** Storage: `vynatix-bg`, `vynatix-bg-seed`
   (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
@@ -77,9 +77,10 @@ highlights the things most worth keeping front-of-mind.
   the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
 - **The home hero is fitted to the window, and its numbers are measured.** On both home pages the first
   screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
-  size), and solves it from the window's height (`100svh`) so that the header, the audience bar and the
-  message end on the fold, with the clients' rule lying on it; from 1092px of height the client row is on the
-  first screen too, pinned to its bottom edge. Every vertical size in the hero is `calc(N * var(--hero-u))`
+  size), and solves it from the window's height (`100svh`) so that the header and the
+  message end on the fold, with the clients' rule lying on it; from 1060px of height (at 1100px and wider) the client row is on the
+  first screen too, pinned to its bottom edge. From 1100px the English hero keeps 336 units, not 96, between its buttons and that
+  rule: the room the art was fitted to under the longer headline it replaced. Every vertical size in the hero is `calc(N * var(--hero-u))`
   (N is the token the comment names), `hero-bg.css` multiplies the art's constants by the same unit, the
   eyebrow and buttons keep their size and the lede stops at 18px (16px on a phone). Outside the envelope (a
   window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the
@@ -91,8 +92,7 @@ highlights the things most worth keeping front-of-mind.
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
-  `*.html` file — there is no include system — so a change to either is made in **all** pages
-  (the home page also has a second skip link, for its joiner view).
+  `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
   `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
@@ -102,9 +102,8 @@ highlights the things most worth keeping front-of-mind.
   editing any of the six, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: six features
-  (theme toggle, the hero background draw, mobile nav, the audience switch's
-  `js-view-join`, `aria-current` and focus, the silk background's `js-waves` and pause
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
+  (theme toggle, the hero background draw, mobile nav, the silk background's `js-waves` and pause
   button, and last, where `consent.js` expects it, analytics consent;
   the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
   only) and no CDN/animation stack. **Two things on
@@ -145,18 +144,18 @@ highlights the things most worth keeping front-of-mind.
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
-- **The English home page has two views, picked by the address, with nothing stored.** A bar above the hero
-  ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
-  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`); with
-  script `app.js` adds `js-view-join` in the head (so a load on `#join` never paints the client hero first),
-  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar (the
-  sections, and the contents row) carries exactly one of `view-hire` or `view-join`, and the client closing band
-  comes before the joiner sections (adjacent-sibling rules ignore `display: none`); a `:target` view survives
-  one fragment, and any fragment but `#join` is the client view, so same-page links inside the client view (the
-  contents row) are fine and every other one is `#main`, `#hire` or `#join`; the joiner view's blocks are lifted word for
-  word from `membership.html` (`data-from`) and any other text in it is on the review list in `audience.js`;
-  `sv.html` has none. `tools/verify/audience.js` enforces it. Details and known limits in AGENTS.md,
-  *Audience switch*.
+- **The English home page, `services.html` and `work.html` follow the owner's website content plan of
+  November 2026, and the rest of the site does not yet.** The home page is nine blocks, each opening with a
+  promise and backed by a fact: the hero ("Engineering that compounds."), the client row, the three services
+  with AI engineering first, four figures, three case cards, the partnership band, people, insights and the
+  call to action. `work.html` is "Cases" in the menu (the file name stays). The voice sells: "you" before
+  "we", one name for the firm (consultancy), automotive only inside a named case, nothing about how Vynatix
+  runs inside, every number real and every client named only with its approval. The plan took the audience
+  switch, the comparison with other consultancies, the questions and the membership pitch off the home page;
+  `#join` still answers (it is the People section's id). About, the career page, Contact, Industries,
+  Insights and the Swedish pages are later steps: do not rewrite them ahead of the owner's inputs, and never
+  fill in a fact the plan marks as the owner's to supply. See AGENTS.md, *The English home page* and
+  *Audience switch (retired)*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
@@ -183,7 +182,7 @@ highlights the things most worth keeping front-of-mind.
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
   `.js-theme` for the theme toggle, `.js-motion` for the background motion button, `.js-consent` once the consent module is
-  active, `.js-view-join` while the address is the home page's `#join`). Copy follows the system's content rules: no
+  active). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 
 ## Verifying work

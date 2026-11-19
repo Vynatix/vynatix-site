@@ -1,14 +1,15 @@
 // The hero fit (styles.css, "Hero fit"): when the page loads, the first screen is the hero.
 //
 // The hero is drawn in its own unit, --hero-u, which styles.css solves from the window's height, so that
-// the header, the audience bar and the hero's message end exactly on the fold. Nothing is measured by
+// the header and the hero's message end exactly on the fold. Nothing is measured by
 // script on the site, so the numbers in that solve are facts about the current copy, like the art's
 // constants. This check measures them again and fails, naming the number, when a change to the copy, a
 // typeface, the header or the hero's spacing has moved them.
 //
 //   M  Model. With the unit forced, the hero's height is the straight line styles.css solves:
 //      --hero-f1 + --hero-k1 * u while the lede scales, --hero-f2 + --hero-k2 * u once it has stopped at
-//      its floor, and the whole hero (to its bottom edge) for the state with the client row. Also what
+//      its floor, and --hero-wf + --hero-wk * u for the whole hero (to its bottom edge), the state with the
+//      client row. At 1440px these are the lines with the art's room in them (styles.css, from 1100px). Also what
 //      the line assumes: the headline's and the lede's line counts, and what stands above the hero.
 //   F  Fold. At a table of real windows (laptops with the browser's own bars taken off, monitors, tablets,
 //      phones at their small viewport height) the page is in the state the table expects and:
@@ -44,9 +45,9 @@ const W = (w, h, state, o) => Object.assign({ w, h, state, exact: true, fit: tru
 const WINDOWS = {
   'index.html': [
     W(2560, 1440, 'whole'), W(1920, 1200, 'whole'), W(1440, 1300, 'whole'), W(1440, 1092, 'whole'), W(1024, 1290, 'whole'),
-    W(1920, 1080, 'message'), W(1920, 950, 'message'), W(1680, 1000, 'message'), W(1440, 900, 'message'), W(1440, 790, 'message'),
+    W(1920, 1080, 'whole'), W(1440, 1060, 'whole'), W(1024, 864, 'whole'), W(1440, 1059, 'message'), W(1920, 950, 'message'), W(1680, 1000, 'message'), W(1440, 900, 'message'), W(1440, 790, 'message'),
     W(1536, 730, 'message'), W(1366, 768, 'message'), W(1366, 657, 'message'), W(1280, 720, 'message'), W(1200, 800, 'message'),
-    W(1100, 760, 'message'), W(1024, 700, 'message'), W(834, 1120, 'message'), W(768, 950, 'message'),
+    W(1100, 760, 'message'), W(1099, 760, 'message'), W(1024, 700, 'message'), W(1024, 863, 'message'), W(834, 1120, 'whole'), W(768, 1000, 'whole'), W(768, 950, 'message'),
     W(700, 800, 'message', { exact: false }), W(640, 700, 'message', { exact: false }),
     W(430, 800, 'message', { exact: false }), W(412, 760, 'message', { exact: false }), W(390, 844, 'message'), W(390, 700, 'message'),
     W(390, 664, 'message', { exact: false }),
@@ -83,7 +84,7 @@ function measure() {
     h1: px(q('.hero__h1'), 'fontSize'), lede: px(q('.hero__lede'), 'fontSize'), eyebrow: px(q('.hero .eyebrow'), 'fontSize'),
     button: Math.min(...[...document.querySelectorAll('.hero .hero__ctas .btn')].map((b) => b.getBoundingClientRect().height)),
     h1Lines: lines(q('.hero__h1')), ledeLines: lines(q('.hero__lede')),
-    above: q('.audience') ? box(q('.audience')).bottom : box(q('.site-header')).bottom,
+    above: box(q('.site-header')).bottom,
     aboveVar: parseFloat(cs.getPropertyValue('--hero-above')),
     hscroll: document.documentElement.scrollWidth - window.innerWidth,
     clip: [hero, msg, q('.hero > .container')].filter(Boolean).map((e) => getComputedStyle(e).overflowY).filter((v) => v !== 'visible'),
@@ -129,7 +130,7 @@ function measure() {
     };
     const vars = await page.evaluate(() => {
       const cs = getComputedStyle(document.querySelector('.hero'));
-      const o = {}; for (const k of ['f1', 'k1', 'f2', 'k2', 'h']) o[k] = parseFloat(cs.getPropertyValue('--hero-' + k));
+      const o = {}; for (const k of ['f1', 'k1', 'f2', 'k2', 'h', 'wf', 'wk']) o[k] = parseFloat(cs.getPropertyValue('--hero-' + k));
       return o;
     });
     // The window here is under the envelope, so the page is in the natural state and the forced unit is all that moves.
@@ -140,16 +141,16 @@ function measure() {
         Math.abs(got - want) <= TOL && got <= want + 1 ? '' : 'refit the two numbers in styles.css ("Hero fit") from this measurement and one at another u; the line may be under the measurement by a pixel at most');
     }
     const one = await at(1);
-    say(one.h1Lines === (index ? 3 : 2) && one.ledeLines === (index ? 6 : 5), `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes ${index ? '3 and 6' : '2 and 5'})`);
+    say(one.h1Lines === 2 && one.ledeLines === (index ? 2 : 5), `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes ${index ? '2 and 2' : '2 and 5'})`);
     say(Math.abs(one.above - one.aboveVar) <= 0.5, `M  ${file}: ${one.above}px stand above the hero, --hero-above is ${one.aboveVar}px`);
-    // The headline's share of the slope: three (two) lines at the headline's leading, 1.05.
+    // The headline's share of the slope: two lines at the headline's leading, 1.05.
     const lh = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.hero__h1')).lineHeight) / parseFloat(getComputedStyle(document.querySelector('.hero__h1')).fontSize));
-    say(Math.abs(vars.h - (index ? 3 : 2) * lh * 96) <= 0.5, `M  ${file}: --hero-h ${vars.h} is ${index ? 3 : 2} headline lines of 96 at a leading of ${lh.toFixed(2)}`);
+    say(Math.abs(vars.h - 2 * lh * 96) <= 0.5, `M  ${file}: --hero-h ${vars.h} is 2 headline lines of 96 at a leading of ${lh.toFixed(2)}`);
     if (index) {
-      // The whole hero, for the state with the client row: 237 + 864 * u, written into the rule itself.
+      // The whole hero, for the state with the client row: --hero-wf + --hero-wk * u.
       for (const u of [1, 0.85]) {
-        const m = await at(u), want = 237 + 864 * u, got = m.heroBottom - m.heroTop;
-        say(Math.abs(got - want) <= TOL && got <= want + 1, `M  ${file}: at u = ${u} the whole hero is ${got.toFixed(1)}px, the line 237 + 864 * u gives ${want.toFixed(1)}`);
+        const m = await at(u), want = vars.wf + vars.wk * u, got = m.heroBottom - m.heroTop;
+        say(Math.abs(got - want) <= TOL && got <= want + 1, `M  ${file}: at u = ${u} the whole hero is ${got.toFixed(1)}px, the line --hero-wf + --hero-wk * u gives ${want.toFixed(1)}`);
       }
     }
     await ctx.close();

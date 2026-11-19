@@ -67,12 +67,10 @@ root [AGENTS.md](../AGENTS.md), *Hero backgrounds*.
 
 ## Photography
 
-The home page carries five photographs, self-hosted rather than hotlinked so no
-visitor IP is disclosed to a third party: three case covers, one in each service
-chapter (`case-trucks-forest-road`, `case-ai-archive-volumes`,
-`case-cars-marshalling-yard`), and two captioned photographs
-(`photo-balance-weights` beside the comparison table, `photo-gothenburg-canal` in
-Who we are). Each ships as a 1200px `.jpg` plus a `.webp` sibling; `index.html`
+The home page carries three photographs, self-hosted rather than hotlinked so no
+visitor IP is disclosed to a third party: the three case covers
+(`case-trucks-forest-road`, `case-ai-archive-volumes`,
+`case-cars-marshalling-yard`). Each ships as a 1200px `.jpg` plus a `.webp` sibling; `index.html`
 offers the WebP first through `<picture>` and keeps the JPEG as the fallback.
 **Replace both files together, under a new name** — a stale `.webp` will be served
 in preference to a fresh `.jpg`, and images are not version-stamped, so a changed
@@ -81,7 +79,7 @@ in full colour with no filter, tint or overlay, as the system's photography rule
 require for case-study imagery, and no text is set on top of one.
 
 They are stock photographs that illustrate the work; none shows a client system.
-The page says so (the line under the chapters and the two captions), and a new
+The page says so (the line under the case cards), and a new
 photograph keeps to that: a caption or alt text says what the camera saw, never
 that it is the client's product. Check a candidate at full size for third-party
 names, badges and number plates before it ships (the truck photograph was

@@ -157,7 +157,6 @@
   // option would turn the whole headline, so check where the animation landed.
   function getAnim() {
     if (anim || failed) return anim;
-    if (hidden()) return null;
     try {
       anim = el.animate(
         [{ rotate: -GAIN + 'deg' }, { rotate: GAIN + 'deg' }],
@@ -184,25 +183,6 @@
     forget();
     if (still.matches) { cur = 0; target = 0; }
     else if (wide.matches) getAnim();
-  }
-
-  // The audience switch hides the whole hero (display: none) in the joiner view. A hidden headline has no
-  // ::after to animate, so nothing is made or driven while it is hidden, and an animation made before is
-  // dropped, with B put back at rest, as the address changes to hide the hero (its pseudo-element went with
-  // the hero, and Chromium does not give it back), so the first pointer move after the hero returns makes a
-  // new one from rest. A change of address that leaves the hero showing (the skip link, a first press of
-  // "Hire a team") touches nothing. This listener runs after app.js's, so the view is already switched.
-  function hidden() {
-    return !el.getClientRects().length;
-  }
-
-  function onHash() {
-    if (!hidden()) return;
-    if (anim) anim.cancel();
-    anim = null;
-    cur = 0;       // also with no animation: a resize below 1200px drops it and keeps cur
-    target = 0;
-    forget();
   }
 
   // The window's width and the used top of the arc are layout reads (innerWidth flushes style and layout), so
@@ -237,7 +217,7 @@
   }
 
   function onMove(e) {
-    if (e.pointerType === 'touch' || document.hidden || still.matches || !wide.matches || hidden()) return;
+    if (e.pointerType === 'touch' || document.hidden || still.matches || !wide.matches) return;
     if (underHeader() || !getAnim()) return;
     if (!width) width = window.innerWidth;
     var k = (e.clientX / width) * 2 - 1;
@@ -252,7 +232,7 @@
   // so even from an edge (a 12px swing at the bezel) B moves about 1.3px a frame, under the 2.1px the
   // pointer is held to; the way back eases in and out and stays under it too.
   function onToggle() {
-    if (!fine.matches || still.matches || document.hidden || !wide.matches || hidden() || !getAnim() || underHeader()) return;
+    if (!fine.matches || still.matches || document.hidden || !wide.matches || !getAnim() || underHeader()) return;
     var done = function () { sweeping = false; if (cur !== target) schedule(); };
     var rest = cur * GAIN + 'deg';
     sweeping = true;
@@ -272,7 +252,6 @@
     if (!el || !/^en\b/i.test(document.documentElement.lang)) return;
     header = document.querySelector('.site-header');
     window.addEventListener('resize', forget, { passive: true });
-    window.addEventListener('hashchange', onHash);
     if (fine.matches) window.addEventListener('pointermove', onMove, { passive: true });
     ['(min-width: 1200px)', '(forced-colors: active)', '(prefers-contrast: more)', '(prefers-reduced-transparency: reduce)', '(prefers-reduced-motion: reduce)', 'print'].forEach(function (q) {
       var m = window.matchMedia(q);

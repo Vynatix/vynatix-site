@@ -24,10 +24,6 @@ const path = require('path');
 const crypto = require('crypto');
 const { PAGES, BASE, THEMES, bgsFor, pinTheme, pinConsent, armGa, launch } = require('./_common');
 
-// The home page's second view (the audience switch, #join) is a page of its own for this gate: index-join-<theme>.png,
-// one per theme (the hero art is not drawn in it, so not one per background).
-const SHOT_PAGES = [...PAGES, 'index.html#join'];
-
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
 const OUT = path.join(__dirname, '..', (MODE === 'compare' ? 'current' : MODE === 'bar' ? 'current-bar' : MODE) + SUFFIX);
@@ -40,7 +36,7 @@ async function capture() {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await launch();
   let shots = 0;
-  for (const p of SHOT_PAGES) {
+  for (const p of PAGES) {
     for (const theme of THEMES) for (const bg of bgsFor(p)) {
       const ctx = await browser.newContext({ viewport: VIEWPORT });
       await armGa(ctx);
@@ -76,7 +72,7 @@ async function capture() {
         document.querySelectorAll('main > section').forEach((s) => s.style.setProperty('content-visibility', 'visible'));
       });
       await page.waitForTimeout(300);
-      const file = path.join(OUT, `${p.replace(/\.html#join$/, '-join').replace(/\.html$/, '')}-${theme}${bg ? '-' + bg : ''}.png`);
+      const file = path.join(OUT, `${p.replace(/\.html$/, '')}-${theme}${bg ? '-' + bg : ''}.png`);
       await page.screenshot({ path: file, fullPage: true, animations: 'disabled', caret: 'hide' });
       console.log(`  captured ${path.basename(file)}`);
       shots++;

@@ -60,20 +60,20 @@ WEBSITE_ID = SITE + '#website'
 # One entry per line, as written here: tools/verify/_common.js reads this table as text.
 # The order here is the order of sitemap.xml.
 PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-16', alt={'sv': 'sv.html'}),
+  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-19', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-20'),
-  'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-18'),
-  'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-10-23'),
+  'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-19'),
+  'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
-  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-06'),
+  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-19'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18'),
   'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'android-automotive-development.html'}),
-  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'ai-utveckling.html'}),
+  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-19', alt={'sv': 'ai-utveckling.html'}),
   'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'ai-engineering.html'}),
   'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}),
   'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}),
@@ -294,16 +294,16 @@ FOOTER = '''  <!-- ============================================================ 
         <div>
           <h2 class="site-footer__h">Services</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="services.html#application-development">Application development</a></li>
             <li><a href="services.html#ai-engineering">AI engineering</a></li>
             <li><a href="services.html#cloud-platforms">Cloud platforms</a></li>
+            <li><a href="services.html#application-development">Application development</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Company</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="about.html">About</a></li>
-            <li><a href="work.html">Work</a></li>
+            <li><a href="work.html">Cases</a></li>
             <li><a href="blog.html">Blog</a></li>
             <li><a href="membership.html">Membership</a></li>
             <li><a href="contact.html">Contact</a></li>
@@ -342,7 +342,7 @@ FOOTER = '''  <!-- ============================================================ 
 # replaced with this on each run (the aria-current link is the page itself), so a nav change is made in NAV
 # below, once, and this script run. The skip link and the wordmark <symbol> above the header are still
 # copied by hand into every page.
-NAV = [('services.html', 'Services'), ('work.html', 'Work'), ('blog.html', 'Blog'), ('about.html', 'About'), ('contact.html', 'Contact')]
+NAV = [('services.html', 'Services'), ('work.html', 'Cases'), ('blog.html', 'Blog'), ('about.html', 'About'), ('contact.html', 'Contact')]
 MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
 HEADER = '''  <!-- ============================================================ Header -->
   <header class="site-header" role="banner" lang="en">

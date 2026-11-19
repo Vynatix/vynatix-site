@@ -1,17 +1,15 @@
 # Image credits
 
-The five photographs on the home page are from Unsplash and are served
+The three photographs on the home page are from Unsplash and are served
 first-party from `assets/` (they are not hotlinked, so no visitor IP is
 disclosed to a third party). Used under the
 [Unsplash License](https://unsplash.com/license).
 
 | File | Where on the home page | Photographer | Source |
 |---|---|---|---|
-| `case-trucks-forest-road.jpg` | Application development chapter, Volvo Trucks case | Roberto Hanas | https://unsplash.com/photos/gray-cargo-truck-on-road-during-daytime-cJKUzAgHwpA |
-| `case-ai-archive-volumes.jpg` | AI engineering chapter, regulated client case | Anna Auza | https://unsplash.com/photos/a-group-of-white-signs-on-a-metal-rack-FuFaLog6qN0 |
-| `case-cars-marshalling-yard.jpg` | Cloud platforms chapter, Volvo Cars case | Patrick Federi | https://unsplash.com/photos/an-aerial-view-of-a-highway-with-multiple-lanes-RshUMrKap-0 |
-| `photo-balance-weights.jpg` | How we work, beside the comparison table | Angelo Casto | https://unsplash.com/photos/a-scale-with-a-bowl-on-top-of-it-i0OUCubcdMU |
-| `photo-gothenburg-canal.jpg` | Who we are | Claudio Schwarz | https://unsplash.com/photos/a-river-running-through-a-city-next-to-tall-buildings-787vVS9UD7Q |
+| `case-trucks-forest-road.jpg` | Cases, the Volvo Trucks card | Roberto Hanas | https://unsplash.com/photos/gray-cargo-truck-on-road-during-daytime-cJKUzAgHwpA |
+| `case-ai-archive-volumes.jpg` | Cases, the regulated client card | Anna Auza | https://unsplash.com/photos/a-group-of-white-signs-on-a-metal-rack-FuFaLog6qN0 |
+| `case-cars-marshalling-yard.jpg` | Cases, the Volvo Cars card | Patrick Federi | https://unsplash.com/photos/an-aerial-view-of-a-highway-with-multiple-lanes-RshUMrKap-0 |
 
 Each was downloaded on 16 November 2026 through Unsplash's download endpoint (which
 records the download for the photographer) at 2000px wide, then resized to 1200px
@@ -26,19 +24,21 @@ fallback.
   number plate were blurred out. Neither is a Vynatix client, and a third party's
   name has no place on a case cover. The Volvo mark on the grille is left as it
   was; Volvo Trucks is named on the page with consent (see *Client marks*).
-- `photo-gothenburg-canal`: cropped to 16:9 from the top of the frame, which drops
-  part of the dark water in the foreground.
-- The other three are resized only.
+- The other two are resized only.
 
 **These are illustrations, not pictures of client work.** The truck is a Volvo, but
-it is not shown to carry the software in the case; the archive, the marshalling yard
-and the balance are analogies. The home page says so under the chapters and in the
-two captions. The canal photograph is captioned "A canal in central Gothenburg";
-the view is recognisably Stora Hamnkanalen with the tower of the German Church, but
-Unsplash carries no location for it, so the caption does not name the canal.
+it is not shown to carry the software in the case; the archive and the marshalling
+yard are analogies. The home page says so in the line under the case cards.
 
 The Unsplash License does not require attribution; the page credits the
-photographers anyway, in the line under the chapters and in the two captions.
+photographers anyway, in that line.
+
+Two more photographs were on the home page until 19 November 2026, when the content
+plan took their sections off it: `photo-balance-weights` (Angelo Casto,
+https://unsplash.com/photos/a-scale-with-a-bowl-on-top-of-it-i0OUCubcdMU) and
+`photo-gothenburg-canal` (Claudio Schwarz,
+https://unsplash.com/photos/a-river-running-through-a-city-next-to-tall-buildings-787vVS9UD7Q).
+Their files were removed with the sections; they are in the repository's history.
 
 The three covers these replaced (`case-volvo-trucks`, `case-volvo-cars`,
 `case-regulated-ai`) were removed on the same day; their photographers were never

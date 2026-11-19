@@ -133,12 +133,11 @@
       baseline (1cap is the face's own cap height), so the cap and baseline rules
       land on the glyphs in every theme and face. They run from the container
       edge past the viewport edge and pass under the letters. The roman row is
-      one line in Forest and two in Teal and Monochrome, so the first pseudo is
-      two rows tall: a second set of guides one line height (1lh) down covers
-      the second line when it exists, and lies exactly under the italic line's
-      own guides when it does not. Both draw opaque colours, so where they
-      coincide nothing doubles. Ascender and descender are dashed guides, not
-      claims about the glyphs.
+      one line (one word, "Engineering") and the italic row one line, so each
+      pseudo is one row tall. A roman row that could wrap to a second line would
+      need a second set of guides one line height (1lh) down, as the headline
+      before this one had (see the history of this block). Ascender and
+      descender are dashed guides, not claims about the glyphs.
    B. The sheet. Two pseudo-elements of the hero, behind the content and above
       the guides, are alpha masks (rulers as gradients, the A-frame, its arcs and
       the grid from two small SVG files) filled with role colours, so every
@@ -210,46 +209,9 @@
       0 0,
       0 var(--sheet-dy);
   }
-  /* The roman row: the same guides twice, the second one line height down. */
+  /* The roman row is one line ("Engineering"), so it carries one set of guides and no accent. */
   :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en)::before {
-    --sheet-more: 1lh;
     --sheet-acc: linear-gradient(transparent, transparent);
-    background-image: var(--sheet-acc),
-      var(--sheet-base-img),
-      var(--sheet-cap-img),
-      var(--sheet-bar-img),
-      var(--sheet-dash),
-      var(--sheet-dash),
-      var(--sheet-acc),
-      var(--sheet-base-img),
-      var(--sheet-cap-img),
-      var(--sheet-bar-img),
-      var(--sheet-dash),
-      var(--sheet-dash);
-    background-size: 100% 2px,
-      100% 2px,
-      100% 2px,
-      2px var(--sheet-row),
-      100% 1px,
-      100% 1px,
-      100% 2px,
-      100% 2px,
-      100% 2px,
-      2px var(--sheet-row),
-      100% 1px,
-      100% 1px;
-    background-position: 0 var(--sheet-by),
-      0 var(--sheet-by),
-      0 var(--sheet-cy),
-      0 0,
-      0 0,
-      0 var(--sheet-dy),
-      0 calc(var(--sheet-by) + 1lh),
-      0 calc(var(--sheet-by) + 1lh),
-      0 calc(var(--sheet-cy) + 1lh),
-      0 1lh,
-      0 1lh,
-      0 calc(var(--sheet-dy) + 1lh);
   }
   /* The italic line is one line in every face and width, so it carries the bronze second baseline. */
   :root:is(:not([data-bg]), [data-bg="sheet"]) .hero__h1:lang(en) em::before {

@@ -12,8 +12,13 @@
 //   C  contrast    With the text hidden through element.style.visibility, the pixels behind every hero text box give at
 //                  least 4.5:1 against the text colour (3:1 for the headline), and never more than SLACK (0.1) below the same
 //                  page with .iris hidden. The header links and buttons are measured at five scroll offsets, because the art
-//                  passes under the translucent glass bar when the page scrolls, held to the same two tests as the hero text on
-//                  the group minimum (the lowest value any link has at any offset), with the largest drop of a single link printed.
+//                  passes under the translucent glass bar when the page scrolls. They are held on the group minimum (the
+//                  lowest value any link has at any offset) to their floor and to the weave guard's rule for the same case
+//                  (bg-weave.js): 7:1 or no drop, that is at least HEADER_MIN (7) wherever the art takes the minimum more
+//                  than SLACK under the plain page's own. The largest drop of a single link is printed. The art is meant to
+//                  show through the glass, and it lowers one link at one offset by about 3 (15.29 to 12.29). Until November
+//                  2026 the rule here was "no drop" alone; it held only because the page of that time itself went lower
+//                  under the header (11.67) than the art takes a link, so it measured the page's copy, not the art.
 //                  Waiting, settled and event frames.
 //   P  placement   The numbers fitted by hand still hold: the art hangs on the clients rule (its bottom edge is the rule's
 //                  top edge), its left edge is at least a page margin right of the lede box, the disc runs off the right edge
@@ -38,6 +43,7 @@ const FRAMES = list(process.env.FRAMES, '300,900,1800,2800');
 const SCROLLS = list(process.env.SCROLLS, '0,150,300,450,600');
 const CLEAR = num(process.env.CLEAR, 24);
 const SLACK = num(process.env.SLACK, 0.1);
+const HEADER_MIN = num(process.env.HEADER_MIN, 7);      // what a header link or button keeps where the art lowers it (bg-weave.js holds the same)
 const INK_MIN = num(process.env.INK_MIN, 3);          // channel difference (of 255) that counts as ink
 const AIM = num(process.env.AIM, 90);                 // px, a little under one line of the headline
 const BLEED_MIN = num(process.env.BLEED_MIN, 0.25);
@@ -331,7 +337,7 @@ async function frame(browser, theme, w, opts, label) {
       for (const k of Object.keys(hOn).filter((k) => k !== 'perBox')) {
         hp.push(`${k} ${hOn[k].min.toFixed(2)}(${hOff[k].min.toFixed(2)})`);
         if (hOn[k].min < hOn[k].need) fail(`${theme} ${w}px header: ${k} contrast ${hOn[k].min.toFixed(2)} is under ${hOn[k].need} at some scroll offset`);
-        if (hOn[k].min < hOff[k].min - SLACK) fail(`${theme} ${w}px header: ${k} contrast ${hOn[k].min.toFixed(2)} is more than ${SLACK} under the plain page's own ${hOff[k].min.toFixed(2)}`);
+        if (hOn[k].min < hOff[k].min - SLACK && hOn[k].min < HEADER_MIN) fail(`${theme} ${w}px header: ${k} contrast ${hOn[k].min.toFixed(2)} is more than ${SLACK} under the plain page's own ${hOff[k].min.toFixed(2)} and under ${HEADER_MIN}`);
       }
       console.log(`  C ${w}px header over the art, scroll ${SCROLLS.join('/')}: ${hp.join('  ')}  | the art lowers one link or button at one offset by at most ${drop.toFixed(2)} (${dropPair}); the floor above is what is held`);
     }

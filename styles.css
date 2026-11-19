@@ -498,15 +498,15 @@ h1 em, h2 em {
      the client row closer, so both buttons sit on the first screen of a 390x844 phone and
      the clients' rule closes it. The eyebrow breaks into two even lines, not one word alone.
      The sheet art is placed from these boxes: run npm run check:bg after changing them. */
-  .hero.view-hire { --hero-lede: max(var(--text-body-md), calc(18 * var(--hero-u))); }
-  .hero.view-hire .eyebrow { text-wrap: balance; }
-  .hero.view-hire .hero__lede { margin-bottom: calc(32 * var(--hero-u)); }
-  .hero.view-hire .hero__ctas { column-gap: var(--space-3); }   /* both buttons on one row at 390 in every look */
+  .hero.hero--clients { --hero-lede: max(var(--text-body-md), calc(18 * var(--hero-u))); }
+  .hero.hero--clients .eyebrow { text-wrap: balance; }
+  .hero.hero--clients .hero__lede { margin-bottom: calc(32 * var(--hero-u)); }
+  .hero.hero--clients .hero__ctas { column-gap: var(--space-3); }   /* both buttons on one row at 390 in every look */
 }
 
 /* ---------------------------------------------------------------
    Hero fit: the first screen is the hero
-   When the page loads, the header, the audience bar and the hero's message (eyebrow,
+   When the page loads, the header and the hero's message (eyebrow,
    headline, lede, buttons) fill the window exactly, at any window size inside the
    envelope below. Nothing is measured by script: the hero's unit is solved from the
    window's height. With every vertical size a multiple of --hero-u, the hero's height is
@@ -522,12 +522,14 @@ h1 em, h2 em {
 
    Three states, by the window's height:
    - Message. The message is fitted and the clients' rule lies on the fold, so the row
-     below starts the scroll and nothing is cut half way. 96px headline from about 1012px
-     of window height, 43px at the envelope's lower edge.
-   - Whole. From 1092px of height (1024px and wider) the client row fits as well: the unit
-     is solved for the whole hero, never under 0.82, and the row is pinned to the bottom
-     of the window with the spare room above its rule. From 1248px that is the design
-     size with more air.
+     below starts the scroll and nothing is cut half way. Where the message is shorter than
+     the window (it is short: two headline lines, two of lede) the spare room is under the
+     buttons. With the art's room (1100px and wider) the headline is 96px from about 950px
+     of window height and 58px at the envelope's lower edge.
+   - Whole. From 1060px of height (1100px and wider; 864px between 1024 and 1099px, where no
+     art is drawn) the client row fits as well: the unit is solved for the whole hero, never
+     under 0.82, and the row is pinned to the bottom of the window with the spare room above
+     its rule. From 1215px that is the design size with more air.
    - Natural. Outside the envelope the hero is the plain scrolling hero at the design
      size: a window under 650px high (520px on a phone), which is also where browser zoom
      lands, so zooming in always ends at full-size text, and any browser without svh or
@@ -538,7 +540,7 @@ h1 em, h2 em {
    fallback font make the hero taller than the window and it scrolls; nothing is clipped.
 
    The numbers are measured facts about the current copy, like the art's constants
-   (hero-bg.css multiplies them by the same unit): three headline lines and six lede lines
+   (hero-bg.css multiplies them by the same unit): two headline lines and two lede lines
    in English, two and five in Swedish. tools/verify/hero-fit.js measures them again and
    fails when the copy, a typeface or the spacing has moved them; refit them there.
    --------------------------------------------------------------- */
@@ -555,24 +557,40 @@ h1 em, h2 em {
         max((var(--hero-room) - var(--hero-f2)) / var(--hero-k2), (var(--hero-room) - var(--hero-f2) - var(--hero-hw)) / (var(--hero-k2) - var(--hero-h)))),
     1px);
 }
-/* The English home hero, from its top edge to the clients' rule: three headline lines, six lede lines. */
-.audience ~ .hero {
-  --hero-above: 147px;   /* and the audience bar under the header */
-  --hero-f1: 66px;  --hero-k1: 799;
-  --hero-f2: 237px; --hero-k2: 591;
-  --hero-h: 302.4;  --hero-hw: 25.2vw;
+/* The English home hero, from its top edge to the clients' rule: two headline lines, two lede lines.
+   --hero-wf and --hero-wk are the line of the whole hero, client row and bottom padding included. */
+.hero.hero--clients {
+  --hero-f1: 66px;  --hero-k1: 566;
+  --hero-f2: 129px; --hero-k2: 490;
+  --hero-h: 201.6;  --hero-hw: 16.8vw;
+  --hero-wf: 277px; --hero-wk: 620;
+}
+/* From 1100px one of the four backgrounds may be drawn to the right of the message (hero-bg.css),
+   from under the headline's first line down to the clients' rule. The art is taller than this
+   message, so the rule stands off by the art's height instead of the 96 of the plain hero: 336,
+   which is the room the art was fitted to. It is part of every line's slope (566, 490 and 620, each
+   + 240). The art is drawn in em and this message has few lines to grow, so when the text alone is
+   enlarged the art gains on the rule: the room grows by ten pixels for each pixel of the hero's em
+   over 16 (nothing at the default size, so the lines are untouched; fitted at 150 percent, where the
+   A-frame's feet would otherwise pass the rule). */
+@media (min-width: 1100px) {
+  .hero.hero--clients { --hero-gap: calc(336 * var(--hero-u) + 10 * (var(--hero-em0) - 16px)); --hero-k1: 806; --hero-k2: 730; --hero-wk: 860; }
 }
 @media (max-width: 767px) {
   /* The lede wraps by the window here, not by its measure, so the headline's share is left in the
      line: the unit comes out a little small and the message fits with room to spare. */
-  .hero, .audience ~ .hero { --hero-h: 0; --hero-hw: 0px; }
+  .hero { --hero-h: 0; --hero-hw: 0px; }
+}
+@media (max-width: 799px) {
+  /* The English lede is two lines from 800px; narrower it wraps by the window, as above. */
+  .hero.hero--clients { --hero-h: 0; --hero-hw: 0px; }
 }
 @media (max-width: 599px) {
   /* A phone, fitted to the 390px layout: the headline goes from 40px to the 8vw it never goes under
      and the lede from 18 to 16px, and past that only the spacing gives. Narrower phones have more
      lede lines than these lines allow for, and scroll. */
   .hero { --hero-min: 0.8px; --hero-f1: -383px; --hero-k1: 1268; --hero-f2: -383px; --hero-k2: 1268; }
-  .audience ~ .hero { --hero-min: 0.7px; --hero-f1: 118px; --hero-k1: 549; --hero-f2: 415px; --hero-k2: 177; }
+  .hero.hero--clients { --hero-min: 0.7px; --hero-f1: 186px; --hero-k1: 344; --hero-f2: 349px; --hero-k2: 152; }
 }
 @supports (height: 100svh) and (transition-behavior: allow-discrete) {
   @media screen and (min-width: 600px) and (min-height: 650px), screen and (max-width: 599px) and (min-height: 520px) {
@@ -581,19 +599,20 @@ h1 em, h2 em {
        in whatever room is left; with a client row, the row's rule lies on the fold. */
     .hero { min-height: var(--hero-room); display: grid; align-content: center; }
     .hero > .container { width: 100%; }
-    .audience ~ .hero { min-height: 0; display: block; }
+    .hero.hero--clients { min-height: 0; display: block; }
     .hero__msg { min-height: calc(var(--hero-room) - var(--hero-pad) - var(--hero-gap)); }
   }
-  /* Whole: the client row is on the first screen, pinned to its bottom edge. */
-  @media screen and (min-width: 1024px) and (min-height: 1092px) {
-    .audience ~ .hero { --hero-fit: clamp(0.82px, max((var(--hero-room) - 237px) / 864, (var(--hero-room) - 237px - var(--hero-hw)) / (864 - var(--hero-h))), 1px); }
+  /* Whole: the client row is on the first screen, pinned to its bottom edge. The heights are where
+     the whole hero fits at a unit of 0.82: 1060px with the art's room, 864px without it. */
+  @media screen and (min-width: 1100px) and (min-height: 1060px), screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 864px) {
+    .hero.hero--clients { --hero-fit: clamp(0.82px, max((var(--hero-room) - var(--hero-wf)) / var(--hero-wk), (var(--hero-room) - var(--hero-wf) - var(--hero-hw)) / (var(--hero-wk) - var(--hero-h))), 1px); }
   }
-  @media screen and (min-width: 1024px) and (min-height: 1092px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1250px) {
-    .audience ~ .hero { min-height: var(--hero-room); display: flex; flex-direction: column; }
-    .audience ~ .hero > .container { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
-    .audience ~ .hero .hero__msg { min-height: 0; }
-    .audience ~ .hero .clients { margin-top: auto; padding-top: var(--space-8); }
-    .audience ~ .hero .hero__ctas { margin-bottom: var(--hero-gap); }
+  @media screen and (min-width: 1100px) and (min-height: 1060px), screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 864px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1000px) {
+    .hero.hero--clients { min-height: var(--hero-room); display: flex; flex-direction: column; }
+    .hero.hero--clients > .container { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
+    .hero.hero--clients .hero__msg { min-height: 0; }
+    .hero.hero--clients .clients { margin-top: auto; padding-top: var(--space-8); }
+    .hero.hero--clients .hero__ctas { margin-bottom: var(--hero-gap); }
   }
   /* Without script the narrow header is not sticky and lists its links, so what stands above the
      hero is not --hero-above: the plain hero there. */
@@ -605,13 +624,21 @@ h1 em, h2 em {
 
 /* Client marks: a still row. The system forbids ambient loops and
    auto-advancing strips on content surfaces, so the list simply wraps. Each
-   named client links to its own site; the others are described, not named. */
+   mark links to the client's own site. */
 .clients {
   margin-top: var(--hero-gap);
   padding-top: var(--space-8);
   border-top: 1px solid var(--md-sys-color-outline-variant);
 }
-.clients .eyebrow { margin-bottom: var(--space-4); }
+.clients .eyebrow { margin-bottom: var(--space-2); }
+/* The one line under the label: what the row of names is there to say. */
+.clients__lead {
+  margin: 0 0 var(--space-4);
+  max-width: none;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
 .clients__list {
   display: flex;
   flex-wrap: wrap;
@@ -1331,23 +1358,8 @@ ol.caps > li.cap { padding-top: var(--space-6); }
 dl.metrics { margin: 0; }
 :where(.metrics) :where(dt, dd) { margin: 0; }
 
-/* Case cards: short evidence bullets from the work page. The global list
-   gives each item position: relative, which would paint it above the card's
-   stretched headline link; lifting that link's overlay keeps the whole card
-   clickable. The bullets sit before the metric, which pins itself to the foot. */
-.case h3 a::after { z-index: 1; }
-.case__points {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--text-body-sm);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-.case__points > li { margin: 0 0 var(--space-2); }
-.case__points > li:last-child { margin-bottom: 0; }
-
-/* How we work: a three-column comparison table. The caption is a visible title
+/* A three-column comparison table (ai-engineering.html and the guide on choosing a
+   consultancy). The caption is a visible title
    above it; the first and last columns drop their outer padding so the text
    lines up with the paragraphs around it (on a wide screen the Vynatix column is
    the exception: it sits on a tint, with its own padding); the row headers read as
@@ -1378,18 +1390,9 @@ dl.metrics { margin: 0; }
 }
 .compare td { color: var(--text-body); }
 .compare td:nth-of-type(1) { color: var(--text-muted); }
-/* On a wide screen the comparison is the argument of the section, so it takes the wide
-   two thirds: the column of the pull quote and the balance photograph sits first, in the
-   narrow third, and the two short paragraphs stay under the table (neither column has a
-   link, so focus order is unaffected).
-   The Vynatix answers sit on a tint at the display colour; the typical answers stay muted. */
+/* On a wide screen the Vynatix answers sit on a tint at the display colour; the other
+   answers stay muted. */
 @media (min-width: 905px) {
-  .terms .two-up { grid-template-columns: 1fr 2fr; }
-  .terms .two-up > :last-child { order: -1; }
-  .terms blockquote {
-    font-size: var(--text-h5);
-    padding-inline: var(--space-6) 0;
-  }
   .compare {
     font-size: var(--text-body-md);
     margin-bottom: var(--space-8);
@@ -1693,132 +1696,22 @@ html.consent-open .hero ~ section { content-visibility: visible; }
 .consent-panel .consent__btn { flex: none; min-width: 7rem; padding-inline: var(--space-5); }
 
 /* ---------------------------------------------------------------
-   Audience switch (home page, English)
-   Two plain links above the hero. The fragment is the state and nothing is
-   stored: #join shows the joiner view, any other address the client view, so
-   the switch works with JavaScript off, can be linked to, and Back undoes it.
-   Both anchors are earlier siblings of every section in main, which is what
-   lets the general sibling combinator do the swap without :has(). Only
-   display: none is ever written, so a section keeps its own display value.
-   With script, app.js puts js-view-join on <html> from the address in the
-   blocking head (the browser sets :target only after parsing, which on a slow
-   connection would paint the client hero first); while that class is there it
-   decides, and the :target rules step aside. The selected look follows the same
-   decision, never aria-current (script adds that later, and the page must look
-   the same without it).
-   --------------------------------------------------------------- */
-.view-anchor { display: block; height: 0; }
-html:not(.js-view-join) #join:not(:target) ~ .view-join { display: none; }
-html:not(.js-view-join) #join:target ~ .view-hire { display: none; }
-html.js-view-join .view-hire { display: none; }
-
-.audience { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
-.audience__bar {
-  display: flex;
-  padding-block: var(--space-3);
-}
-/* One segmented control, not two loose pills: the halves touch, share the middle hairline
-   and square their inner corners, and only the selected half is filled (an unselected fill
-   could sit darker than the selected one in some looks). A hairline on every link so the
-   unselected half still reads as a control where the page and the container tones are
-   close. The border sits inside the 44px, so the bar's height does not depend on it. */
-.audience__link {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding-inline: var(--space-5);
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--text-body);
-  font-size: var(--text-body-sm);
-  font-weight: 600;
-  text-decoration: none;
-}
-.audience__link--hire { border-start-end-radius: 0; border-end-end-radius: 0; }
-/* The halves overlap by the hairline. The right-hand half paints last, so its shared edge is
-   transparent until it is selected: the selected half's primary border then shows on that edge
-   whichever half it is, without lifting either half into a stacking layer of its own. */
-.audience__link--join {
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-  border-inline-start-color: transparent;
-  margin-inline-start: -1px;
-}
-.audience__link:hover { background: var(--md-sys-color-surface-container-high); color: var(--text-body); }
-/* Its fill stops inside its border, so on hover it does not cover the shared edge it overlaps. */
-.audience__link--join,
-.audience__link--join:hover { background-clip: padding-box; }
-.audience__link:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-/* The selected link is told apart by more than its fill (the containers sit close together in
-   some looks, and Windows high contrast removes fills): a primary border and the header's own
-   underline for the current item, which both survive forced colours. */
-html:not(.js-view-join) #join:not(:target) ~ .audience .audience__link--hire,
-html:not(.js-view-join) #join:target ~ .audience .audience__link--join,
-html.js-view-join .audience__link--join {
-  background: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-on-secondary-container);
-  border-color: var(--md-sys-color-primary);
-  text-decoration: underline 2px var(--indicator);
-  text-underline-offset: 6px;
-}
-@media (forced-colors: active) {
-  html:not(.js-view-join) #join:not(:target) ~ .audience .audience__link--hire,
-  html:not(.js-view-join) #join:target ~ .audience .audience__link--join,
-  html.js-view-join .audience__link--join {
-    border-width: 3px;
-    padding-inline: calc(var(--space-5) - 2px);   /* the link keeps its width when it is selected */
-  }
-}
-/* On the narrow layout the open menu covers the bar; its links must not take focus under it. */
-@media (max-width: 904px) {
-  html:has(.site-header__nav.open) .audience { visibility: hidden; }
-}
-/* The joiner view opens with the page-hero component. Its headline is an h2
-   (the page keeps one h1, the client hero's) at the h1 size, its two buttons
-   sit in the home hero's flex row, and the hero is rendered at once, not
-   deferred like the sections after the client hero (.hero ~ section). */
-h2.page-hero__h1 { font-size: clamp(40px, 6vw, var(--text-h1)); }
-.page-hero .hero__ctas { margin-top: var(--space-8); }
-.page-hero .hero__ctas .btn { margin-top: 0; }
-.page-hero.view-join { content-visibility: visible; }
-
-/* The joiner view's own skip link: "Skip to content" normally points at #main,
-   and following that would drop :target and flip the page back to the client
-   view. Without :has() the normal link stays and the view flips; nothing breaks.
-   The two selectors stay in separate rules: one :has() the browser does not know
-   would otherwise void the whole list. */
-.skip-link--join { display: none; }
-html.js-view-join .skip-link { display: none; }
-html.js-view-join .skip-link--join { display: block; }
-html:has(#join.view-anchor:target) .skip-link { display: none; }
-html:has(#join.view-anchor:target) .skip-link--join { display: block; }
-
-/* ---------------------------------------------------------------
-   Home page: the contents row, the work index, the service chapters,
-   photographs with a caption, the question list and the reading list.
-   The English home page only (sv.html keeps the older stack of sections).
+   Home page: the contents row, the services, the four figures, the case
+   cards, the partnership band, the people block and the insights list.
+   The English home page only (main.home; sv.html keeps the older stack of
+   sections).
    --------------------------------------------------------------- */
 
-/* One column line and one heading scale for the home page (both views and the client closing
-   band; other pages keep the shared rules). From 905px every two-column block splits in halves,
-   so the right-hand column of a heading, a list, a card, the steps and the closing band all start
-   on one line. The questions keep their thirds below 1240px, where halves would narrow every
-   answer and lengthen the list; their heading follows them, so question and lead still share a
-   column. Section titles take token ends (40 to 56px) and chapter titles one step below (32px),
-   so a section title never reads smaller than the titles inside it. */
+/* One column line and one heading scale for the home page (other pages keep the shared
+   rules). From 905px every two-column block splits in halves, so the right-hand column of a
+   heading, a list and the closing band all start on one line. Section titles take token ends
+   (40 to 56px). */
 @media (min-width: 905px) {
-  :is(.view-hire, .view-join) .section__head { grid-template-columns: 1fr 1fr; }
-  #faq.view-hire .section__head { grid-template-columns: 1fr 2fr; }
-  :is(.view-hire, .view-join) .section__h2 {
+  .home .section__head { grid-template-columns: 1fr 1fr; }
+  .home .section__h2 {
     font-size: clamp(var(--text-h3), 3.9vw, var(--text-h2));
     max-width: 20ch;
   }
-  .view-hire .band--inset .caps,
-  .view-join .caps--2 { column-gap: var(--space-16); }
   #contact .cta-band__inner {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-16);
@@ -1828,14 +1721,6 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     font-size: clamp(var(--text-h2), 5vw, var(--text-h1));
     max-width: 12ch;
   }
-}
-/* In the thirds the questions keep below 1240px, their heading keeps the shared size, so
-   "Common questions" stays on one line. */
-@media (min-width: 905px) and (max-width: 1239px) {
-  #faq.view-hire .section__h2 { font-size: clamp(var(--text-h4), 3.4vw, var(--text-h2)); }
-}
-@media (min-width: 1240px) {
-  #faq.view-hire .section__head { grid-template-columns: 1fr 1fr; }
 }
 /* The closing headline breaks before its italic phrase, not inside its first clause. */
 @media (min-width: 1024px) {
@@ -1884,12 +1769,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
    stuck query: the header's glass, the rail, and the current link underlined in the indicator
    colour (the body colour keeps its contrast on the glass, and the underline survives forced
    colours). Where it can pin, the anchor reserve grows by the row's height, so a focused link or
-   a jump target never lands under it; the joiner view, which hides the row, keeps the normal
-   reserve. */
+   a jump target never lands under it. */
 @media (min-width: 1280px) and (min-height: 521px) {
   @supports (scroll-target-group: auto) and selector(:target-current) {
     html:has(.toc) { scroll-padding-top: calc(var(--space-24) + var(--space-12) + var(--space-2)); }
-    html:has(.toc):is(.js-view-join, :has(#join.view-anchor:target)) { scroll-padding-top: var(--space-24); }
     .toc {
       position: sticky;
       top: calc(var(--space-24) - var(--space-2) - var(--space-4));
@@ -1937,10 +1820,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   }
 }
 
-/* A section that opens with an inset band (How we work): the band sits where
-   the section's top padding would be, so the gap above it is the previous
-   section's bottom padding alone. After a tonal band (Further reading) that bottom
-   padding is inside the tint, so the band takes its own top padding back. */
+/* A section that is an inset band (Partnership): the band sits where the section's top
+   padding would be, so the gap above it is the previous section's bottom padding alone.
+   After a tonal band that bottom padding is inside the tint, so the band takes its own
+   top padding back. */
 .section--band { padding-top: 0; }
 .section--band > .container { margin-top: var(--space-16); }
 .section--surface + .section--band { padding-top: var(--space-24); }
@@ -1948,142 +1831,7 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .section--band > .container { margin-top: var(--space-12); }
   .section--surface + .section--band { padding-top: var(--space-16); }
 }
-/* The questions are the longest section on the home page: their first guess for the deferred
-   rendering above is nearer their real height (2,300px wide, 3,500px on a phone) than the
-   shared 1,000px, so a jump to them lands where it should and axe-core reads the colours
-   right. The contents row only exists on the English home page, so sv.html keeps the default. */
-.toc ~ #faq { contain-intrinsic-size: auto 2400px; }
-@media (max-width: 599px) {
-  .toc ~ #faq { contain-intrinsic-size: auto 3500px; }
-}
-
-/* Selected work, at a glance: the three published projects, one row each, in
-   the columns of the section heading above it. Each row is one link to the
-   chapter that carries the project. On a wide screen a row reads as an index line:
-   the service and the client on top, the headline alone underneath on one line. */
-.work-index {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  align-items: start;
-  scroll-margin-top: var(--space-24);
-}
-.work-index__h {
-  font-size: var(--text-h5);
-  line-height: var(--leading-headline);
-  letter-spacing: var(--tracking-headline);
-  margin: var(--space-3) 0 var(--space-4);
-}
-.work-index__lead {
-  font-size: var(--text-body-sm);
-  line-height: var(--leading-relaxed);
-  color: var(--text-muted);
-  margin: 0;
-}
-.work-index__list { border-top: 1px solid var(--md-sys-color-outline); }
-.work-index__row {
-  display: grid;
-  grid-template-columns: 11rem 1fr auto;
-  gap: var(--space-2) var(--space-6);
-  align-items: baseline;
-  padding-block: var(--space-4);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
-  text-decoration: none;
-}
-.work-index__svc,
-.work-index__meta {
-  font-size: var(--text-eyebrow);
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-}
-.work-index__svc { color: var(--text-accent); }
-.work-index__meta { color: var(--text-muted); }
-.work-index__case {
-  font-family: var(--font-subhead, var(--font-display));
-  font-weight: 600;
-  font-size: var(--text-h6);
-  line-height: var(--leading-headline);
-  letter-spacing: var(--tracking-headline);
-  color: var(--text-display);
-}
-.work-index__row:hover .work-index__case {
-  color: var(--primary-hover);
-  text-decoration: underline 1px var(--indicator);
-  text-underline-offset: 0.2em;
-}
-@media (min-width: 905px) {
-  .work-index__row { grid-template-columns: 1fr auto; }
-  .work-index__case { grid-column: 1 / -1; grid-row: 2; }
-}
-@media (max-width: 904px) {
-  .work-index { grid-template-columns: 1fr; gap: var(--space-6); }
-}
-@media (max-width: 599px) {
-  .work-index__row { grid-template-columns: 1fr; gap: var(--space-1); }
-}
-
-/* A service chapter: the writing beside its "What we build" panel, then the project that
-   shows it as one wide card closing the chapter, photograph and result side by side, so the
-   proof is the largest thing in the chapter. In source order (and on a phone) the writing
-   comes first, then the project, then the list; on a wide screen keyboard focus therefore
-   steps from the card back up to the list's link. Every other chapter flips its card, so
-   the photographs alternate sides down the page. */
-.chapter {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas: "text panel" "case case";
-  gap: var(--space-12) var(--space-16);
-  align-items: start;
-  margin-top: var(--space-16);
-  padding-top: var(--space-16);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-  scroll-margin-top: var(--space-16);
-}
-.chapter__text { grid-area: text; }
-.chapter__case { grid-area: case; }
-.chapter__panel { grid-area: panel; align-self: stretch; }
-.chapter__text > :last-child { margin-bottom: 0; }
-.chapter .more { margin-top: var(--space-2); }
-@media (min-width: 905px) {
-  .chapter__case { flex-direction: row; }
-  .chapter--flip .chapter__case { flex-direction: row-reverse; }
-  .chapter__case .case__img {
-    position: relative;
-    flex: 0 0 50%;
-    aspect-ratio: auto;
-    min-height: 18rem;
-  }
-  .chapter__case .case__img img {
-    position: absolute;
-    inset: 0;
-  }
-  .chapter__case .case__body {
-    justify-content: center;
-    gap: var(--space-4);
-    padding: var(--space-8);
-  }
-  .chapter__case.case h3 { font-size: var(--text-h4); }
-  .chapter__case .case__body > p:not(.case__meta, .case__metric),
-  .chapter__case .case__points { font-size: var(--text-body-md); }
-  .chapter__case.case .case__metric { margin-top: var(--space-2); font-size: var(--text-h2); }
-  .chapter__case.case .case__metric--text { font-size: var(--text-h4); }
-  .chapter .two-up__h3 { font-size: var(--text-h4); }
-}
-@media (max-width: 904px) {
-  .chapter,
-  .chapter--flip {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas: "text" "case" "panel";
-    gap: var(--space-8);
-    margin-top: var(--space-12);
-    padding-top: var(--space-12);
-  }
-}
-/* Under the last chapter: the two onward links, and whose photographs these are. */
+/* Under a block of cards or entries: the onward link, and whose photographs these are. */
 .chapter-foot {
   display: flex;
   flex-wrap: wrap;
@@ -2109,43 +1857,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   color: var(--text-muted);
 }
 
-/* A photograph with its caption: full colour, no filter or overlay, and the
-   caption says what the camera saw and who took it. */
-.photo { margin: 0; }
-.photo img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  background: var(--md-sys-color-surface-container-highest);
-}
-.photo figcaption {
-  margin-top: var(--space-3);
-  font-size: var(--text-caption);
-  line-height: var(--leading-normal);
-  color: var(--text-muted);
-}
-.two-up blockquote + .photo { margin-top: var(--space-10); }
 /* Metric tiles in a two-up column (work.html): the tiles' own grid, then what follows. */
 .two-up .metrics { margin-bottom: var(--space-6); }
-/* Who we are: the company sentence beside the Gothenburg photograph, then the four facts
-   across the full width under their own small heading, the figures at display size. */
-.who__top { align-items: center; }
-.who__top .section__h2 { margin-bottom: var(--space-6); }
-.glance {
-  margin-top: var(--space-16);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-}
-.glance__head {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  align-items: end;
-  margin-bottom: var(--space-8);
-}
-.glance__head .two-up__h3 { font-size: var(--text-h5); margin-bottom: 0; }
-.glance__head .two-up__body { margin: 0; color: var(--text-muted); }
-.glance .metrics { gap: var(--space-6); margin-bottom: var(--space-6); }
+/* In numbers: the four figures across the full width, at display size. */
+.glance .metrics { gap: var(--space-6); }
 .glance .metric { padding: var(--space-6); }
 .glance .metric__lbl { font-family: var(--font-sans); letter-spacing: var(--tracking-eyebrow); }
 .glance .metric__val { font-size: var(--text-h1); margin-block: var(--space-4) var(--space-3); }
@@ -2169,8 +1884,6 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   }
 }
 @media (max-width: 904px) {
-  .glance { margin-top: var(--space-12); }
-  .glance__head { grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-6); }
   .glance .metrics { gap: var(--space-3); }
   .glance .metric { padding: var(--space-5); }
   .glance .metric__val { font-size: var(--text-h3); margin-block: var(--space-3) var(--space-2); }
@@ -2184,51 +1897,7 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .glance .metric__val { font-size: var(--text-h4); }
 }
 
-/* Common questions: one row per question, a rule on top. On a wide screen the
-   question takes the heading column and the answer the lead's column (thirds up to
-   1239px, halves from 1240px, as the heading above), so a reader scans the questions
-   down the left edge. The answer stays flat markup
-   (h3, then p, ul and ol), which the FAQ structured data is generated from, so
-   the two columns come from a float, not from a wrapper. */
-.qa__item {
-  display: flow-root;
-  padding-block: var(--space-8);
-  border-top: 1px solid var(--md-sys-color-outline);
-}
-.qa__item:last-child { padding-bottom: 0; }
-.qa__item > h3 {
-  font-size: var(--text-h5);
-  line-height: var(--leading-headline);
-  letter-spacing: var(--tracking-headline);
-  margin: 0 0 var(--space-4);
-}
-.qa__item > p,
-.qa__item > ul,
-.qa__item > ol { margin-top: 0; margin-bottom: var(--space-3); }
-.qa__item > p,
-.qa__item li {
-  font-size: var(--text-body-md);
-  line-height: var(--leading-relaxed);
-  color: var(--text-muted);
-  max-width: 65ch;
-}
-.qa__item > :last-child { margin-bottom: 0; }
-.qa__item li:last-child { margin-bottom: 0; }
-@media (min-width: 905px) {
-  .qa__item > h3 {
-    float: left;
-    width: calc((100% - var(--space-16)) / 3);
-    margin-bottom: 0;
-  }
-  .qa__item > :not(h3) { margin-left: calc((100% - var(--space-16)) / 3 + var(--space-16)); }
-}
-@media (min-width: 1240px) {
-  .qa__item > h3 { width: calc((100% - var(--space-16)) / 2); }
-  .qa__item > :not(h3) { margin-left: calc((100% - var(--space-16)) / 2 + var(--space-16)); }
-}
-
-/* Further reading: two columns of entries, a rule on top of each, the title as
-   the link. */
+/* Insights: two columns of entries, a rule on top of each, the title as the link. */
 .reads {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2256,71 +1925,32 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   .reads { grid-template-columns: 1fr; gap: var(--space-8); }
 }
 
-/* Short headlines and quotes break into even lines, so a project headline never ends on
-   "to 6." alone. */
-.work-index__case,
-.terms blockquote { text-wrap: balance; }
-
-/* The home page between a phone and a laptop (600 to 904px): its own tier rather than the
-   phone stack stretched to 720px. Parallel blocks sit two-up; from 720px each chapter's
-   case card sits beside its "What we build" list, and the company sentence beside the
-   Gothenburg photograph. Source order (writing, card, list) is unchanged, so is the
-   reading order. */
+/* The home page between a phone and a laptop (600 to 904px): the insights sit two-up, not
+   in the phone's single column stretched wide. */
 @media (min-width: 600px) and (max-width: 904px) {
-  #how-we-work .caps--2,
-  .view-join .caps--2,
-  .view-join .caps--5 { grid-template-columns: repeat(2, 1fr); gap: var(--space-8) var(--space-6); }
   .reads { grid-template-columns: repeat(2, 1fr); gap: var(--space-8) var(--space-6); }
-  .terms .two-up > :last-child {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-6);
-    align-items: center;
-  }
-  .terms blockquote { margin: 0; }
-  .terms blockquote + .photo { margin-top: 0; }
 }
-@media (min-width: 720px) and (max-width: 904px) {
-  .chapter,
-  .chapter--flip {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: "text text" "case panel";
-    gap: var(--space-8) var(--space-6);
-  }
-  /* The card is as tall as its list (the AI list is long), the photograph taking the extra
-     height, so no column ends hundreds of pixels before the other. */
-  .chapter__case { align-self: stretch; }
-  .chapter__case .case__img { position: relative; flex: 1 0 auto; }
-  .chapter__case .case__img img { position: absolute; inset: 0; }
-  .who__top { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+/* Three insights sit in one row on a wide screen. */
+@media (min-width: 905px) {
+  .home .reads { grid-template-columns: repeat(3, 1fr); gap: var(--space-10) var(--space-6); }
 }
+/* A service's onward link sits at the foot of its column, so the three line up. */
+.home .cap > .more { margin-top: auto; align-self: start; }
 
-/* From 360px each step's numeral sits beside its headline instead of on a row of its own. */
-@media (min-width: 360px) and (max-width: 599px) {
-  :is(#how-we-work, .view-join) .caps--2 > .cap {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--space-2);
-    align-items: baseline;
-  }
-  :is(#how-we-work, .view-join) .caps--2 > .cap > :not(.cap__num) { grid-column: 2; }
-  :is(#how-we-work, .view-join) .caps--2 > .cap > .cap__num { grid-column: 1; grid-row: 1; }
-}
 /* Touch targets on the home page's onward links (phones and tablets): the contents row,
    the read-more links and the closing bands' contact lines get 44px or more of height.
    The read-more links keep their optical place: the added padding comes off the margin. */
 @media (max-width: 904px) {
   .toc__list a { padding-block: var(--space-3); }
-  :is(.view-hire, .view-join) .more { padding-block: var(--space-3); }
-  :is(.view-hire, .view-join) :is(.two-up, .chapter) .more { margin-top: calc(var(--space-2) - var(--space-3)); }
-  .cta-band:is(.view-hire, .view-join) .cta-band__contact {
+  .home .more { padding-block: var(--space-3); }
+  .home .cta-band .cta-band__contact {
     display: grid;
     grid-auto-rows: minmax(44px, auto);
     justify-items: start;
     align-items: center;
   }
-  .cta-band:is(.view-hire, .view-join) .cta-band__contact br { display: none; }
-  .cta-band:is(.view-hire, .view-join) .cta-band__contact a {
+  .home .cta-band .cta-band__contact br { display: none; }
+  .home .cta-band .cta-band__contact a {
     display: inline-flex;
     align-items: center;
     align-self: stretch;
@@ -2347,7 +1977,6 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
   /* !important: on a page as narrow as A4 the enhanced menu button's own rule outranks this. */
   .mobile-toggle,
   .theme-toggle,
-  .audience,
   .skip-link { display: none !important; }
   .inverse,
   .btn:not(.btn--secondary, .btn--ghost),
@@ -2356,14 +1985,10 @@ html:has(#join.view-anchor:target) .skip-link--join { display: block; }
     print-color-adjust: exact;
   }
   .toc,
-  .chapter__text,
-  .chapter__case,
-  .chapter__panel,
+  .case,
   .cap,
-  .qa__item,
   .read,
   .metric,
-  .photo,
   .compare tr { break-inside: avoid; }
   h2,
   h3 { break-after: avoid; }

@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en" data-theme="mono-light">
+<head>
+<meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft: home page proposal</title>
+<meta name="description" content="A software consultancy in Gothenburg: senior engineers on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars as clients.">
+<!-- DRAFT of the home page: built by tools/drafts/home/build.py, never published (tools/ is excluded). -->
+<meta name="robots" content="noindex, nofollow">
+<!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
+     colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
+     The markup names the Monochrome light theme, the site's one colour scheme; app.js
+     switches it to Monochrome dark when the visitor or their system asks (see its header). -->
+<link rel="stylesheet" href="../../../tokens.css?v=2918c0c8">
+<link rel="stylesheet" href="../../../colors_and_type.css?v=cf9edbca">
+<link rel="stylesheet" href="../../../styles.css?v=89dd998e">
+<!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
+     other pages never download it (AGENTS.md, Hero background). -->
+<link rel="stylesheet" href="../../../hero-bg.css?v=35ffa532">
+<link rel="stylesheet" href="home-draft.css">
+<!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="../../../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../apple-touch-icon.png">
+<link rel="manifest" href="../../../site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
+<meta name="theme-color" content="#F5F1EA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="../../../app.js?v=6241560d"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link skip-link--join" href="#join">Skip to content</a>
+<div id="app">
+
+  <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
+       design system's logo artwork (assets/vynatix-wordmark-*.svg hold the same geometry), which
+       fills with currentColor so it follows the theme, and the Volvo iron mark (assets/CREDITS.md). -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="vx-lens" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../../../assets/glass-lens-wide.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.06" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="vx-lens-narrow" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../../../assets/glass-lens-narrow.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.12" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <symbol id="vx-wordmark" viewBox="90.1052 381.871 2654.79 653.758"><g fill="currentColor"><path d="M397.299 823.784L240.915 453.728L240.917 453.735C234.456 438.447 227.143 421.141 203.518 421.141L107.415 421.141L107.415 421.141C103.717 421.141 95.655 421.141 92.4292 421.141L92.4292 421.141C91.1417 421.143 90.1052 422.293 90.1052 423.723L90.1052 431.978C90.1052 433.409 91.1425 434.561 92.4309 434.561C115.726 434.729 120.384 451.83 126.802 467.017L367.638 1035.63L608.073 466.623C614.452 451.536 619.183 434.728 642.277 434.561C643.565 434.561 644.603 433.409 644.603 431.978L644.603 423.723C644.603 422.293 643.566 421.143 642.279 421.141L645.259 421.141L645.259 421.141L590.748 421.142C567.433 421.323 560.129 438.475 553.705 453.676L397.299 823.784Z" fill-rule="evenodd"/><path d="M452.438 551.62L411.074 453.738C411.073 453.735 411.072 453.733 411.071 453.731C404.61 438.444 397.296 421.144 373.674 421.144L373.674 421.142L311.764 421.141L311.764 421.141C308.066 421.141 300.004 421.141 296.778 421.141L296.778 421.141C295.49 421.141 294.454 422.293 294.454 423.723L294.454 431.978C294.454 433.409 295.491 434.56 296.78 434.56C296.665 434.56 296.896 434.56 296.78 434.56C320.373 434.56 324.95 452.343 331.404 467.616L409.671 652.821L452.438 551.62Z" fill-rule="evenodd"/><path d="M542.24 764.12L499.473 865.322C457.163 965.442 537.25 1035.63 571.444 1035.63L656.978 1035.63L656.978 1035.63L672.758 1035.63C674.012 1035.58 675.013 1034.46 675.013 1033.06L675.013 1024.81C675.013 1023.38 673.976 1022.22 672.688 1022.22L674.554 1022.22C601.559 990.791 549.605 782.803 557.153 760.668L557.082 760.84C557.623 759.54 557.104 758.009 555.919 757.408L549.078 753.941C547.893 753.34 546.504 753.902 545.962 755.2L542.24 764.12Z" fill-rule="evenodd"/><path d="M899.812 593.257L899.812 649.72C922.211 625.455 943.676 607.801 964.208 596.757C984.74 585.713 1006.83 580.191 1030.47 580.191C1058.78 580.191 1082.27 588.047 1100.93 603.757C1119.6 619.467 1132.04 638.988 1138.26 662.32C1143.24 680.052 1145.73 714.116 1145.73 764.513L1145.73 934.369C1145.73 967.967 1148.76 988.888 1154.83 997.132C1160.9 1005.38 1173.57 1010.59 1192.86 1012.76L1192.86 1029.56L972.141 1029.56L972.141 1012.76C988.629 1010.59 1000.45 1003.74 1007.61 992.232C1012.58 984.455 1015.07 965.167 1015.07 934.369L1015.07 740.248C1015.07 704.472 1013.67 681.918 1010.87 672.586C1008.07 663.253 1003.33 656.02 996.639 650.887C989.951 645.754 982.562 643.187 974.474 643.187C947.72 643.187 922.833 662.32 899.812 700.584L899.812 934.369C899.812 967.034 902.845 987.721 908.911 996.432C914.978 1005.14 926.255 1010.59 942.743 1012.76L942.743 1029.56L722.023 1029.56L722.023 1012.76C740.378 1010.9 753.443 1004.99 761.221 995.032C766.509 988.188 769.154 967.967 769.154 934.369L769.154 687.985C769.154 655.009 766.12 634.477 760.054 626.389C753.988 618.3 741.311 613.012 722.023 610.523L722.023 593.257L899.812 593.257Z" fill-rule="nonzero"/><path d="M1493.84 965.167C1440.64 1012.14 1392.89 1035.63 1350.58 1035.63C1325.7 1035.63 1305.01 1027.46 1288.52 1011.13C1272.03 994.799 1263.79 974.344 1263.79 949.768C1263.79 916.481 1278.1 886.539 1306.72 859.94C1335.34 833.342 1397.71 797.955 1493.84 753.78L1493.84 709.917C1493.84 676.941 1492.05 656.176 1488.47 647.621C1484.9 639.066 1478.13 631.599 1468.18 625.222C1458.22 618.845 1447.02 615.656 1434.58 615.656C1414.36 615.656 1397.71 620.167 1384.65 629.188C1376.56 634.788 1372.52 641.321 1372.52 648.787C1372.52 655.32 1376.87 663.408 1385.58 673.052C1397.4 686.429 1403.31 699.339 1403.31 711.783C1403.31 727.027 1397.64 740.015 1386.28 750.747C1374.93 761.48 1360.07 766.846 1341.72 766.846C1322.12 766.846 1305.71 760.936 1292.49 749.114C1279.27 737.293 1272.65 723.449 1272.65 707.583C1272.65 685.185 1281.52 663.797 1299.25 643.421C1316.99 623.044 1341.72 607.412 1373.45 596.524C1405.18 585.636 1438.16 580.191 1472.38 580.191C1513.75 580.191 1546.49 588.98 1570.6 606.556C1594.71 624.133 1610.34 643.187 1617.5 663.72C1621.86 676.785 1624.03 706.806 1624.03 753.78L1624.03 923.17C1624.03 943.08 1624.81 955.601 1626.37 960.734C1627.92 965.867 1630.25 969.678 1633.37 972.167C1636.48 974.655 1640.05 975.9 1644.1 975.9C1652.19 975.9 1660.43 970.145 1668.83 958.634L1682.83 969.833C1667.27 992.854 1651.18 1009.58 1634.53 1020C1617.89 1030.42 1598.99 1035.63 1577.84 1035.63C1552.95 1035.63 1533.51 1029.8 1519.51 1018.13C1505.51 1006.46 1496.95 988.81 1493.84 965.167ZM1493.84 931.103L1493.84 785.045C1456.2 807.133 1428.2 830.776 1409.85 855.974C1397.71 872.773 1391.65 889.727 1391.65 906.837C1391.65 921.148 1396.78 933.747 1407.05 944.635C1414.82 953.034 1425.71 957.234 1439.71 957.234C1455.27 957.234 1473.31 948.524 1493.84 931.103Z" fill-rule="nonzero"/><path d="M1904.01 433.667L1904.01 593.257L2007.61 593.257L2007.61 639.454L1904.01 639.454L1904.01 908.704C1904.01 933.902 1905.18 950.157 1907.51 957.468C1909.85 964.778 1913.97 970.689 1919.88 975.2C1925.79 979.711 1931.24 981.966 1936.21 981.966C1956.43 981.966 1975.57 966.567 1993.61 935.769L2007.61 946.035C1982.41 1005.76 1941.5 1035.63 1884.88 1035.63C1857.2 1035.63 1833.79 1027.93 1814.65 1012.53C1795.52 997.132 1783.31 979.944 1778.02 960.967C1774.91 950.39 1773.36 921.77 1773.36 875.106L1773.36 639.454L1716.43 639.454L1716.43 623.122C1755.62 595.435 1788.99 566.348 1816.52 535.861C1844.05 505.374 1868.08 471.31 1888.62 433.667L1904.01 433.667Z" fill-rule="nonzero"/><path d="M2154.13 381.871C2174.35 381.871 2191.46 388.948 2205.46 403.103C2219.46 417.257 2226.46 434.29 2226.46 454.199C2226.46 474.109 2219.38 491.064 2205.23 505.063C2191.07 519.062 2174.04 526.062 2154.13 526.062C2134.22 526.062 2117.27 519.062 2103.27 505.063C2089.27 491.064 2082.27 474.109 2082.27 454.199C2082.27 434.29 2089.27 417.257 2103.27 403.103C2117.27 388.948 2134.22 381.871 2154.13 381.871ZM2219.46 593.257L2219.46 939.035C2219.46 969.833 2223.04 989.51 2230.19 998.065C2237.35 1006.62 2251.35 1011.52 2272.19 1012.76L2272.19 1029.56L2036.54 1029.56L2036.54 1012.76C2055.83 1012.14 2070.14 1006.54 2079.47 995.965C2085.69 988.81 2088.8 969.833 2088.8 939.035L2088.8 684.252C2088.8 653.454 2085.23 633.777 2078.07 625.222C2070.92 616.667 2057.07 611.767 2036.54 610.523L2036.54 593.257L2219.46 593.257Z" fill-rule="nonzero"/><path d="M2572.71 762.18L2648.3 905.904C2674.43 955.99 2695.12 987.721 2710.36 1001.1C2718.76 1008.25 2730.27 1012.14 2744.89 1012.76L2744.89 1029.56L2501.78 1029.56L2501.78 1012.76C2520.75 1011.21 2532.5 1008.72 2537.01 1005.3C2541.52 1001.88 2543.77 997.209 2543.77 991.299C2543.77 982.588 2538.8 968.9 2528.84 950.235L2491.04 879.306L2458.85 926.436C2444.23 947.901 2435.98 960.656 2434.11 964.7C2431.63 970.611 2430.38 975.9 2430.38 980.566C2430.38 987.721 2431.86 993.71 2434.81 998.532C2437.77 1003.35 2441.81 1006.93 2446.95 1009.26C2452.08 1011.6 2461.49 1012.76 2475.18 1012.76L2475.18 1029.56L2304.39 1029.56L2304.39 1012.76C2325.54 1012.76 2344.91 1006.93 2362.49 995.265C2380.06 983.599 2405.65 953.034 2439.25 903.571L2475.18 850.374L2400.05 711.317C2375.47 665.897 2357.12 638.054 2344.99 627.788C2332.85 617.522 2319.32 611.767 2304.39 610.523L2304.39 593.257L2546.11 593.257L2546.11 610.523L2533.51 610.99L2509.24 619.389C2506.75 621.567 2505.51 625.144 2505.51 630.122C2505.51 634.788 2506.29 639.61 2507.84 644.587C2508.78 646.765 2513.13 655.165 2520.91 669.786L2554.97 733.248L2572.71 708.05C2597.59 673.83 2610.04 649.876 2610.04 636.188C2610.04 629.655 2607.31 624.133 2601.87 619.622C2596.43 615.111 2586.7 612.078 2572.71 610.523L2572.71 593.257L2727.16 593.257L2727.16 610.523C2708.19 611.145 2690.45 616.978 2673.97 628.022C2657.48 639.066 2638.97 660.453 2618.44 692.184L2572.71 762.18Z" fill-rule="nonzero"/></g></symbol>
+    <symbol id="volvo-iron-mark" viewBox="0 0 250 250">
+      <path d="M112.8,134.5h30.3v-10.1h-3.3c0,3.9-2.8,6.7-7.2,6.7H128v-15.1h5v-3.4h-20.2v3.4h5.1l0,15.1h-5.1L112.8,134.5L112.8,134.5 z"/>
+      <polygon points="157.7,134.5 169.5,134.5 179.6,116 184.6,116 184.6,112.6 169.5,112.6 169.5,116 173.9,116 166.5,129.5 159.2,116 164.5,116 164.5,112.6 142.5,112.6 142.5,116 147.5,116"/>
+      <polygon points="52.4,112.6 30.5,112.6 30.5,116 35.5,116 45.7,134.5 57.5,134.5 67.5,116 72.5,116 72.5,112.6 57.4,112.6 57.4,116 61.8,116 54.5,129.5 47.1,116 52.4,116"/>
+      <path d="M75.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C80.9,112.1,75.5,117.2,75.5,123.6z M96.4,123.6c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2c0.1-4.2,2.1-7.9,5.6-7.8 C94.7,115.6,96.5,119.4,96.4,123.6z"/>
+      <path d="M187.5,123.6c0,6.4,5.2,11.6,15.6,11.6c10.4,0,15.5-5.1,15.5-11.6c0-6.4-5.4-11.4-15.6-11.4 C192.9,112.1,187.5,117.2,187.5,123.6z M203.2,115.6c3.5,0.1,5.3,3.8,5.2,8c-0.1,4-1.7,8.1-5.5,8c-3.7-0.1-5.3-4.2-5.3-8.2 C197.7,119.2,199.7,115.5,203.2,115.6z"/>
+      <path d="M227.9,54l-12.7,12.7c10.9,16.8,17.2,36.8,17.2,58.3c0,59.3-48.1,107.4-107.4,107.4S17.6,184.3,17.6,125 S65.7,17.6,125,17.6c21.6,0,41.6,6.4,58.4,17.3l12.7-12.7C176,8.2,151.4,0,125,0C56,0,0,56,0,125s56,125,125,125s125-56,125-125 C250,98.6,241.8,74.1,227.9,54z"/>
+      <path d="M187.9,4.9v3.5c7.6,4.1,14.7,9,21.3,14.4l-17.8,17.8c6.7,5.3,12.8,11.3,18.1,18l17.8-17.8c5.5,6.6,10.3,13.8,14.4,21.2h3.4 V4.9H187.9z"/>
+    </symbol>
+  </svg>
+
+  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner" lang="en">
+    <div class="site-header__inner">
+      <a href="../../../index.html" class="site-header__logo" aria-label="Vynatix home">
+        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+      </a>
+      <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+        <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
+        <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
+      </button>
+      <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
+        <ul class="site-header__list list-reset">
+          <li><a href="../../../services.html" class="site-header__link">Services</a></li>
+          <li><a href="../../../work.html" class="site-header__link">Work</a></li>
+          <li><a href="../../../blog.html" class="site-header__link">Blog</a></li>
+          <li><a href="../../../about.html" class="site-header__link">About</a></li>
+          <li><a href="../../../contact.html" class="site-header__link">Contact</a></li>
+          <li class="site-header__menu-cta"><a href="../../../contact.html" class="site-header__link">Get in touch</a></li>
+        </ul>
+      </nav>
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" type="button" title="Dark theme" aria-label="Dark theme" aria-pressed="false">
+          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
+          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
+        </button>
+        <a href="../../../contact.html" class="btn btn--sm site-header__cta">Get in touch</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================================================ Audience switch
+         Two plain links; the fragment is the state (styles.css, "Audience switch"). #join shows the joiner
+         view, anything else the client view. Nothing is stored. -->
+    <span class="view-anchor" id="hire"></span>
+    <span class="view-anchor" id="join"></span>
+    <nav class="audience" aria-label="Hire or join">
+      <div class="container audience__bar">
+        <a class="audience__link audience__link--hire" href="#hire">Hire a team</a>
+        <a class="audience__link audience__link--join" href="#join">Join the team</a>
+      </div>
+    </nav>
+
+    <!-- ============================================================ Hero -->
+    <section class="hero view-hire" id="home">
+      <div class="container">
+        <!-- The message: what the hero fit keeps on the first screen (styles.css, "Hero fit"). -->
+        <div class="hero__msg">
+        <p class="eyebrow">A software consultancy in Gothenburg · Since 2023</p>
+        <h1 class="hero__h1">Your in-house software team.<br><em>Without the hiring.</em></h1>
+        <p class="hero__lede">Vynatix is a software consultancy in Gothenburg: senior engineers who work as part of your organisation rather than from the outside. Right now that means in-car software on Android Automotive and the build pipelines behind it, at Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside. We report our hours honestly every week, and we stay for as long as the assignment needs us.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--lg" href="../../../contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <a class="btn btn--lg btn--secondary" href="../../../work.html">See the work</a>
+        </div>
+        </div>
+
+        <!-- Client marks: a still row. Only the first two are named, with the client's
+             consent (assets/CREDITS.md); the rest are described. Each named client links
+             to its own site. -->
+        <div class="clients">
+          <p class="eyebrow eyebrow--muted" id="clients-label">Clients we have worked with</p>
+          <ul class="clients__list list-reset" aria-labelledby="clients-label">
+            <li>
+              <a class="clients__item" href="https://www.volvotrucks.com/" target="_blank" rel="noopener">
+                <svg class="clients__logo" viewBox="0 0 250 250" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span>Volvo Trucks</span><span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://www.volvocars.com/" target="_blank" rel="noopener">
+                <svg class="clients__logo" viewBox="0 0 250 250" aria-hidden="true" focusable="false"><use href="#volvo-iron-mark"/></svg>
+                <span>Volvo Cars</span><span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://agnhaga.se/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--agnhaga" aria-hidden="true"></span><span class="sr-only">Agnhaga (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://aurobay.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--aurobay" aria-hidden="true"></span><span class="sr-only">Aurobay (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://cevt.se/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--cevt" aria-hidden="true"></span><span class="sr-only">CEVT (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://magna.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--magna" aria-hidden="true"></span><span class="sr-only">Magna (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://saab.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--saab" aria-hidden="true"></span><span class="sr-only">Saab (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://scania.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--scania" aria-hidden="true"></span><span class="sr-only">Scania (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://sony.se/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--sony" aria-hidden="true"></span><span class="sr-only">Sony (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://swisslog.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--swisslog" aria-hidden="true"></span><span class="sr-only">Swisslog (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://tele2.se/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--tele2" aria-hidden="true"></span><span class="sr-only">Tele2 (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://veoneer.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--veoneer" aria-hidden="true"></span><span class="sr-only">Veoneer (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://volvobuses.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--volvo-buses" aria-hidden="true"></span><span class="sr-only">Volvo Buses (opens in a new tab)</span>
+              </a>
+            </li>
+            <li>
+              <a class="clients__item" href="https://volvopenta.com/" target="_blank" rel="noopener">
+                <span class="clients__mark clients__mark--volvo-penta" aria-hidden="true"></span><span class="sr-only">Volvo Penta (opens in a new tab)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Overture
+         DRAFT. The old "How we work" heading and lead open the page's story, and the four steps become the page's
+         four stations: one drawing, one stage further at each. This replaces the pinned contents row, so the header
+         is the only thing that ever sticks. -->
+    <section class="overture view-hire" id="how-we-work" aria-labelledby="how-it-goes">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">How we work</p>
+            <h2 class="section__h2" id="how-it-goes">One team, from day one</h2>
+          </div>
+          <p class="section__lead">Vynatix works as one team with you from day one: we usually meet in person first, our senior engineers join your organisation, we report every engineer's hours each week, and we stay as long as the assignment needs us.</p>
+        </div>
+        <ol class="frames list-reset" role="list">
+          <li class="frame"><a href="#step-1"><span class="fig fig--1" aria-hidden="true"></span><span class="frame__num" aria-hidden="true">01</span><span class="frame__t">We start with your goals, in person</span></a></li>
+          <li class="frame"><a href="#step-2"><span class="fig fig--2" aria-hidden="true"></span><span class="frame__num" aria-hidden="true">02</span><span class="frame__t">Our engineers become part of your organisation</span></a></li>
+          <li class="frame"><a href="#step-3"><span class="fig fig--3" aria-hidden="true"></span><span class="frame__num" aria-hidden="true">03</span><span class="frame__t">Full transparency on time and cost, every week</span></a></li>
+          <li class="frame"><a href="#step-4"><span class="fig fig--4" aria-hidden="true"></span><span class="frame__num" aria-hidden="true">04</span><span class="frame__t">We stay for the long run, not just the launch</span></a></li>
+        </ol>
+        <div class="overture__notes">
+          <p class="eyebrow eyebrow--muted" id="toc-label">On this page</p>
+          <ul class="toc__list list-reset" aria-labelledby="toc-label">
+            <li><a href="#faq">Common questions</a></li>
+            <li><a href="#further-reading">Further reading</a></li>
+            <li><a href="#join">For senior engineers</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ Station 01 -->
+    <section class="section stop view-hire" id="step-1" aria-labelledby="step-1-title">
+      <span class="datum" aria-hidden="true"><span class="datum__num">01</span></span>
+      <div class="container">
+        <header class="station">
+          <div class="station__text">
+            <p class="station__num" aria-hidden="true">01</p>
+            <h2 class="station__title" id="step-1-title">We start with your goals, in person</h2>
+            <p class="station__body">The first conversation is usually in Gothenburg, face to face.</p>
+          </div>
+          <span class="fig fig--1 station__fig" aria-hidden="true"></span>
+        </header>
+        <div class="two-up who__top" id="who-we-are">
+          <div>
+            <p class="eyebrow">Who we are</p>
+            <h2 class="section__h2" id="who-title">An agency that works from the inside</h2>
+            <p class="section__lead">Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients. You get an engineering team that works from inside your organisation, without having to build one.</p>
+          </div>
+          <figure class="photo">
+            <picture>
+              <source srcset="../../../assets/photo-gothenburg-canal.webp" type="image/webp">
+              <img src="../../../assets/photo-gothenburg-canal.jpg" alt="A canal in central Gothenburg, with stone buildings along both quays and a church tower" width="1200" height="675" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>A canal in central Gothenburg. Photograph by Claudio Schwarz, from Unsplash.</figcaption>
+          </figure>
+        </div>
+        <div class="pull">
+          <blockquote>If a job is not something we are genuinely good at, we will tell you so and point you to someone who is.</blockquote>
+          <p class="two-up__body">We take on new work only when we have the capacity to do it well.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ Station 02 -->
+    <section class="section stop view-hire" id="step-2" aria-labelledby="step-2-title">
+      <span class="datum" aria-hidden="true"><span class="datum__num">02</span></span>
+      <div class="container">
+        <header class="station">
+          <div class="station__text">
+            <p class="station__num" aria-hidden="true">02</p>
+            <h2 class="station__title" id="step-2-title">Our engineers become part of your organisation</h2>
+            <p class="station__body">Senior engineers, placed inside the team rather than managed from outside it.</p>
+          </div>
+          <span class="fig fig--2 station__fig" aria-hidden="true"></span>
+        </header>
+        <div class="two-up svc-intro" id="services">
+          <div>
+            <p class="eyebrow">Services</p>
+            <h2 class="section__h2" id="services-title">Software engineering, end to end</h2>
+            <p class="section__lead">Vynatix does three things: application development, AI engineering and cloud platforms. Most of the work is building software, for the web, for desktop, for phones, for vehicles and wearables, and for the systems that sit behind all of it.</p>
+          </div>
+          <div class="work-index" id="work">
+            <div>
+              <p class="eyebrow">Selected work</p>
+              <h3 class="work-index__h">Proven in production</h3>
+              <p class="work-index__lead">As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks and Volvo Cars is under non-disclosure.</p>
+            </div>
+          <ol class="work-index__list list-reset" role="list">
+            <li><a class="work-index__row" href="#application-development"><span class="work-index__svc">Application development</span><span class="work-index__case">An in-cab radio, rebuilt for Android Automotive.</span><span class="work-index__meta">Volvo Trucks · 2024</span></a></li>
+            <li><a class="work-index__row" href="#ai-engineering"><span class="work-index__svc">AI engineering</span><span class="work-index__case">A closed-domain assistant that refuses to guess.</span><span class="work-index__meta">Regulated client · 2025</span></a></li>
+            <li><a class="work-index__row" href="#cloud-platforms"><span class="work-index__svc">Cloud platforms</span><span class="work-index__case">A build pipeline cut from 47 minutes to 6.</span><span class="work-index__meta">Volvo Cars · 2025</span></a></li>
+          </ol>
+          </div>
+        </div>
+
+        <div class="plate" id="application-development">
+          <div class="plate__head">
+            <div>
+              <p class="eyebrow">Application development</p>
+              <h3 class="two-up__h3">Applications for every screen your customers use</h3>
+            </div>
+            <a class="more" href="../../../android-automotive-development.html"><span>Android Automotive development in Gothenburg</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
+          </div>
+          <article class="case chapter__case">
+            <div class="case__img">
+              <picture>
+                <source srcset="../../../assets/case-trucks-forest-road.webp" type="image/webp">
+                <img src="../../../assets/case-trucks-forest-road.jpg" alt="A Volvo truck on a snow-covered forest road in Sweden, seen through a windscreen" width="1200" height="800" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="../../../work.html#volvo-trucks">An in-cab radio, rebuilt for Android Automotive.</a></h3>
+              <p>A full in-cab media player, rebuilt above the vehicle hardware layer and shipped to production across the fleet.</p>
+              <ul class="case__points">
+                <li>The scope was agreed before the first line of code.</li>
+              </ul>
+            </div>
+          </article>
+          <details class="fold">
+            <summary><span class="eyebrow eyebrow--muted">What we build</span></summary>
+            <div class="fold__body">
+              <div class="fold__text">
+              <p class="two-up__body">Vynatix builds software for the web, for desktop, for native mobile on iOS and Android, for in-car systems on Android Automotive, for wearables and VR, and for the enterprise and SaaS platforms behind them. Much of the team comes from years in automotive and embedded work, so we are at home with the awkward, real-world constraints that come with hardware and regulated environments.</p>
+              </div>
+              <div class="panel">
+            <ul>
+              <li><h4 class="lead-in">Web, desktop and SaaS.</h4> Browser and desktop applications, and the SaaS products behind them.</li>
+              <li><h4 class="lead-in">Native mobile, iOS and Android.</h4> Apps built natively for each platform.</li>
+              <li><h4 class="lead-in">Automotive and embedded systems.</h4> In-car software on <a href="https://source.android.com/docs/automotive">Android Automotive</a> (AAOS) and other embedded targets.</li>
+              <li><h4 class="lead-in">Wearables and VR.</h4> Applications for wearable devices and VR headsets.</li>
+              <li><h4 class="lead-in">Enterprise platforms and integrations.</h4> Wiring the application into the enterprise systems and SaaS behind it.</li>
+            </ul>
+              </div>
+            </div>
+          </details>
+        </div>
+        <div class="plate plate--flip" id="ai-engineering">
+          <div class="plate__head">
+            <div>
+              <p class="eyebrow">AI engineering</p>
+              <h3 class="two-up__h3">AI systems built for production, not demos</h3>
+            </div>
+            <a class="more" href="../../../ai-engineering.html"><span>AI engineering in Gothenburg</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
+          </div>
+          <article class="case chapter__case">
+            <div class="case__img">
+              <picture>
+                <source srcset="../../../assets/case-ai-archive-volumes.webp" type="image/webp">
+                <img src="../../../assets/case-ai-archive-volumes.jpg" alt="Numbered archive volumes on a shelf behind a wire grille" width="1200" height="800" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Regulated client · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="../../../work.html#regulated-client">A closed-domain assistant that refuses to guess.</a></h3>
+              <p>For a regulated client, Vynatix built an assistant that answers only from approved documents and hands anything it cannot ground to a person.</p>
+              <ul class="case__points">
+                <li>The line between what it answers and what goes to a person was set deliberately, and we can show you exactly where it sits and why.</li>
+              </ul>
+              <p class="case__metric case__metric--text">Every answer cites its source</p>
+            </div>
+          </article>
+          <details class="fold">
+            <summary><span class="eyebrow eyebrow--muted">What we build</span></summary>
+            <div class="fold__body">
+              <div class="fold__text">
+              <p class="two-up__body">Vynatix builds production AI systems on foundation models, and says plainly what a model can and cannot do. That includes closed-domain assistants that answer only from approved documents, cite the source of every answer, and hand anything they cannot ground to a person.</p>
+              <p class="two-up__body">We take a system from a rough first prototype to a tool your team uses every day, and we work in the open so you always know how it reaches its answers. Vynatix deploys these systems into your own environment, including on-prem and sovereign cloud.</p>
+              </div>
+              <div class="panel">
+            <ul>
+              <li><h4 class="lead-in">Chatbots and assistants.</h4> Conversational assistants built on foundation models, for production use.</li>
+              <li><h4 class="lead-in">Retrieval and grounded answers.</h4> Retrieval-augmented generation (RAG) that finds the right passages in your own documents and grounds each answer in them.</li>
+              <li><h4 class="lead-in">Agent and harness engineering.</h4> The scaffolding around a model that lets it take actions and be tested, built to run in production.</li>
+              <li><h4 class="lead-in">Workflow automation.</h4> Model-driven steps inside the workflows your team already runs.</li>
+              <li><h4 class="lead-in">MCP servers and integrations.</h4> <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> servers that let an assistant read from, and act on, your own systems.</li>
+              <li><h4 class="lead-in">SDKs and developer tooling.</h4> Libraries and tools so your own engineers can build on what we deliver.</li>
+              <li><h4 class="lead-in">Evaluation, deployment and monitoring.</h4> Evaluation pipelines that tell you when the model is wrong, deployment into your environment including on-prem and sovereign cloud, and observability after it ships.</li>
+            </ul>
+              </div>
+            </div>
+          </details>
+        </div>
+        <div class="plate" id="cloud-platforms">
+          <div class="plate__head">
+            <div>
+              <p class="eyebrow">Cloud platforms</p>
+              <h3 class="two-up__h3">Cloud platforms built for regulated industries</h3>
+            </div>
+            
+          </div>
+          <article class="case chapter__case">
+            <div class="case__img">
+              <picture>
+                <source srcset="../../../assets/case-cars-marshalling-yard.webp" type="image/webp">
+                <img src="../../../assets/case-cars-marshalling-yard.jpg" alt="A railway marshalling yard from above, with rows of wagons and tracks fanning out through switches" width="1200" height="799" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="case__body">
+              <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <h3><a href="../../../work.html#volvo-cars">A build pipeline cut from 47 minutes to 6.</a></h3>
+              <p>Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
+              <ul class="case__points">
+                <li>Vynatix was scoped to the pipeline, not the build targets, and that boundary was agreed up front.</li>
+                <li>The shorter build applies on every commit, for the whole team.</li>
+              </ul>
+              <p class="case__metric">87% shorter</p>
+            </div>
+          </article>
+          <details class="fold">
+            <summary><span class="eyebrow eyebrow--muted">What we build</span></summary>
+            <div class="fold__body">
+              <div class="fold__text">
+              <p class="two-up__body">Vynatix builds and runs cloud platforms for regulated industries, on GCP, AWS and on-prem hybrids. Build pipelines that stay green, infrastructure that costs what it should, and a sensible path off legacy systems.</p>
+              </div>
+              <div class="panel">
+            <ul>
+              <li><h4 class="lead-in">Platform engineering.</h4> The shared build and deployment platform your teams work on, with deployments you can reason about.</li>
+              <li><h4 class="lead-in">Kubernetes and GitOps.</h4> Clusters and deployments declared in Git and reconciled automatically.</li>
+              <li><h4 class="lead-in">FinOps and cost control.</h4> A cloud bill that matches what you actually use.</li>
+              <li><h4 class="lead-in">Moving off legacy.</h4> Migration off legacy systems and onto the new platform.</li>
+            </ul>
+              </div>
+            </div>
+          </details>
+        </div>
+        <div class="chapter-foot">
+          <p class="chapter-foot__links"><a class="more" href="../../../services.html"><span>More on what we do</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a> <a class="more" href="../../../work.html"><span>See all work</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+          <p class="photo-note">Photographs by Roberto Hanas, Anna Auza and Patrick Federi, from Unsplash. They illustrate the work and do not show client systems.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ The peak
+         DRAFT. The one before-and-after figure the site has published, as two dimension lines drawn to scale
+         (6 is 12.8% of 47). Every word is the Volvo Cars case card's. -->
+    <section class="peak band--inset inverse view-hire" aria-labelledby="peak-title">
+      <p class="eyebrow">Volvo Cars · 2025</p>
+      <div class="dims" aria-hidden="true">
+        <div class="dim dim--before"><span class="dim__val">47</span><span class="dim__line"></span></div>
+        <div class="dim dim--after"><span class="dim__val">6</span><span class="dim__line"></span></div>
+      </div>
+      <div class="peak__foot">
+        <h2 class="peak__h" id="peak-title"><a href="../../../work.html#volvo-cars">A build pipeline cut from 47 minutes to 6.</a></h2>
+        <div>
+          <p class="peak__metric">87% shorter</p>
+          <p>Same tests, same coverage, a pipeline the team no longer has to wait on.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ Station 03 -->
+    <section class="section stop view-hire" id="step-3" aria-labelledby="step-3-title">
+      <span class="datum" aria-hidden="true"><span class="datum__num">03</span></span>
+      <div class="container">
+        <header class="station">
+          <div class="station__text">
+            <p class="station__num" aria-hidden="true">03</p>
+            <h2 class="station__title" id="step-3-title">Full transparency on time and cost, every week</h2>
+            <p class="station__body">Vynatix reports every engineer's hours to you each week and bills for the hours worked. No black box, no surprise invoice.</p>
+          </div>
+          <span class="fig fig--3 station__fig" aria-hidden="true"></span>
+        </header>
+        <div class="two-up ledger">
+          <div>
+            <p class="two-up__body">Vynatix differs from a typical consultancy in the ways below.</p>
+            <table class="compare" role="table" aria-labelledby="compare-caption">
+              <caption id="compare-caption">How a typical consultancy works, next to Vynatix</caption>
+              <thead role="rowgroup">
+                <tr role="row"><th scope="col" role="columnheader">Topic</th><th scope="col" role="columnheader">A typical consultancy</th><th scope="col" role="columnheader">Vynatix</th></tr>
+              </thead>
+              <tbody role="rowgroup">
+                <tr role="row"><th scope="row" role="rowheader">Who makes the decisions</th><td role="cell" data-label="A typical consultancy">Often an account layer sits between you and the engineers.</td><td role="cell" data-label="Vynatix">The engineers doing the work, inside your team.</td></tr>
+                <tr role="row"><th scope="row" role="rowheader">Written record</th><td role="cell" data-label="A typical consultancy">Depends on the firm and the project.</td><td role="cell" data-label="Vynatix">Every project leaves a written record an engineer can read.</td></tr>
+                <tr role="row"><th scope="row" role="rowheader">Code</th><td role="cell" data-label="A typical consultancy">Depends on the contract.</td><td role="cell" data-label="Vynatix">You own the code we write.</td></tr>
+                <tr role="row"><th scope="row" role="rowheader">Hours</th><td role="cell" data-label="A typical consultancy">Depends on the contract.</td><td role="cell" data-label="Vynatix">We report every engineer's hours to you each week and bill for the hours worked.</td></tr>
+              </tbody>
+            </table>
+            <p class="two-up__body">We are based in Gothenburg and work alongside the client teams we build for. Most of that work happens in writing, which keeps everyone clear on what was agreed.</p>
+          </div>
+            <figure class="photo">
+              <picture>
+                <source srcset="../../../assets/photo-balance-weights.webp" type="image/webp">
+                <img src="../../../assets/photo-balance-weights.jpg" alt="A cast-iron shop balance with a brass pan and two brass weights on a dark wooden table" width="1200" height="800" loading="lazy" decoding="async">
+              </picture>
+              <figcaption>A shop balance and its brass weights. Photograph by Angelo Casto, from Unsplash.</figcaption>
+            </figure>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ Station 04 -->
+    <section class="section stop view-hire" id="step-4" aria-labelledby="step-4-title">
+      <span class="datum" aria-hidden="true"><span class="datum__num">04</span></span>
+      <div class="container">
+        <header class="station">
+          <div class="station__text">
+            <p class="station__num" aria-hidden="true">04</p>
+            <h2 class="station__title" id="step-4-title">We stay for the long run, not just the launch</h2>
+            <p class="station__body">Our engineers stay in your team for as long as the work needs them.</p>
+          </div>
+          <span class="fig fig--4 station__fig" aria-hidden="true"></span>
+        </header>
+        <div class="glance">
+          <div class="glance__head">
+            <div>
+              <p class="eyebrow">By the numbers</p>
+              <h3 class="two-up__h3">At a glance</h3>
+            </div>
+            <p class="two-up__body">Four facts we would put first in any conversation about working with us.</p>
+          </div>
+          <dl class="metrics">
+            <div class="metric">
+              <dt class="metric__lbl">Founded</dt>
+              <dd class="metric__val">2023</dd>
+              <dd class="metric__ctx">In Gothenburg, part of Ultra Group.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Volvo companies</dt>
+              <dd class="metric__val">2</dd>
+              <dd class="metric__ctx">Volvo Trucks and Volvo Cars.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Code ownership</dt>
+              <dd class="metric__val">100%</dd>
+              <dd class="metric__ctx">You own every line we write.</dd>
+            </div>
+            <div class="metric">
+              <dt class="metric__lbl">Reply time</dt>
+              <dd class="metric__val">1</dd>
+              <dd class="metric__ctx">Working day, our typical reply time.</dd>
+            </div>
+          </dl>
+          <a class="more" href="../../../about.html"><span>More about us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ Common questions
+         DRAFT. Each answer folds into a native <details>; the data-faq container and every word are unchanged. -->
+    <section class="section view-hire" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Questions</p>
+            <h2 class="section__h2" id="faq-title">Common questions</h2>
+          </div>
+          <p class="section__lead">The questions clients usually ask before a first call, answered the way we would answer them in the room.</p>
+        </div>
+        <div class="qa" data-faq>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>What does Vynatix do?</h3></summary>
+            <p>Vynatix is a software consultancy in Gothenburg, Sweden, that does three things: application development, AI engineering and cloud platforms.</p>
+            <p>What sets the work apart is that our engineers sit inside your team, with no account layer between you and them, and you own the code we write.</p>
+            <ul>
+              <li>Application development, the largest share: web and native mobile, Android Automotive, wearables and VR.</li>
+              <li>AI engineering: production systems built on foundation models.</li>
+              <li>Cloud platforms: built on GCP, AWS and on-prem hybrids for regulated industries.</li>
+            </ul>
+            <p>Anything outside those three we decline, and we point you to someone better. We take on new work only when we have the capacity to do it well.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>Where is Vynatix based?</h3></summary>
+            <p>Vynatix is based in Gothenburg (Göteborg), Sweden, where Vynatix AB was founded in 2023. Its postal address is Mailbox 1611, 411 42 Gothenburg.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>Does Vynatix do Android Automotive development?</h3></summary>
+            <p>Yes. Vynatix builds in-car software on <a href="../../../android-automotive-development.html">Android Automotive (AAOS)</a>.</p>
+            <ul>
+              <li>Many of the team come from years of automotive and embedded work.</li>
+              <li>For Volvo Trucks in 2024, Vynatix rebuilt the in-cab radio and media player on Android Automotive and shipped it to production across the fleet.</li>
+            </ul>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>Can Vynatix run AI systems in our own environment, including on-prem?</h3></summary>
+            <p>Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, with evaluation pipelines that show when the model is wrong and observability after it ships. If a simpler tool would serve you better than a model, we say so.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>How does an engagement with Vynatix work, and how is it billed?</h3></summary>
+            <p>Vynatix places senior engineers directly inside your team and bills by the hour. An engagement runs in four steps.</p>
+            <ol>
+              <li>The first conversation is usually in person, in Gothenburg.</li>
+              <li>Senior engineers join your team, with no account layer between them and you, and from then on most of the work happens in writing.</li>
+              <li>The hours are reported to you every week.</li>
+              <li>The engineers stay as long as the assignment needs them.</li>
+            </ol>
+            <p>Billing works as follows.</p>
+            <ul>
+              <li>You are billed for the hours worked.</li>
+              <li>There is no black box and no surprise invoice.</li>
+              <li>You own the code we write.</li>
+            </ul>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>Who are Vynatix's clients?</h3></summary>
+            <p>Volvo Trucks and Volvo Cars are among Vynatix's clients. For Volvo Trucks, Vynatix rebuilt the in-cab radio and media player on Android Automotive; for Volvo Cars, it took a build pipeline from 47 minutes to 6 (87% shorter) on every commit. The rest of the work with both is under non-disclosure.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>How is Vynatix related to Ultra Group?</h3></summary>
+            <p>Vynatix is part of Ultra Group. The company itself is Vynatix AB, org.nr 559445-6542, a software consultancy in Gothenburg, Sweden.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>How does Vynatix differ from a typical consultancy?</h3></summary>
+            <p>Our senior engineers work inside your organisation, so decisions about the work are made with the people doing it. Every project leaves a written record an engineer can read, and you own the code we write.</p>
+            <p>If you are comparing consultancies in Gothenburg that work on Android Automotive, the <a href="../../../android-automotive-consultancies-gothenburg.html">list of consultancies</a> names the Gothenburg firms in alphabetical order, with the source for each entry, and says that Vynatix compiled it and is on it.</p>
+          </details>
+          <details class="qa__item" data-faq-item>
+            <summary><h3>How do we start a project with Vynatix?</h3></summary>
+            <p>Email Vynatix at <a href="mailto:front.disk@vynatix.com?subject=Project">front.disk@vynatix.com</a> or call <a href="tel:+46720710676">+46&nbsp;72&nbsp;071&nbsp;06&nbsp;76</a>. Start the subject line with Project so we can route it, and tell us what you are trying to build or which team needs a senior engineer. We usually reply within one working day.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Further reading -->
+    <section class="section view-hire" id="further-reading" aria-labelledby="further-reading-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Read on</p>
+            <h2 class="section__h2" id="further-reading-title">Further reading</h2>
+          </div>
+          <p class="section__lead">Longer pages for buyers comparing consultancies in Gothenburg or planning a project on Android Automotive or AI. The consultancies list names the Gothenburg firms that work on Android Automotive, with the source for each entry.</p>
+        </div>
+        <ul class="reads list-reset">
+          <li class="read">
+            <h3 class="read__h"><a href="../../../android-automotive-consultancies-gothenburg.html">Software consultancies in Gothenburg working on Android Automotive (2026)</a></h3>
+            <p>Gothenburg consultancies that name Android Automotive themselves, alphabetical, with sources. Compiled by Vynatix, which is listed. Checked 18 October 2026.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="../../../android-automotive-development.html">Android Automotive development in Gothenburg</a></h3>
+            <p>Vynatix builds Android Automotive (AAOS) software in Gothenburg, embedded in your team, and shipped Volvo Trucks' in-cab radio and media player to production.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="../../../ai-engineering.html">AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment</a></h3>
+            <p>Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.</p>
+          </li>
+          <li class="read">
+            <h3 class="read__h"><a href="../../../choose-a-software-consultancy.html">How to choose a software consultancy</a></h3>
+            <p>Vynatix in Gothenburg on choosing a software consultancy: the questions to ask, the warning signs and when a larger firm is the better choice.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================ Let us talk -->
+    <section class="cta-band band--inset inverse view-hire" id="contact" aria-labelledby="cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">Let us talk</p>
+          <h2 class="cta-band__h2" id="cta-title">Let us build it <em>with you.</em></h2>
+          <span class="fig fig--4 fig--inverse cta-fig" aria-hidden="true"></span>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">Tell us what you are trying to build, or which of your teams needs another senior engineer. We will come back within one working day, and tell you plainly whether we are a fit.</p>
+          <a class="btn btn--lg btn--tertiary" href="../../../contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Vynatix AB, Mailbox 1611, 411 42 Gothenburg<br>
+            <a href="../../../privacy.html">Privacy notice</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: hero -->
+    <section class="page-hero view-join" aria-labelledby="join-title">
+      <div class="container">
+        <p class="eyebrow">For senior engineers</p>
+        <h2 class="page-hero__h1" id="join-title">Stay independent.<br><em>Without going it alone.</em></h2>
+        <p class="page-hero__lede">Vynatix is a consultancy built and run by senior engineers. You stay freelance and you keep your work. We find and qualify the assignments, and you choose which ones to take.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--lg" href="../../../contact.html">Start a conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <a class="btn btn--lg btn--secondary" href="../../../membership.html">Read about membership</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: what you get -->
+    <section class="section view-join">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">What you get</p>
+            <h2 class="section__h2">Independence, with a firm behind you.</h2>
+          </div>
+        </div>
+        <div class="caps caps--2" data-from="membership.html">
+          <div class="cap">
+            <span class="cap__num">01</span>
+            <h3>Senior assignments, vetted</h3>
+            <p>We decline work that does not match the level of our members. Scope, autonomy and technical depth are real, not junior work dressed up.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">02</span>
+            <h3>A transparent revenue split</h3>
+            <p>What lands with you and what covers the collective, visible on every assignment. No aggregated year-end numbers.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">03</span>
+            <h3>Shared infrastructure</h3>
+            <p>Contracts, invoicing, legal reviews, insurance, payment chasing. The things that eat a solo consultant's week, handled.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">04</span>
+            <h3>A peer network worth having</h3>
+            <p>Senior engineers who sharpen each other's architecture, review each other's contracts, and team up on larger assignments when it makes sense.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">05</span>
+            <h3>Brand credibility</h3>
+            <p>Walk into enterprise Nordic conversations as Vynatix. The doors that open for a collective rarely open for a solo operator.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">06</span>
+            <h3>No lock-ins</h3>
+            <p>No non-competes. No exclusivity clauses. No claim on your IP beyond the specific deliverables of each assignment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: the work -->
+    <section class="section section--surface view-join">
+      <div class="container">
+        <div class="section__head section__head--only">
+          <div>
+            <p class="eyebrow">The work</p>
+            <h2 class="section__h2">What members work on</h2>
+          </div>
+          <div>
+            <p class="section__lead">Right now that means in-car software on Android Automotive and the build pipelines behind it, at Volvo Trucks and Volvo Cars, with AI engineering and cloud platforms alongside.</p>
+            <p class="u-mt-6 u-mb-0"><a class="more" href="../../../work.html"><span>See the work</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: how it works -->
+    <section class="section view-join">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">How it works</p>
+            <h2 class="section__h2">From first conversation to first assignment.</h2>
+          </div>
+        </div>
+        <div class="caps caps--5" data-from="membership.html">
+          <div class="cap">
+            <span class="cap__num">First step</span>
+            <h3>Intro conversation</h3>
+            <p>Thirty minutes. We calibrate both ways, your work, your goals, how we operate. Zero pressure.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Next</span>
+            <h3>Fit, both ways</h3>
+            <p>Technical and cultural conversations with current members. You meet the people, we learn how you work.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Onboarding</span>
+            <h3>Contracts and setup</h3>
+            <p>Contracts, infrastructure, introductions across the collective. A few weeks, depending on you.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Then</span>
+            <h3>First assignment</h3>
+            <p>We source and qualify options matched to your profile. You review, approve, engage. We stay in the loop.</p>
+          </div>
+          <div class="cap">
+            <span class="cap__num">Ongoing</span>
+            <h3>Membership</h3>
+            <p>Assignments, peer community, regular transparency reviews. Leave whenever, on your terms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: who this works for -->
+    <section class="section section--surface view-join">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Who this works for</p>
+            <h2 class="section__h2">A collective, not an agency.</h2>
+          </div>
+          <p class="section__lead">The model only works when both sides are invested.</p>
+        </div>
+        <div class="two-up" data-from="membership.html">
+          <div class="panel">
+            <h3 class="two-up__h3">This is for you if</h3>
+            <ul>
+              <li>You are a senior-plus engineer or designer with 7+ years of real delivery behind you</li>
+              <li>You are already freelance, or seriously considering the move</li>
+              <li>You are after both independence and a community of peers, rather than one or the other</li>
+              <li>You work in or near Android, AAOS, automotive, embedded, backend, platform or product design</li>
+              <li>You are done with non-technical management telling you how to engineer</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3 class="two-up__h3">This is not for you if</h3>
+            <ul>
+              <li>You want traditional full-time employment with benefits</li>
+              <li>You need daily management</li>
+              <li>You are earlier than the senior track</li>
+              <li>You are looking for a recruiter to place you into a client's org chart</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Joiner view: closing call to action -->
+    <section class="cta-band band--inset inverse view-join" aria-labelledby="join-cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">Let us talk</p>
+          <h2 class="cta-band__h2" id="join-cta-title">A thirty-minute conversation, <em>no pitch, no pressure.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede" data-from="membership.html">Tell us about your work, what you want next, and what you will not compromise on. We will tell you honestly whether Vynatix is the right fit, and what joining would look like if it is.</p>
+          <a class="btn btn--lg btn--tertiary" href="../../../contact.html">Start a conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact"><a href="../../../membership.html">Read the full membership page</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer inverse" lang="en">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <a href="../../../index.html" class="site-footer__logo" aria-label="Vynatix home">
+            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+          </a>
+          <p class="site-footer__about">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
+          <address class="site-footer__addr">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Mailbox 1611, 411 42 Gothenburg<br>
+            Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Part of Ultra Group</a>
+          </address>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Services</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../../../services.html#application-development">Application development</a></li>
+            <li><a href="../../../services.html#ai-engineering">AI engineering</a></li>
+            <li><a href="../../../services.html#cloud-platforms">Cloud platforms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Company</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../../../about.html">About</a></li>
+            <li><a href="../../../work.html">Work</a></li>
+            <li><a href="../../../blog.html">Blog</a></li>
+            <li><a href="../../../membership.html">Membership</a></li>
+            <li><a href="../../../contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div lang="sv">
+          <h2 class="site-footer__h">På svenska</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../../../sv.html" hreflang="sv">Vynatix på svenska</a></li>
+            <li><a href="../../../android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
+            <li><a href="../../../ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
+            <li><a href="../../../sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="../../../integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Legal</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../../../privacy.html">Privacy</a></li>
+            <li><a href="../../../privacy.html#cookies" data-consent-open>Cookie settings</a></li>
+            <li><a href="../../../terms.html">Terms</a></li>
+            <li><a href="../../../accessibility.html">Accessibility</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <span>© 2026 Vynatix AB</span>
+        <span>vynatix.com</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

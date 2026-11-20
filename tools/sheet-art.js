@@ -1,5 +1,5 @@
 // Writes the two alpha masks of the home hero's "sheet" background: assets/bg-sheet-art.svg (neutral ink) and
-// assets/bg-sheet-edge.svg (bronze ink). Plain Node, no dependencies:  node tools/sheet-art.js
+// assets/bg-sheet-edge.svg (bronze ink), and the five stage figures of the same drawing (assets/stage-*.svg, at the end). Plain Node, no dependencies:  node tools/sheet-art.js
 // Run with its defaults it reproduces the shipped pair byte for byte. Geometry lives here, colour in hero-bg.css (each file
 // is a CSS mask over a role-token colour). Coordinates are container units: x = 0 is the container's left edge, y = 0 the
 // hero's top. One SVG px is one CSS px at a 16px hero font size; the CSS sizes the mask in em so it follows text zoom.
@@ -104,4 +104,40 @@ const accent = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} 0 ${W} $
 fs.mkdirSync(P.outDir, { recursive: true });
 fs.writeFileSync(path.join(P.outDir, 'bg-sheet-art.svg'), ink);
 fs.writeFileSync(path.join(P.outDir, 'bg-sheet-edge.svg'), accent);
+
+// ---- The stage figures: the same A-frame at four build stages, for the home page's Partnership band
+// (styles.css, "The drawing grows"). They share every constant above, so the hero and the stages cannot drift
+// apart: retune P and both follow. Each file is an alpha mask over a role colour, cropped to the figure, and
+// its datum line runs from edge to edge so four frames side by side share one line.
+//   stage-1.svg  set out      the datum line, the dashed axis, the two feet
+//   stage-2.svg  joined       ... and the two legs
+//   stage-3.svg  dimensioned  ... and three arcs and the ticked edge
+//   stage-4.svg  sectioned    ... the fills and the hatch; its ticked edge and apex mark are stage-edge.svg (bronze)
+// Like the hero masks, a retuned stage is written under a new name (assets are not version-stamped).
+{
+  const S = 1.5;                                   // stroke scale: the figures are shown at about half the hero's size
+  const VB = { x: 760, y: 262, w: 490, h: 496 };   // the crop
+  const stageArcs = P.arcs.map(([r]) => {
+    const p = (deg) => [A0x + r * Math.sin(deg * Math.PI / 180), A0y + r * Math.cos(deg * Math.PI / 180)];
+    const [x0, y0] = p(-40), [x1, y1] = p(40);
+    return `M${f(x0)} ${f(y0)}A${r} ${r} 0 0 0 ${f(x1)} ${f(y1)}`;
+  }).join('');
+  const edge = `<path d='M${f(a.x)} ${f(a.y)}L${f(b.x)} ${f(b.y)}' stroke-width='${f(2.5 * S)}'/><path d='${ticks}' stroke-width='${f(1.8 * S)}'/>`;
+  const apex = `<path d='${cross(A0x, A0y, 30, 12)}' stroke-width='${f(2.2 * S)}'/>`;
+  const layers = {
+    setOut: `<path d='M${VB.x} ${D}H${VB.x + VB.w}' stroke-width='${f(1.5 * S)}'/><path d='${axis}' stroke-dasharray='34 7 5 7' stroke-opacity='.8' stroke-width='${f(1 * S)}'/><path d='${feet}' stroke-opacity='.9' stroke-width='${f(1.5 * S)}'/>`,
+    legs: `<path d='${shape}' stroke-width='${f(P.legW * S)}' stroke-linejoin='miter'/>`,
+    arcs: `<path d='${stageArcs}' stroke-width='${f(P.arcW * S)}' stroke-opacity='${P.arcA}'/>`,
+    fills: `<defs><pattern id='hatch' width='8' height='8' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><path d='M0 .5H8' stroke='#000' stroke-width='${f(1 * S)}' stroke-opacity='${P.hatchA}'/></pattern></defs><g stroke='none'><path d='${wedge}' fill='#000' fill-opacity='${P.fillWedge}'/><path d='${thinLeg}' fill='#000' fill-opacity='${P.fillThin}'/><path d='${thickLeg}' fill='#000' fill-opacity='${P.fillThick}'/><path d='${thickLeg}' fill='url(#hatch)'/></g>`,
+  };
+  const svg = (body) => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${VB.x} ${VB.y} ${VB.w} ${VB.h}' width='${VB.w}' height='${VB.h}' fill='none' stroke='#000'>${body}</svg>\n`;
+  const stages = {
+    'stage-1.svg': layers.setOut,
+    'stage-2.svg': layers.setOut + layers.legs,
+    'stage-3.svg': layers.setOut + layers.legs + layers.arcs + edge,
+    'stage-4.svg': layers.fills + layers.setOut + layers.legs + layers.arcs,
+    'stage-edge.svg': edge + apex,
+  };
+  for (const [name, body] of Object.entries(stages)) fs.writeFileSync(path.join(P.outDir, name), svg(body));
+}
 console.log({ Q, edge: [a, b].map((p) => [f(p.x), f(p.y)]), vl: Object.values(vlines).flat().length, hl: Object.values(hlines).flat().length, ink: ink.length, accent: accent.length });

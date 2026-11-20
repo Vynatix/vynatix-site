@@ -1,6 +1,25 @@
 # Image credits
 
-The three photographs on the home page are from Unsplash and are served
+## Generated pictures (English home page)
+
+Made on 20 November 2026 with ElevenLabs' image tools (model `gpt-image-2.5-sunburst`; the two
+Services files upscaled twice with `topaz-image-upscale-v2`). No photograph, person, brand or
+client system is shown; the prompts described a drafting sheet with instruments and named no
+company. Each night version was made by editing its daylight version, so the two match.
+
+| File (and its `-dark` twin) | Where on the home page | What it shows |
+|---|---|---|
+| `services-drafting-sheet.webp` | Services, one picture across the three columns | A card-index drawer, five brass weights stepping up in size, a compass and set square over a pencilled triangle |
+| `case-ai-bound-documents.webp` | Cases, the regulated client card | A stack of bound documents, the top one open with three brass page markers, and a magnifying glass |
+| `case-cars-stopwatch.webp` | Cases, the Volvo Cars card | A brass stopwatch over a long and a short pencilled dimension line |
+| `case-trucks-radio-dial.webp` | Cases, the Volvo Trucks card | A radio tuning dial, its knob and a length of cable |
+
+The Services files are 2400px wide (quality 80), the case files 1280px (quality 84).
+
+## Photographs (Swedish hub)
+
+The three photographs on the Swedish hub (`sv.html`; they were on the English home page too
+until 20 November 2026) are from Unsplash and are served
 first-party from `assets/` (they are not hotlinked, so no visitor IP is
 disclosed to a third party). Used under the
 [Unsplash License](https://unsplash.com/license).
@@ -15,7 +34,7 @@ Each was downloaded on 16 November 2026 through Unsplash's download endpoint (wh
 records the download for the photographer) at 2000px wide, then resized to 1200px
 wide and saved as a progressive JPEG (quality 80; the marshalling yard at 68,
 because its fine detail is costly) and as a WebP sibling (quality 78; the yard at
-62). `index.html` offers the WebP first via `<picture>` and keeps the JPEG as the
+62). `sv.html` offers the WebP first via `<picture>` and keeps the JPEG as the
 fallback.
 
 **What was changed in a photograph.**

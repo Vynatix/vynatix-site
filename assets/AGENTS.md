@@ -55,12 +55,32 @@ Then run `npm run check:bg` in `tools/`: the guard measures the art against the 
 fails if it has moved into it. The art is fitted to the current headline copy; see the
 root [AGENTS.md](../AGENTS.md), *Hero background*.
 
+## Stage masks
+
+`stage-1.svg` to `stage-4.svg` and `stage-edge.svg` are the hero's A-frame at four build stages
+(set out, joined, dimensioned, sectioned) and the bronze layer of the last. `styles.css` uses
+them as masks over role colours in the home page's Partnership band, four frames side by side on
+one datum line. `node tools/sheet-art.js` writes them after the two hero masks, from the same
+constants. The same rules apply: never edit one by hand, and a retuned file takes a new name.
+
+## Generated pictures
+
+The English home page carries four generated still lifes, each in a daylight and a night
+version (`-dark`): `services-drafting-sheet` (one wide picture, sliced across the three service
+columns) and the case covers `case-ai-bound-documents`, `case-cars-stopwatch` and
+`case-trucks-radio-dial`. They are WebP only and are set as CSS backgrounds, because
+`light-dark()` in `styles.css` chooses the version from the page's colour scheme. **A picture
+always ships as a pair**: make the night version by editing the daylight one, so the objects and
+the framing match, and name both in the "Two sets of pictures" block. They illustrate the work
+and show no client system; the line under the case cards says they are generated. How they were
+made is in `CREDITS.md`. Replace one under a new name, as with every asset.
+
 ## Photography
 
-The home page carries three photographs, self-hosted rather than hotlinked so no
+The Swedish hub (`sv.html`) carries three photographs, self-hosted rather than hotlinked so no
 visitor IP is disclosed to a third party: the three case covers
 (`case-trucks-forest-road`, `case-ai-archive-volumes`,
-`case-cars-marshalling-yard`). Each ships as a 1200px `.jpg` plus a `.webp` sibling; `index.html`
+`case-cars-marshalling-yard`). Each ships as a 1200px `.jpg` plus a `.webp` sibling; `sv.html`
 offers the WebP first through `<picture>` and keeps the JPEG as the fallback.
 **Replace both files together, under a new name** — a stale `.webp` will be served
 in preference to a fresh `.jpg`, and images are not version-stamped, so a changed

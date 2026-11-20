@@ -88,6 +88,17 @@ highlights the things most worth keeping front-of-mind.
   and the rest) are facts about the current copy, the header and the hero's spacing: after changing any of
   those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
+- **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
+  last block of `styles.css` ("The English home page: its pictures") holds it: the first figure of In numbers
+  drawn to scale (6 minutes on the 47-minute line), a tall lead case beside two compact ones, the hero's
+  drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
+  from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
+  Insights as ruled rows. The Services picture and the three case pictures are generated still lifes with a
+  daylight and a night version each; `light-dark()` picks the file from the page's `color-scheme`, so there is
+  no theme selector and only one set is fetched. **A new picture ships as a pair, the night one made by
+  editing the daylight one.** The contents row no longer pins: the header is the only bar. The owner chose the
+  drawn frames over a film (20 November 2026): no video. `sv.html` keeps the older layout and the stock
+  photographs. See AGENTS.md, *The English home page*.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,

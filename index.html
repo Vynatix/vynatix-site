@@ -185,7 +185,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=63b65f3c">
+<link rel="stylesheet" href="styles.css?v=415ebed3">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <link rel="stylesheet" href="hero-bg.css?v=e3f2e31e">
@@ -358,8 +358,8 @@
     </section>
 
     <!-- ============================================================ On this page -->
-    <!-- The contents row: plain anchor links to the sections below, in page order. From 1280px it pins under
-         the header where the browser supports it (styles.css, "The pinned contents row"). -->
+    <!-- The contents row: plain anchor links to the sections below, in page order. It stays in the page:
+         the header is the only thing that pins. -->
     <nav class="toc" aria-labelledby="toc-label">
       <div class="container">
         <p class="eyebrow eyebrow--muted" id="toc-label">On this page</p>
@@ -377,7 +377,8 @@
 
     <!-- ============================================================ Services -->
     <!-- The three services, AI engineering first, each one promise and one link to its section of
-         services.html. -->
+         services.html. One still life lies across the three columns, a third over each (the empty
+         .cap__art spans; styles.css, "One picture across the services"). -->
     <section class="section" id="services" aria-labelledby="services-title">
       <div class="container">
         <div class="section__head">
@@ -389,18 +390,21 @@
         </div>
         <div class="caps">
           <div class="cap">
+            <span class="cap__art cap__art--1" aria-hidden="true"></span>
             <span class="cap__num" aria-hidden="true">01</span>
             <h3>AI engineering</h3>
             <p>Put AI into your product, with assistants, agents and automation that deliver in production.</p>
             <a class="more" href="services.html#ai-engineering"><span>More on AI engineering</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
+            <span class="cap__art cap__art--2" aria-hidden="true"></span>
             <span class="cap__num" aria-hidden="true">02</span>
             <h3>Cloud platforms</h3>
             <p>Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.</p>
             <a class="more" href="services.html#cloud-platforms"><span>More on cloud platforms</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
+            <span class="cap__art cap__art--3" aria-hidden="true"></span>
             <span class="cap__num" aria-hidden="true">03</span>
             <h3>Application development</h3>
             <p>Launch applications your users come back to, on mobile, web and embedded devices.</p>
@@ -411,7 +415,10 @@
     </section>
 
     <!-- ============================================================ In numbers -->
-    <!-- Three figures, each with the fact behind it. Every figure is on another page of the site as well. -->
+    <!-- Three figures, each with the fact behind it. Every figure is on another page of the site as well.
+         The first is drawn: 6 minutes laid on the 47-minute line, one ruler, to scale (styles.css, "In
+         numbers, drawn"). Its "47" is decoration for that ruler, hidden from assistive technology; the
+         sentence under the figure says the same in words. -->
     <section class="section section--surface" id="numbers" aria-labelledby="numbers-title">
       <div class="container">
         <div class="section__head">
@@ -421,9 +428,10 @@
           </div>
         </div>
         <div class="glance">
-          <dl class="metrics metrics--3">
-            <div class="metric">
+          <dl class="metrics metrics--3 metrics--story">
+            <div class="metric metric--scale">
               <dt class="metric__lbl">Minutes per build</dt>
+              <dd class="scale" aria-hidden="true"><span class="scale__n">47</span></dd>
               <dd class="metric__val">6</dd>
               <dd class="metric__ctx">Down from 47. A build pipeline made 87% shorter, together with Volvo Cars.</dd>
             </div>
@@ -443,7 +451,10 @@
     </section>
 
     <!-- ============================================================ Cases -->
-    <!-- The three published cases. Each card is one link: the headline, stretched over the card. -->
+    <!-- The three published cases. Each card is one link: the headline, stretched over the card. The first
+         is the tall card and the other two are compact rows beside it. Each picture is a decorative CSS
+         background with a daylight and a night version, chosen by the page's colour scheme (styles.css,
+         "Two sets of pictures"). -->
     <section class="section" id="cases" aria-labelledby="cases-title">
       <div class="container">
         <div class="section__head">
@@ -452,14 +463,9 @@
             <h2 class="section__h2" id="cases-title">Real results, in production</h2>
           </div>
         </div>
-        <div class="cases">
+        <div class="cases cases--lead">
           <article class="case">
-            <div class="case__img">
-              <picture>
-                <source srcset="assets/case-ai-archive-volumes.webp" type="image/webp">
-                <img src="assets/case-ai-archive-volumes.jpg" alt="Numbered archive volumes on a shelf behind a wire grille" width="1200" height="800" loading="lazy" decoding="async">
-              </picture>
-            </div>
+            <div class="case__img case__img--documents"></div>
             <div class="case__body">
               <p class="case__meta"><span>A regulated client · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#regulated-client">An AI assistant people can trust</a></h3>
@@ -468,12 +474,7 @@
             </div>
           </article>
           <article class="case">
-            <div class="case__img">
-              <picture>
-                <source srcset="assets/case-cars-marshalling-yard.webp" type="image/webp">
-                <img src="assets/case-cars-marshalling-yard.jpg" alt="A railway marshalling yard from above, with rows of wagons and tracks fanning out through switches" width="1200" height="799" loading="lazy" decoding="async">
-              </picture>
-            </div>
+            <div class="case__img case__img--stopwatch"></div>
             <div class="case__body">
               <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">Builds in 6 minutes instead of 47</a></h3>
@@ -482,12 +483,7 @@
             </div>
           </article>
           <article class="case">
-            <div class="case__img">
-              <picture>
-                <source srcset="assets/case-trucks-forest-road.webp" type="image/webp">
-                <img src="assets/case-trucks-forest-road.jpg" alt="A Volvo truck on a snow-covered forest road in Sweden, seen through a windscreen" width="1200" height="800" loading="lazy" decoding="async">
-              </picture>
-            </div>
+            <div class="case__img case__img--dial"></div>
             <div class="case__body">
               <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">A new media application, live across a whole fleet</a></h3>
@@ -498,7 +494,7 @@
         </div>
         <div class="chapter-foot">
           <p class="chapter-foot__links"><a class="more" href="work.html"><span>See all cases</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
-          <p class="photo-note">Photographs by Anna Auza, Patrick Federi and Roberto Hanas, from Unsplash. They illustrate the work and do not show client systems.</p>
+          <p class="photo-note">Images generated with AI. They illustrate the work and do not show client systems.</p>
         </div>
       </div>
     </section>
@@ -512,6 +508,14 @@
             <h2 class="section__h2" id="partnership-title">A partner that grows with you</h2>
           </div>
           <p class="section__lead">When your roadmap outgrows your team, our senior engineers join you and raise the pace. You keep the lead on your product and work directly with the people who do the work. You see progress every week, and everything we build is yours.</p>
+        </div>
+        <!-- The hero's drawing at four stages on one datum line: decoration, drawn from masks
+             (styles.css, "The drawing grows"; tools/sheet-art.js writes the masks). -->
+        <div class="grow" aria-hidden="true">
+          <span class="fig fig--1 fig--inverse"></span>
+          <span class="fig fig--2 fig--inverse"></span>
+          <span class="fig fig--3 fig--inverse"></span>
+          <span class="fig fig--4 fig--inverse"></span>
         </div>
       </div>
     </section>

@@ -58,8 +58,8 @@ sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
 llms.txt            A plain-text summary of the company and every page, in both languages
 es/ zh/ hi/ ar/     The generated languages (Spanish, Chinese, Hindi, Arabic): the English pages rebuilt by
-                    tools/seo-head.py from the catalogues in tools/i18n/. Never edited by hand. Drafts: named
-                    in _config.yml exclude until a language is set live (see Languages)
+                    tools/seo-head.py from the catalogues in tools/i18n/. Never edited by hand. Live since
+                    20 November 2026, on the owner's decision, before a native reader's check (see Languages)
 <32 hex>.txt        The IndexNow key file (tools/indexnow.js proves ownership with it)
 tokens.css          Design system layer 1: the tokens, generated from the system's
                     tokens.json (colour roles for six themes, spacing, radii, type
@@ -950,23 +950,27 @@ English page is the only source: nobody edits a file in `es/`, `zh/`, `hi/` or `
   home page's alone, and the hero fit's constants were measured on English and Swedish copy, so a longer
   translation simply scrolls (`min-height`, never `height`).
 
-**A generated language is a draft until a native reader has checked it**, which the brand voice requires
-before anything goes out. `status='draft'` in `LANGS` means: built and checked, but its folder is named in
-`_config.yml` `exclude` (the script keeps that list between two marker lines), its pages carry `noindex` and
-no hreflang, no page outside the folder links to it, and it has no row in `sitemap.xml`, `llms.txt` or
-`tools/urls.lock`. A draft page lists the other drafts in its language list so a reviewer can move between
-them; serve the repo and open `/es/`. **All four are drafts today: the translations were written by a
-model on 20 November 2026 and no native reader has seen them.** To publish one: set `status='live'`,
-`checked` (the date of the reader's check) and `by` (who), set `pub` to that day, run
-`python3 tools/seo-head.py` and `cd tools && npm run check`. From then on every English and Swedish page
-lists the language in its footer and carries hreflang to it, the pages are in the sitemap, `llms.txt` (a
-block the script writes before "Optional") and the lock, and **its URLs are permanent like every other**: a
-live language never goes back to draft (the script refuses), and a translated page is withdrawn with its
-English source, as the stub in its own language. Going live also needs two things only the owner can
-give: a sentence in `accessibility.html` about the new language (and, for Arabic, right to left), and the
-decision above about the consent bar. Adding a language is one line in `LANGS`, a catalogue, and for a new
-script a family list in the "Languages" block; removing a draft is deleting its line, its catalogue and
-its folder.
+**A generated language is a draft until it is set live, and the brand voice asks for a native reader's check
+first.** `status='draft'` in `LANGS` means: built and checked, but its folder is named in `_config.yml`
+`exclude` (the script keeps that list between two marker lines), its pages carry `noindex` and no hreflang, no
+page outside the folder links to it, and it has no row in `sitemap.xml`, `llms.txt` or `tools/urls.lock`. A
+draft page lists the other drafts in its language list so a reviewer can move between them. `status='live'`
+publishes it: every English and Swedish page lists the language in its footer and carries hreflang to it, its
+pages are in the sitemap, in `llms.txt` (a block the script writes before "Optional") and in the lock, and
+**its URLs are permanent like every other**: a live language never goes back to draft (the script refuses), and
+a translated page is withdrawn with its English source, as the stub in its own language. `live` needs one of
+two records in `LANGS`: `checked` and `by` (the date of a native reader's check and who made it), or `waived`
+(the date the owner decided to publish without one).
+
+**All four are live since 20 November 2026 on the owner's decision (`waived`), and no native reader has
+checked them: the translations were written by a model that day.** `waived` says exactly that; never put a
+date in `checked` for a check nobody made. The check is still owed, and `publish.js` prints a note naming the
+languages that lack it on every run. When a reader has been through a language, correct its catalogue, move
+its `mod`, and fill in `checked` and `by`. Still open, and the owner's to give: a sentence in
+`accessibility.html` about the four languages (and, for Arabic, right to left), and the decision above about
+the consent bar and the notices before analytics is switched on. Adding a language is one line in `LANGS`
+(as a draft first), a catalogue, and for a new script a family list in the "Languages" block; a draft is
+removed by deleting its line, its catalogue and its folder, a live one never.
 
 **The list pages are withdrawn.** `android-automotive-consultancies-gothenburg.html`, its
 Swedish twin `konsultbolag-android-automotive-goteborg.html` and

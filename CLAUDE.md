@@ -29,9 +29,11 @@ highlights the things most worth keeping front-of-mind.
   **Never edit a file in a language folder**: edit the English page, run `python3 tools/seo-head.py`, then
   translate what `python3 tools/i18n.py missing <code>` lists, in all four catalogues, and run it again. A
   changed English sentence shows in English on the generated pages until then, and `tools/verify/i18n.js`
-  fails. **All four are drafts** (`status='draft'`: excluded from the published site by `_config.yml`, `noindex`,
-  linked from nowhere, in no sitemap or lock row), because the brand voice requires a native reader's check
-  and none has been made; `status='live'` needs `checked` and `by`, and makes the language's URLs permanent.
+  fails. **All four are live since 20 November 2026 on the owner's decision, and no native reader has checked
+  them** (`waived` in `LANGS` records that; `checked` and `by` stay empty until a reader has, and are never
+  filled in for a check nobody made). Their URLs are permanent like every other: a live language never goes
+  back to draft, and a new language starts as `status='draft'` (excluded by `_config.yml`, `noindex`, linked
+  from nowhere, in no sitemap or lock row).
   Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
   is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
   its last block, "Languages". See AGENTS.md, *Languages*.
@@ -198,7 +200,7 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for the five English/Swedish pairs, and one
+  canonical link, Open Graph, hreflang for every language version of the page (the five English/Swedish pairs, and the four generated languages), and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;

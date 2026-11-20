@@ -256,6 +256,12 @@ function selfTest() {
   const copy = () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vynatix-perm-'));
     for (const f of fs.readdirSync(ROOT)) if (/\.html$/.test(f) || PUBLISHED_TEXT.includes(f)) { if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(dir, f)); }
+    // The folders of the generated languages (es/, zh/ ...): their pages are in the lock once a language is live.
+    for (const d of fs.readdirSync(ROOT, { withFileTypes: true })) {
+      if (!d.isDirectory() || !/^[a-z]{2}$/.test(d.name)) continue;
+      fs.mkdirSync(path.join(dir, d.name), { recursive: true });
+      for (const f of fs.readdirSync(path.join(ROOT, d.name))) if (/\.html$/.test(f)) fs.copyFileSync(path.join(ROOT, d.name, f), path.join(dir, d.name, f));
+    }
     fs.mkdirSync(path.join(dir, 'tools', 'seo'), { recursive: true });
     for (const f of ['seo-head.py', 'urls.lock']) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
     for (const f of fs.readdirSync(path.join(ROOT, 'tools', 'seo'))) fs.copyFileSync(path.join(ROOT, 'tools', 'seo', f), path.join(dir, 'tools', 'seo', f));

@@ -8,7 +8,7 @@ const vm = require('vm');
 const ROOT = path.join(__dirname, '..', '..');
 
 const PAGES = [
-  'index.html', 'about.html', 'services.html',
+  'index.html', 'about.html', 'services.html', 'industries.html',
   'work.html', 'membership.html', 'contact.html', 'blog.html',
   'privacy.html', 'terms.html', 'accessibility.html',
   // English deep pages and the list page (each has a Swedish twin below)

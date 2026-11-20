@@ -549,7 +549,7 @@ function clean(env, name) {
       ck(Math.abs(d.h[0] - d.h[1]) <= 0.5 && (narrow ? Math.abs(d.w[0] - d.w[1]) <= 1 : d.w[0] / d.w[1] > 0.7 && d.w[0] / d.w[1] < 1.43), `${tag}: same height and ${narrow ? 'equal width' : 'comparable width'}`, `${d.w.map(Math.round)} x ${d.h.map(Math.round)}`);
       ck(Math.abs(d.top[0] - d.top[1]) <= 1 && d.left[0] < d.left[1], `${tag}: same row, Decline to the left of Accept`);
       ck(d.closeLike === 0 && d.headings === 0 && !d.role && !d.modal && d.tabindex === 0 && d.tag === 'SECTION', `${tag}: no close X, no heading, no role or aria-modal, no tabindex`, `close ${d.closeLike} role ${d.role} modal ${d.modal}`);
-      // The home page has a second skip link (the joiner view's); the bar follows the last one.
+      // The bar follows the last skip link, should a page carry more than one.
       ck(d.prev && d.prev.includes('skip-link') && d.idx === d.skips && d.nosnippet, `${tag}: directly after the last .skip-link in the DOM, and data-nosnippet`, `prev "${d.prev}", index ${d.idx}, skip links ${d.skips}`);
       ck(d.active, `${tag}: no focus at load`);
       // Tab order and no trap: skip link, then the bar (link, Decline, Accept), then the page.
@@ -559,21 +559,6 @@ function clean(env, name) {
         order.push(await page.evaluate(() => { const a = document.activeElement; return (a.closest('#consent-bar') ? 'bar:' + (a.getAttribute('data-consent-choice') || 'link') : a.classList.contains('skip-link') ? 'skip' : a === document.body ? 'body' : 'page'); }));
       }
       ck(canon(order.slice(0, 5)) === canon(['skip', 'bar:link', 'bar:denied', 'bar:granted', 'page']), `${tag}: Tab goes skip link, bar link, Decline, Accept, then out into the page (no trap)`, order.join(' > '));
-      await env.close();
-    }
-    // The joiner view of the home page: its own skip link is the one shown, and the bar must still come
-    // after it. (A load on #join starts Tab at the fragment target, so this reads the document order of
-    // what can take focus instead of pressing Tab.)
-    for (const vw of [390, 1440]) {
-      const env = await armedContext(browser, { viewport: { width: vw, height: 900 }, theme: 'mono-light' });
-      const page = await open(env.ctx, 'index.html#join');
-      const d = await page.evaluate(() => {
-        const shown = (e) => e.getClientRects().length > 0;
-        const tabbable = [...document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]')].filter(shown);
-        const cls = (e) => (e && e.className) || '';
-        return { first: cls(tabbable[0]), second: tabbable[1] && tabbable[1].closest('#consent-bar') ? 'bar' : cls(tabbable[1]), join: !!document.querySelector('#join:target') };
-      });
-      ck(d.join && d.first.includes('skip-link--join') && d.second === 'bar', `index.html#join ${vw}px: the joiner view's skip link is the first focusable, then the bar`, JSON.stringify(d));
       await env.close();
     }
   });

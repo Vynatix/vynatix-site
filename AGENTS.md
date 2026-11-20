@@ -22,14 +22,18 @@ against the roles and components the system defines.
 
 ```
 index.html          Home — hero (with its drafting-sheet background), still client list, contents row,
-                    service chapters (each with its case card), who we are with the metrics,
-                    further reading, how we work with the comparison table, questions, CTA band
-about.html          Company / team
-services.html       Application dev, AI engineering, cloud platforms
-work.html           Selected case studies
-membership.html     "Collective" / careers for senior engineers
-contact.html        Two-inbox contact page (no form — mailto links)
-blog.html           The blog: a hand-written list of the guides, in English and in Swedish
+                    services, three figures, three case cards, the partnership band, people,
+                    insights, CTA band
+about.html          About: what we stand for, people
+services.html       AI engineering, cloud platforms, application development
+industries.html     Four industries, mobility last
+work.html           The three cases ("Cases" in the menu), team projects and libraries
+membership.html     Career ("Career" in the menu; the file name stays): the page for senior
+                    engineers and designers, in the recruit voice
+contact.html        Two-inbox contact page (no form — mailto links), how we start, and the
+                    common questions (the site's English FAQ)
+blog.html           Insights ("Insights" in the menu; the file name stays): a hand-written list of
+                    the guides, in English and in Swedish
 privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
                     section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
@@ -39,16 +43,16 @@ android-automotive-development.html   Android Automotive in Gothenburg (English 
 ai-engineering.html AI engineering in Gothenburg (English twin of ai-utveckling.html)
 choose-a-software-consultancy.html   How to choose a software consultancy: the English twin of
                     valja-konsultbolag.html, and the first post (kind='post')
-android-automotive-consultancies-gothenburg.html  Alphabetical, sourced list of Gothenburg
-                    consultancies working on Android Automotive (English twin)
+android-automotive-consultancies-gothenburg.html  Withdrawn on 20 November 2026 (a stub; it was
+                    a list of Gothenburg consultancies working on Android Automotive)
 sv.html             Swedish home and hub for the Swedish pages (twin of index.html)
-android-automotive-utveckling.html, ai-utveckling.html,
-konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
-valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
-ai-konsultbolag-sverige.html   Swedish guides
-integritet.html     Swedish privacy notice, the twin of privacy.html (one of six
+android-automotive-utveckling.html, ai-utveckling.html   Swedish twins of the two deep pages
+valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html   Swedish guides
+konsultbolag-android-automotive-goteborg.html, ai-konsultbolag-sverige.html   Withdrawn on
+                    20 November 2026 (stubs)
+integritet.html     Swedish privacy notice, the twin of privacy.html (one of five
                     English/Swedish pairs); the Swedish consent bar links to it.
-                    Twenty-three pages in total
+                    Twenty-four pages in total, three of them withdrawn stubs
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
@@ -61,8 +65,8 @@ colors_and_type.css Design system layer 2, verbatim: reset, semantic helpers,
                     .eyebrow, .btn, .card, .glass, .container, per-theme typefaces
 styles.css          Layer 3, the site's own: page chrome and components on the roles
 app.js              All client behaviour (vanilla JS, IIFEs, no modules): the theme,
-                    the mobile nav, the audience switch's
-                    small additions, and analytics consent (see Analytics)
+                    the mobile nav, the silk background
+                    and analytics consent (see Analytics)
 hero-bg.css         The hero background, the drafting sheet (only index.html links it), in the hero's unit
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
                     photographs (jpg + webp), app icons, the two masks of the hero's
@@ -215,7 +219,7 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
   layer and still get the blurred, tinted capsule from the other, which is why the
   two are separate layers rather than one declaration.
 - **The two `<filter>` elements are in the `.svg-defs` block of every page**, beside
-  the wordmark `<symbol>` (copy-pasted, like it: change all 23 together). A
+  the wordmark `<symbol>` (copy-pasted, like it: change all 24 together). A
   fragment-only `url(#id)` in an external stylesheet resolves against the page, and
   the CSP allows the map as a same-origin image.
 - **The header is not a backdrop root.** A stacking context alone is not one; only
@@ -260,7 +264,7 @@ animated static image"). It is the site's one ambient loop. Two parts:
   inverse bands and the footer are solid. **This is every state but one**: no
   JavaScript, reduced motion, forced colours, a stored pause, no WebGL, a lost WebGL
   context. They all paint the same pixels.
-- **The live silk** (the fifth IIFE of `app.js`): when motion is wanted, a
+- **The live silk** (the fourth IIFE of `app.js`): when motion is wanted, a
   `<canvas class="silk-canvas" aria-hidden="true">` is inserted as the first child of
   `<body>` and a small WebGL fragment shader draws the folds on every frame the display
   offers (the owner asked for motion "fluent as liquid"; an earlier 30 fps cap read as
@@ -343,7 +347,7 @@ masks and the guards of each. `publish.js` fails if `hero-bg.js`, `data-bg` or a
 `vynatix-bg` key comes back.
 
 - **Where it lives.** `hero-bg.css`, which only `index.html` links, after `styles.css`, so
-  the other twenty-two pages never download it. It carries a version stamp (`stamp.js`).
+  the other twenty-three pages never download it. It carries a version stamp (`stamp.js`).
   There is no script, no storage and no markup for it, so the page is the same with and
   without JavaScript (`bg-sheet.js` compares the two pixel for pixel).
 - **The rules.** Every rule on the hero carries `:lang(en)`, so the Swedish hub would be
@@ -358,9 +362,11 @@ masks and the guards of each. `publish.js` fails if `hero-bg.js`, `data-bg` or a
 motion. Row guides: `.hero__h1::before` and
 `.hero__h1 em::before` are zero-net-width inline-blocks whose bottom edge is the
 row's baseline (`1cap` is the face's cap height), at `z-index: -2` in opaque colours;
-the first carries a second set of guides at `+1lh` because the roman row is one line
-in Forest and two in Teal and Monochrome, the second is the italic line's own set,
-with the bronze baseline. Art: `.hero::before` (neutral: the tick scale under the
+each carries one set of guides, because the roman row is one word ("Engineering") and one
+line, and the second is the italic line's own set, with the bronze baseline. A roman row
+that can wrap needs a second set at `+1lh` again (the headline before this one had it; in
+Monochrome the roman and italic faces have different cap heights, so two sets that land on
+one line draw it twice, and `bg-sheet.js` fails on the weight). Art: `.hero::before` (neutral: the tick scale under the
 header, the right-edge scale limited to the gutter, and from 75rem the A-frame, arcs
 and grid from `assets/bg-sheet-art.svg`) and `.hero::after` (the bronze edge and apex
 mark, `assets/bg-sheet-edge.svg`, not generated below 75rem) are alpha masks of
@@ -379,11 +385,17 @@ sheet's guard, `bg-sheet.js`.
 **The headline copy drives the geometry, and the guard says when it moves.** The art is
 not placed with pixels from the page's corner: it hangs on the layout of the hero as it
 is (the headline's baselines, the end of its first line, the container's edges). The
-headline is "Your in-house software team." with the italic "Without the hiring.", 96px
-from about 1200px up. In Monochrome (Geist at `18ch`) the roman row wraps to two lines
-and the headline is three lines long. The constants listed above were fitted to this
-copy: they keep the art 24px or more from the text, keep the contrast behind the text
-equal to the plain page's and register the sheet's rules to the glyphs.
+headline is "Engineering" with the italic "that compounds." on its own line, 96px from
+about 1200px up: two lines, with two lines of lede under them. The constants listed above
+were fitted to the headline before this one ("Your in-house software team." / "Without the
+hiring.", three lines over six of lede), which made a taller message. They were not
+refitted: the art keeps the room it was drawn for, because from 1100px the clients' rule
+stands 336 units under the buttons instead of 96 (`--hero-gap`, see *Hero fit*), which puts
+the rule where the longer message put it. So the art is still 24px or more from the text,
+the contrast behind the text equals the plain page's and the sheet's rules register to the
+glyphs; the cost is open space under the buttons. Refitting the art to the short message
+(and taking the 336 back to 96) was the alternative; the owner chose to keep the art as it
+is (20 November 2026).
 **A change to the headline, the lede (its words or its measure), the hero's spacing, the
 clients row or a typeface can move the art into the text.** Run `npm run check:bg` after
 any such change: the guard fails and names the rule (clearance, contrast or
@@ -404,11 +416,13 @@ runs it again on a scaled hero (see *Hero fit*), and a distance it compares (the
 is multiplied by the hero's unit first. `npm run check:bg` runs the two alone, and both
 are in `npm run check`. `publish.js` adds the static rules above, and `a11y.js` the
 reduced-motion proof on the home page (nothing animates, by CSS or by the Web
-Animations API, with the sheet drawn).
+Animations API, with the sheet drawn). The clearance captures leave the client marks out: a mask's edge
+rasterizes a few levels differently with and without the sheet's layers in the hero, which
+is not art.
 
-**Hero fit.** When a home page loads, the first screen is the hero: the header, the audience
-bar and the hero's message (eyebrow, headline, lede, buttons) fill the window exactly, whatever
-its size, and the hero scales with the window's height to do it. An owner decision ("the hero
+**Hero fit.** When a home page loads, the first screen is the hero: the header and the hero's
+message (eyebrow, headline, lede, buttons) fill the window, whatever its size, and the hero
+scales with the window's height to do it. An owner decision ("the hero
 should always scale to fit the browser screen when it loads"). Both home pages, `styles.css`,
 "Hero fit". No script, no new motion, nothing stored.
 
@@ -424,22 +438,31 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   baseline, because the eyebrow's line does not scale.
 - **The solve.** With every vertical size a multiple of the unit, the hero's height is a
   straight line in it, so `u = (100svh - what stands above the hero - fixed) / slope`.
-  `--hero-above` is the header's bottom edge (78px) or the audience bar's (147px). There are
+  `--hero-above` is the header's bottom edge (78px). There are
   two lines per page (`--hero-f1`/`k1` while the lede scales, `f2`/`k2` once it has stopped at
   its floor; `min()` picks) and, under 1200px, a second pair for a headline that is as wide as
-  the window allows (`--hero-h`, `--hero-hw`; `max()` picks). The numbers are measured facts
-  about the current copy: three headline lines and six lede lines in English, two and five in
-  Swedish. **A change to the headline, the lede, a typeface, the header's height or the hero's
+  the window allows (`--hero-h`, `--hero-hw`; `max()` picks). The English hero has a third line,
+  `--hero-wf`/`--hero-wk`, for the whole hero with its client row. The numbers are measured facts
+  about the current copy: two headline lines and two lede lines in English, two and five in
+  Swedish. From 1100px, where a background's art may be drawn, the English hero's `--hero-gap`
+  is 336 units instead of 96 (the art's room, see *The headline copy drives the geometry*), and
+  the three slopes carry the extra 240. The gap also grows by ten pixels for each pixel of the
+  hero's em over 16 (`--hero-em0`): the art is drawn in em and this message has few lines to
+  grow, so with the text alone enlarged the sheet's A-frame would otherwise pass the clients'
+  rule at 150 percent. At the default text size the term is zero and the lines are untouched. **A change to the headline, the lede, a typeface, the header's height or the hero's
   spacing moves them**: `tools/verify/hero-fit.js` (check M) fails, prints the measured height
   and names the pair to refit.
 - **Three states, by the window's height.** *Message*: the message is fitted and the clients'
   rule lies on the fold, so the client row starts the scroll and is never cut half way
   (`.hero__msg`, the wrapper round the message in `index.html`, takes the first screen's
   height; the Swedish hub has no client row, so its hero ends on the fold with the message
-  centred). 96px headline from about 1012px of window height, 83px at 1440 by 900, 66px at
-  790, 43px at the envelope's lower edge. *Whole*: from 1092px of height at 1024px and wider
+  centred). The English message is short, so where the window is taller than it needs the
+  spare room is under the buttons. With the art's room (1100px and wider): 96px headline from
+  about 950px of window height, 90px at 1440 by 900, 77px at 790, 58px at the envelope's lower
+  edge. *Whole*: from 1060px of height at 1100px and wider (864px between 1024 and 1099px, where
+  no art is drawn, and 1000px on a tablet held upright, at the design size)
   the unit is solved for the whole hero (never under 0.82) and the client row is pinned to the
-  bottom of the window, the spare room above its rule; from 1248px that is the design size with
+  bottom of the window, the spare room above its rule; from 1215px that is the design size with
   more air. *Natural*: outside the envelope the hero is the plain scrolling hero at the design
   size.
 - **The envelope.** The fit applies from 650px of window height at 600px and wider and from
@@ -452,12 +475,12 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   450), so zooming in always ends at full-size text. `min-height` only, never `height` or
   `overflow`: enlarged text, a longer translation or a fallback font make the hero taller
   than the window and it scrolls; nothing is clipped.
-- **Known limits.** A phone narrower than about 390px, or with less than about 660px of small
-  viewport height, has more lede than fits at 16px: the hero is as compact as its floors allow
-  (headline 31px) and the buttons can sit under the fold. Between 600 and 767px the lede wraps
-  by the window, so the unit comes out a little small and the message fits with room to spare.
-  A tall, narrow window (a tablet held upright) fits the message at full size and has air
-  under the buttons, because the client row does not fit whole. Inside the envelope the
+- **Known limits.** A short phone window (the small viewport of a 375 by 667 phone and under) has more
+  message than fits: the hero is as compact as its floors allow (headline 31px) and the buttons
+  can sit under the fold. Between 600 and 799px the English lede wraps by the window (767px on
+  the Swedish hub), so the unit comes out a little small and the message fits with room to spare.
+  From 1100px the English hero keeps open space under its buttons at every height (the art's
+  room). Inside the envelope the
   headline is sized by the window, so browser zoom between 100 percent and the envelope's edge
   enlarges the lede but not the headline (a 2560 by 1440 window leaves the envelope at about
   220 percent).
@@ -468,105 +491,20 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   660 and 1100px, where they multiply their own distances by the unit they read from the page
   (`heroUnit` in `_common.js`). Both are in `npm run check`.
 
-**Audience switch.** The English home page opens with a slim bar of two plain links, "Hire
-a team" and "Join the team" (`.audience`, right after the two anchors that open `<main>`), and the page has two views:
-the client view (today's page) and a joiner view for senior engineers who want to join.
-Both views are in the one document. The fragment is the state and **nothing is stored**:
-`index.html#join` shows the joiner view and any other address the client view. Two empty
-anchors, `#hire` and `#join`, come first in `<main>`, so the general sibling combinator
-does the swap (`#join:target ~ .view-hire` and `#join:not(:target) ~ .view-join` are
-`display: none`, in `styles.css`, "Audience switch"). That is why it works with JavaScript
-off, can be linked to from a recruiting post, is undone by Back, and needs no storage key
-(so neither privacy notice is touched). With script, `app.js` adds three things and no style
-depends on the last two: `js-view-join` on `<html>`, set in the blocking head from the
-address, so that a fresh load of `#join` has the joiner view in force before the first
-paint (the browser only sets `:target` after parsing, so on a slow connection the client
-hero would otherwise paint first and swap); `aria-current` on the selected link; and focus
-kept on the link that was pressed (a fragment link clears it, which would put the next Tab
-on the link before; pressing the link that is already selected fires no `hashchange`, so
-that case gives focus back itself). While the class is there it decides and the `:target`
-rules step aside. It names the percent-encoded `#%6Aoin` and `#join:~:text=...` spellings
-too: Chromium already matches both with `:target`, so the script only keeps an engine that
-does not in step. `#JOIN` is not `#join`. On a spelling of the path the head test does not
-know (an extensionless `/index`) the whole enhancement stays off and `:target` decides
-alone, as with script blocked. The selected look follows the same decision, never `aria-current`, so the page, and
-the hero strip `bg-sheet.js` (A) compares with and without JavaScript, looks the same either
-way. The two links form one segmented control (they touch, share the middle hairline and
-square their inner corners), and only the selected half is filled: an unselected fill could sit
-darker than the selected one in some looks. The selected link is told apart by an underline and a
-primary border as well as its fill (the containers sit close together in some looks, and forced
-colours drop fills).
+**Audience switch (retired, November 2026).** The English home page used to open with a bar of two
+links, "Hire a team" and "Join the team", and held a second view for senior engineers at
+`index.html#join`, lifted from `membership.html`. The owner's website content plan takes the
+membership pitch off the home page, so the bar, the joiner view, its skip link, the
+`js-view-join` block of `app.js`, the `view-hire` / `view-join` classes and
+`tools/verify/audience.js` are gone. What is left of it:
 
-Rules that keep it working:
-
-- **Every child of `<main>` but the two anchors and the bar carries exactly one of `view-hire`
-  or `view-join`** (the sections, and the contents row, a `<nav>`). A new section on the home
-  page is one or the other; one with neither would show in both views.
-- **Order is part of the markup.** Adjacent-sibling selectors ignore `display: none`
-  (`.band--inset + .band--inset` once added 24px above the client closing band because the
-  hidden joiner band came before it). The client sections come first, the client closing band
-  (`#contact`) is the last of them, and the joiner sections follow; `audience.js` reads one
-  consequence of it, that the band's previous sibling is a client section and not a band, and the
-  rest is on whoever adds a section.
-- **One fragment at a time.** `:target` holds a single fragment, and every fragment but `#join`
-  is the client view. So a link inside the client view to an id inside it (the contents row,
-  `#services`, `#faq`) stays in the view, while a same-page link from anywhere else (the joiner
-  view, the header, the footer) to a fragment other than `#main`, `#hire` or `#join` would drop
-  the view without a word, and `audience.js` fails on it; so does a link in the client view to
-  an id in the joiner view. The contents row's "For senior engineers" link goes to `#join`: the
-  old `#engineers` section is the joiner view now. The normal skip link points at `#main`, so the joiner view has its own
-  (`.skip-link--join`, `href="#join"`, shown by `js-view-join` or `:has(#join.view-anchor:target)`,
-  scoped to the switch's own anchor so another page's `#join` cannot hide its skip link);
-  without either the normal one stays and following it returns to the client view. The consent
-  bar goes after the last skip link, so it follows whichever is shown. The home page therefore
-  carries two skip links where every other page has one.
-- **One `h1`.** `seo.js` counts hidden headings, so the joiner view opens with an `h2` styled
-  as the page hero's (`h2.page-hero__h1`). No `data-faq`, no second `.clients__list` in it.
-- **The joiner view's words are on a list.** Its blocks are lifted word for word from
-  `membership.html` and marked `data-from="membership.html"`; `audience.js` fails if a marked
-  sentence is not a whole element of that page, so a membership edit that rewords one is a
-  two-file change. Text outside a lifted block must be on the review list in `audience.js`
-  (`NEW`, `HOME_SENTENCES`, or a `membership.html` element). The check reads `h2`, `h3`, `p`,
-  `li`, button labels and the `cap__num` numbers, and fails on any text outside those tags until
-  a tag is added to the reader on purpose, so a new sentence cannot slip in unseen.
-  The new wording is the headline "Stay independent. Without going it alone.", the lede, the
-  "The work" eyebrow and its heading "What members work on", and the link labels ("See the
-  work", "Read about membership", "Read the full membership page", "Start a conversation");
-  the eyebrow "For senior engineers" and the heading "Independence, with a firm behind you."
-  are carried over from the home section the joiner view absorbed (neither is on the client
-  view now). Carried from the home hero: its sentence about the current work. Every link in it
-  goes to `contact.html`, `membership.html` or `work.html`. A new fact is an owner decision as
-  everywhere else (*Drafts*).
-- **English only.** `sv.html` has none of it: there is no Swedish membership page to lift from.
-  A Swedish joiner view is new published text, drafted outside the repository first.
-- **The hero is not touched.** The bar sits above it; `check:bg` stays green (the bar moves the
-  hero down by its own height and the art moves with it). The joiner view draws no hero art:
-  the client hero is hidden, and `audience.js` proves that landing on `#join`, moving the pointer
-  and then switching gives the same hero, drafting sheet included, as a direct load.
-- **The menu.** On the narrow layout the open mobile menu covers the bar, which is
-  `visibility: hidden` while it is open so nothing under the panel takes focus.
-- **Audited as a page of its own.** `a11y.js` (axe and the contrast sweep) and `screenshot.js`
-  take `index.html#join` too, because both skip what is not displayed.
-
-Known limits, by design (the owner chose a view in the page over a page of its own):
-
-- A link preview, the tab title and a bookmark of `index.html#join` come from the page's head,
-  which describes the client offer. A recruiting post that needs a correct card should link
-  `membership.html`. Once `#hire` or `#join` is posted publicly it is a permanent address;
-  `urls.lock` covers files only, so keep both working.
-- The joiner view has no visible `h1` (the page's one `h1` is in the hidden client hero),
-  and its text is not a target for text-fragment links or a snippet's "read more" jump.
-  `membership.html` is the citable home of that text.
-- After a load on a fragment the browser starts Tab at the target, so on `#join` the first Tab
-  lands on the bar rather than on the joiner view's skip link.
-- With JavaScript off on a narrow screen the header is not sticky, and following `#join`
-  scrolls the page by the `scroll-padding-top` reserve; this is how any anchor behaves there.
-- The bar adds its own height above the client hero. The hero fit counts it (`--hero-above` is
-  147px on this page), so the buttons no longer sit across the fold at 1440x900: the hero is
-  a little smaller there instead (see *Hero fit*). A change to the bar's height has to move
-  that number, and `hero-fit.js` says so.
-
-`tools/verify/audience.js` is in `npm run check`.
+- **`#join` still answers.** It was a public address, so the People section carries
+  `id="join"`: an old link lands on "Great software comes from great people" and its "Join us"
+  link, which goes to `membership.html`, the Career page. `#hire` has no element
+  now and lands at the top of the page, which is what it showed.
+- **`main.home`** is the scope the home page's own layout rules hang on (`styles.css`, "Home
+  page"), where they used to hang on the two view classes; `.hero--clients` marks the English
+  hero, the one with a client row, where the fit rules used to read `.audience ~ .hero`.
 
 **Bronze budget.** The hero already spends Bronze (the accent text colour) on the italic
 line of the headline. The sheet adds a bronze second baseline under it, a measured edge and
@@ -589,13 +527,33 @@ notices had to list, and the site's one ambient motion is the silk (see *JavaScr
 Without `hero-bg.css` the hero has no background at all, on a page with or without
 script.
 
+**Shared chrome: the header and the footer are templates, the rest is duplicated.** The `<header>` and `<footer>`
+are written into every page by `tools/seo-head.py` from the `HEADER` and `FOOTER` templates in it: a nav
+change (the `NAV` list), a change to the footer's links or contact details, or an `aria-current="page"` on the
+current page's nav link is made there, once, and the script run, not by hand in every file. The skip link and
+the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
+`<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files
+The
+header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
+Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
+when current, one small primary button and two icon buttons. On a phone the links fold into
+the menu, but the "Get in touch" button stays in the bar from 375px (enhanced header only:
+without JavaScript the wrapped nav shows the link, and under 375px it sits in the menu; with
+enlarged text its label wraps rather than leaving the bar), so a reader can act from any depth
+of a long page. The menu button's listeners are delegated from the document in the blocking
+head, so it works from the moment it is painted. On a phone the footer's link groups sit two-up
+where two columns fit, one column where they do not. The print layer at the end of `styles.css`
+prints the header once, without its controls, and keeps the inverse bands, the filled buttons
+and the client marks in colour; tonal surfaces, cards and outlined buttons print the browser's
+economical way, so a dark theme does not print as black slabs.
+
 **JavaScript** is plain ES5-flavoured vanilla JS in self-contained IIFEs, each
 guarded so a missing element is a no-op. Every page loads `app.js` from the
 `<head>`, and `app.js` is the only script on every page: there is no CDN or animation
 stack. `app.js`
-has five features: the theme (light or dark, and the toggle), the mobile nav, the
-audience switch's additions (`js-view-join`, `aria-current` and
-focus; see *Audience switch*), the silk background's drift and pause button (see *Silk
+has four features: the theme (light or dark, and the toggle), the mobile nav,
+the silk background's drift and pause button (see *Silk
 waves*), and consent for Google Analytics (see *Analytics*), which stays the last block
 because `consent.js` cuts the file there to build its baseline. The hero background has
 no script (see *Hero background*).
@@ -628,7 +586,7 @@ a measurement work. A violation names the one host that is missing; add that hos
 by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
 
 **The policy lives in three places that change together:** the `<meta>` tag on
-all 23 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+all 24 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
 Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
 **first**: the browser enforces the meta and the header independently, so a
 narrower header silently blocks Google Analytics, while a wider one is bounded
@@ -741,92 +699,98 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
   the copy rules below on visible text.
 
 **One sentence about the company**, used verbatim wherever a page introduces it
-and in the JSON-LD description, so every source an engine reads agrees: "Vynatix
-AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of
-Ultra Group. Our senior engineers work as part of client organisations on Android
-Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars
-among our clients." (Swedish: "Vynatix AB är ett mjukvarukonsultbolag i Göteborg,
-grundat 2023 och en del av Ultra Group. Våra seniora utvecklare arbetar som en del
-av kundernas organisationer inom Android Automotive, AI och molnplattformar, med
-Volvo Trucks och Volvo Cars bland kunderna.") If a fact in it changes, change it
-everywhere, including LinkedIn, the registries and `llms.txt`.
+and in the JSON-LD description, so every source an engine reads agrees: "Vynatix is
+the senior software consultancy for scale-ups. Our engineers join your team, raise the
+pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra
+Group." (Swedish: "Vynatix är mjukvarukonsultbolaget för scaleups. Våra seniora
+utvecklare blir en del av ert team, höjer tempot och gör er mjukvara starkare i takt
+med att ni växer. Vi finns i Göteborg och är en del av Ultra Group.") These are the
+brand voice's standard descriptions, in the JSON-LD (`COMPANY_SENTENCE` in
+`tools/seo-head.py`), the footer, `llms.txt` and the guides' "About Vynatix". The
+slogan in the structured data is the brand line, "Engineering that compounds". If a
+fact in it changes, change it everywhere, including LinkedIn and the registries, which
+are outside this repository and still carry the earlier sentence until the owner
+changes them.
 
-**The English home page** is ordered by what a visitor is checking, and the work sits
-beside the service it shows. After the hero comes a contents row (`.toc`, a `<nav>` of
-plain anchor links, one per section, in page order: add, rename or move a section and this
-row changes with it). From 1280px wide and 521px tall, in browsers with `scroll-target-group`
-and `:target-current`, the row pins under the header and a rail under its links fills up to the
-section the reader is in, the current link underlined; it changes paint only (the same in-flow
-size in both states, no script, no animation object, no colour transition), and other browsers,
-narrower and shorter screens keep the plain row. Where it can pin, the anchor reserve
-(`scroll-padding-top`) grows by its height; the joiner view, which hides it, keeps 96px. Then, in this order
-(proof and the four facts first, then the terms right before the questions and the call to
-action that act on them):
+**The English home page** follows the owner's website content plan of November 2026: nine blocks,
+each opening with a promise and backed by a fact, in the order a leading consultancy's home page
+uses. `<main>` carries the class `home`, which scopes the page's own layout rules. After the hero
+(the brand line "Engineering that compounds." as the headline, two buttons, and the client row
+under the label "Trusted by companies that set the standard", the companies outside automotive
+first) comes a contents row (`.toc`, a `<nav>` of plain anchor links, one per section, in page
+order: add, rename or move a section and this row changes with it). From 1280px wide and 521px
+tall, in browsers with `scroll-target-group` and `:target-current`, the row pins under the header
+and a rail under its links fills up to the section the reader is in, the current link underlined;
+it changes paint only (the same in-flow size in both states, no script, no animation object, no
+colour transition), and other browsers, narrower and shorter screens keep the plain row. Where it
+can pin, the anchor reserve (`scroll-padding-top`) grows by its height. Then, in this order:
 
-- `#services`, one section for the services and the published work. Under the heading,
-  the `#work` row (`.work-index`) lists the three projects at a glance, each row a link
-  to its chapter. Each service is a `.chapter` (`#application-development`,
-  `#ai-engineering`, `#cloud-platforms`): the writing, the case card (`.case`, one link
-  to `work.html`) and the "What we build" panel, in that source order, which is also the
-  phone order. On a wide screen the writing sits beside the panel and the case card closes
-  the chapter at full width, photograph and result side by side (every other chapter,
-  `.chapter--flip`, puts the photograph on the right), so the proof is the largest thing in
-  the chapter; keyboard focus steps from the card back up to the panel's link. A fourth
-  published project needs a decision first, because a chapter holds one card.
-- `#who-we-are` (`.section--surface`), the company sentence beside the Gothenburg photograph
-  (`.who__top`), then the four metric tiles across the full width under their own small
-  heading (`.glance`).
-- `#further-reading` (`.reads`, also `.section--surface`, so the two join as one tonal band).
-- `#how-we-work` (`.section--band`), the four steps on the inverse band and, under it,
-  the comparison table (in the wide two thirds on a wide screen, the Vynatix column on a
-  tint), the capacity and Gothenburg paragraphs and the pull quote: everything about the
-  terms of working with us, in one place. After a tonal band it takes its top padding back
-  (`.section--surface + .section--band`).
-- `#faq` (`.qa`), one row per question; on a wide screen the question sits in the
-  heading column and the answer in the lead's column (thirds up to 1239px, halves from
-  1240px, heading and rows together). The answer markup stays flat (`h3`, then `p`, `ul`,
-  `ol`), so the two columns come from a float, not a wrapper. Its first guess for the
-  deferred rendering is its own (`.toc ~ #faq`), near its real height.
-- The call-to-action band (`#contact`), directly after the last answer ("How do we start a
-  project"). The old `#engineers` section ("For senior engineers") is the joiner view's
-  opening now (see *Audience switch*), and the contents row links to it as `#join`. The
-  contents row and every section above carry `view-hire`: the joiner view replaces them,
-  hero included.
+- `#services`, "Where we make the difference": three `.cap` columns, AI engineering first, then
+  cloud platforms and application development, each one promise and one link to its section of
+  `services.html`.
+- `#numbers` (`.section--surface`), "The numbers behind the promise": three metric tiles in a `dl`
+  (`.glance`, `.metrics--3`). Each figure is the owner's and is repeated elsewhere on the site: the
+  build time (the Volvo Cars case), fourteen clients (the fourteen marks in the hero) and the reply
+  time. The plan had a fourth, "7 years or more" of experience in every consultant; the owner took
+  it out on 20 November 2026 (it would stop being true with a hire of fewer years), so no page
+  states an experience figure for the whole team.
+- `#cases`, "Real results, in production": the three published cases as `.case` cards in a
+  `.cases` row, the regulated client first, each one link to its section of `work.html`, and
+  under them the link to all cases and the line that names the photographers. A fourth
+  published case needs a decision first: the row holds three.
+- `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band. The
+  plan's closing sentence, "Start with one engineer and add more as you grow.", is left out on the
+  owner's decision of 20 November 2026: do not add it.
+- `#join`, "Great software comes from great people", with the "Join us" link (see *Audience
+  switch (retired)* for why the id is `join`).
+- `#insights` (`.reads`, `.section--surface`), "Ideas that move software forward": three entries
+  and a link to `blog.html`. Every post (`kind='post'`) must be among them (`permanence.js`
+  fails otherwise), and each entry repeats the linked page's `<title>` (without the brand suffix)
+  and meta description word for word; a Swedish page's entry carries `lang="sv"`.
+- The call-to-action band (`#contact`), "Let's build what comes next."
 
-From 905px the home page keeps one column line: every two-column block (section heads, the
-work index, the chapters, the two-ups, the steps, the joiner benefits, the four facts from
-1024px and the client closing band) splits in halves, so their right-hand columns start on one
-line, and section titles take token ends (40 to 56px) with chapter titles one step below
-(32px). Two exceptions, on purpose: the comparison takes two thirds of `.terms` (the quote and
-photograph the narrow third), and the questions keep thirds up to 1239px, their heading with
-them at the shared title size so "Common questions" stays on one line. These rules are scoped to the home
-page (`.view-hire`, `.view-join`, `#contact`): `.section__head`, `.section__h2` and the
+What the plan took off the page: the service chapters with their "What we build" panels, the
+company sentence and the Gothenburg photograph, the four steps of How we work, the comparison
+with a typical consultancy, the pull quote, the questions (and with them the page's FAQPage
+data) and the joiner view. The questions live on `contact.html` now, rewritten in the
+new voice (the owner's decision of 20 November 2026). The lines the plan removes from the whole site (declining work, sending a
+reader to another firm, "no pitch, no pressure", what a model cannot do as a headline,
+automotive as the headline) do not come back on any page.
+
+From 905px the home page keeps one column line: every section head and the closing band split
+in halves, so their right-hand columns start on one line, and section titles take token ends (40
+to 56px). The three insights sit in one row there, two-up between 600 and 904px. These rules are
+scoped to the home page (`.home`, `#contact`): `.section__head`, `.section__h2` and the
 `.cta-band` classes are shared with other pages, which keep the thirds.
 
-The same facts recur across these sections on purpose (each block is written to be
-quoted alone, and the FAQ feeds the structured data word for word), so a rearrangement
-moves sentences; it does not delete or merge them without the owner. Nothing here
-needs JavaScript and nothing moves.
+On a phone the hero's lede is one type step smaller and its buttons a step closer; the four
+figures form a two-by-two grid (one column where two cannot fit, and their figures line up in a
+row). The onward links (the contents row, read-more links, the insight titles and the closing
+band's contact lines) are 44px or more tall under 905px. Nothing here needs JavaScript and
+nothing moves.
 
-Between a phone and a laptop (600 to 904px) the home page has its own tier rather than the
-phone stack stretched wide: the steps, the joiner benefits and steps and the reading list sit
-two-up, the pull quote beside the balance photograph, and from 720px each chapter's case card
-beside its "What we build" list (the card as tall as the list, its photograph taking the extra
-height) and the company sentence beside the Gothenburg photograph. On a phone the client hero's
-lede is one type step smaller, its buttons a step closer and the client row closer, so both
-buttons sit on the first screen of a 390x844 phone in every look (the sheet art is placed from
-these boxes: run `npm run check:bg`); the four facts form a two-by-two grid (one column where
-two cannot fit, and their figures line up in a row); the comparison keeps the two answers side
-by side under column names shown once (the table's ARIA roles keep it a table once its rows are
-grids); and from 360px each step's numeral sits beside its headline. The onward links (the
-contents row, read-more links, the reading-list titles and the closing bands' contact lines) are
-44px or more tall under 905px.
+**The other pages.** The whole site follows the content plan since 20 November 2026.
+`services.html` sells the offer with AI engineering first: a promise as each section's heading,
+one paragraph, and a "What we deliver" list; the Service nodes in `tools/seo/services.json` repeat
+each paragraph. `industries.html` is new: four industries, each naming only clients on the hero's
+row, mobility last and short. `work.html` is "Cases" in the menu and the footer (the file name
+stays: a URL never changes): the three cases, the regulated client first, each told as
+challenge, work and result; the Volvo Trucks case has no challenge line until Volvo Trucks
+supplies one in its own words. The team projects and the libraries under them are unchanged.
+`blog.html` is "Insights", with the plan's heading and lede. `membership.html` is "Career", in
+the recruit voice (one engineer to another: the work, the people, the craft; no terms, pay or
+anything about leaving on the page). `about.html` has the plan's headline, four principles
+and the people block. `contact.html` has the two routes, the three steps of "How we start" and
+the English questions (`#faq`, with the page's FAQPage data). The two deep pages
+(`ai-engineering.html`, `android-automotive-development.html`) and the guide on choosing a
+consultancy keep their structure and facts and lost the lines the plan removes; the Android
+Automotive pages stay for search, off the menu, the footer and the home pages, linked from the
+Volvo Trucks case.
 
-On a wide screen keyboard focus in each service chapter goes from the writing to the wide case
-card and then back up to the "What we build" panel: the source order (writing, card, list) is
-kept because it is the phone's reading order. Moving the panel before the card in the markup
-would make the desktop order straight and change the phone order to writing, list, card; that
-is the owner's call.
+What the plan left open, so the pages do not have it: the two sentences about Ultra Group and
+the people section on About; the open roles, the line on how engineers join and the line on
+knowledge sharing on Career; a case outside automotive on Industries; the challenge line of the
+Volvo Trucks case. None of these is to be written without the owner's text.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
@@ -835,7 +799,7 @@ settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and 
 link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `sv`. Without JavaScript, or while the module is inert, the English link to
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
-`privacy.html`, one of six English/Swedish pairs, and the Swedish consent bar links
+`privacy.html`, one of five English/Swedish pairs, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
 `integritet.html`, which is a notice and not a guide and so is linked from that
@@ -844,27 +808,37 @@ page the footer's Legal column therefore deliberately holds one Swedish item, th
 relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
 "Accessibility"); the shared footer is English by design, and the link has to match
 the Swedish bar and notice. Without JavaScript it reverts to English. The
-two home pages are not mirror images: the comparison table in How we work and
-the Further reading section exist only on the English home page (sv.html has the
-Guider section instead), and so do the contents row, the service chapters and the
-photographs (see *The English home page* below). The Further reading items on index.html repeat the
-linked pages' `<title>` (without the brand suffix) and meta description word for
-word; when one of those changes, change the home page item with it. Write
+two home pages follow the same plan and are not mirror images: the Swedish hub (`main.home`, as the
+English page) has the same blocks in Swedish under the English brand line (`lang="en"` on its
+`h1`), no client row and no contents row, its insights in `#guider` (the three Swedish guides)
+and, where the English questions live on `contact.html`, its own questions in `#faq`. Its case
+cards and several links lead to English pages and say so. The Swedish was written with the
+English rewrite on 20 November 2026 and **has not been checked by a native reader**, which the
+brand voice requires before it goes out. The Insights entries on both home pages repeat the
+linked pages' `<title>` (without the brand suffix) and meta description
+word for word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
 
-**The list pages** (`konsultbolag-android-automotive-goteborg.html` and its English
-twin) name other companies. Every entry quotes the firm's own website or a job ad
-it posted, with the source linked and the date it was checked; the order is
-alphabetical; a disclosure says Vynatix compiled the list and is on it. Re-check
-every entry at least twice a year, update the "Kontrollerad" dates and
-`dateModified`, and act on corrections sent to front.disk@vynatix.com. Never rank,
-rate or describe a competitor beyond what its own site says.
+**The list pages are withdrawn.** `android-automotive-consultancies-gothenburg.html`, its
+Swedish twin `konsultbolag-android-automotive-goteborg.html` and
+`ai-konsultbolag-sverige.html` named other firms; the content plan retires them, and since
+20 November 2026 each is the withdrawn stub (`status='withdrawn'` in the registry: `noindex`,
+out of the sitemap and `llms.txt`, linked from nowhere). GitHub Pages cannot redirect, so
+the plan's "redirects to the matching service page" is this stub, which points at the home
+page. The rule they were written under still holds for anything that names another firm:
+quote only its own site, alphabetical, dated, with the disclosure, never ranked.
 
 **Copy** follows the system's content fundamentals: sentence case, no em
 dashes (use a comma, a colon, parentheses or a new sentence), no exclamation
 marks or ellipses, the middle dot (·) as the metadata separator, no Unicode
-arrows or emoji as icons. Keep the brand voice: plain, direct,
-Nordic-understated.
+arrows or emoji as icons. The voice is the owner's brand voice of November 2026:
+to clients, a promise first and the proof right behind it ("you" before "we",
+strong verbs, one clear invitation, "Start the conversation"); one name for the
+firm, consultancy, never agency or collective; every number real and every client
+named only with its approval; nothing about how Vynatix runs inside; automotive
+only inside a named case, never in a headline or a description of Vynatix. The
+whole site is written in it (the notices and the terms are legal text and keep their own
+register).
 
 **Icons** are Material Symbols Outlined, the system's one library, inlined as
 SVG (`<svg class="icon [icon--sm|icon--md]" viewBox="0 -960 960 960">`) from
@@ -890,9 +864,11 @@ footer checks, the font preloads in `app.js` (any path ending `/` is treated as 
 markdown file without front matter at `/YYYY/MM/DD/name.html` and `publish.js` lets it pass. A slug is never
 reused and a URL never removed.
 
-**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; an interest
-disclosure in the lede; a "when we are the wrong choice" section; a `data-faq` block (flat, as in the SEO
-section); the company sentence verbatim under "About Vynatix"; a call-to-action band. The byline is
+**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; the lede
+says that Vynatix wrote the guide; a `data-faq` block (flat, as in the SEO
+section); the company sentence verbatim under "About Vynatix"; a call-to-action band. (Until November 2026
+the pattern also asked for an interest disclosure and a "when we are the wrong choice" section; the content
+plan removed both, with the argument for other firms.) The byline is
 `<p class="prose__meta">Published <time datetime="YYYY-MM-DD">…</time> · Last updated <time datetime="YYYY-MM-DD">…</time> · Vynatix</p>`
 (Swedish: "Publicerad" and "Senast uppdaterad"); the two dates are `pub` and `mod` in the registry, and
 `permanence.js` fails if they differ. No cadence promise anywhere. **Section ids must not be `article`**: the
@@ -964,18 +940,13 @@ lock, that no row on `main` changed. Then run `npm run check`.
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
 - The company sentence, verbatim: "One sentence about the company", above.
-- The three projects that can be discussed and the non-disclosure line, with the date: `index.html` work section
-  ("As of October 2026, these are the three projects we can talk about. The rest of our work with Volvo Trucks
-  and Volvo Cars is under non-disclosure."), `work.html`, `sv.html` (the date, "As of October 2026" / "I oktober
-  2026", is on `index.html` and `sv.html` only). **The scope of the non-disclosure line differs between pages.**
-  Limited to Volvo Trucks and Volvo Cars: the `index.html` work section and its FAQ answer "Who are Vynatix's
-  clients?" ("The rest of the work with both is under non-disclosure."), `android-automotive-development.html`
-  and `android-automotive-utveckling.html`, and the `sv.html` work section ("Resten av vårt arbete för Volvo
-  Trucks och Volvo Cars omfattas av sekretess"). Unscoped: the `work.html` hero ("The rest of our work is under
-  non-disclosure"), `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
-  work is under non-disclosure and is not described here") and the `sv.html` FAQ answer "Vilka kunder har ni?"
-  ("Övriga kunduppdrag omfattas av sekretess"), which is the Swedish twin of the `index.html` FAQ answer, so the
-  two FAQPage answers differ in scope (both written in commit 8e521a7). Read as "beyond the published cases", an
+- The three cases that can be discussed and the non-disclosure line. Since the content plan of
+  November 2026 the `work.html` hero says "Three stories we can tell in full. More of our work is trusted to us
+  in confidence." (the owner's wording), and the home pages no longer carry a non-disclosure sentence.
+  **The scope of the non-disclosure line differs between the pages that still have one.**
+  Limited to Volvo Trucks and Volvo Cars: `android-automotive-development.html`
+  and `android-automotive-utveckling.html`. Unscoped: `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
+  work is under non-disclosure and is not described here"). Read as "beyond the published cases", an
   unscoped sentence implies the Volvo-limited one, so no two sentences contradict each other. Only the
   `terms.html` sentence was committed by the owner (e413cb9); the others come from agent commits, and all stay
   until the owner answers one question: **is all work not described on this site, for every client, under
@@ -987,8 +958,13 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
   Cars:"), so it is not read as the whole remainder or as a claim that the regulated client's other work is
   public. Do not reuse "That is what we can publish. The rest of our work with Volvo Trucks and Volvo Cars is under
   non-disclosure." outside the Volvo Trucks case it follows: read alone it takes in the published Volvo Cars case.
-- Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
-  only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`).
+- Client names in prose are the ones the content plan names, all of them on the hero's row: Saab, Sony,
+  Tele2, Swisslog, Volvo Penta, Scania, Magna, Volvo Cars and Volvo Trucks (`industries.html`, the questions on
+  `contact.html` and `sv.html`, the figures). A case is told only for Volvo Trucks, Volvo Cars and the
+  regulated client; never a broader Volvo claim, and Volvo Buses appears in the logo strip only
+  (`assets/CREDITS.md`). The content plan asks for each client's written approval before its name or logo is
+  shown, and the owner confirmed on 20 November 2026 that the approvals for the fourteen are collected. A
+  fifteenth name still needs its own.
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
 - The regulated client stays anonymous (`work.html`, the closed-domain assistant case;
   `ai-assistent-interna-dokument.html`).
@@ -1023,7 +999,7 @@ This section holds the working rules. The reasoning and the cost are in
 `tools/PRE-FLIP-CHECKLIST.md`.
 
 **What exists.** The last IIFE in `app.js`, after the theme, the hero background
-draw, the mobile nav, the audience switch and the silk background.
+draw, the mobile nav and the silk background.
 When active it shows a compact, non-modal bar fixed to the bottom of the viewport
 on a first visit (`#consent-bar`: two buttons with the identical class string,
 Decline then Accept, so neither is favoured); reopens it from the footer's
@@ -1155,7 +1131,7 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 23 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 24 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every
@@ -1192,12 +1168,11 @@ places where inline SVG cannot go (email, documents) and for regenerating the
 icons. The system holds the other inks (teal, ink, cloud, champagne, charcoal,
 paper) for the other directions.
 
-The five photographs on the home page (`case-*.jpg` and `photo-*.jpg`, each with a
+The three photographs on the home page (`case-*.jpg`, each with a
 `.webp` sibling, see `assets/CREDITS.md`) are shown in full colour with no filter
 or overlay, as the system's photography rules require for case-study imagery. They
-are stock photographs that illustrate the work, and the page says so: the chapters
-end with a line naming the photographers, and the two standalone photographs carry
-a caption that says what the camera saw and who took it. No text is set on a
+are stock photographs that illustrate the work, and the page says so: the case cards
+end with a line naming the photographers. No text is set on a
 photograph, and none is used as an uncaptioned band. The client mark in
 the home-page list is an inline SVG `<symbol>` in `index.html`, referenced with
 `<use>` and filled with `currentColor` (provenance in `assets/CREDITS.md`).
@@ -1263,7 +1238,7 @@ add third-party font/CDN requests for fonts.
   both themes. `tools/README.md` documents the repeatable checks — a visual
   regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
   an off-origin request check (`requests.js`), the random-scheme check
-  (`theme.js`), the audience switch on the home page (`audience.js`), the version-stamp
+  (`theme.js`), the version-stamp
   check (`stamp.js --check`) and its stale-cache proof (`stale-cache.js`), the search, structured-data and copy check
   (`seo.js`), the hero fit (`hero-fit.js`: the first screen is the hero at every window size),
   the hero background's guard (`bg-sheet.js`) and its
@@ -1281,7 +1256,7 @@ add third-party font/CDN requests for fonts.
   `pinConsent` pins the analytics choice, and `armGa` arms
   the consent module for checks that audit the bar). The checks run in both
   themes (`mono-light,mono-dark`) by default; `THEMES` narrows a run. Before changing the
-  home hero, its copy, the header's or the audience bar's
+  home hero, its copy, the header's
   height, or the hero rules, run `node verify/hero-fit.js` (the fit's numbers) and
   `npm run check:bg`.
 - **Re-syncing the design system.** When the system changes, copy its

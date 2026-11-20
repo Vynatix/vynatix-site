@@ -26,7 +26,7 @@
 <meta property="og:locale" content="en_GB">
 <meta property="og:locale:alternate" content="sv_SE">
 <meta property="article:published_time" content="2026-10-18">
-<meta property="article:modified_time" content="2026-10-20">
+<meta property="article:modified_time" content="2026-11-20">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -51,8 +51,8 @@
     "width": 512,
     "height": 512
    },
-   "description": "Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.",
-   "slogan": "We own the outcome. You own the code.",
+   "description": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "slogan": "Engineering that compounds",
    "foundingDate": "2023",
    "foundingLocation": {
     "@type": "Place",
@@ -79,16 +79,11 @@
    "telephone": "+46720710676",
    "contactPoint": {
     "@type": "ContactPoint",
-    "contactType": "Projects and membership",
+    "contactType": "Projects and careers",
     "email": "front.disk@vynatix.com",
     "telephone": "+46720710676"
    },
    "knowsAbout": [
-    "Android Automotive (AAOS)",
-    "In-car software",
-    "Native mobile development for iOS and Android",
-    "Web and desktop applications",
-    "Enterprise integration and SaaS",
     "AI engineering",
     "Retrieval-augmented generation",
     "LLM evaluation pipelines",
@@ -100,7 +95,12 @@
     "Platform engineering",
     "Build pipelines",
     "FinOps and cost control",
-    "Migration off legacy systems"
+    "Migration off legacy systems",
+    "Native mobile development for iOS and Android",
+    "Web and desktop applications",
+    "Enterprise integration and SaaS",
+    "Embedded Android",
+    "Android Automotive (AAOS)"
    ],
    "sameAs": [
     "https://www.linkedin.com/company/vynatix",
@@ -134,7 +134,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-10-18",
-   "dateModified": "2026-10-20",
+   "dateModified": "2026-11-20",
    "workTranslation": {
     "@id": "https://vynatix.com/ai-utveckling.html"
    },
@@ -188,7 +188,7 @@
      "name": "How is the work billed?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Vynatix bills for the hours worked and reports them honestly every week, so you can see what you are paying for and why. There is no black box and no surprise invoice."
+      "text": "Vynatix bills for the hours worked and reports them every week, so you can see what you are paying for and why."
      }
     },
     {
@@ -300,7 +300,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=89dd998e">
+<link rel="stylesheet" href="styles.css?v=63b65f3c">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -314,7 +314,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=6241560d"></script>
+<script src="app.js?v=3c44823a"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -342,8 +342,10 @@
       <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
         <ul class="site-header__list list-reset">
           <li><a href="services.html" class="site-header__link">Services</a></li>
-          <li><a href="work.html" class="site-header__link">Work</a></li>
-          <li><a href="blog.html" class="site-header__link">Blog</a></li>
+          <li><a href="industries.html" class="site-header__link">Industries</a></li>
+          <li><a href="work.html" class="site-header__link">Cases</a></li>
+          <li><a href="blog.html" class="site-header__link">Insights</a></li>
+          <li><a href="membership.html" class="site-header__link">Career</a></li>
           <li><a href="about.html" class="site-header__link">About</a></li>
           <li><a href="contact.html" class="site-header__link">Contact</a></li>
           <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">Get in touch</a></li>
@@ -365,7 +367,7 @@
       <div class="container">
         <p class="eyebrow">Services</p>
         <h1 class="page-hero__h1">AI engineering in Gothenburg, for systems that go into production.</h1>
-        <p class="page-hero__lede">Vynatix, a software consultancy in Gothenburg, builds AI systems on foundation models for production use, with senior engineers embedded in your team. That means retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch. We say plainly what a model can and cannot do, and recommend a simpler tool when it serves you better.</p>
+        <p class="page-hero__lede">Turn AI from an idea on the roadmap into a feature your users rely on every day. Vynatix builds AI systems on foundation models for production use, with senior engineers inside your team: retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch.</p>
       </div>
     </section>
 
@@ -420,16 +422,16 @@
       </div>
     </section>
 
-    <!-- ============================================================ When a model is the wrong tool -->
+    <!-- ============================================================ The right tool for each problem -->
     <section class="section section--surface" id="wrong-tool">
       <div class="container">
         <div class="two-up">
           <div>
-            <p class="eyebrow">Limits</p>
-            <h2 class="section__h2 two-up__h2">When is a language model the wrong tool?</h2>
-            <p class="two-up__body">A language model is the wrong tool when the answer has to be exact and the same every time, when ordinary code, a query or a search already solves the problem, or when nobody can check whether the output is right.</p>
-            <p class="two-up__body">A model is good at reading and writing language: answering questions over documents, summarising, classifying, extracting details and drafting. It cannot guarantee zero error, it does not know what is missing from what it was given, and the same question can come back worded differently each time.</p>
-            <p class="two-up__body">So we say plainly what a model can and cannot do for your problem, before you spend on one. If a simpler tool would serve you better, we recommend it. If the work is not something we do well, we say so and tell you who can.</p>
+            <p class="eyebrow">Advice</p>
+            <h2 class="section__h2 two-up__h2">The right tool for each problem</h2>
+            <p class="two-up__body">A language model is the right tool for reading and writing language: answering questions over documents, summarising, classifying, extracting details and drafting.</p>
+            <p class="two-up__body">Ordinary code, a query or a search is the right tool when the answer has to be exact and the same every time, or when it already solves the problem.</p>
+            <p class="two-up__body">So we choose the tool with you before you spend on a model. If a simpler one serves you better, we recommend it.</p>
           </div>
           <div class="panel">
             <p class="eyebrow eyebrow--muted">Often the better tool</p>
@@ -455,8 +457,14 @@
             <p class="two-up__body"><strong class="lead-in">The boundary.</strong> We set that line deliberately, and we can show you where it sits and why.</p>
             <a class="more" href="work.html#regulated-client"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
-          <div>
-            <blockquote>No language model has literally zero error. The honest design is a system that refuses outside its domain, and you can see where the line is.</blockquote>
+          <div class="panel">
+            <p class="eyebrow eyebrow--muted">What we delivered</p>
+            <ul>
+              <li>A closed-domain AI assistant</li>
+              <li>Answers from approved documents</li>
+              <li>A source with every answer</li>
+              <li>Questions outside the documents go to a person</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -495,20 +503,20 @@
             <p class="eyebrow">How we work</p>
             <h2 class="section__h2">Who does the work?</h2>
           </div>
-          <p class="section__lead">Senior engineers from Vynatix do the work: AI consultants in Gothenburg who work embedded in your team for as long as the assignment needs them. Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.</p>
+          <p class="section__lead">Senior engineers from Vynatix do the work: AI consultants in Gothenburg who work inside your team for as long as the assignment needs them. Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.</p>
         </div>
         <div class="caps">
           <div class="cap">
             <h3>The people you meet do the work</h3>
-            <p>There is no account layer between the engineer and you. The first conversation is usually in person, in Gothenburg.</p>
+            <p>You work directly with the people who do the work. The first conversation is usually in person, in Gothenburg.</p>
           </div>
           <div class="cap">
             <h3>Hours reported every week</h3>
-            <p>You pay for the hours worked and see them every week. No black box, no surprise invoice.</p>
+            <p>You pay for the hours worked and see them every week.</p>
           </div>
           <div class="cap">
             <h3>You own the code</h3>
-            <p>We own the outcome. You own the code. Every project leaves a record an engineer can read.</p>
+            <p>Everything we build is yours, and it is documented, so your team can keep building on it.</p>
           </div>
         </div>
       </div>
@@ -538,7 +546,7 @@
             </div>
             <div data-faq-item>
               <h3>How is the work billed?</h3>
-              <p>Vynatix bills for the hours worked and reports them honestly every week, so you can see what you are paying for and why. There is no black box and no surprise invoice.</p>
+              <p>Vynatix bills for the hours worked and reports them every week, so you can see what you are paying for and why.</p>
             </div>
             <div data-faq-item>
               <h3>How do we get started?</h3>
@@ -547,7 +555,7 @@
           </div>
 
           <h2>Read more</h2>
-          <p>The <a href="services.html">services page</a> covers all three things we do, and the <a href="work.html">work page</a> has the three projects we can talk about. In Swedish, we have written a guide to <a href="ai-assistent-interna-dokument.html" hreflang="sv">building an AI assistant over internal documents</a> and one on <a href="ai-konsultbolag-sverige.html" hreflang="sv">comparing AI consultancies in Sweden</a>.</p>
+          <p>The <a href="services.html">services page</a> covers all three things we do, and the <a href="work.html">cases page</a> has three cases told in full. In Swedish, we have written a guide to <a href="ai-assistent-interna-dokument.html" hreflang="sv">building an AI assistant over internal documents</a>.</p>
         </div>
       </div>
     </section>
@@ -556,12 +564,12 @@
     <section class="cta-band band--inset inverse" aria-labelledby="cta-title">
       <div class="cta-band__inner">
         <div>
-          <p class="eyebrow">Considered work</p>
-          <h2 class="cta-band__h2" id="cta-title">An AI system that has to be right? <em>Start with the constraint.</em></h2>
+          <p class="eyebrow">Contact</p>
+          <h2 class="cta-band__h2" id="cta-title">Let's build <em>what comes next.</em></h2>
         </div>
         <div class="cta-band__actions">
-          <p class="cta-band__lede">Tell us what the system must do and what it must not get wrong. We reply to inbound within one working day.</p>
-          <a class="btn btn--lg btn--tertiary" href="contact.html">Get in touch <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__lede">Tell us what is on your roadmap. You will hear from us within one working day.</p>
+          <a class="btn btn--lg btn--tertiary" href="contact.html">Start the conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <p class="cta-band__contact"><a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
         </div>
       </div>
@@ -577,7 +585,7 @@
           <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
             <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
           </a>
-          <p class="site-footer__about">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
+          <p class="site-footer__about">The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
           <address class="site-footer__addr">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a><br>
@@ -588,18 +596,19 @@
         <div>
           <h2 class="site-footer__h">Services</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="services.html#application-development">Application development</a></li>
             <li><a href="services.html#ai-engineering">AI engineering</a></li>
             <li><a href="services.html#cloud-platforms">Cloud platforms</a></li>
+            <li><a href="services.html#application-development">Application development</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Company</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="about.html">About</a></li>
-            <li><a href="work.html">Work</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="membership.html">Membership</a></li>
+            <li><a href="industries.html">Industries</a></li>
+            <li><a href="work.html">Cases</a></li>
+            <li><a href="blog.html">Insights</a></li>
+            <li><a href="membership.html">Career</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
@@ -607,7 +616,6 @@
           <h2 class="site-footer__h">På svenska</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
-            <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
             <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>

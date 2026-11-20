@@ -7,7 +7,7 @@
    "mainEntityOfPage": {
     "@id": "https://vynatix.com/blog.html"
    },
-   "numberOfItems": 5,
+   "numberOfItems": 4,
    "itemListElement": [
     {
      "@type": "ListItem",
@@ -50,17 +50,6 @@
       "@id": "https://vynatix.com/ai-assistent-interna-dokument.html#article",
       "url": "https://vynatix.com/ai-assistent-interna-dokument.html",
       "name": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa",
-      "inLanguage": "sv"
-     }
-    },
-    {
-     "@type": "ListItem",
-     "position": 5,
-     "item": {
-      "@type": "Article",
-      "@id": "https://vynatix.com/ai-konsultbolag-sverige.html#article",
-      "url": "https://vynatix.com/ai-konsultbolag-sverige.html",
-      "name": "AI-konsultbolag i Sverige: så jämför ni dem inför nästa projekt",
       "inLanguage": "sv"
      }
     }

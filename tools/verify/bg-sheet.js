@@ -111,6 +111,15 @@ function hideSilk() {
   const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
   sheet.insertRule('body::before, body::after { content: none !important; }', sheet.cssRules.length);
 }
+// The client marks out of both captures of the clearance measurement. A mark is a mask over a colour, and Chromium
+// rasterizes its edge a few levels differently when the sheet's own masked layers are in the hero and when they are
+// not, so a pixel difference between the two captures finds "ink" on the marks themselves, where the sheet draws
+// nothing (the art's box ends above the row). The row's box is still measured: art that came near it would differ
+// on the page behind the marks as well.
+function hideMarks() {
+  const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || ''));
+  return sheet.insertRule('.clients__mark, .clients__logo { visibility: hidden !important; }', sheet.cssRules.length);
+}
 function unhide(i) { const sheet = [...document.styleSheets].find((s) => /hero-bg\.css/.test(s.href || '')); sheet.deleteRule(i); }
 function hideText() {
   document.querySelectorAll('.hero, .hero *, .site-header, .site-header *').forEach((e) => {
@@ -220,8 +229,10 @@ async function open(browser, theme, width, zoom) {
       const { ctx, page } = await open(browser, theme, width, zoom);
       const boxes = await page.evaluate(collectBoxes);
       const clip = { x: 0, y: 0, width, height: Math.ceil(boxes.heroBox[3]) };
+      const iMarks = await page.evaluate(hideMarks);
       const iAll = await page.evaluate(hideSheet, 'all'); const none = await shot(page, clip); await page.evaluate(unhide, iAll);
       const iGuides = await page.evaluate(hideSheet, 'guides'); const art = await shot(page, clip); await page.evaluate(unhide, iGuides);
+      await page.evaluate(unhide, iMarks);
       // B: clearance of the art from every text line box, every button and the clients row
       const textRects = boxes.groups.flatMap((g) => g.rects).concat(boxes.hero);
       const clear = CLEAR * await heroUnit(page);   // 24 of the hero's unit: 24px at the design size
@@ -302,7 +313,10 @@ async function open(browser, theme, width, zoom) {
       for (const l of all) {
         const x = Math.min(width - 2, Math.round(l.right + 14));
         const baseBand = band(x, l.base - 4, l.base + 4);
-        const capBand = band(x, l.base - l.cap - 2.2, l.base - l.cap + 3);
+        // The dashed ascender guide is 0.04em above the cap rule: 3.84px at the 96px headline, nearer on a scaled hero,
+        // where pixel snapping can bring it into a band 2.2px deep and pull the centre up. The band's upper edge scales
+        // with the headline (2.2px at 96px), so it stays the same share of that distance.
+        const capBand = band(x, l.base - l.cap - 2.2 * Math.min(1, L.fs / 96), l.base - l.cap + 3);
         const dBase = Math.abs(baseBand.centre - l.base), dCap = Math.abs(capBand.centre - (l.base - l.cap));
         masses[l.name] = baseBand.mass;
         if (!(dBase <= TOL)) fail(`${tag}: ${l.name} baseline rule centre is ${baseBand.centre.toFixed(2)}, the baseline is ${l.base.toFixed(2)}`);

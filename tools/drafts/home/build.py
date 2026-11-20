@@ -14,8 +14,9 @@ The four changes, each one class or one decorative, aria-hidden element:
   3. Partnership: four frames of the hero's drawing, one stage further in each, under the band's heading.
   4. The contents row is unchanged in markup; the stylesheet stops it pinning.
   5. Services: each column takes one decorative, aria-hidden span, which shows a third of one photograph.
-  6. Cases: the three photographs are replaced by three generated still lifes, and the photo credit by a
-     [[CONFIRM]] marker, because the new credit is the owner's to word.
+  6. Cases: the three photographs are replaced by three generated still lifes (a light and a dark version of
+     each, as CSS backgrounds), and the photo credit by a [[CONFIRM]] marker, because the new credit is the
+     owner's to word.
 """
 import re
 import sys
@@ -59,17 +60,16 @@ for n in ('01', '02', '03'):
          f'<span class="cap__art cap__art--{int(n)}" aria-hidden="true"></span>\n            <span class="cap__num" aria-hidden="true">{n}</span>')
 
 # 6. Cases: the three stock photographs give way to three still lifes made for the page, in the same set as the
-#    Services picture. They are decorative inside a card whose heading is the link, so their alt text is empty
-#    (the old alt texts described the old photographs). The files live beside this script; the @@ marks keep
-#    them out of the path rewrite below.
+#    Services picture. Each has a light and a dark version, so they are CSS backgrounds chosen by the page's
+#    own colour scheme (home-draft.css); they are decorative inside a card whose heading is the link.
 i = out.index('id="cases"')
 j = out.index('</section>', i)
 cases = out[i:j]
-pictures = re.findall(r'<picture>.*?</picture>', cases, flags=re.S)
-if len(pictures) != 3:
-    sys.exit(f'build.py: expected 3 case pictures, found {len(pictures)}')
-for pic, name in zip(pictures, ('case-documents', 'case-stopwatch', 'case-dial')):
-    cases = cases.replace(pic, f'<img @@LOCAL@@"{name}.webp" alt="" width="1280" height="720" loading="lazy" decoding="async">', 1)
+boxes = re.findall(r'<div class="case__img">\s*<picture>.*?</picture>\s*</div>', cases, flags=re.S)
+if len(boxes) != 3:
+    sys.exit(f'build.py: expected 3 case pictures, found {len(boxes)}')
+for box, name in zip(boxes, ('documents', 'stopwatch', 'dial')):
+    cases = cases.replace(box, f'<div class="case__img case__img--{name}"></div>', 1)
 # The credit under the cases names the Unsplash photographers, which would no longer be true. Its replacement
 # is the owner's to word, so the draft carries the repository's marker for that and nothing invented.
 note = re.search(r'<p class="photo-note">.*?</p>', cases, flags=re.S)
@@ -85,7 +85,6 @@ out = out[:a] + '<!-- DRAFT of the home page: built by tools/drafts/home/build.p
 out = re.sub(r'<title>.*?</title>', '<title>Draft: home page proposal</title>', out, count=1)
 out = re.sub(r'(href|src|srcset)="(?!#|https?:|mailto:|tel:|data:|/)([^"]+)"', r'\1="../../../\2"', out)
 swap('<!-- Icons. favicon.svg', '<link rel="stylesheet" href="home-draft.css">\n<!-- Icons. favicon.svg')
-out = out.replace('@@LOCAL@@', 'src=')
 (HERE / 'index.html').write_text(out, encoding='utf-8')
 
 

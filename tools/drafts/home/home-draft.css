@@ -270,3 +270,28 @@
 @media (forced-colors: active) {
   .cap__art { display: none; }
 }
+
+/* ---------------------------------------------------------------
+   8. Two sets of pictures: one for the light theme, one for the dark
+   --------------------------------------------------------------- */
+/* Each generated picture exists twice: the daylight sheet, and its night version on dark paper with chalk
+   lines. The page's own colour scheme picks one: the design system sets `color-scheme` with the theme
+   (colors_and_type.css), and light-dark() reads it, so there is no theme selector here and a browser
+   fetches only the set it shows. A browser without light-dark() for images keeps the daylight set in both
+   themes, which is what the site's photographs do today. */
+.case__img--documents,
+.case__img--stopwatch,
+.case__img--dial {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.case__img--documents { background-image: url(case-documents.webp); }
+.case__img--stopwatch { background-image: url(case-stopwatch.webp); }
+.case__img--dial { background-image: url(case-dial.webp); }
+@supports (background-image: light-dark(url(a.webp), url(b.webp))) {
+  .cap__art { background-image: light-dark(url(services-sheet.webp), url(services-sheet-dark.webp)); }
+  .case__img--documents { background-image: light-dark(url(case-documents.webp), url(case-documents-dark.webp)); }
+  .case__img--stopwatch { background-image: light-dark(url(case-stopwatch.webp), url(case-stopwatch-dark.webp)); }
+  .case__img--dial { background-image: light-dark(url(case-dial.webp), url(case-dial-dark.webp)); }
+}

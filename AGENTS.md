@@ -57,6 +57,9 @@ robots.txt          Allows every crawler, names the AI search agents, points at 
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
 llms.txt            A plain-text summary of the company and every page, in both languages
+es/ zh/ hi/ ar/     The generated languages (Spanish, Chinese, Hindi, Arabic): the English pages rebuilt by
+                    tools/seo-head.py from the catalogues in tools/i18n/. Never edited by hand. Drafts: named
+                    in _config.yml exclude until a language is set live (see Languages)
 <32 hex>.txt        The IndexNow key file (tools/indexnow.js proves ownership with it)
 tokens.css          Design system layer 1: the tokens, generated from the system's
                     tokens.json (colour roles for six themes, spacing, radii, type
@@ -84,8 +87,9 @@ EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not publ
 tools/              Local verification scripts (verify/, including the consent checks
                     and the hero background guard), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
-                    block, header, footer, sitemap and URL lock) and the sheet's mask generator,
-                    sheet-art.js; NOT published, not part of the site
+                    block, header, footer, sitemap and URL lock, and builds the generated languages),
+                    i18n.py (the translation engine) with the catalogues in tools/i18n/, and the sheet's
+                    mask generator, sheet-art.js; NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
                     registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement
@@ -893,6 +897,77 @@ linked pages' `<title>` (without the brand suffix) and meta description
 word for word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
 
+**Languages.** The site is in six languages under one table, `LANGS` in `tools/seo-head.py`: English and
+Swedish are *written* (the pages in `PAGES`, by hand, as above), and Spanish, Simplified Chinese, Hindi and
+Arabic are *generated*. A generated language is every English page except the three notices, rebuilt in a
+folder named by its code (`es/services.html`, home page `es/index.html` at `https://vynatix.com/es/`). The
+English page is the only source: nobody edits a file in `es/`, `zh/`, `hi/` or `ar/`, and a run of
+`python3 tools/seo-head.py` rewrites all of them. How it works:
+
+- *Messages.* `tools/i18n.py` reads the rendered English page and takes out every message: the inner HTML of
+  the outermost element that holds text of its own (a paragraph, a heading, a link label), and the
+  translatable attributes (`alt`, `aria-label`, `aria-valuetext`, `title`, `placeholder`, any `data-i18n-*`,
+  the meta description). Inline markup inside a message becomes numbered placeholders (`Read <1>the
+  guide</1> <2/>`), so a translator never sees an attribute. Scripts, styles, inline SVG, `<code>`, anything
+  with `translate="no"` and anything with a `lang` of its own are carried over as they are. The home page's
+  brand line is `translate="no"` and stays English with `lang="en"`, as on the Swedish hub.
+- *Catalogues.* `tools/i18n/<code>.json` maps each English message to its translation, the way gettext does.
+  `tools/i18n/messages.json` (written by the script, never by hand) lists every message and the pages it is
+  on, plus the few that are on no page: the label of the language list and the withdrawn stub with its date.
+  The page's own JSON-LD nodes (`tools/seo/<page>.json`) are translated from the same catalogue; the
+  Organization node stays the one English node every page carries.
+- *Drift is a failed check.* When an English sentence changes, its message is no longer in the catalogues.
+  The generated pages then show that sentence in English, marked `lang="en"`, and `python3 tools/i18n.py`
+  and `tools/verify/i18n.js` fail until all four catalogues have it again. So **an edit to an English page
+  is not finished until the four catalogues are**: run `python3 tools/seo-head.py`, then
+  `python3 tools/i18n.py missing es` (and `zh`, `hi`, `ar`) for the list, add the translations, run the script
+  again and move the language's `mod` in `LANGS`. `python3 tools/i18n.py prune` drops entries no page uses.
+- *Links.* A link to a page the language has keeps its name; everything else gains `../` (stylesheets,
+  images, the notices, the Swedish pages) and a link to a page in another language gets `hreflang`, which
+  `styles.css` shows as "(EN)" or "(SV)" after the link. A mailto subject gains the language in brackets
+  (`subject=Project%20%5Bes%5D`), so the inbox shows which language an enquiry came from: the only measure of
+  demand there is while analytics is off.
+- *The notices are not translated.* `privacy.html`, `terms.html` and `accessibility.html` are legal text
+  (`UNTRANSLATED`): the English governs, and a generated page links to it. The consent bar is English on a
+  generated page for the same reason (`COPY` in `app.js` has English and Swedish only). **Before analytics is
+  switched on with a generated language live, counsel has to decide whether the bar and the notice need that
+  language**; that is a line for `tools/PRE-FLIP-CHECKLIST.md`, not something to translate ad hoc.
+- *Header and footer.* Built from the same `HEADER`, `NAV` and `FOOTER` templates and then translated with the
+  page, so they carry no `lang="en"`. The footer has no Swedish column (`site-footer__grid--four`) and, in its
+  last row, the language list (`languages_for`): every language in its own name, linked to this page in that
+  language or, where it has none, to that language's home page.
+- *What app.js says.* Nothing in `app.js` is translated: the two sentences it writes are carried by the page
+  (`data-i18n-play` on the background motion button, `data-i18n-percent` and `data-i18n-status` on the rate
+  calculator) and the English is only the fallback. A new sentence written by script goes the same way. On a
+  page in a language folder `app.js` finds the site's root from its own `src` (`UP`).
+- *Type and direction.* The last block of `styles.css` ("Languages") is all the CSS there is: no tracking,
+  taller display leading and upright emphasis for Chinese, Hindi and Arabic; the system faces of each script
+  appended to the family lists (**no font is self-hosted for them yet**, an open decision for the owner:
+  system faces cost nothing and differ by device); and the few physical sides that right-to-left mirrors,
+  most of them in the design system's own sheet. The layout itself is flex, grid and logical properties and
+  mirrors with `dir="rtl"`. A phone number, an address, the brand line and any message that stays in Latin
+  script get `dir="ltr"` on an Arabic page. `hero-bg.css` is not linked: the hero background is the English
+  home page's alone, and the hero fit's constants were measured on English and Swedish copy, so a longer
+  translation simply scrolls (`min-height`, never `height`).
+
+**A generated language is a draft until a native reader has checked it**, which the brand voice requires
+before anything goes out. `status='draft'` in `LANGS` means: built and checked, but its folder is named in
+`_config.yml` `exclude` (the script keeps that list between two marker lines), its pages carry `noindex` and
+no hreflang, no page outside the folder links to it, and it has no row in `sitemap.xml`, `llms.txt` or
+`tools/urls.lock`. A draft page lists the other drafts in its language list so a reviewer can move between
+them; serve the repo and open `/es/`. **All four are drafts today: the translations were written by a
+model on 20 November 2026 and no native reader has seen them.** To publish one: set `status='live'`,
+`checked` (the date of the reader's check) and `by` (who), set `pub` to that day, run
+`python3 tools/seo-head.py` and `cd tools && npm run check`. From then on every English and Swedish page
+lists the language in its footer and carries hreflang to it, the pages are in the sitemap, `llms.txt` (a
+block the script writes before "Optional") and the lock, and **its URLs are permanent like every other**: a
+live language never goes back to draft (the script refuses), and a translated page is withdrawn with its
+English source, as the stub in its own language. Going live also needs two things only the owner can
+give: a sentence in `accessibility.html` about the new language (and, for Arabic, right to left), and the
+decision above about the consent bar. Adding a language is one line in `LANGS`, a catalogue, and for a new
+script a family list in the "Languages" block; removing a draft is deleting its line, its catalogue and
+its folder.
+
 **The list pages are withdrawn.** `android-automotive-consultancies-gothenburg.html`, its
 Swedish twin `konsultbolag-android-automotive-goteborg.html` and
 `ai-konsultbolag-sverige.html` named other firms; the content plan retires them, and since
@@ -1325,6 +1400,9 @@ add third-party font/CDN requests for fonts.
   `npm run check`: the release gate (`release-gate.js`, which must fail
   until analytics is switched on for real; only its `--self-test` is in the chain)
   and the opt-in live test (`consent-live.js`); see *Analytics*.
+  The generated languages have their own check, `i18n.js` (catalogues complete, every generated page
+  well-formed and linked right, the draft gate, a load of every page at three widths, axe on three pages of
+  each language), and `seo.js` takes in a generated language once it is live; see *Languages*.
   A new page also goes into `PAGES` in `tools/verify/_common.js` and into
   `sitemap.xml`; `publish.js` fails if a root `*.html` is missing from `PAGES`.
   Because light or dark follows the system, the checks that need a particular theme pin

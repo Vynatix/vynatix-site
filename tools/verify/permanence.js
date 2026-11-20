@@ -34,7 +34,8 @@ const { ROOT, PAGES, NOTICE_PAGES, readRegistry, parseTags, htmlToText, stripCom
 
 const SITE = 'https://vynatix.com/';
 const urlOf = (f) => (f === 'index.html' ? SITE : SITE + f);
-const fileOf = (u) => (u === SITE ? 'index.html' : u.startsWith(SITE) ? u.slice(SITE.length) : null);
+// 'https://vynatix.com/es/' is es/index.html: the home page of a generated language (LANGS in tools/seo-head.py).
+const fileOf = (u) => (u === SITE ? 'index.html' : u.startsWith(SITE) ? u.slice(SITE.length).replace(/\/$/, '/index.html') : null);
 const FEEDS = ['feed.xml', 'atom.xml', 'rss.xml'];
 const PUBLISHED_TEXT = ['llms.txt', 'robots.txt', 'sitemap.xml', 'site.webmanifest', ...FEEDS];
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

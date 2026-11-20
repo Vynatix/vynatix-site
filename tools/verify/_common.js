@@ -72,6 +72,36 @@ function readRegistry(root = ROOT) {
   return out;
 }
 
+// The LANGS table of tools/seo-head.py, read as text the way readRegistry reads PAGES:
+// { es: { name, tag, locale, dir, kind, status, pub, mod, checked, by }, ... } in the table's order.
+// One entry per line: 'xx': dict(key='value', ...). kind is 'written' (English, Swedish: the pages in PAGES) or
+// 'generated' (a folder of pages tools/seo-head.py builds from the English ones and tools/i18n/<code>.json).
+function readLangs(root = ROOT) {
+  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
+  const out = {};
+  for (const line of py.split('\n')) {
+    const m = /^\s*'([a-z]{2})'\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
+    if (!m) continue;
+    const e = {};
+    for (const t of m[2].matchAll(/(\w+)\s*=\s*'((?:[^'\\]|\\.)*)'/g)) e[t[1]] = t[2];
+    if (!e.kind || !e.tag || !e.dir) throw new Error(`tools/seo-head.py: cannot read the LANGS entry for ${m[1]}`);
+    out[m[1]] = e;
+  }
+  if (!out.en) throw new Error('tools/seo-head.py: no LANGS table found (one language per line, as in the table)');
+  return out;
+}
+// The pages of the generated languages on disk, 'es/services.html', in the order of LANGS.
+function generatedPages(root = ROOT) {
+  const out = [];
+  for (const [code, l] of Object.entries(readLangs(root))) {
+    if (l.kind !== 'generated') continue;
+    let files = [];
+    try { files = fs.readdirSync(path.join(root, code)).filter((f) => f.endsWith('.html')).sort(); } catch (e) { /* not built */ }
+    for (const f of files) out.push(code + '/' + f);
+  }
+  return out;
+}
+
 // The page that carries the privacy notice (and the in-page consent panel) in each language.
 const NOTICE_PAGES = { en: 'privacy.html', sv: 'integritet.html' };
 
@@ -643,7 +673,8 @@ function chromePath() {
       .filter((d) => /^chromium-\d+$/.test(d))
       .sort()
       .pop();
-    if (dir) return `${root}/${dir}/chrome-linux/chrome`;
+    // Newer Chromium builds unpack to chrome-linux64.
+    if (dir) return [`${root}/${dir}/chrome-linux/chrome`, `${root}/${dir}/chrome-linux64/chrome`].find((f) => fs.existsSync(f)) || `${root}/${dir}/chrome-linux/chrome`;
   } catch (e) { /* fall through to Playwright's own resolution */ }
   return undefined;
 }
@@ -687,7 +718,7 @@ async function heroUnit(page) {
 }
 
 module.exports = {
-  ROOT, PAGES, readRegistry, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
+  ROOT, PAGES, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,

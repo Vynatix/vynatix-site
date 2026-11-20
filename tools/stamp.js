@@ -25,7 +25,8 @@
 // and change it in tokens.css and in app.js's DISPLAY_FACES together.
 //
 // Usage, from tools/:
-//   node stamp.js           rewrite the stamps in every root *.html page
+//   node stamp.js           rewrite the stamps in every root *.html page and every page of a generated
+//                           language (es/, zh/ ...: the folders tools/i18n/messages.json lists)
 //   node stamp.js --check   exit 1 if any stamp is missing or out of date
 //
 // Run it after any change to one of the five files, then commit the pages with
@@ -52,7 +53,8 @@ const stamps = Object.fromEntries(ALL.map((a) => [a, stampOf(a)]));
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const escaped = ALL.map(escapeRe).join('|');
 // href="styles.css" or href="styles.css?v=abc123", on a <link> or a <script src>.
-const REF = new RegExp(`((?:href|src)=")(${escaped})(\\?v=[0-9a-f]*)?(")`, 'g');
+// A page of a generated language (es/services.html) names the same files one folder up: "../styles.css".
+const REF = new RegExp(`((?:href|src)="(?:\\.\\./)?)(${escaped})(\\?v=[0-9a-f]*)?(")`, 'g');
 
 const args = process.argv.slice(2);
 if (args.some((a) => a !== '--check')) {
@@ -60,7 +62,18 @@ if (args.some((a) => a !== '--check')) {
   process.exit(2);
 }
 const check = args.includes('--check');
+// The pages at the root, and the pages of the generated languages: tools/seo-head.py builds those from the
+// English pages, stamps included, so they are stamped here too and the two tools never disagree.
+function languageFolders() {
+  try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'messages.json'), 'utf8')).languages || []; }
+  catch (e) { return []; }
+}
 const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
+for (const lang of languageFolders()) {
+  let files = [];
+  try { files = fs.readdirSync(path.join(ROOT, lang)).filter((f) => f.endsWith('.html')).sort(); } catch (e) { /* not built yet */ }
+  for (const f of files) pages.push(lang + '/' + f);
+}
 let problems = 0;
 let changed = 0;
 

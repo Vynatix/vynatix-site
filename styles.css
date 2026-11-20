@@ -2532,3 +2532,130 @@ body::after {
   .case__img--stopwatch { background-image: light-dark(url(assets/case-cars-stopwatch.webp), url(assets/case-cars-stopwatch-dark.webp)); }
   .case__img--dial { background-image: light-dark(url(assets/case-trucks-radio-dial.webp), url(assets/case-trucks-radio-dial-dark.webp)); }
 }
+
+/* ---------------------------------------------------------------
+   Languages
+   --------------------------------------------------------------- */
+/* The generated languages (es/, zh/, hi/, ar/: LANGS in tools/seo-head.py) are the English pages
+   rebuilt from a catalogue, so every rule above is theirs too. This block holds only what a
+   language changes: the language list in the footer, the mark on a link that leaves the page's
+   language, and what a script or a reading direction needs (type without capitals, italics or
+   tracking; a page that reads from the right). Role tokens only, as everywhere, and no theme
+   selector. AGENTS.md, "Languages". */
+
+/* The language list: the middle of the footer's last row, each language in its own name. */
+.site-footer__langlist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+.site-footer__langlist a { text-decoration: none; }
+.site-footer__langlist a:hover { text-decoration: underline; }
+.site-footer__langlist [aria-current] {
+  color: var(--md-sys-color-inverse-on-surface);
+  font-weight: 600;
+}
+/* A generated page has no Swedish column, so its footer has three link groups beside the brand. */
+@media (min-width: 905px) {
+  .site-footer__grid--four { grid-template-columns: 2fr 1fr 1fr 1fr; }
+}
+
+/* A link that leaves the page's language says where it leads: "(EN)" after the notices, which
+   exist in English only, "(SV)" after a Swedish guide. The language list is exempt: its links
+   carry lang and are already in the language they lead to. */
+:root:not(:lang(en), :lang(sv)) a[hreflang]:not([lang])::after {
+  content: " (" attr(hreflang) ")";
+  font-size: 0.8em;
+  text-transform: uppercase;
+}
+
+/* Chinese, Hindi and Arabic: no capitals and no italics, letters that stack or join, and taller
+   lines. Tracking goes to zero (spacing breaks joined letters and opens the Devanagari headline
+   rule), the tight display leadings open up, and each family list gains the system faces of
+   the script after the site's own: the Latin stays in Geist, Aptos and Fraunces, the rest falls
+   through to a face every current system ships. No font is downloaded for them. */
+:root:lang(zh),
+:root:lang(hi),
+:root:lang(ar) {
+  --tracking-display: 0;
+  --tracking-headline: 0;
+  --tracking-eyebrow: 0;
+}
+:root:lang(zh) {
+  --leading-tight: 1.25;
+  --leading-snug: 1.3;
+  --leading-headline: 1.4;
+  --font-display: 'Fraunces', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', sans-serif;
+  --font-editorial: var(--font-display);
+  --font-sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', system-ui, sans-serif;
+  --font-body: 'Aptos', 'Geist', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC', system-ui, sans-serif;
+}
+:root:lang(hi) {
+  --leading-tight: 1.4;
+  --leading-snug: 1.45;
+  --leading-headline: 1.5;
+  --font-display: 'Fraunces', 'Kohinoor Devanagari', 'Nirmala UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+  --font-editorial: var(--font-display);
+  --font-sans: 'Geist', 'Kohinoor Devanagari', 'Nirmala UI', 'Noto Sans Devanagari', 'Mangal', system-ui, sans-serif;
+  --font-body: 'Aptos', 'Geist', 'Kohinoor Devanagari', 'Nirmala UI', 'Noto Sans Devanagari', 'Mangal', system-ui, sans-serif;
+}
+:root:lang(ar) {
+  --leading-tight: 1.4;
+  --leading-snug: 1.45;
+  --leading-headline: 1.5;
+  --font-display: 'Fraunces', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', sans-serif;
+  --font-editorial: var(--font-display);
+  --font-sans: 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
+  --font-body: 'Aptos', 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
+}
+/* An English island on such a page (the brand line in the home hero, a sentence not yet
+   translated) keeps the system's own figures: these six repeat tokens.css, "Tracking" and
+   "Leading", and change with it. */
+:root:is(:lang(zh), :lang(hi), :lang(ar)) :lang(en) {
+  --tracking-display: -0.035em;
+  --tracking-headline: -0.02em;
+  --tracking-eyebrow: 0.24em;
+  --leading-tight: 1.05;
+  --leading-snug: 1.15;
+  --leading-headline: 1.20;
+}
+:root .metric__lbl:is(:lang(zh), :lang(hi), :lang(ar)) { letter-spacing: 0; }
+/* !important: these scripts have no italic, and a slanted copy of the upright is what a browser draws in
+   its place. Every italic above is a choice of the Latin design, on a dozen selectors of different weight;
+   this is the one rule that has to outrank them all. An English island keeps its italics. */
+:is(:lang(zh), :lang(hi), :lang(ar)) { font-style: normal !important; }
+/* Chinese has no spaces to break at: let a line end between any two characters, never inside a Latin word. */
+:root:lang(zh) body { line-break: strict; word-break: normal; overflow-wrap: anywhere; }
+
+/* Right to left (Arabic). The layout above is flex, grid and logical properties, so it mirrors
+   with the document; these are the few physical sides left, most of them in the design
+   system's own sheet (colors_and_type.css), each restated at the weight of the rule it
+   mirrors (:where adds none), so a rule that outranks the original still outranks this. */
+:where([dir="rtl"]) blockquote {
+  border-left: 0;
+  border-right: 2px solid var(--indicator);
+}
+:where([dir="rtl"]) ol { padding-left: 0; padding-right: 1.4em; }
+:where([dir="rtl"]) ul { padding-right: 0; }
+:where([dir="rtl"]) ul > li { padding-left: 0; padding-right: 1.4em; }
+:where([dir="rtl"]) ul > li::before { left: auto; right: 0; }
+:where([dir="rtl"]) ol > li { padding-left: 0; padding-right: 0.4em; }
+:where([dir="rtl"]) th,
+:where([dir="rtl"]) td { text-align: right; }
+:where([dir="rtl"]) .list-reset > li { padding: 0; }
+:where([dir="rtl"]) .compare caption { text-align: right; }
+:where([dir="rtl"]) .compare th:first-child,
+:where([dir="rtl"]) .compare td:first-child { padding-left: var(--space-4); padding-right: 0; }
+:where([dir="rtl"]) .compare th:last-child,
+:where([dir="rtl"]) .compare td:last-child { padding-right: var(--space-4); padding-left: 0; }
+/* The arrows point the way the text runs. */
+[dir="rtl"] .more > .icon,
+[dir="rtl"] .btn > .icon,
+[dir="rtl"] .case__meta > .icon { transform: scaleX(-1); }
+@media (min-width: 1280px) {
+  [dir="rtl"] .home > .section::before { left: auto; right: calc(50% - 600px - var(--space-4)); }
+  [dir="rtl"] .home > .section:not(.section--band) .section__head .eyebrow::before { left: auto; right: calc(-1 * var(--space-10)); }
+}
+/* An island of another language on a right-to-left page (the brand line, a Swedish guide's title, a
+   sentence not yet translated) reads left to right but starts at the page's edge, the right. */
+[dir="rtl"] [dir="ltr"] { text-align: right; }

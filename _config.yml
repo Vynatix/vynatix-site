@@ -32,3 +32,9 @@ exclude:
   - CODEOWNERS
   - EDGE-SETUP.md
   - .gitignore
+  # Generated languages still in draft: written by tools/seo-head.py from LANGS (AGENTS.md, "Languages")
+  - es
+  - zh
+  - hi
+  - ar
+  # end of the draft languages

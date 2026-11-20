@@ -40,7 +40,7 @@ const edge = `<path d='M${f(ea.x)} ${f(ea.y)}L${f(eb.x)} ${f(eb.y)}' stroke-widt
 const apex = `<path d='${cross(A0x, A0y, 30, 12)}' stroke-width='${f(2.2 * S)}'/>`;
 
 const layers = {
-  setOut: `<path d='M${VB.x + 14} ${D}H${VB.x + VB.w - 14}' stroke-width='${f(1.5 * S)}'/><path d='${axis}' stroke-dasharray='34 7 5 7' stroke-opacity='.8' stroke-width='${f(1 * S)}'/><path d='${feet}' stroke-opacity='.9' stroke-width='${f(1.5 * S)}'/>`,
+  setOut: `<path d='M${VB.x} ${D}H${VB.x + VB.w}' stroke-width='${f(1.5 * S)}'/><path d='${axis}' stroke-dasharray='34 7 5 7' stroke-opacity='.8' stroke-width='${f(1 * S)}'/><path d='${feet}' stroke-opacity='.9' stroke-width='${f(1.5 * S)}'/>`,
   legs: `<path d='${shape}' stroke-width='${f(2.5 * S)}' stroke-linejoin='miter'/>`,
   arcs: `<path d='${arcs}' stroke-width='${f(1.6 * S)}' stroke-opacity='.9'/>`,
   fills: `<defs><pattern id='hatch' width='8' height='8' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><path d='M0 .5H8' stroke='#000' stroke-width='${f(1 * S)}' stroke-opacity='.6'/></pattern></defs><g stroke='none'><path d='${wedge}' fill='#000' fill-opacity='.035'/><path d='${thinLeg}' fill='#000' fill-opacity='.07'/><path d='${thickLeg}' fill='#000' fill-opacity='.14'/><path d='${thickLeg}' fill='url(#hatch)'/></g>`,

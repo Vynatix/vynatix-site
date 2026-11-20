@@ -1,18 +1,123 @@
 /* DRAFT stylesheet for the home page proposal (tools/drafts/home/index.html). Not part of the site.
-   It loads after styles.css and holds only what the proposal adds or changes, so the diff against the live
-   page is this file plus the new wrappers build.py writes. Role tokens only, no [data-theme] selectors, as in
+   It loads after styles.css and holds only what the proposal changes, so the diff against the live page is this
+   file plus the four small markup changes build.py makes. Role tokens only, no [data-theme] selectors, as in
    styles.css. Nothing here moves: no animation, no transition.
 
-   The proposal in three moves:
-   1. The ceiling: the contents row is gone, so the header capsule is the only thing that sticks.
-   2. Plates and release: one claim and one picture per service, the detail folded into <details>; the
-      questions fold too; one peak (the 47 to 6 figure drawn to scale); open figures in place of boxed tiles.
-   3. The spine: the four "how we work" steps open four chapters, each with the hero's drawing one stage
-      further, on a datum line that runs down the page's left margin. */
+   The live page (the content plan of November 2026) is already short. What still closes it in is that only the
+   hero has a picture of its own, four blocks in a row are a grid of three equal things, and a second bar pins
+   under the header. The proposal, in four moves:
+   1. The ceiling: the contents row stays in the page and no longer pins, so the header is the only thing
+      that sticks.
+   2. In numbers: the figures lose their boxes, and the first one is drawn: 47 minutes and 6, as two dimension
+      lines to scale.
+   3. Cases: the first case is the wide one, so the block has a lead.
+   4. Partnership: "A partner that grows with you" is shown. The hero's drawing, four frames, one stage further
+      in each, on one datum line. */
 
 /* ---------------------------------------------------------------
-   The stage figures: the hero's A-frame, as masks over role colours
+   1. The contents row no longer pins
    --------------------------------------------------------------- */
+@media (min-width: 1280px) and (min-height: 521px) {
+  @supports (scroll-target-group: auto) and selector(:target-current) {
+    html:has(.toc) { scroll-padding-top: var(--space-24); }
+    .toc { position: static; }
+  }
+}
+
+/* ---------------------------------------------------------------
+   2. In numbers: open figures, and the first one to scale
+   --------------------------------------------------------------- */
+.glance .metrics.metrics--story {
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12) var(--space-16);
+}
+.glance .metrics--story .metric {
+  padding: var(--space-6) 0 0;
+  background: none;
+  border-top: 1px solid var(--md-sys-color-outline);
+  border-radius: 0;
+}
+.glance .metrics--story .metric--scale {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-row: auto;                 /* it has four rows of its own, so it leaves the shared tiles' subgrid */
+  grid-template-rows: none;
+}
+/* The before: the same size as the after, in the quieter ink, over a line the full width of the block. */
+.scale,
+.glance .metric--scale .metric__val {
+  display: grid;
+  gap: var(--space-3);
+  max-width: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(var(--text-h1), 11vw, calc(2 * var(--text-h1)));
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+}
+.scale {
+  margin: var(--space-6) 0 0;
+  color: color-mix(in srgb, var(--text-muted) 62%, var(--md-sys-color-surface-container-low));
+}
+.glance .metric--scale .metric__val { margin-block: var(--space-8) 0; }
+/* A drafting dimension line: a hairline between two witness ticks. The after's is 6/47 of the before's. */
+.scale::after,
+.metric--scale .metric__val::after {
+  content: '';
+  height: var(--space-4);
+  border-inline: 1px solid var(--md-sys-color-outline);
+  background: linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) center / 100% 1px no-repeat;
+}
+.metric--scale .metric__val::after {
+  width: calc(100% * 6 / 47);
+  border-inline-color: var(--md-sys-color-tertiary);
+  background-image: linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary));
+}
+.glance .metric--scale .metric__ctx {
+  margin-top: var(--space-6);
+  max-width: 44ch;
+  font-size: var(--text-body-md);
+}
+@media (max-width: 599px) {
+  .glance .metrics.metrics--story { gap: var(--space-10) var(--space-6); }
+}
+
+/* ---------------------------------------------------------------
+   3. Cases: the first one leads
+   --------------------------------------------------------------- */
+@media (min-width: 905px) {
+  .cases--lead { grid-template-columns: 1fr 1fr; }
+  .cases--lead > .case:first-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+  }
+  .cases--lead > .case:first-child .case__img {
+    position: relative;
+    flex: 0 0 58%;
+    aspect-ratio: auto;
+    min-height: 22rem;
+  }
+  .cases--lead > .case:first-child .case__img img {
+    position: absolute;
+    inset: 0;
+  }
+  .cases--lead > .case:first-child .case__body {
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-10);
+  }
+  .cases--lead > .case:first-child h3 { font-size: var(--text-h4); }
+  .cases--lead > .case:first-child .case__body > p:not(.case__meta, .case__metric) { font-size: var(--text-body-md); }
+  .cases--lead > .case:first-child .case__metric--text { font-size: var(--text-h4); }
+  .cases--lead > .case:not(:first-child) .case__img { aspect-ratio: 2 / 1; }
+}
+
+/* ---------------------------------------------------------------
+   4. Partnership: the drawing grows
+   --------------------------------------------------------------- */
+/* The hero's A-frame at four stages, as masks over role colours (stage-art.js draws them). Each frame's datum
+   line runs edge to edge, so four frames side by side share one line. */
 .fig {
   --fig-ink: color-mix(in srgb, var(--md-sys-color-outline) 82%, var(--md-sys-color-surface));
   --fig-accent: var(--md-sys-color-tertiary);
@@ -41,369 +146,14 @@
   --fig-ink: var(--inverse-on-surface-variant);
   --fig-accent: var(--md-sys-color-inverse-primary);
 }
-@media (forced-colors: active) {
-  .fig { display: none; }
-}
-
-/* ---------------------------------------------------------------
-   Overture: the story in four frames, in place of the contents row
-   --------------------------------------------------------------- */
-.overture {
-  padding-block: var(--space-24) var(--space-16);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-}
-.frames {
+.grow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-8);
-}
-.frame a {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--md-sys-color-outline);
-  color: var(--text-display);
-  text-decoration: none;
-}
-.frame .fig {
-  width: 62%;
-  max-width: 11rem;
-  margin-bottom: var(--space-6);
-}
-.frame__num {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--text-body-sm);
-  letter-spacing: var(--tracking-headline);
-  color: var(--text-accent);
-  margin-bottom: var(--space-2);
-}
-.frame__t {
-  font-family: var(--font-subhead, var(--font-display));
-  font-weight: 600;
-  font-size: var(--text-h6);
-  line-height: var(--leading-headline);
-  letter-spacing: var(--tracking-headline);
-  max-width: 18ch;
-}
-.frame a:hover .frame__t {
-  color: var(--primary-hover);
-  text-decoration: underline 1px var(--indicator);
-  text-underline-offset: 0.2em;
-}
-.overture__notes {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-10);
   margin-top: var(--space-16);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-}
-.overture__notes .eyebrow { margin: 0; }
-@media (max-width: 904px) {
-  .overture { padding-block: var(--space-16) var(--space-12); }
-  .frames { grid-template-columns: repeat(2, 1fr); gap: var(--space-10) var(--space-6); }
-}
-
-/* ---------------------------------------------------------------
-   A station: the opener of a chapter, and the datum line it sits on
-   --------------------------------------------------------------- */
-.stop {
-  position: relative;
-  padding-block: var(--space-24);
-}
-.station {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  align-items: end;
-  margin-bottom: var(--space-16);
-}
-.station__num {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--text-h5);
-  letter-spacing: var(--tracking-headline);
-  color: var(--text-accent);
-  margin: 0 0 var(--space-4);
-}
-.station__title {
-  font-size: clamp(var(--text-h4), 5vw, var(--text-h1));
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display);
-  max-width: 13ch;
-  margin: 0;
-}
-.station__body {
-  font-size: var(--text-body-lg);
-  line-height: var(--leading-relaxed);
-  color: var(--text-muted);
-  max-width: 40ch;
-  margin: var(--space-6) 0 0;
-}
-.station__fig {
-  width: min(100%, 15rem);
-  justify-self: end;
-}
-/* Inside a chapter the old section titles step down, so the station's title is the only large one. */
-.view-hire.stop .section__h2 {
-  font-size: var(--text-h4);
-  max-width: 22ch;
-}
-.datum { display: none; }
-@media (min-width: 1280px) {
-  /* The datum: a hairline in the left margin, 40px outside the text edge, for the length of every chapter.
-     The chapter's numeral rides on it while the chapter is on screen (position: sticky, the reader's scroll
-     alone), which is the page's wayfinding now and costs no height. */
-  .datum {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(50% - 600px - var(--space-4));
-    border-left: 1px solid var(--md-sys-color-outline);
-    padding-block: var(--space-24);
-  }
-  .datum__num {
-    position: sticky;
-    top: calc(var(--space-24) + var(--space-8));
-    display: block;
-    padding-left: var(--space-3);
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: var(--text-body-sm);
-    line-height: 1;
-    letter-spacing: var(--tracking-headline);
-    color: var(--text-accent);
-    background: linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) left center / var(--space-2) 1px no-repeat;
-  }
-  .station__num { display: none; }
-}
-@media (max-width: 904px) {
-  .stop { padding-block: var(--space-24) var(--space-16); }
-  .station { grid-template-columns: 1fr auto; gap: var(--space-6); margin-bottom: var(--space-16); }
-  .station__fig { width: 6.5rem; align-self: start; }
 }
 @media (max-width: 599px) {
-  .stop { padding-block: var(--space-16) var(--space-12); }
-  .station { margin-bottom: var(--space-12); }
-  .station__fig { width: 4.5rem; }
+  .grow { margin-top: var(--space-10); }
 }
-
-/* ---------------------------------------------------------------
-   Station 01: the quiet frame after "who we are"
-   --------------------------------------------------------------- */
-.pull {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-8) var(--space-16);
-  align-items: end;
-  margin-top: var(--space-24);
-}
-.pull blockquote {
-  margin: 0;
-  font-size: clamp(var(--text-h5), 3.2vw, var(--text-h3));
-  max-width: 22ch;
-  text-wrap: balance;
-}
-.pull .two-up__body {
-  margin: 0;
-  color: var(--text-muted);
-  max-width: 36ch;
-}
-@media (max-width: 904px) {
-  .pull { grid-template-columns: 1fr; margin-top: var(--space-16); }
-}
-
-/* ---------------------------------------------------------------
-   Station 02: the services as plates
-   --------------------------------------------------------------- */
-.svc-intro .section__h2 { margin-bottom: var(--space-6); }
-.svc-intro .work-index { display: block; }
-.svc-intro .work-index__list { margin-top: var(--space-6); }
-.plate {
-  margin-top: var(--space-24);
-  scroll-margin-top: var(--space-16);
-}
-.plate__head {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: end;
-  gap: var(--space-4) var(--space-8);
-  margin-bottom: var(--space-8);
-}
-.plate__head .two-up__h3 {
-  margin: var(--space-3) 0 0;
-  max-width: 24ch;
-}
-@media (min-width: 905px) {
-  .plate__head .two-up__h3 { font-size: var(--text-h4); }
-  .plate--flip .chapter__case { flex-direction: row-reverse; }
-  .plate .chapter__case .case__img { min-height: 22rem; }
-}
-/* The fold: "What we build" is the summary, the service's paragraphs and its list are inside. Native
-   <details>, so it works without script and every sentence stays in the page. */
-.fold { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
-.fold > summary {
-  padding-block: var(--space-5);
-  cursor: pointer;
-}
-.fold > summary::marker { color: var(--text-accent); }
-.fold > summary .eyebrow {
-  display: inline;
-  margin: 0 0 0 var(--space-2);
-}
-.fold > summary:hover .eyebrow { color: var(--text-display); }
-.fold__body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  align-items: start;
-  padding-block: var(--space-4) var(--space-12);
-}
-.fold__text > :last-child { margin-bottom: 0; }
-@media (max-width: 904px) {
-  .plate { margin-top: var(--space-16); }
-  .fold__body { grid-template-columns: 1fr; gap: var(--space-8); }
-}
-.stop .chapter-foot { margin-top: var(--space-12); padding-top: 0; border-top: 0; }
-
-/* ---------------------------------------------------------------
-   The peak: 47 minutes and 6, as two dimension lines to scale
-   --------------------------------------------------------------- */
-.peak { padding-block: var(--space-24); }
-.dims {
-  display: grid;
-  gap: var(--space-10);
-  margin-block: var(--space-10) var(--space-16);
-}
-.dim { display: grid; gap: var(--space-3); }
-.dim--before { width: 100%; }
-.dim--after { width: calc(100% * 6 / 47); }
-.dim__val {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(var(--text-h1), 11vw, calc(2 * var(--text-h1)));
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30;
-  color: var(--md-sys-color-inverse-on-surface);
-  white-space: nowrap;
-}
-/* A drafting dimension line: a hairline between two witness ticks. */
-.dim__line {
-  height: var(--space-4);
-  border-inline: 1px solid var(--md-sys-color-inverse-primary);
-  background: linear-gradient(var(--md-sys-color-inverse-primary), var(--md-sys-color-inverse-primary)) center / 100% 1px no-repeat;
-}
-.peak__foot {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  align-items: end;
-}
-.peak__h {
-  font-size: clamp(var(--text-h5), 3vw, var(--text-h3));
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display);
-  max-width: 16ch;
-  margin: 0;
-}
-.inverse .peak__h a {
-  color: inherit;
-  text-decoration: none;
-}
-.inverse .peak__h a:hover {
-  text-decoration: underline 1px var(--md-sys-color-inverse-primary);
-  text-underline-offset: 0.15em;
-}
-.peak__metric {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--text-h4);
-  line-height: 1;
-  color: var(--md-sys-color-inverse-primary);
-  margin: 0 0 var(--space-3);
-}
-.peak__foot p:not(.peak__metric) {
-  color: var(--inverse-on-surface-variant);
-  max-width: 40ch;
-  margin: 0;
-}
-@media (max-width: 904px) {
-  .peak { padding-block: var(--space-16); }
-  .peak__foot { grid-template-columns: 1fr; gap: var(--space-8); }
-}
-
-/* ---------------------------------------------------------------
-   Station 03: the terms beside their picture
-   --------------------------------------------------------------- */
-.ledger { grid-template-columns: 3fr 2fr; }
-.ledger .compare { margin-bottom: var(--space-8); }
-.ledger > div > :last-child { margin-bottom: 0; }
-@media (max-width: 904px) {
-  .ledger { grid-template-columns: 1fr; }
-}
-
-/* ---------------------------------------------------------------
-   Station 04: the four facts as open figures, not boxed tiles
-   --------------------------------------------------------------- */
-.stop .glance {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
-}
-.stop .glance .metric {
-  padding: var(--space-6) 0 0;
-  background: none;
-  border-top: 1px solid var(--md-sys-color-outline);
-  border-radius: 0;
-}
-
-/* ---------------------------------------------------------------
-   Common questions: a folded list beside its heading
-   --------------------------------------------------------------- */
-details.qa__item { padding-block: 0; }
-details.qa__item > summary {
-  padding-block: var(--space-6);
-  margin-left: 0;
-  cursor: pointer;
-}
-details.qa__item > summary::marker { color: var(--text-accent); }
-details.qa__item > summary > h3 {
-  display: inline;
-  margin: 0 0 0 var(--space-2);
-  font-size: var(--text-h6);
-  line-height: var(--leading-headline);
-  letter-spacing: var(--tracking-headline);
-}
-details.qa__item > :not(summary) { margin-left: var(--space-6); }
-details.qa__item > :last-child:not(summary) { margin-bottom: var(--space-8); }
-details.qa__item:last-child { border-bottom: 1px solid var(--md-sys-color-outline); }
-@media (min-width: 905px) {
-  #faq.view-hire > .container {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: var(--space-16);
-    align-items: start;
-  }
-  #faq.view-hire .section__head {
-    display: block;
-    margin-bottom: 0;
-  }
-  #faq.view-hire .section__lead { margin-top: var(--space-6); }
-}
-
-/* ---------------------------------------------------------------
-   The closing band: the finished drawing signs the page off
-   --------------------------------------------------------------- */
-.cta-fig {
-  width: 8rem;
-  margin-top: var(--space-12);
-}
-@media (max-width: 904px) {
-  .cta-fig { display: none; }
+@media (forced-colors: active) {
+  .grow { display: none; }
 }

@@ -274,7 +274,7 @@
 /* ---------------------------------------------------------------
    8. Partnership: a film of the drawing being made, moved by the reader's scroll
    --------------------------------------------------------------- */
-/* A short film (generated; film.mp4 beside this file is the source) cut into a sheet of frames, six by six.
+/* A short generated film (8 seconds, kept outside the repository) cut into a sheet of frames, six by six.
    The reader's own scroll steps through the frames while the band crosses the window, so the drawing is
    made as they read: nothing here plays, loops or moves by itself, and there is no control to press.
    What everyone else sees is the last frame, the finished drawing: a browser without scroll-driven
@@ -284,7 +284,7 @@
    for an equal share and ends on the last, so the film stops on its final frame. */
 .film {
   position: relative;
-  overflow: hidden;
+  overflow: clip;                 /* clip, not hidden: hidden would make this box the reel's scroller */
   aspect-ratio: 2 / 1;
   margin-top: var(--space-12);
   border-radius: var(--radius-lg);
@@ -303,10 +303,13 @@
   .film__reel { background-image: url(film-reel-s.webp); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
+  @supports (animation-timeline: view()) and (overflow: clip) {
+    /* The timeline is the frame's own passage through the window, not the reel's: the reel is six times
+       the frame's size and moves, so it cannot measure itself. */
+    .film { view-timeline: --film block; }
     .film__reel {
       animation: film-across steps(6, jump-none) 6 both, film-down steps(6, jump-none) 1 both;
-      animation-timeline: view(), view();
+      animation-timeline: --film, --film;
       animation-range: cover 18% cover 58%;
     }
   }

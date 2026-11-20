@@ -2249,3 +2249,186 @@ body::after {
   .silk-canvas,
   .js-motion .motion-item { display: none; }
 }
+
+/* ---------------------------------------------------------------
+   Rate calculator (membership.html, #rate-calculator)
+   A form on the left, its results on a solid card on the right; one column
+   under 905px. app.js works it out in the browser and opts in with js-calc:
+   without JavaScript the calculator is not shown at all (no dead control) and
+   the paragraph above it says so. Nothing here moves.
+   --------------------------------------------------------------- */
+.calc { display: none; }
+.calc-nojs {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--text-muted);
+}
+.js-calc .calc-nojs { display: none; }
+.js-calc .calc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-16);
+  align-items: start;
+}
+.calc__group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.calc__group + .calc__group { margin-top: var(--space-12); }
+.calc__legend {
+  width: 100%;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-6) 0 0;
+  border-top: 1px solid var(--md-sys-color-outline);
+  font-family: var(--font-display);
+  font-size: var(--text-h5);
+  font-weight: 600;
+  line-height: var(--leading-headline);
+  letter-spacing: var(--tracking-headline);
+  color: var(--text-display);
+}
+.calc__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+.calc__row[hidden] { display: none; }
+.calc__row + .calc__field,
+.calc__check + .calc__row { margin-top: var(--space-5); }
+.calc__field {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.calc__field label,
+.calc__check {
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  line-height: var(--leading-normal);
+  color: var(--text-body);
+}
+/* The band is one container step off the canvas, so the fields take the canvas. */
+.calc__field input[type="number"] {
+  min-height: 48px;
+  background: var(--md-sys-color-surface);
+  font-variant-numeric: tabular-nums;
+}
+.calc__hint {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+.calc__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.calc__share {
+  font-family: var(--font-display);
+  font-size: var(--text-h5);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-display);
+}
+.calc__field input[type="range"] {
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  accent-color: var(--md-sys-color-primary);
+  cursor: pointer;
+}
+.calc__marks {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-caption);
+  color: var(--text-muted);
+}
+.calc__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  margin-top: var(--space-4);
+  cursor: pointer;
+}
+.calc__check input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--md-sys-color-primary);
+  cursor: pointer;
+}
+.calc__field input[type="range"]:focus-visible,
+.calc__check input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The results: figures in the display face, then the cost lines as a list. */
+.calc__results { padding: var(--space-8); }
+.calc__figure { display: grid; gap: var(--space-1); }
+.calc__figure + .calc__figure { margin-top: var(--space-6); }
+.calc__figure-label {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+.calc__figure-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-headline);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-display);
+}
+.calc__figure--lead .calc__figure-value {
+  font-size: clamp(var(--text-h3), 4.4vw, var(--text-h2));
+  letter-spacing: var(--tracking-display);
+}
+.calc__h3 {
+  margin: var(--space-10) 0 var(--space-2);
+  font-size: var(--text-h6);
+  line-height: var(--leading-headline);
+}
+.calc__list { margin: 0; }
+.calc__list--sum { margin-top: var(--space-6); }
+.calc__list > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+}
+.calc__list dt { color: var(--text-muted); }
+.calc__list dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+  color: var(--text-body);
+}
+.calc__list > .calc__total { border-top-color: var(--md-sys-color-outline); }
+.calc__total dt,
+.calc__total dd {
+  font-weight: 600;
+  color: var(--text-display);
+}
+.calc__foot { margin-top: var(--space-6); }
+@media (max-width: 904px) {
+  .js-calc .calc { grid-template-columns: minmax(0, 1fr); gap: var(--space-10); }
+}
+@media (max-width: 599px) {
+  .calc__row { grid-template-columns: minmax(0, 1fr); }
+  .calc__results { padding: var(--space-6); }
+}

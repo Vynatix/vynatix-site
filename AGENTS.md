@@ -29,7 +29,7 @@ services.html       AI engineering, cloud platforms, application development
 industries.html     Four industries, mobility last
 work.html           The three cases ("Cases" in the menu), team projects and libraries
 membership.html     Career ("Career" in the menu; the file name stays): the page for senior
-                    engineers and designers, in the recruit voice
+                    engineers and designers, in the recruit voice, with the rate calculator
 contact.html        Two-inbox contact page (no form — mailto links), how we start, and the
                     common questions (the site's English FAQ)
 blog.html           Insights ("Insights" in the menu; the file name stays): a hand-written list of
@@ -65,8 +65,8 @@ colors_and_type.css Design system layer 2, verbatim: reset, semantic helpers,
                     .eyebrow, .btn, .card, .glass, .container, per-theme typefaces
 styles.css          Layer 3, the site's own: page chrome and components on the roles
 app.js              All client behaviour (vanilla JS, IIFEs, no modules): the theme,
-                    the mobile nav, the silk background
-                    and analytics consent (see Analytics)
+                    the mobile nav, the silk background, the Career page's rate
+                    calculator and analytics consent (see Analytics)
 hero-bg.css         The hero background, the drafting sheet (only index.html links it), in the hero's unit
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
                     photographs (jpg + webp), app icons, the two masks of the hero's
@@ -552,9 +552,9 @@ economical way, so a dark theme does not print as black slabs.
 guarded so a missing element is a no-op. Every page loads `app.js` from the
 `<head>`, and `app.js` is the only script on every page: there is no CDN or animation
 stack. `app.js`
-has four features: the theme (light or dark, and the toggle), the mobile nav,
+has five features: the theme (light or dark, and the toggle), the mobile nav,
 the silk background's drift and pause button (see *Silk
-waves*), and consent for Google Analytics (see *Analytics*), which stays the last block
+waves*), the rate calculator on the Career page (see *Rate calculator*), and consent for Google Analytics (see *Analytics*), which stays the last block
 because `consent.js` cuts the file there to build its baseline. The hero background has
 no script (see *Hero background*).
 The only third-party script that can ever run is Google's `gtag.js`, which the consent feature
@@ -779,13 +779,50 @@ challenge, work and result; the Volvo Trucks case has no challenge line until Vo
 supplies one in its own words. The team projects and the libraries under them are unchanged.
 `blog.html` is "Insights", with the plan's heading and lede. `membership.html` is "Career", in
 the recruit voice (one engineer to another: the work, the people, the craft; no terms, pay or
-anything about leaving on the page). `about.html` has the plan's headline, four principles
+anything about leaving in the copy; the one place pay appears is the rate calculator, next
+paragraph). `about.html` has the plan's headline, four principles
 and the people block. `contact.html` has the two routes, the three steps of "How we start" and
 the English questions (`#faq`, with the page's FAQPage data). The two deep pages
 (`ai-engineering.html`, `android-automotive-development.html`) and the guide on choosing a
 consultancy keep their structure and facts and lost the lines the plan removes; the Android
 Automotive pages stay for search, off the menu, the footer and the home pages, linked from the
 Volvo Trucks case.
+
+**Rate calculator.** Asked for on 20 November 2026, and an exception to two rules above (nothing
+about how Vynatix runs inside; no terms or pay on Career): `membership.html#rate-calculator`, between
+"How it works" and the closing band. The visitor types an hourly rate, the hours billed in a month,
+a share of the invoiced amount (a slider, 70 to 80 per cent, 75 to start), monthly costs, a savings
+target and, behind a checkbox, a company car; the card beside the form shows the share of the
+month's invoicing, the highest gross salary it carries (a whole hundred, never under 1,000), what
+that salary costs line by line, the fixed and total costs, and what is left on the balance.
+
+- **Where it lives.** Markup in `membership.html` (`[data-calc]`, inputs named by `data-calc-in`,
+  figures by `data-calc-out`), the fourth block of `app.js`, the last section of `styles.css`
+  (`.calc`). No form element (Enter must not submit anything), no storage, no request: what is
+  typed never leaves the page, so the notices do not mention it.
+- **The model** is in the comment above the block. `SALARY_COST` (1.57) is the whole cost of one
+  krona of gross salary and decides the salary. The lines the card itemises (employer
+  contributions 31.42%, five weeks of holiday, pension 4.5%, payroll tax of 24.26% on the pension)
+  come to 1.4663; the difference is shown as "Other salary costs", taken from the rounded figures
+  so the list adds up to the total to the krona.
+- **The numbers are the owner's.** They were copied from the calculator this one was modelled on
+  (consulting-salary-calculator.netlify.app), not supplied in writing: the share's range, the
+  pension, the 1.57 and what "Other salary costs" stands for are to be confirmed before the page
+  is published, and the two tax rates are the 2026 ones and change with the law. A change is made
+  in three places together: the constants in `app.js`, the percentages printed in the page's
+  labels, and the same constants in `tools/verify/calc.js`.
+- **Without JavaScript** the calculator is not displayed and a paragraph (`.calc-nojs`) says it
+  needs JavaScript and links to `contact.html`; `app.js` sets `js-calc` on `<html>` once it has
+  wired the fields. The car fields are `hidden` until the box is ticked and count only then.
+- **Accessibility.** Every field has a label, hints are tied with `aria-describedby`, the slider
+  carries `aria-valuetext`, and the result is announced through one `role="status"` line 0.8s
+  after the last keystroke (eleven live figures would talk over the typing). Controls are 44px or
+  taller. Nothing moves.
+- **Copy.** The section says what the tool does and that it is an estimate, not an offer. It adds
+  no sentence about how engineers join or what the terms are: that text is still the owner's.
+- `tools/verify/calc.js` (in `npm run check`) types into the page and compares every figure with
+  the model written a second time, and covers the list adding up, the car, bad input, storage,
+  the announcement, the layout at three widths and the no-JavaScript state.
 
 What the plan left open, so the pages do not have it: the two sentences about Ultra Group and
 the people section on About; the open roles, the line on how engineers join and the line on

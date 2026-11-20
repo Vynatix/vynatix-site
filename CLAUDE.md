@@ -113,10 +113,10 @@ highlights the things most worth keeping front-of-mind.
   editing any of the five, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
   (theme toggle, mobile nav, the silk background's `js-waves` and pause
-  button, and last, where `consent.js` expects it, analytics consent)
-  and no CDN/animation stack. **One thing on
+  button, the Career page's rate calculator, and last, where `consent.js`
+  expects it, analytics consent) and no CDN/animation stack. **One thing on
   the site moves on its own, and no second may be added: the silk background is drawn
   live until the visitor pauses it (above).** Everything else that moves is a short
   transition on hover or focus; reduced motion removes all of it. The system
@@ -161,7 +161,14 @@ highlights the things most worth keeping front-of-mind.
   (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
   removed do not come back on any page: declining work or sending a reader to another firm, comparisons with
   other consultancies, "no pitch, no pressure", what a model cannot do as a headline, talk of size, the
-  membership pitch. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
+  membership pitch. **One exception, asked for on 20 November 2026: the rate calculator on the Career page**
+  (`membership.html#rate-calculator`), which works from a share of the invoiced amount and shows what a
+  salary costs. The share is 70 per cent; its slider (70 to 80) is hidden, and five clicks on the "Your
+  assignment" title show it, with no hint on the page, on purpose: never add one. It is worked out in the browser by `app.js`, stores and sends nothing, and is not shown without
+  JavaScript (`js-calc`). Its terms (the share, the 4.5% pension, 1.57 as the cost of a krona of salary) were
+  taken from the calculator it was modelled on and are the owner's: change one in `app.js`, in the page's labels
+  and in `tools/verify/calc.js` together, and add no sentence about terms around it. See AGENTS.md, *Rate
+  calculator*. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
   engineer" sentence, the English questions live on `contact.html`. **Never fill in what the plan leaves to the
   owner** (the Ultra Group sentences, people by name, open roles, how engineers join, a case outside
   automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
@@ -191,7 +198,7 @@ highlights the things most worth keeping front-of-mind.
 - **Progressive enhancement and accessibility are load-bearing:** no-JS users
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
-  `.js-theme` for the theme toggle, `.js-motion` for the background motion button, `.js-consent` once the consent module is
+  `.js-theme` for the theme toggle, `.js-motion` for the background motion button, `.js-calc` for the rate calculator, `.js-consent` once the consent module is
   active). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 
@@ -202,7 +209,8 @@ There is no lint step, but there *is* a check suite: see `tools/README.md`
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
-style rules, the hero background's rules and the retired draws), the hero background's guard, accessibility
+style rules, the hero background's rules and the retired draws), the hero background's guard, the rate
+calculator's arithmetic and no-JavaScript state (`calc.js`), accessibility
 including a contrast sweep, and a screenshot diff.
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first

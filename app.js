@@ -1,8 +1,8 @@
-// Site script. Four features, each in its own block below: the theme (the
+// Site script. Five features, each in its own block below: the theme (the
 // Monochrome scheme, light or dark), the mobile nav, the silk
-// background's drift and its pause button, and last (tools/verify/consent.js
-// cuts the file there for its baseline, so it stays last) consent for Google
-// Analytics. The analytics block does nothing until the visitor has
+// background's drift and its pause button, the rate calculator on the Career
+// page, and last (tools/verify/consent.js cuts the file there for its
+// baseline, so it stays last) consent for Google Analytics. The analytics block does nothing until the visitor has
 // accepted on the consent bar (a stored Accept from an earlier visit counts),
 // and it is inert (no markup, no storage access, no listeners) while the
 // measurement ID is still the placeholder.
@@ -404,6 +404,157 @@
     if (quiet && quiet.addEventListener) quiet.addEventListener('change', function () { if (quiet.matches) stop(); else start(); });
     // Not even one frame is asked for where nothing will be drawn (reduced motion, forced colours, a stored pause).
     if (root.classList.contains('js-waves') && !(quiet && quiet.matches)) requestAnimationFrame(function () { setTimeout(start, 0); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+// Rate calculator — what an hourly rate pays as a monthly salary (membership.html).
+//
+// The visitor types a rate, the hours billed in a month and their costs; this
+// block works out, in the browser, the share of the invoicing that is theirs,
+// the highest gross salary that share carries and what is left on the balance.
+// Nothing typed is stored or sent: no storage, no request, no cookie. The page
+// shows the calculator only once js-calc is set (styles.css); without
+// JavaScript a paragraph says so instead, so no control is ever dead.
+//
+// The share is 70 per cent and its slider (70 to 80) is not shown. Five clicks
+// on the "Your assignment" title, each within REVEAL_GAP_MS of the last, show
+// it for the rest of the visit; nothing on the page hints at this, on purpose,
+// and nothing remembers it. While the slider is hidden the share is held at
+// its starting value, whatever a restored form says. This keeps the control
+// out of sight, not secret: the range is in this file and the page's markup.
+//
+// The model, one month at a time:
+//   share     = rate x hours x the visitor's share of the invoiced amount
+//   fixed     = healthcare + mobile + other + car cost + employer
+//               contributions on the car's benefit value
+//   salary    = the highest whole hundred where fixed + salary x SALARY_COST
+//               fits in share - savings target (nothing under MIN_SALARY)
+//   balance   = share - fixed - salary x SALARY_COST (so it holds the savings)
+// SALARY_COST is what one krona of gross salary costs in all. The lines the
+// card itemises (contributions, holiday, pension and its tax) come to 1.4663
+// of it; the rest is shown as its own line, "Other salary costs", so the list
+// adds up to the total. tools/verify/calc.js checks the page against the same
+// arithmetic, written a second time. The constants are terms and tax rates:
+// change one only with the figure the page prints beside it (membership.html).
+(function () {
+  var root = document.documentElement;
+  var EMPLOYER_FEE = 0.3142;   // employer contributions (arbetsgivaravgifter), 2026
+  var HOLIDAY = 5 / 52;        // five weeks of holiday set aside
+  var PENSION = 0.045;         // pension, as a share of gross salary
+  var PENSION_TAX = 0.2426;    // payroll tax on the pension (sarskild loneskatt), 2026
+  var SALARY_COST = 1.57;      // total cost of one krona of gross salary
+  var STEP = 100;              // a salary is a whole hundred
+  var MIN_SALARY = 1000;       // and never less than this
+  var MAX_INPUT = 1e7;         // keeps a mistyped figure finite
+  var ANNOUNCE_MS = 800;       // a screen reader hears the result once typing stops
+  var REVEAL_CLICKS = 5;       // clicks on the title that show the share slider
+  var REVEAL_GAP_MS = 2000;    // the longest pause between two of them
+
+  function compute(v) {
+    var share = v.rate * v.hours * (v.share / 100);
+    var fixed = v.health + v.mobile + v.other +
+      (v.car ? v.carCost + v.carBenefit * EMPLOYER_FEE : 0);
+    var room = share - v.savings;
+    var salary = Math.floor((room - fixed) / SALARY_COST / STEP) * STEP;
+    // The division can land one step off at an exact boundary: settle it on
+    // the comparison itself.
+    while (salary > 0 && fixed + salary * SALARY_COST > room) salary -= STEP;
+    while (fixed + (salary + STEP) * SALARY_COST <= room) salary += STEP;
+    if (!(salary >= MIN_SALARY)) salary = 0;
+    var employer = salary * EMPLOYER_FEE;
+    var holiday = salary * HOLIDAY;
+    var pension = salary * PENSION;
+    var pensionTax = pension * PENSION_TAX;
+    var salaryCost = salary * SALARY_COST;
+    return {
+      revenue: share, salary: salary, base: salary, employer: employer, holiday: holiday,
+      pension: pension, pensionTax: pensionTax,
+      // What the lines above leave of the total, taken from the rounded figures
+      // the card shows, so the list adds up to the krona.
+      otherSalary: Math.round(salaryCost) - salary - Math.round(employer) - Math.round(holiday) -
+        Math.round(pension) - Math.round(pensionTax),
+      salaryCost: salaryCost, fixed: fixed, costs: fixed + salaryCost,
+      balance: share - fixed - salaryCost
+    };
+  }
+
+  function sek(n) {
+    var r = Math.round(n);
+    var digits;
+    try { digits = Math.abs(r).toLocaleString('en-GB'); } catch (e) { digits = String(Math.abs(r)); }
+    return (r < 0 ? '−' : '') + digits + ' SEK';
+  }
+
+  function init() {
+    var calc = document.querySelector('[data-calc]');
+    if (!calc) return;
+    var ins = {};
+    var outs = {};
+    var i;
+    var list = calc.querySelectorAll('[data-calc-in]');
+    for (i = 0; i < list.length; i++) ins[list[i].getAttribute('data-calc-in')] = list[i];
+    list = calc.querySelectorAll('[data-calc-out]');
+    for (i = 0; i < list.length; i++) outs[list[i].getAttribute('data-calc-out')] = list[i];
+    var carFields = document.getElementById('calc-car-fields');
+    var shareField = calc.querySelector('[data-calc-share]');
+    var revealer = calc.querySelector('[data-calc-reveal]');
+    var timer = null;
+    var clicks = 0;
+    var lastClick = 0;
+
+    function num(name) {
+      var n = ins[name] ? parseFloat(ins[name].value) : 0;
+      if (!(n > 0)) return 0;              // empty, not a number or negative
+      return Math.min(n, MAX_INPUT);
+    }
+
+    function update() {
+      var car = !!(ins.car && ins.car.checked);
+      // Out of sight, the share is the one the page starts with.
+      if (ins.share && shareField && shareField.hidden) ins.share.value = ins.share.defaultValue;
+      var share = num('share');
+      var r = compute({
+        rate: num('rate'), hours: num('hours'), share: share,
+        health: num('health'), mobile: num('mobile'), other: num('other'), savings: num('savings'),
+        car: car, carCost: num('carCost'), carBenefit: num('carBenefit')
+      });
+      if (carFields) carFields.hidden = !car;
+      if (ins.share) ins.share.setAttribute('aria-valuetext', share + ' per cent');
+      if (outs.shareLabel) outs.shareLabel.textContent = share + '%';
+      for (var key in r) {
+        if (Object.prototype.hasOwnProperty.call(r, key) && outs[key]) outs[key].textContent = sek(r[key]);
+      }
+      // Costs that leave no room for a salary: say so under the figure.
+      if (outs['short']) outs['short'].hidden = !(r.revenue > 0 && r.salary === 0);
+      if (outs.status) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function () {
+          outs.status.textContent = 'Gross monthly salary ' + sek(r.salary) +
+            '. Left on your balance ' + sek(r.balance) + '.';
+        }, ANNOUNCE_MS);
+      }
+    }
+
+    calc.addEventListener('input', update);
+    calc.addEventListener('change', update);
+    if (revealer && shareField) {
+      revealer.addEventListener('click', function () {
+        var now = Date.now();
+        clicks = now - lastClick <= REVEAL_GAP_MS ? clicks + 1 : 1;
+        lastClick = now;
+        if (clicks >= REVEAL_CLICKS) shareField.hidden = false;
+      });
+    }
+    // A reload or a step back can restore what was typed after this has run.
+    window.addEventListener('pageshow', update);
+    root.classList.add('js-calc');
+    update();
   }
 
   if (document.readyState === 'loading') {

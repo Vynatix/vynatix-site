@@ -142,7 +142,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=415ebed3">
+<link rel="stylesheet" href="styles.css?v=30e5fa1b">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -156,7 +156,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=3c44823a"></script>
+<script src="app.js?v=874e8f9b"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -295,6 +295,110 @@
             <h3>Your first assignment</h3>
           </li>
         </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================ Rate calculator -->
+    <!-- Worked out in the visitor's browser by app.js: nothing typed here is stored or sent. Without
+         JavaScript the calculator is not shown and the paragraph above it is (styles.css, js-calc). -->
+    <section class="section section--surface" id="rate-calculator" aria-labelledby="calc-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Rate calculator</p>
+            <h2 class="section__h2" id="calc-title">See what your rate pays</h2>
+          </div>
+          <p class="section__lead">Enter your hourly rate and the hours you bill in a month. You see the gross salary that rate carries, and every cost between the invoice and the payslip.</p>
+        </div>
+        <p class="calc-nojs">The calculator runs in your browser and needs JavaScript. <a href="contact.html">Write to us</a> and we go through the numbers with you.</p>
+        <div class="calc" data-calc>
+          <div class="calc__inputs">
+            <fieldset class="calc__group">
+              <legend class="calc__legend" data-calc-reveal>Your assignment</legend>
+              <div class="calc__row">
+                <div class="calc__field">
+                  <label for="calc-rate">Hourly rate (SEK)</label>
+                  <input type="number" id="calc-rate" data-calc-in="rate" inputmode="decimal" min="0" step="50" placeholder="0" autocomplete="off">
+                </div>
+                <div class="calc__field">
+                  <label for="calc-hours">Hours billed a month</label>
+                  <input type="number" id="calc-hours" data-calc-in="hours" inputmode="decimal" min="0" step="10" placeholder="0" autocomplete="off">
+                </div>
+              </div>
+              <div class="calc__field" data-calc-share hidden>
+                <div class="calc__label-row">
+                  <label for="calc-share">Your share of the invoiced amount</label>
+                  <span class="calc__share" data-calc-out="shareLabel" aria-hidden="true">70%</span>
+                </div>
+                <input type="range" id="calc-share" data-calc-in="share" min="70" max="80" step="1" value="70" autocomplete="off" aria-valuetext="70 per cent">
+                <div class="calc__marks" aria-hidden="true"><span>70%</span><span>80%</span></div>
+              </div>
+            </fieldset>
+            <fieldset class="calc__group">
+              <legend class="calc__legend">Your monthly costs</legend>
+              <div class="calc__row">
+                <div class="calc__field">
+                  <label for="calc-health">Healthcare (SEK)</label>
+                  <input type="number" id="calc-health" data-calc-in="health" inputmode="decimal" min="0" step="100" placeholder="0" autocomplete="off">
+                </div>
+                <div class="calc__field">
+                  <label for="calc-mobile">Mobile (SEK)</label>
+                  <input type="number" id="calc-mobile" data-calc-in="mobile" inputmode="decimal" min="0" step="50" placeholder="0" autocomplete="off">
+                </div>
+                <div class="calc__field">
+                  <label for="calc-other">Other costs (SEK)</label>
+                  <input type="number" id="calc-other" data-calc-in="other" inputmode="decimal" min="0" step="100" placeholder="0" autocomplete="off">
+                </div>
+                <div class="calc__field">
+                  <label for="calc-savings">Savings target (SEK)</label>
+                  <input type="number" id="calc-savings" data-calc-in="savings" inputmode="decimal" min="0" step="1000" placeholder="0" autocomplete="off" aria-describedby="calc-savings-hint">
+                  <p class="calc__hint" id="calc-savings-hint">Set aside each month before the salary is worked out.</p>
+                </div>
+              </div>
+              <label class="calc__check" for="calc-car"><input type="checkbox" id="calc-car" data-calc-in="car" aria-controls="calc-car-fields"> <span>Company car</span></label>
+              <div class="calc__row calc__car" id="calc-car-fields" hidden>
+                <div class="calc__field">
+                  <label for="calc-car-cost">Car cost (SEK a month)</label>
+                  <input type="number" id="calc-car-cost" data-calc-in="carCost" inputmode="decimal" min="0" step="500" placeholder="0" autocomplete="off">
+                </div>
+                <div class="calc__field">
+                  <label for="calc-car-benefit">Benefit value (SEK a month)</label>
+                  <input type="number" id="calc-car-benefit" data-calc-in="carBenefit" inputmode="decimal" min="0" step="500" placeholder="0" autocomplete="off" aria-describedby="calc-car-hint">
+                  <p class="calc__hint" id="calc-car-hint">The car's taxable benefit value. Employer contributions are added on it.</p>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="calc__results card">
+            <div class="calc__figure">
+              <p class="calc__figure-label">Your share of the month's invoicing</p>
+              <p class="calc__figure-value" data-calc-out="revenue">0 SEK</p>
+            </div>
+            <div class="calc__figure calc__figure--lead">
+              <p class="calc__figure-label">Gross monthly salary</p>
+              <p class="calc__figure-value" data-calc-out="salary">0 SEK</p>
+              <p class="calc__hint">Before income tax, in whole hundreds.</p>
+              <p class="calc__hint" data-calc-out="short" hidden>Your costs take the whole share, so no salary fits this month.</p>
+            </div>
+            <h3 class="calc__h3">What that salary costs</h3>
+            <dl class="calc__list">
+              <div><dt>Gross salary</dt><dd data-calc-out="base">0 SEK</dd></div>
+              <div><dt>Employer contributions (31.42%)</dt><dd data-calc-out="employer">0 SEK</dd></div>
+              <div><dt>Holiday, five weeks (9.62%)</dt><dd data-calc-out="holiday">0 SEK</dd></div>
+              <div><dt>Pension (4.5%)</dt><dd data-calc-out="pension">0 SEK</dd></div>
+              <div><dt>Payroll tax on the pension (24.26%)</dt><dd data-calc-out="pensionTax">0 SEK</dd></div>
+              <div><dt>Other salary costs</dt><dd data-calc-out="otherSalary">0 SEK</dd></div>
+              <div class="calc__total"><dt>Total salary cost</dt><dd data-calc-out="salaryCost">0 SEK</dd></div>
+            </dl>
+            <dl class="calc__list calc__list--sum">
+              <div><dt>Fixed monthly costs</dt><dd data-calc-out="fixed">0 SEK</dd></div>
+              <div><dt>Total monthly costs</dt><dd data-calc-out="costs">0 SEK</dd></div>
+              <div class="calc__total"><dt>Left on your balance, savings included</dt><dd data-calc-out="balance">0 SEK</dd></div>
+            </dl>
+            <p class="calc__hint calc__foot">An estimate, not an offer. It uses the 2026 rates for employer contributions and the payroll tax on pensions.</p>
+            <p class="sr-only" role="status" data-calc-out="status"></p>
+          </div>
+        </div>
       </div>
     </section>
 

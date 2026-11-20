@@ -19,8 +19,8 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generators
-  `dial-masks.py` and `sheet-art.js` for two hero backgrounds, never site content and
+  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
+  `sheet-art.js` for the hero background, never site content and
   never run at deploy time.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
@@ -56,27 +56,25 @@ highlights the things most worth keeping front-of-mind.
   `tools/verify/waves.js` alone tests the live silk. See AGENTS.md, *Silk waves*.
   The inverse bands (CTA band, editorial band, footer) are light in the dark theme
   by design. Checks pin a theme
-  with `pinTheme` (`tools/verify/_common.js`, which also pins the hero background),
+  with `pinTheme` (`tools/verify/_common.js`),
   and a component change has to hold in both (`THEMES=…` narrows a run). Logo
   files, favicon, app icons and manifest colours are still Forest.
-- **One of four hero backgrounds, drawn at random per visit.** `weave`, `sheet`,
-  `dial` and `iris` decorate the English home hero; `app.js` keeps the pick in
-  `sessionStorage` (`vynatix-bg`) and sets `data-bg` on `<html>` before first paint;
-  blocked storage or no JavaScript means `sheet`. Every rule of a background starts
-  from `:root[data-bg="<id>"]` (the sheet's form is
-  `:root:is(:not([data-bg]), [data-bg="sheet"])`), its JS returns at once unless it
-  is the drawn one, and its CSS and JS sit in `bg:<id>:begin` / `bg:<id>:end` fenced
-  blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
-  twenty-three pages never download them; the draw itself stays in `app.js`); the iris
-  also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
-  new names whenever regenerated. The art is placed from the layout and was fitted by hand
+- **One hero background, the drafting sheet.** The English home hero carries one piece of
+  decorative art: ruled guides behind the headline, a scale under the header and, from
+  75rem, an A-frame drawing. It is pure CSS in `hero-bg.css`, which **only `index.html`
+  links** (so the other twenty-three pages never download it): no script, no storage, no
+  motion, the same with and without JavaScript, every rule on the hero carrying
+  `:lang(en)`, custom properties named `--sheet-*`, role tokens only. Its two masks are
+  `assets/bg-sheet-*.svg` (from `tools/sheet-art.js`, new names whenever regenerated).
+  It was one of four drawn at random until 20 November 2026; the owner kept the sheet,
+  and the weave, the dial, the iris, the draw (`data-bg`, the `vynatix-bg*` keys in
+  `sessionStorage`) and `hero-bg.js` are gone. `publish.js` fails if `hero-bg.js`,
+  `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout and was fitted by hand
   to a three-line headline over six lines of lede; the current headline ("Engineering" / "that compounds.")
   is two lines over two, and the hero keeps the art's room instead (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
-  can move art into text, and `npm run check:bg` (the `tools/verify/bg-*.js`
-  guards, at the design size and on a scaled hero) fails and says which rule.** Storage: `vynatix-bg`, `vynatix-bg-seed`
-  (weave) and `vynatix-bg-iris` (iris), listed in `privacy.html`;
-  `vynatix-bg-iris-idle` is a read-only test hook. Per-background detail, constants,
-  the bronze budget and how to add or remove one are in AGENTS.md, *Hero backgrounds*.
+  can move art into text, and `npm run check:bg` (`tools/verify/bg-sheet.js`, at the
+  design size and, through `bg-fit.js`, on a scaled hero) fails and says which rule.**
+  Constants, the bronze budget and how to change it are in AGENTS.md, *Hero background*.
 - **The home hero is fitted to the window, and its numbers are measured.** On both home pages the first
   screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
   size), and solves it from the window's height (`100svh`) so that the header and the
@@ -96,27 +94,24 @@ highlights the things most worth keeping front-of-mind.
   which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
   `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
-  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css` and
-  `hero-bg.js` carry them too, in `index.html` only), because GitHub Pages
+  on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css`
+  carries one too, in `index.html` only), because GitHub Pages
   serves fixed URLs and a browser can otherwise pair new HTML with an old, cached
   stylesheet (that is what broke iOS Chrome after the design-system migration). The stamps
   protect the visitor's browser cache; GitHub's CDN ignores the query string. After
-  editing any of the six, run `cd tools && npm run stamp` and commit the pages with
+  editing any of the five, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
-  (theme toggle, the hero background draw, mobile nav, the silk background's `js-waves` and pause
-  button, and last, where `consent.js` expects it, analytics consent;
-  the small scripts of the backgrounds that need one are in `hero-bg.js`, home page
-  only) and no CDN/animation stack. **Two things on
-  the site move on their own, and no third may be added: the silk background is drawn
-  live until the visitor pauses it (above), and the iris background (a quarter of
-  visits) opens its inner dial once, after 20 s of silence, in 3.6 s, and any input
-  ends it.** The dial background answers the pointer (and sweeps once, for half a
-  second, when the theme toggles with a mouse or trackpad); reduced motion removes all of it. The system
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
+  (theme toggle, mobile nav, the silk background's `js-waves` and pause
+  button, and last, where `consent.js` expects it, analytics consent)
+  and no CDN/animation stack. **One thing on
+  the site moves on its own, and no second may be added: the silk background is drawn
+  live until the visitor pauses it (above).** Everything else that moves is a short
+  transition on hover or focus; reduced motion removes all of it. The system
   forbids auto-advancing strips and ambient loops, so the client list is still,
-  the iris is a single event and the silk has a pause control: owner decisions whose limits must not be loosened.
-  `app.js` is the only script every page loads (the home page adds `hero-bg.js`).
+  the hero's drafting sheet is still and the silk has a pause control: an owner decision whose limits must not be loosened.
+  `app.js` is the only script any page loads.
   The CSP pins `script-src` to `'self'` plus one Google path, so adding any other
   third-party script means widening the CSP in **every page** first (see the
   analytics bullet).
@@ -196,12 +191,11 @@ There is no lint step, but there *is* a check suite: see `tools/README.md`
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
-style rules), the hero background draw and a guard per background, accessibility
+style rules, the hero background's rules and the retired draws), the hero background's guard, accessibility
 including a contrast sweep, and a screenshot diff.
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
-(`python3 -m http.server 8000`). `THEMES` and `BGS` widen the themes and the
-backgrounds a run covers (see `tools/README.md`).
+(`python3 -m http.server 8000`). `THEMES` narrows the themes a run covers (see `tools/README.md`).
 
 Also verify visually: render in light and dark, confirm header/footer match the
 other pages, and check it degrades gracefully with JS disabled and reduced

@@ -20,11 +20,12 @@
 //                  line, and the rule is not drawn twice where the two sets coincide (Forest). Measured with the
 //                  silk background hidden (see hideSilk). Also that the hold
 //                  distances in hero-bg.css clear the real text ends by 24px.
-// Exits non-zero on any failure. The page must be drawn as the sheet: the script pins { theme, bg: 'sheet' }.
+//   Q  removal     Forced colours and more contrast remove the sheet and do not request its art.
+//   A  assets      The art files are requested from 1200px up only, by the home page only, with and without
+//                  JavaScript, and the hero is pixel-identical in the two; <html> has no data-bg.
+// Exits non-zero on any failure. The sheet is the hero's one background and is always drawn; the script pins the theme.
 // Needs Playwright and pngjs (tools/package.json has both).
-const { BASE, THEMES, ALL_THEMES, pinTheme, launch, BGS, heroUnit } = require('./_common.js');
-// BGS (like THEMES) narrows a run: this guard is for the "sheet" background only.
-if (!BGS.includes('sheet')) { console.log('bg-sheet: skipped, BGS={} does not include sheet'.replace('{}', BGS.join(','))); process.exit(0); }
+const { BASE, THEMES, ALL_THEMES, pinTheme, launch, heroUnit } = require('./_common.js');
 const { PNG } = require('pngjs');
 
 const WIDTHS = (process.env.WIDTHS || '390,768,1000,1200,1440,1920').split(',').map(Number);
@@ -210,11 +211,11 @@ const shot = async (page, clip) => PNG.sync.read(await page.screenshot({ fullPag
 async function open(browser, theme, width, zoom) {
   const ctx = await browser.newContext({ viewport: { width, height: HEIGHT } });
   const page = await ctx.newPage();
-  await page.addInitScript(pinTheme, { theme, bg: 'sheet' });
+  await page.addInitScript(pinTheme, theme);
   await page.goto(BASE + 'index.html', { waitUntil: 'load' });
   await page.evaluate(() => document.fonts && document.fonts.ready);
-  const pinned = await page.evaluate(() => [document.documentElement.getAttribute('data-theme'), document.documentElement.getAttribute('data-bg')]);
-  if (pinned[0] !== theme || (pinned[1] !== 'sheet' && pinned[1] !== null)) throw new Error(`pinTheme did not take { theme, bg }: got data-theme=${pinned[0]} data-bg=${pinned[1]}`);
+  const pinned = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+  if (pinned !== theme) throw new Error(`pinTheme did not take: got data-theme=${pinned}, wanted ${theme}`);
   if (zoom !== 1) await page.evaluate(applyZoom, zoom);
   await page.waitForTimeout(120);
   return { ctx, page };
@@ -333,7 +334,7 @@ async function open(browser, theme, width, zoom) {
     const page = await ctx.newPage();
     const asked = [];
     page.on('request', (r) => { if (/bg-sheet-(art|edge)\.svg/.test(r.url())) asked.push(r.url()); });
-    await page.addInitScript(pinTheme, { theme: THEMES[0], bg: 'sheet' });
+    await page.addInitScript(pinTheme, THEMES[0]);
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     await page.evaluate(() => document.fonts && document.fonts.ready);
     await page.waitForTimeout(300);
@@ -342,6 +343,49 @@ async function open(browser, theme, width, zoom) {
     if (asked.length) fail(`${name}: the sheet is removed but its art files were requested: ${asked.join(', ')}`);
     else console.log(`${name}: sheet removed, no art file requested`);
     await ctx.close();
+  }
+  // ---- A: assets and script. The sheet is pure CSS: the same with and without JavaScript, nothing set on <html> for
+  // it. Its two art files are asked for from 75rem (1200px) up and never below, by the home page and by no other.
+  // (Once per run, not per theme: none of this depends on the theme. bg-fit.js narrows WIDTHS, and skips it.)
+  if (!process.env.WIDTHS) {
+    const ART = ['bg-sheet-art.svg', 'bg-sheet-edge.svg'];
+    const visit = async (file, width, js) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 900 }, javaScriptEnabled: js });
+      const page = await ctx.newPage();
+      const got = new Set(), failed = [];
+      let css = false;
+      page.on('request', (r) => { const m = /\/assets\/(bg-[a-z0-9-]+\.svg)/.exec(r.url()); if (m) got.add(m[1]); if (/hero-bg\./.test(r.url())) css = true; });
+      page.on('response', (r) => { if (r.status() >= 400) failed.push(`${r.status()} ${r.url()}`); });
+      if (js) await page.addInitScript(pinTheme, 'mono-light');
+      await page.goto(BASE + file, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts && document.fonts.ready);
+      await page.waitForTimeout(500);
+      const attr = await page.$eval('html', (el) => el.hasAttribute('data-bg'));
+      // Below the header: without script the header's script-only controls are not there.
+      const png = width === 1440 ? PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 96, width, height: 804 }, animations: 'disabled' })) : null;
+      await ctx.close();
+      return { got: [...got].sort(), failed, css, attr, png };
+    };
+    const shots = {};
+    for (const js of [true, false]) for (const w of [1000, 1199, 1200, 1440]) {
+      const r = await visit('index.html', w, js);
+      const want = w >= 1200 ? ART : [];
+      const tag = `assets, ${w}px, JavaScript ${js ? 'on' : 'off'}`;
+      if (r.got.join() !== want.join()) fail(`${tag}: asked for [${r.got.join(', ')}], want [${want.join(', ')}]`);
+      if (r.failed.length) fail(`${tag}: failed requests ${r.failed.join(', ')}`);
+      if (r.attr) fail(`${tag}: <html> carries data-bg (the retired draw; the sheet needs nothing set)`);
+      if (w === 1440) shots[js] = r.png;
+    }
+    let n = 0;
+    const a = shots[true], b = shots[false];
+    if (a.width !== b.width || a.height !== b.height) n = -1;
+    else for (let i = 0; i < a.data.length; i += 4) if (a.data[i] !== b.data[i] || a.data[i + 1] !== b.data[i + 1] || a.data[i + 2] !== b.data[i + 2]) n++;
+    if (n !== 0) fail(`no JavaScript: the hero below the header differs from the scripted page (${n < 0 ? 'sizes differ' : n + ' pixels'}; Monochrome light, 1440x900)`);
+    for (const file of ['sv.html', 'about.html', 'services.html']) {
+      const r = await visit(file, 1440, true);
+      if (r.got.length || r.css) fail(`${file}: requested ${r.got.concat(r.css ? ['hero-bg.css'] : []).join(', ')} (the hero background is the English home page's only)`);
+    }
+    if (!failures.length) console.log('assets: the two art files from 1200px up and never below, with and without JavaScript (pixel-identical at 1440); no other page asks for them');
   }
   await browser.close();
   if (failures.length) { console.log(`\nbg-sheet: ${failures.length} failure(s)`); process.exit(1); }

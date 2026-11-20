@@ -1,37 +1,31 @@
 // Accessibility checks: axe-core scan on every page in every theme under test
 // (THEMES, default light,dark), plus functional tests for the skip link, the
 // still client list, the no-JS and reduced-motion fallbacks, and an
-// independent contrast sweep. The home page is scanned and swept once for each
-// hero background under test (BGS, default all four); every other page once.
-// The reduced-motion check always runs all four backgrounds, because two of them
-// (the dial and the iris) use the Web Animations API, which animationName cannot see.
+// independent contrast sweep. The home page is scanned and swept with its hero
+// background, the drafting sheet, in place (it is pure CSS and always there).
 //
 // Every page is audited the way a first-time visitor meets it: with the consent module armed (armGa, the dummy
 // ID, Google stubbed) and no answer stored, so the bar is up and is part of what axe and the contrast sweep
 // see. The axe scan and the contrast sweep then run a second time with the answer pinned to denied, which is
 // the page every returning visitor who declined sees, bar-less. consent-layout.js adds the bar-specific
-// checks (size, focus not obscured, target size, forced colours). Both passes take the home page in each
-// hero background under test, so the bar is also audited over every one of the four.
+// checks (size, focus not obscured, target size, forced colours).
 const fs = require('fs');
-const { PAGES, BASE, THEMES, ALL_BGS, bgsFor, pinTheme, pinBg, pinConsent, armGa, launch, pool } = require('./_common');
+const { PAGES, BASE, THEMES, pinTheme, pinConsent, armGa, launch, pool } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
 
 // The two ways a page is met: first visit (no answer stored, bar up) and after a decline (bar gone).
 const PASSES = [['', undefined], [', consent pinned denied', 'denied']];
 
-// A context with the consent module armed; pass an answer to pin it, or none for a first visit. The hero
-// background is drawn at random per visit, so every context pins it (the sheet) and a check that wants another
-// one says so with pinTheme({ theme, bg }) on its page, which runs after this and wins.
+// A context with the consent module armed; pass an answer to pin it, or none for a first visit.
 async function armed(browser, opts = {}, answer) {
   const ctx = await browser.newContext(opts);
   await armGa(ctx);
-  await ctx.addInitScript(pinBg);
   if (answer) await ctx.addInitScript(pinConsent, answer);
   return ctx;
 }
 
-// "light", or "light weave" for the home page under a background; the label of a pass follows.
-const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
+// The theme, then the label of the pass.
+const labelOf = (theme, pass) => `${theme}${pass}`;
 
 (async () => {
   const browser = await launch();
@@ -41,13 +35,13 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   // --- axe scan -----------------------------------------------------------
   {
     const jobs = [];
-    for (const [label, answer] of PASSES) for (const p of PAGES) for (const theme of THEMES) for (const bg of bgsFor(p)) jobs.push({ label, answer, p, theme, bg });
+    for (const [label, answer] of PASSES) for (const p of PAGES) for (const theme of THEMES) jobs.push({ label, answer, p, theme });
     const scans = await pool(jobs, 3, async (j) => {
       // bypassCSP only for the axe scan: script-src 'self' correctly refuses the
       // injected scanner. CSP enforcement is proven separately by adversarial.js.
       const ctx = await armed(browser, { bypassCSP: true }, j.answer);
       const page = await ctx.newPage();
-      await page.addInitScript(pinTheme, { theme: j.theme, bg: j.bg });
+      await page.addInitScript(pinTheme, j.theme);
       await page.goto(BASE + j.p, { waitUntil: 'load' });
       await page.addScriptTag({ content: axeSrc });
       const res = await page.evaluate(async () => await window.axe.run(document, {
@@ -59,7 +53,7 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
     });
     for (const sc of scans) {
       const v = sc.violations;
-      const tag = `${sc.p} [${labelOf(sc.theme, sc.bg, sc.label)}]`;
+      const tag = `${sc.p} [${labelOf(sc.theme, sc.label)}]`;
       if (v.length) {
         problems += v.length;
         console.log(`FAIL ${tag} — ${v.length} violation(s)`);
@@ -105,8 +99,8 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   // The design system forbids ambient loops and auto-advancing strips, so the
   // client marks are a plain list: exactly one copy, named by a visible label,
   // every named client an off-site link that opens safely, nothing animating
-  // and no pause control left over from the old marquee. (The hero backgrounds
-  // are a separate matter, see the reduced-motion check below.)
+  // and no pause control left over from the old marquee. (The hero background
+  // is a separate matter, see the reduced-motion check below.)
   {
     const page = await (await armed(browser)).newPage();
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
@@ -160,22 +154,18 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
 
   // --- reduced motion ------------------------------------------------------
   // With reduced motion on, nothing on the site animates: not by CSS (animationName)
-  // and not by script (document.getAnimations(), which also lists the Web Animations
-  // the dial and the iris use, and CSS transitions still running). The remaining
-  // transitions are cut to 0.01ms by the design system. Every hero background is
-  // drawn in turn, at 1440 wide so that all four have their art on screen, and each
-  // is shown to be drawn, so that a zero is not the zero of an empty page. Each is
-  // also given every chance to move: the pointer crosses the page (the dial's input),
-  // the theme button is pressed (the dial's sweep), and the iris's 20 seconds of
-  // silence are cut to 200ms through its test hook, vynatix-bg-iris-idle (read-only,
-  // see tools/README.md), so that an opening that was going to play would have started.
+  // and not by script (document.getAnimations(), which also lists Web Animations and
+  // CSS transitions still running). The remaining transitions are cut to 0.01ms by the
+  // design system. The home page is loaded at 1440 wide, where the hero's drafting
+  // sheet has all its art on screen, and the sheet is shown to be drawn, so that a zero
+  // is not the zero of an empty page. The page is also given every chance to move: the
+  // pointer crosses it, the theme button is pressed and a short silence follows.
   // The consent module is armed and the answer left open, so the bar is in the page for
   // all of it: it too must not animate, and it must not get in the way of the theme button.
-  for (const bg of ALL_BGS) {
+  {
     const ctx = await armed(browser, { reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, { theme: 'mono-light', bg });
-    if (bg === 'iris') await page.addInitScript(() => { try { sessionStorage.setItem('vynatix-bg-iris-idle', '200'); } catch (e) { /* blocked */ } });
+    await page.addInitScript(pinTheme, 'mono-light');
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     await page.mouse.move(300, 450, { steps: 6 });
     await page.mouse.move(1300, 520, { steps: 6 });
@@ -186,35 +176,20 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
       const pseudo = [...document.querySelectorAll('.hero, .hero__h1, .hero__h1 em')].reduce((n, el) =>
         n + ['::before', '::after'].filter((q) => getComputedStyle(el, q).animationName !== 'none').length, 0);
       const live = document.getAnimations();
-      const h1 = document.querySelector('.hero__h1');
-      const iris = document.querySelector('.iris');
-      const drawn = {
-        weave: getComputedStyle(h1, '::before').display === 'block' && getComputedStyle(h1, '::before').content !== 'none',
-        sheet: getComputedStyle(h1, '::before').content !== 'none',
-        dial: getComputedStyle(h1, '::after').content !== 'none' && getComputedStyle(h1, '::after').maskImage !== 'none',
-        iris: !!iris && getComputedStyle(iris).display === 'block',
-      }[document.documentElement.dataset.bg];
+      const h1 = document.querySelector('.hero__h1'), hero = document.querySelector('.hero');
+      const drawn = getComputedStyle(h1, '::before').content !== 'none' && getComputedStyle(hero, '::before').content !== 'none';
       const card = document.querySelector('.case');
-      // The iris under reduced motion: the dial is drawn settled and the opening is not even armed (the design
-      // system's own rule would cut the animation to 0.01ms, which getAnimations() could not tell from "never
-      // started", so look at the opening's own state: classes on <html> and the once-per-visit flag).
-      const c = document.documentElement.classList, dial = document.querySelector('.iris__dial');
-      const irisState = document.documentElement.dataset.bg !== 'iris' ? null : {
-        armed: c.contains('iris-armed'), play: c.contains('iris-play'), done: c.contains('iris-done'),
-        flag: sessionStorage.getItem('vynatix-bg-iris'), dialOpacity: dial ? getComputedStyle(dial).opacity : null,
-      };
       return {
-        bg: document.documentElement.dataset.bg, drawn, bar: !!document.getElementById('consent-bar'), iris: irisState, animating: running, pseudoAnimating: pseudo,
+        drawn, bar: !!document.getElementById('consent-bar'), animating: running, pseudoAnimating: pseudo,
         webAnimations: live.length, which: live.map((a) => `${a.constructor.name} ${a.animationName || a.transitionProperty || ''}`).slice(0, 4),
         cardTransition: card ? getComputedStyle(card).transitionDuration : 'missing',
       };
     });
     // Chrome reports the system's 0.01ms as "1e-05s"; anything under a millisecond counts as cut.
     const cut = r.cardTransition !== 'missing' && r.cardTransition.split(',').every((d) => parseFloat(d) < 0.001);
-    const irisOk = !r.iris || (!r.iris.armed && !r.iris.play && !r.iris.done && r.iris.flag === null && r.iris.dialOpacity === '1');
-    const ok = r.bg === bg && r.drawn === true && r.bar === true && irisOk && r.animating === 0 && r.pseudoAnimating === 0 && r.webAnimations === 0 && cut;
+    const ok = r.drawn === true && r.bar === true && r.animating === 0 && r.pseudoAnimating === 0 && r.webAnimations === 0 && cut;
     if (!ok) problems++;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion [${bg}]: art drawn and consent bar up, nothing animates (CSS or Web Animations) through pointer moves, a theme toggle and a short silence, and transitions are cut — ${JSON.stringify(r)}`);
+    console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: the hero's sheet drawn and consent bar up, nothing animates (CSS or Web Animations) through pointer moves, a theme toggle and a short silence, and transitions are cut — ${JSON.stringify(r)}`);
     await ctx.close();
   }
 
@@ -225,11 +200,11 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
   {
     const failures = [];
     const jobs = [];
-    for (const [label, answer] of PASSES) for (const pg of PAGES) for (const theme of THEMES) for (const bg of bgsFor(pg)) jobs.push({ label, answer, pg, theme, bg });
+    for (const [label, answer] of PASSES) for (const pg of PAGES) for (const theme of THEMES) jobs.push({ label, answer, pg, theme });
     const swept = await pool(jobs, 3, async (j) => {
       const ctx = await armed(browser, {}, j.answer);
       const page = await ctx.newPage();
-      await page.addInitScript(pinTheme, { theme: j.theme, bg: j.bg });
+      await page.addInitScript(pinTheme, j.theme);
       await page.goto(BASE + j.pg, { waitUntil: 'load' });
       const bad = await page.evaluate(() => {
         const lum = (rgb) => {
@@ -283,13 +258,13 @@ const labelOf = (theme, bg, pass) => `${theme}${bg ? ' ' + bg : ''}${pass}`;
     });
     for (const w of swept) {
       w.bad.forEach((b) => failures.push(b.unresolved
-        ? `${w.pg} [${labelOf(w.theme, w.bg, w.label)}] ${b.sel} "${b.text}" background cannot be resolved (${b.unresolved})`
-        : `${w.pg} [${labelOf(w.theme, w.bg, w.label)}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
+        ? `${w.pg} [${labelOf(w.theme, w.label)}] ${b.sel} "${b.text}" background cannot be resolved (${b.unresolved})`
+        : `${w.pg} [${labelOf(w.theme, w.label)}] ${b.sel} "${b.text}" ${b.ratio}:1 < ${b.need} (${b.px}px)`));
     }
     if (failures.length) problems++;
     console.log(failures.length
       ? `FAIL contrast sweep — ${failures.length} node(s)\n       ${failures.slice(0, 30).join('\n       ')}`
-      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}, with the consent bar up and after a decline (home page in each of ${bgsFor('index.html').join(', ')})`);
+      : `ok   contrast sweep — every visible text node meets AA in ${THEMES.join(', ')}, with the consent bar up and after a decline`);
   }
 
   console.log(problems === 0 ? '\nPASS — no accessibility problems found'

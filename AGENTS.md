@@ -22,7 +22,7 @@ against the roles and components the system defines.
 
 ```
 index.html          Home — hero (with its drafting-sheet background), still client list, contents row,
-                    services, three figures, three case cards, the partnership band, people,
+                    services, three case cards, the partnership band, people,
                     insights, CTA band
 about.html          About: what we stand for, people
 services.html       AI engineering, cloud platforms, application development
@@ -712,7 +712,8 @@ fact in it changes, change it everywhere, including LinkedIn and the registries,
 are outside this repository and still carry the earlier sentence until the owner
 changes them.
 
-**The English home page** follows the owner's website content plan of November 2026: nine blocks,
+**The English home page** follows the owner's website content plan of November 2026: eight blocks
+(nine until the owner took In numbers out on 20 November 2026),
 each opening with a promise and backed by a fact, in the order a leading consultancy's home page
 uses. `<main>` carries the class `home`, which scopes the page's own layout rules. After the hero
 (the brand line "Engineering that compounds." as the headline, two buttons, and the client row
@@ -729,22 +730,17 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
   up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
   The slices are one file, positioned left, centre and right, so the line carries across.
-- `#numbers` (`.section--surface`), "The numbers behind the promise": three figures
-  (`.glance`, `.metrics--3`, `.metrics--story`), open, without tiles, each a label, a figure and a
-  sentence in three `<p>` elements, as on `work.html`. They were a `dl` from October to 20 November
-  2026; the Geoptie audit of that day read it as "Minutes per build476Down from 47", because its
-  reader keeps paragraphs apart but not `dt` and `dd`, and reads `aria-hidden` text. So: paragraphs
-  (here and on `sv.html`), and **a decorative figure is never text in the page.** The first
-  (`.metric--scale`) is drawn: the 6 stands at the origin and a decorative "47" at the far end of
-  one ruler whose first 6/47 is the bronze stretch, to scale at every width. That 47 is an empty,
-  `aria-hidden` `<p class="scale" data-from="47">` whose figure the stylesheet draws
-  (`content: attr(data-from)`). The
-  sentence under it says the same in words, so nothing depends on the drawing. Each figure is the
-  owner's and is repeated elsewhere on the site: the
-  build time (the Volvo Cars case), fourteen clients (the fourteen marks in the hero) and the reply
-  time. The plan had a fourth, "7 years or more" of experience in every consultant; the owner took
-  it out on 20 November 2026 (it would stop being true with a hire of fewer years), so no page
-  states an experience figure for the whole team.
+- There is no In numbers block. The plan had one after Services ("The numbers behind the
+  promise": minutes per build, clients, reply time, the first drawn on a ruler), and the owner
+  removed it from both home pages on 20 November 2026: do not bring it back, and do not move its
+  figures into another block of the home page. The facts stay where they already were (the build
+  time in the Volvo Cars case, the fourteen marks in the hero, the reply time in the closing
+  band). The plan also had "7 years or more" of experience in every consultant; the owner took
+  that out the same day (it would stop being true with a hire of fewer years), so no page states
+  an experience figure for the whole team. One lesson from the block stays: the Geoptie audit
+  read its `dl` and its `aria-hidden` ruler figure as "Minutes per build476Down from 47", so
+  **a decorative figure is never text in the page** (draw it from the stylesheet), and a label,
+  a figure and its sentence go in separate `<p>` elements, as on `work.html`.
 - `#cases`, "Real results, in production": the three published cases as `.case` cards
   (`.cases--lead`), the regulated client first as the tall card and the other two as compact
   rows beside it from 905px, each one link to its section of `work.html`. Their pictures are
@@ -797,9 +793,7 @@ to 56px). The three insights sit in one row there, two-up between 600 and 904px.
 scoped to the home page (`.home`, `#contact`): `.section__head`, `.section__h2` and the
 `.cta-band` classes are shared with other pages, which keep the thirds.
 
-On a phone the hero's lede is one type step smaller and its buttons a step closer; the four
-figures form a two-by-two grid (one column where two cannot fit, and their figures line up in a
-row). The onward links (the contents row, read-more links, the insight titles and the closing
+On a phone the hero's lede is one type step smaller and its buttons a step closer. The onward links (the contents row, read-more links, the insight titles and the closing
 band's contact lines) are 44px or more tall under 905px. Nothing here needs JavaScript and
 nothing moves.
 
@@ -1040,7 +1034,7 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
   non-disclosure." outside the Volvo Trucks case it follows: read alone it takes in the published Volvo Cars case.
 - Client names in prose are the ones the content plan names, all of them on the hero's row: Saab, Sony,
   Tele2, Swisslog, Volvo Penta, Scania, Magna, Volvo Cars and Volvo Trucks (`industries.html`, the questions on
-  `contact.html` and `sv.html`, the figures). A case is told only for Volvo Trucks, Volvo Cars and the
+  `contact.html` and `sv.html`). A case is told only for Volvo Trucks, Volvo Cars and the
   regulated client; never a broader Volvo claim, and Volvo Buses appears in the logo strip only
   (`assets/CREDITS.md`). The content plan asks for each client's written approval before its name or logo is
   shown, and the owner confirmed on 20 November 2026 that the approvals for the fourteen are collected. A

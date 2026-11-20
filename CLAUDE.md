@@ -89,8 +89,7 @@ highlights the things most worth keeping front-of-mind.
   those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
-  last block of `styles.css` ("The English home page: its pictures") holds it: the first figure of In numbers
-  drawn to scale (6 minutes on the 47-minute line), a tall lead case beside two compact ones, the hero's
+  last block of `styles.css` ("The English home page: its pictures") holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
   Insights as ruled rows. The Services picture and the three case pictures are generated still lifes with a
@@ -156,8 +155,9 @@ highlights the things most worth keeping front-of-mind.
   opens with a promise and backs it with a fact; "you" before "we"; one name for the firm (consultancy, never
   agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
   nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
-  home page is nine blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
-  blocks in Swedish). The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
+  home page is eight blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
+  blocks in Swedish); the plan's In numbers block was removed from both on the owner's word of 20 November
+  2026 and does not come back. The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
   (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
   removed do not come back on any page: declining work or sending a reader to another firm, comparisons with
   other consultancies, "no pitch, no pressure", what a model cannot do as a headline, talk of size, the

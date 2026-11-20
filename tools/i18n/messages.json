@@ -1,0 +1,3864 @@
+{
+ "languages": [
+  "es",
+  "zh",
+  "hi",
+  "ar"
+ ],
+ "messages": [
+  {
+   "id": "Vynatix, the senior software consultancy for scale-ups",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "pages": [
+    "index.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Skip to content",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Vynatix home",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Menu",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Primary",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Services",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Industries",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Cases",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Insights",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Career",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "About",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Contact",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Get in touch",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Dark theme",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Based in Gothenburg · Part of Ultra Group",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Start the conversation <1/>",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "See our results",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Trusted by companies that set the standard",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "The standard they demand, at the pace your growth needs.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Saab (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Sony (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Tele2 (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Swisslog (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Volvo Penta (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Scania (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Magna (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Volvo Cars",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "(opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Volvo Trucks",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "Volvo Buses (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Aurobay (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "CEVT (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Veoneer (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Agnhaga (opens in a new tab)",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "On this page",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Partnership",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "People",
+   "pages": [
+    "index.html",
+    "about.html"
+   ]
+  },
+  {
+   "id": "Where we make the difference",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Our senior engineers work inside your team, from your next release to the platform your growth runs on, and deliver results that last.",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "AI engineering",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Put AI into your product, with assistants, agents and automation that deliver in production.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "More on AI engineering",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Cloud platforms",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "More on cloud platforms",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Application development",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Launch applications your users come back to, on mobile, web and embedded devices.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "More on application development",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Real results, in production",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "A regulated client · 2025",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "An AI assistant people can trust",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "Every answer comes from approved documents.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Every answer cites its source",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Volvo Cars · 2025",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Builds in 6 minutes instead of 47",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "On every commit, for the whole team, with the same tests and coverage.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "87% shorter",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Volvo Trucks · 2024",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "A new media application, live across a whole fleet",
+   "pages": [
+    "index.html",
+    "work.html"
+   ]
+  },
+  {
+   "id": "The in-cab radio, rebuilt as a full media player.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "In production across the fleet",
+   "pages": [
+    "index.html",
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "See all cases",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Images generated with AI. They illustrate the work and do not show client systems.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "A partner that grows with you",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "When your roadmap outgrows your team, our senior engineers join you and raise the pace. You keep the lead on your product and work directly with the people who do the work. You see progress every week, and everything we build is yours.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Great software comes from great people",
+   "pages": [
+    "index.html",
+    "about.html"
+   ]
+  },
+  {
+   "id": "Vynatix is built by senior engineers who love their craft and share what they know, in open source and with your team.",
+   "pages": [
+    "index.html",
+    "about.html"
+   ]
+  },
+  {
+   "id": "Join us",
+   "pages": [
+    "index.html",
+    "about.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Ideas that move software forward",
+   "pages": [
+    "index.html",
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Practical ideas from the engineers who do the work, on AI engineering, cloud platforms and software delivery.",
+   "pages": [
+    "index.html",
+    "blog.html"
+   ]
+  },
+  {
+   "id": "AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.",
+   "pages": [
+    "index.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "How to choose a software consultancy",
+   "pages": [
+    "index.html",
+    "blog.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Vynatix on choosing a software consultancy: the questions to ask, the warning signs and how to judge whether the developers are really senior.",
+   "pages": [
+    "index.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "All insights",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Let's build <1>what comes next.</1>",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Tell us what is on your roadmap. You will hear from us within one working day.",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Privacy notice</6>",
+   "pages": [
+    "index.html",
+    "blog.html"
+   ]
+  },
+  {
+   "id": "The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Mailbox 1611, 411 42 Gothenburg<5/> Org.nr 559445-6542 · <6>Part of Ultra Group</6>",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Company",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Legal",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Privacy",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Cookie settings",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Terms",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Accessibility",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Play background motion",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Pause background motion",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "© 2026 Vynatix AB",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "vynatix.com",
+   "pages": [
+    "index.html",
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "blog.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Turn AI from an idea on the roadmap into a feature your users rely on every day. We build assistants, agents and automation on foundation models, and we run them where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Cloud platform engineering",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Give your engineers a platform they can count on as your team and your users grow, with pipelines that stay fast and costs that follow use. We build and run cloud platforms on GCP, AWS and on-prem. Together with Volvo Cars, we cut a build pipeline from 47 minutes to 6.",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Software development",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Launch products your users come back to. We build applications for mobile, web, desktop and embedded devices, and connect them to the systems behind them. Our work runs in production at scale, from consumer apps to a media application across a whole fleet.",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "About Vynatix: built by engineers, here for the long run",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups: senior engineers who join your team as a long-term partner. Founded in 2023 in Gothenburg, part of Ultra Group.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "About Vynatix",
+   "pages": [
+    "about.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Built by engineers, here for the long run",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "We believe great software comes from great people who stay. Vynatix brings that belief to scale-ups: senior engineers who join your team as a long-term partner and build AI solutions, cloud platforms and applications with you. Founded in 2023 by senior engineers in Gothenburg, and proud to be part of <1>Ultra Group<2> (opens in a new tab)</2></1>.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "What we stand for",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Four things you can count on",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Own the outcome",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Your goal becomes our goal, and we take responsibility for the result.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Clear advice",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "You get the technology that fits your problem.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Built to last",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Everything we build is documented, so your team can keep building on it.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "Focus",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "We put our full strength into the work we do best.",
+   "pages": [
+    "about.html"
+   ]
+  },
+  {
+   "id": "front.disk@vynatix.com",
+   "pages": [
+    "about.html",
+    "services.html",
+    "industries.html",
+    "work.html",
+    "membership.html",
+    "contact.html",
+    "android-automotive-development.html",
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Services: AI engineering, cloud platforms and application development, Vynatix",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Vynatix puts AI, cloud platforms and applications to work for your product. Our senior engineers work inside your team and deliver results that last.",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "From ambition to software in production",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "01 · AI engineering",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Put AI into your product, with answers your users can trust",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "What we deliver",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Chatbots and assistants",
+   "pages": [
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Retrieval and grounded answers (RAG)",
+   "pages": [
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Agents",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Workflow automation",
+   "pages": [
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "MCP servers and integrations",
+   "pages": [
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "SDKs and developer tooling",
+   "pages": [
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Evaluation and monitoring",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "02 · Cloud platforms",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "A platform that scales as fast as you do",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Read the Volvo Cars case",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Platform engineering",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Kubernetes and GitOps",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "FinOps and cost control",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Moving off legacy",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "03 · Application development",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Applications people love to use",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Read the Volvo Trucks case",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Native mobile for iOS and Android",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Web, desktop and SaaS",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Embedded Android",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Wearables and VR",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Enterprise platforms and integrations",
+   "pages": [
+    "services.html"
+   ]
+  },
+  {
+   "id": "Industries: proven across industries, Vynatix",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Our consultants have built for regulated services, industry, telecom, media and consumer products, and bring that experience to scale-ups in the same fields.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Proven across industries",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Our consultants have built for regulated services, industry, telecom, media and consumer products. They bring that experience to scale-ups in the same fields, so your team starts ahead.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Regulated sectors",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Building for a regulated market? Bring AI into your product and keep full control of your data. We build assistants that answer only from approved documents, on-prem or in a sovereign cloud. Our consultants have also built for banking, health and digital identity.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Read the case",
+   "pages": [
+    "industries.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Industry, defence and logistics",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Building connected products? Connect your machines to the software around them. We build connected applications, from construction equipment to marine electronics. Clients include Saab, Volvo Penta and Swisslog.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "See what our engineers have built",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Telecom, media and consumer",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Building for consumers? Reach your users every day. We build the apps they come back to, from video streaming on Android TV to e-commerce. Clients include Tele2 and Sony.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Mobility",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "We build embedded applications, and the delivery pipelines behind them, for vehicle makers and their suppliers. Clients include Volvo Cars, Volvo Trucks, Scania and Magna.",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Read the cases",
+   "pages": [
+    "industries.html"
+   ]
+  },
+  {
+   "id": "Cases: real results, in production, Vynatix",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Three Vynatix cases told in full: an AI assistant for a regulated client, builds in 6 minutes instead of 47 with Volvo Cars, and a media application live across the Volvo Trucks fleet.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Three stories we can tell in full. More of our work is trusted to us in confidence.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A regulated client · <1>2025</1>",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The challenge.</1> An assistant that never guesses.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The work.</1> We built a closed-domain assistant that answers from approved documents and cites its source.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The result.</1> Answers people can rely on, each with its source. Questions outside the documents go to a person.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "More on our AI engineering",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "What we delivered",
+   "pages": [
+    "work.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A closed-domain AI assistant",
+   "pages": [
+    "work.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Answers from approved documents",
+   "pages": [
+    "work.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A source with every answer",
+   "pages": [
+    "work.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Questions outside the documents go to a person",
+   "pages": [
+    "work.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Volvo Cars · <1>2025</1>",
+   "pages": [
+    "work.html",
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "<1>The challenge.</1> Engineers waited 47 minutes for every build.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The work.</1> Together with Volvo Cars, we rebuilt the pipeline and kept the same tests and coverage.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The result.</1> 6 minutes on every commit, 87% shorter, for the whole team.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Build time",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "On every commit, for the whole team.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Minutes per build",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Down from 47.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Volvo Trucks · <1>2024</1>",
+   "pages": [
+    "work.html",
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "<1>The work.</1> Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "<1>The result.</1> In production across the fleet.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "More on our Android Automotive work",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Platform and scope",
+   "pages": [
+    "work.html",
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Android Automotive platform (AAOS)",
+   "pages": [
+    "work.html",
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In-cab media player, rebuilt",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Rolled out across the fleet",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Team projects",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "What our engineers have built.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Projects our engineers have shipped, across vehicles, machines, finance, health and consumer apps. They show the kind of systems the people you would work with have already built.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "In-vehicle infotainment",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "The media core and launcher of a truck.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Built the media session layer of the system app that manages phone projection, Bluetooth, USB and radio sources, architected the default launcher, and led feature work on Android Auto projection.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Construction equipment",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Software for construction machines.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Owned an in-cab app for articulated and rigid haulers, led a proof of concept that lets operators of electric wheel loaders check and command their machines, and led the rebuild of the link between the machines and the backend.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Marine electronics",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A fuel management system for marine electronics.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Project lead from requirements and story breakdown through system design, development and verification, while hiring, onboarding and leading the Android team.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Digital identity",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "An identification SDK, designed from scratch.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A modular Android SDK that lets third-party apps, mainly health insurers, read electronic ID and health insurance cards over NFC and authenticate their users. Each module is obfuscated and published to Maven by custom Gradle plugins and CI.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Banking",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A banking app, refactored in two months.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A major refactoring of a mobile banking app for currency investing and cryptocurrency, which fixed major issues and made new features easier to build.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "E-commerce",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Shared logic for iOS and Android.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "The Android app and a Kotlin Multiplatform module that shares logic between the iOS and Android apps of a custom merchandise service.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Video streaming",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A streaming player for TV, phone and tablet.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Owned the video player of a subscription streaming app on Android TV and mobile, and unified playback logic that had differed between the three. Movies, live channels, rentals and subscription packages.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Health",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A health assistant in one app.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Video calls with doctors, an AI symptom checker, expense refund requests and a rewards feature for exercise, in one Android app.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Weather",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A weather app, modernised, and the team behind it.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Modernised the Android app and built its crowdsourcing features, then led the Android team with test-driven development and extreme programming.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Libraries",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Code our engineers maintain.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Kotlin and Android libraries our engineers write and maintain on their own, outside client work.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Vault · Kotlin",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "State management with transactions.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "A Kotlin library that combines transactional safety with reactive programming: type-safe state, automatic error recovery and persistence.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Warehouse · Kotlin",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Dependency injection as a Kotlin DSL.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Lightweight and quick to learn, with readable logs, nested graphs and multi-module support.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Uncivilized Primitives · Kotlin",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Values validated at the edge.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Takes primitive values in and validates them where they enter a system, so the rest of the code works with real types instead of raw strings and numbers.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "FireCrasher · Android",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Crash recovery for Android apps.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "An open-source library that catches uncaught exceptions on Android and recovers without the app exiting.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Closed-domain AI assistant, grounded answers, citations",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "We built a closed-domain assistant that answers from approved documents and cites its source. Questions outside the documents go to a person.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Build pipeline, 87% shorter build time",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Together with Volvo Cars, we rebuilt the pipeline and kept the same tests and coverage. 6 minutes on every commit, 87% shorter, for the whole team.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Android Automotive (AAOS), in-cab media player",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive. In production across the fleet.",
+   "pages": [
+    "work.html"
+   ]
+  },
+  {
+   "id": "Career at Vynatix: do the best work of your career",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Senior engineers and designers who love the craft and share what they know. Problems worth your time, peers who have shipped, and the paperwork handled.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Do the best work of your career",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "You have shipped for years. Here you do it with people who have too: senior engineers and designers who love the craft and share what they know.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Let's talk, one engineer to another",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Why join",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "The work, the people and the craft",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Problems worth your time",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "AI that has to hold up in production, platforms that have to scale, and apps that people open every day, for well-known Nordic and international companies.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your next step",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "More ownership, harder problems and people to learn from.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Peers who have shipped",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "You work with engineers and designers who have delivered for years, so every code review is a conversation between equals.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Building in the open",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Vault, Warehouse, Uncivilized Primitives and FireCrasher came from our engineers. Bring yours.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "See the libraries",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "We handle the paperwork",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Contracts, invoicing and insurance are on us, with Ultra Group behind us. You build.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Who we look for",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "If you care how it is built, we should talk",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Engineers and designers with five years or more of delivery, in AI, cloud and platform, backend, mobile, embedded or product design.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "How it works",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "From a first talk to your first assignment",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "A first talk",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "30 minutes, one engineer to another.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "You meet the team",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "We agree on how we work together",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your first assignment",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Rate calculator",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "See what your rate pays",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Enter your hourly rate and the hours you bill in a month. You see the gross salary that rate carries, and every cost between the invoice and the payslip.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "The calculator runs in your browser and needs JavaScript. <1>Write to us</1> and we go through the numbers with you.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "{n} per cent",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Gross monthly salary {salary}. Left on your balance {balance}.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your assignment",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Hourly rate (SEK)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Hours billed a month",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your share of the invoiced amount",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "70 per cent",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your monthly costs",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Healthcare (SEK)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Mobile (SEK)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Other costs (SEK)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Savings target (SEK)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Set aside each month before the salary is worked out.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Company car",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Car cost (SEK a month)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Benefit value (SEK a month)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "The car's taxable benefit value. Employer contributions are added on it.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your share of the month's invoicing",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "0 SEK",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Gross monthly salary",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Before income tax, in whole hundreds.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Your costs take the whole share, so no salary fits this month.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "What that salary costs",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Gross salary",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Employer contributions (31.42%)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Holiday, five weeks (9.62%)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Pension (4.5%)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Payroll tax on the pension (24.26%)",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Other salary costs",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Total salary cost",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Fixed monthly costs",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Total monthly costs",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Left on your balance, savings included",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "An estimate, not an offer. It uses the 2026 rates for employer contributions and the payroll tax on pensions.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Let's talk",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Thirty minutes, <1>one engineer to another.</1>",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Bring your questions.",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Let's talk <1/>",
+   "pages": [
+    "membership.html"
+   ]
+  },
+  {
+   "id": "Contact Vynatix",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Tell us what is on your roadmap. You will hear from us within one working day. One inbox, front.disk@vynatix.com, for projects and for joining us.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Let's build what comes next",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Two ways in",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "One inbox, front.disk@vynatix.com. Each button sets the subject line, so your message reaches the right person.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Start a project",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Tell us what is on your roadmap, and where you want your product to be.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Email us about a project",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Thirty minutes, one engineer to another. Bring your questions.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Email us about joining",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Email",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Phone",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Post",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Vynatix AB<1/>Mailbox 1611<2/>411 42 Gothenburg",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Part of Ultra Group<1/>Org.nr 559445-6542",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How we start",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Three steps to a first goal",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "A first talk about your roadmap",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "30 minutes.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "You meet the engineers who would join your team",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "We agree on the first goal and begin",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Common questions",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "What does Vynatix do?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "AI engineering: assistants, agents and automation that deliver in production.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Application development: applications for mobile, web, desktop and embedded devices.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Where is Vynatix based?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Vynatix is based in Gothenburg (Göteborg), Sweden, where Vynatix AB was founded in 2023. Its postal address is Mailbox 1611, 411 42 Gothenburg.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Can Vynatix run AI systems in our own environment, including on-prem?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How does working with Vynatix start?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "It starts with a talk about your roadmap, and it takes three steps.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "A first talk about your roadmap, 30 minutes.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "You meet the engineers who would join your team.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "We agree on the first goal and begin.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How is the work billed?",
+   "pages": [
+    "contact.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You are billed for the hours worked, and you see them every week. You see progress every week too, and everything we build is yours.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Who are Vynatix's clients?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Our clients include Saab, Sony, Tele2, Swisslog, Volvo Cars and Volvo Trucks. Three <1>cases</1> are told in full: an AI assistant for a regulated client, builds in 6 minutes instead of 47 with Volvo Cars, and a media application live across the Volvo Trucks fleet.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How is Vynatix related to Ultra Group?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Vynatix is part of Ultra Group. The company itself is Vynatix AB, org.nr 559445-6542, a software consultancy in Gothenburg, Sweden.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How do we reach Vynatix?",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Email <1>front.disk@vynatix.com</1> or call <2>+46&nbsp;72&nbsp;071&nbsp;06&nbsp;76</2>, and tell us what is on your roadmap. You will hear from us within one working day.",
+   "pages": [
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Insights: ideas that move software forward, Vynatix",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Practical ideas from the engineers who do the work at Vynatix, on AI engineering, cloud platforms and software delivery, in English and Swedish.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Guides",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "In English",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Each question is answered in the first sentence.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "<1>How to choose a software consultancy</1><2/>Vynatix on choosing a software consultancy: the questions to ask, the warning signs and how to judge whether the developers are really senior.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "In Swedish",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "These guides are written in Swedish for Swedish readers. They are listed with the other Swedish pages on <1>the Swedish home page</1>.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Så väljer ni konsultbolag för mjukvaruutveckling",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Platform engineering: vad det är, när det lönar sig och hur ni börjar",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Android Automotive development in Gothenburg, Vynatix",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Vynatix builds Android Automotive (AAOS) software in Gothenburg, embedded in your team, and shipped Volvo Trucks&#x27; in-cab radio and media player to production.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Application development · Android Automotive",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Android Automotive development in Gothenburg",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Vynatix builds software on Android Automotive (AAOS) in Gothenburg, with senior engineers embedded in your team. We rebuilt the in-cab radio and media player for Volvo Trucks on Android Automotive and shipped it to production across the fleet.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "The service",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "What we build on Android Automotive",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "We build in-car apps and media on Android Automotive (AAOS), above the vehicle hardware layer, and wire them into the systems behind them.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "That is where our published case sits: the Volvo Trucks radio and media player was built above the vehicle hardware layer, on Android Automotive.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Many of us come from years of automotive and embedded work, so hardware and regulated constraints are familiar ground. Android Automotive is part of our application development.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Before we start, we agree in writing what we build, on which platforms and against which systems, and we say plainly what is out of scope. You own the code, and the next team can read it.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "More on our application development",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "On Android Automotive",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In-car apps on Android Automotive (AAOS)",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In-car media, such as radio and media playback",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Integration with the systems behind them",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "An in-cab radio and media player, in production across the fleet",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In 2024 Vynatix rebuilt the in-cab radio and media player for Volvo Trucks on Android Automotive, and shipped it to production across the fleet.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "<1>The boundary.</1> Built above the vehicle hardware layer, on Android Automotive. We agreed the scope before the first line of code.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "That is what we can publish. The rest of our work with Volvo Trucks and Volvo Cars is under non-disclosure.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "The Volvo Trucks case on our cases page",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In-cab radio and media player, rebuilt",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Built above the vehicle hardware layer",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Who does the work",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Senior engineers who join your team.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group. The people you meet are the people doing the work.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "More about Vynatix",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "How it goes",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "How an assignment works",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "An assignment starts with a conversation, usually in person in Gothenburg, and a scope agreed in writing before the first line of code. From there, our engineers work inside your team.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "We meet first, usually in Gothenburg",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "The first conversation is usually in person, face to face. After that, most of the work happens in writing.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Scope in writing, before any code",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Before the first line of code, we agree in writing what is in scope and say plainly what is not.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Senior engineers inside your team",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "We work inside your team for as long as the assignment needs us.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Hours reported every week",
+   "pages": [
+    "android-automotive-development.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "We report them honestly and bill for the hours worked. No black box and no surprise invoice.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "A written record afterwards",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Every project leaves a record an engineer can read. We own the outcome, and you own the code.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Non-disclosure is normal",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Beyond what we have published, our work with Volvo Trucks and Volvo Cars is under non-disclosure. Working under an NDA is nothing unusual for us.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "A build pipeline cut from 47 minutes to 6",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Build time matters to any team that commits often, automotive teams included. For Volvo Cars in 2025, Vynatix took a build pipeline from 47 minutes to 6 (87% shorter), on every commit for the whole team, with the same tests and the same coverage. We were scoped to the pipeline, not the build targets, and agreed that boundary up front.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "The Volvo Cars case on our cases page",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Questions and answers",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Questions about Android Automotive work",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "What is Android Automotive (AAOS), and how is it different from Android Auto?",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Android Automotive OS (AAOS) is a version of Android that runs natively on the car's own infotainment system, so the apps live in the vehicle itself and no phone is needed. Android Auto is different: it runs on a connected phone and projects the phone's apps onto the car's screen. Building for Android Automotive means building for the vehicle, its screens and the systems behind them, rather than for a phone.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Has Vynatix shipped Android Automotive software to production?",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Yes. In 2024 Vynatix rebuilt the in-cab radio and media player for Volvo Trucks on Android Automotive and shipped it to production across the fleet. It was built above the vehicle hardware layer, and the scope was agreed before the first line of code.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Do you work on site in Gothenburg?",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Vynatix is based in Gothenburg, and the first conversation with a new client is usually in person here, face to face. After that our senior engineers work inside your team, and most of the work happens in writing, so there is a record you can read afterwards.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Can you work under an NDA with a vehicle maker?",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Yes. Non-disclosure is normal in our work: beyond the cases published on this site, our work with Volvo Trucks and Volvo Cars is under non-disclosure.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "How do we start an Android Automotive assignment with Vynatix?",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Email Vynatix at <1>front.disk@vynatix.com</1> with a subject line that starts with “Project”, or call <2>+46&nbsp;72&nbsp;071&nbsp;06&nbsp;76</2>. We reply within one working day, usually meet in person in Gothenburg first, and agree the scope in writing before the first line of code.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Android Automotive development",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Android Automotive (AAOS) application development",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "In-car apps and media on Android Automotive (AAOS), built above the vehicle hardware layer by senior engineers embedded in the client's team, and wired into the systems behind them.",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "Gothenburg",
+   "pages": [
+    "android-automotive-development.html"
+   ]
+  },
+  {
+   "id": "AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment, Vynatix",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "AI engineering in Gothenburg, for systems that go into production.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Turn AI from an idea on the roadmap into a feature your users rely on every day. Vynatix builds AI systems on foundation models for production use, with senior engineers inside your team: retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Scope",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "What we build",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Everything below is part of one thing: production systems on foundation models, meaning software built around a large language model that is in real use, and the engineering around the model that lets you check the answers and see what the system does.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Software people talk to in plain language to get an answer or get a task done.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "The system first looks up the relevant passages in your documents, and the model answers from those, citing the source.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Agent and harness engineering",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Manual steps in a process, such as sorting, extracting details or drafting, handled by a model inside a defined flow.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Model Context Protocol servers that give an assistant defined, limited access to your systems and data, and connections to what you already run.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Libraries and tools that let your own developers build on the system, test it and extend it.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Evaluation pipelines",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Automated tests that run the system against questions with known answers, so you can see whether a change made it better or worse.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Deployment into your environment",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "The system runs where your data is allowed to be: in your own environment, including on-prem on your own servers or in a sovereign cloud.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Production observability",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Logging and monitoring of what the system does with real questions, so errors, refusals, response times and cost are visible after launch.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Advice",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "The right tool for each problem",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A language model is the right tool for reading and writing language: answering questions over documents, summarising, classifying, extracting details and drafting.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Ordinary code, a query or a search is the right tool when the answer has to be exact and the same every time, or when it already solves the problem.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "So we choose the tool with you before you spend on a model. If a simpler one serves you better, we recommend it.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Often the better tool",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Ordinary code or a database query, when the answer has to be exact",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A rules engine, when the logic is already written down",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Search, when people need the document rather than a summary of it",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A form, when the input is structured anyway",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Regulated client · <1>2025</1>",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "An assistant that answers only from approved documents.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "For a regulated client, we built a closed-domain assistant that answers only from approved documents. Every answer cites its source. A question it cannot ground in source is declined and handed to a person, rather than answered with a guess.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "<1>The boundary.</1> We set that line deliberately, and we can show you where it sits and why.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Evaluation and observability",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "How do you know the system is right?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You know because it is measured, before and after it ships: an evaluation pipeline tests every change against questions with known answers, and production observability shows what the system does with real questions.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "<1>Before it ships.</1> An evaluation set is a collection of representative questions, each with the answer the system should give or the note that it should decline. The set is written with the people who know the domain. The pipeline runs it automatically whenever the model, the prompts, the retrieval or the documents change, and compares the result with the previous version, so a regression shows up before release rather than in front of a user.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "<1>After it ships.</1> Observability means logging what was retrieved for each question, what the system answered and which source it cited, within your rules for how data may be handled. It also means following refusals, wrong answers, response times and cost over time. Failures found in production go back into the evaluation set, so the same mistake is tested for from then on.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Neither makes a model perfect. Together they make its errors visible and measurable, which is what lets you decide where the line should sit.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "What the evaluation checks",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Answers are supported by the source they cite",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Questions outside the documents are declined",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Questions the documents do answer are not declined",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "A change to the model, prompts or documents does not make results worse",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "How we work",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Who does the work?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Senior engineers from Vynatix do the work: AI consultants in Gothenburg who work inside your team for as long as the assignment needs them. Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "The people you meet do the work",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You work directly with the people who do the work. The first conversation is usually in person, in Gothenburg.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You pay for the hours worked and see them every week.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You own the code",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Everything we build is yours, and it is documented, so your team can keep building on it.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Frequently asked questions",
+   "pages": [
+    "ai-engineering.html",
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "What is RAG?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "RAG (retrieval-augmented generation) is a technique in which the system first retrieves relevant passages from a document collection, such as your own documents, and then has a language model write the answer from those passages. Because the answer is built on retrieved passages, it can cite its source. The aim is for the facts in an answer to come from the documents rather than from the model's general training. That makes answers checkable, and you control what the assistant answers from by controlling which documents go in.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Can the system run on-prem or in a sovereign cloud?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, as part of the AI engineering service, so the system can run where your data is allowed to be. Which model you can use then depends on what can run in that environment, and we say plainly what that choice means for quality.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Can the assistant refuse to answer outside the approved documents?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Yes. That is how the assistant Vynatix built in 2025 for a regulated client works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Do you build MCP servers?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface. The server decides what is made available, so access is explicit and can be limited.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Vynatix bills for the hours worked and reports them every week, so you can see what you are paying for and why.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "How do we get started?",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Email <1>front.disk@vynatix.com</1> with a subject line starting \"Project\", and describe what the system should do and what it must not get wrong. Vynatix replies within one working day. The first conversation is usually in person, in Gothenburg, and after that most of the work happens in writing.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Read more",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "The <1>services page</1> covers all three things we do, and the <2>cases page</2> has three cases told in full. In Swedish, we have written a guide to <3>building an AI assistant over internal documents</3>.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Vynatix builds production systems on foundation models, with senior engineers embedded in the client's team: retrieval and grounded answers, evaluation pipelines, deployment into the client's environment including on-prem and sovereign cloud, and production observability.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "How to choose a software consultancy, Vynatix",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Guide",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Choose a software consultancy by how it works: the people you meet should be the people who do the work, you should own the code, and the hours should be reported openly. Vynatix, the senior software consultancy for scale-ups, wrote this guide.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Published <1>6 November 2026</1> · Last updated <2>20 November 2026</2> · Vynatix",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "What decides most is who actually does the work and what you are left with when the engagement is over. Hourly rate and firm size say little about the result. The checklist below works whichever firm you choose.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "What should you settle before you contact a consultancy?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Before you contact anyone, settle four things: the outcome you want, the constraint that cannot be negotiated away, roughly what budget you have, and what you can already do yourselves. Write them down, so that the first call is concrete and the answers are easy to compare.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>The outcome:</1> what should work when the engagement ends, described clearly enough that someone outside the team could say whether it has been reached.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>The hard constraint:</1> a deadline, a rule you must follow, a platform you cannot change, or data that cannot leave the building.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>The budget range:</1> a range is enough for a firm to tell you whether the engagement is realistic.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>What you already have:</1> the skills in your team, and who on your side will own the result afterwards.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Consultancy, consultant broker or your own hire: which fits when?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A consultancy fits when you want someone to take responsibility for a defined delivery, a consultant broker when you know exactly which role you need to fill and can lead the work yourself, and your own hire when the need is long term and part of your core business. None of them is better in general, and you can combine them.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Consultancy, consultant broker or your own hire: when each fits",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Option",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Fits when",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Keep in mind",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Consultancy",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "You want someone to take responsibility for a defined delivery, and you need to start without recruiting.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Ask who does the work and how the knowledge stays with you.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Consultant broker",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "You know exactly which role you need to fill and can lead the work yourself.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "The broker places a person. Responsibility for the result usually sits with you.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Your own hire",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "The need is long term and the skill is part of your core business.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Finding the right person often takes time, but the knowledge stays with you.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Which questions should you ask a software consultancy?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Ask who does the work, how senior they are, who owns the code, how the work is documented, how hours are reported, what is out of scope and how the engagement ends. Notice which answers come slowly or turn vague.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Who does the work?</1> Meet the developers who will work on the engagement, and ask whether they will be the same people once the contract is signed.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>How senior are they?</1> Ask what they have built that went into production and what they were personally responsible for.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Who owns the code?</1> The answer should be you, from the first day, with documentation and access to everything you need to carry on without the firm.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>How is the work documented?</1> Ask for an example of what an earlier engagement left behind.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>How are hours reported?</1> Ask how often and at what level of detail.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>What is out of scope?</1> A firm that has understood the task can say where the boundary is and write it down before work starts.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>How does the engagement end?</1> Ask how the handover works and who on your side takes over.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "How do you judge whether the developers are really senior?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "You judge seniority best by talking technology directly with the person who will do the work and asking to see something they have written. Years on a CV say less than how someone reasons about trade-offs and constraints.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Ask for something they have written and are allowed to show, such as a design note or a handover document. It shows whether the next developer could understand the work.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Ask about an engagement they turned down, and why. A senior developer knows where their own ability ends.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Describe a real problem from your own work and listen for the follow-up questions. Someone who asks about the constraints before proposing a solution has usually done similar work before.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Warning signs",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Which warning signs should you take seriously?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Treat it as a warning when you cannot meet the person who will do the work, when someone else turns up after the contract is signed, or when nobody will write down what is included. Each can have an innocent explanation. Together they usually mean that nobody takes responsibility for the result.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Watch for",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A salesperson or account manager between you and the developer, whom you cannot get past",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A different CV after the contract is signed",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A scope that nobody will write down",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A yes to everything, without a single limit",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Invoices that cannot be matched against reported hours",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Who wrote this guide, and how does Vynatix answer its own checklist?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Vynatix wrote this guide. Here is how we answer our own checklist:",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Who does the work:</1> the people you meet are the people doing the work, inside your team.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Seniority:</1> you meet the engineers who would join your team before we begin, so you can judge it yourself.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>The code:</1> everything we build is yours. Your goal becomes our goal, and we take responsibility for the result.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Hours:</1> reported every week. You are billed for the hours worked.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Scope:</1> we agree it in writing before work starts.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Documentation and ending:</1> everything we build is documented, so your team can keep building on it.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "<1>Past work:</1> three cases told in full: an AI assistant for a regulated client, builds in 6 minutes instead of 47 with Volvo Cars, and a media application live across the Volvo Trucks fleet. <2>Read the cases</2>.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "What is the difference between a software consultancy and a consultant broker?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "A consultancy has its own developers and stands behind their work, while a consultant broker places consultants from other companies, or self-employed consultants, into a role that you lead yourself. The contract decides where responsibility for the result sits, but with a broker it usually sits with you.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Who should own the code when a consultancy has written it?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "You should own the code from the first day, and the contract should say so. This is not legal advice, so have someone who knows contracts read the terms.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "How do you check that the consultants are senior?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Talk technology directly with the developers who will do the work, ask for something they have written, and ask about an engagement they turned down and why. How they reason about constraints says more than the number of years on a CV.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "When is hiring your own team better than using consultants?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Hiring your own team is usually better when the need is long term and the skill is part of your core business. Consultants fit better when the need is limited in time, or when you need experience that you do not have time to build yourselves.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "How should hours be reported on a consulting engagement?",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Hours should be reported regularly, preferably every week, and in enough detail for you to see what the time was spent on. The invoice should be possible to check against the report.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "The Swedish version of this guide is <1/> (in Swedish). To see how we work, start with the <2>about page</2> and the <3>cases</3>.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Next step",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Ask us the same questions. <1>You will hear from us within one working day.</1>",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Tell us what is on your roadmap.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Email us about a project <1/>",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "The subject line names this guide so we know which page you read (see the <1>privacy notice</1>). Change it if you like.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Language",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "Page withdrawn, Vynatix",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "Vynatix has withdrawn this page.",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "Withdrawn",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "This page has been withdrawn",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "Vynatix removed this page on {date}. <1>Go to the home page</1>.",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "{d} {month} {y}",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "January",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "February",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "March",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "April",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "May",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "June",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "July",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "August",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "September",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "October",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "November",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  },
+  {
+   "id": "December",
+   "pages": [
+    "(the language list and the withdrawn stub)"
+   ]
+  }
+ ]
+}

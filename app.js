@@ -31,6 +31,10 @@
   // The display face and its italic (the hero's accent line), in fonts/ as
   // <name>-latin.woff2.
   var DISPLAY_FACES = ['geist-variable', 'fraunces-italic-variable'];
+  // Where the site's root is from this page: "" on a page at the root, "../" on
+  // a page of a generated language (es/, zh/ ...), read from this script's own
+  // address, which is the one thing every page spells out.
+  var UP = ((document.currentScript && document.currentScript.getAttribute('src')) || '').replace(/app\.js.*$/, '');
 
   function isDark(theme) { return /(^|-)dark$/.test(theme); }
 
@@ -73,7 +77,7 @@
       link.as = 'font';
       link.type = 'font/woff2';
       link.crossOrigin = 'anonymous';
-      link.href = 'fonts/' + name + '-latin.woff2';
+      link.href = UP + 'fonts/' + name + '-latin.woff2';
       document.head.appendChild(link);
     });
   }
@@ -187,6 +191,8 @@
 (function () {
   var root = document.documentElement;
   var MOTION_KEY = 'vynatix-motion';  // localStorage: "off" once paused, "on" once resumed
+  // The button's two names. The page carries both, in its own language: the
+  // text it is written with, and data-i18n-play for the other state.
   var LABEL = { on: 'Pause background motion', off: 'Play background motion' };
   var LOOP_MS = 240000;               // the whole pattern repeats seamlessly after four minutes
   var MAX_PIXELS = 1300000;           // the drawing buffer is capped; the silk is soft, so CSS scales it up unseen
@@ -386,6 +392,10 @@
 
   function init() {
     button = document.querySelector('.motion-toggle');
+    if (button) {
+      LABEL.on = button.textContent || LABEL.on;
+      LABEL.off = button.getAttribute('data-i18n-play') || LABEL.off;
+    }
     label(root.classList.contains('js-waves'));
     if (!window.WebGLRenderingContext || !window.requestAnimationFrame) { giveUp(); return; }
     if (button) {
@@ -507,6 +517,10 @@
     var timer = null;
     var clicks = 0;
     var lastClick = 0;
+    // The two sentences this script writes, in the language of the page: the
+    // page carries them (data-i18n-*), and the English is the fallback.
+    var PERCENT = calc.getAttribute('data-i18n-percent') || '{n} per cent';
+    var STATUS = calc.getAttribute('data-i18n-status') || 'Gross monthly salary {salary}. Left on your balance {balance}.';
 
     function num(name) {
       var n = ins[name] ? parseFloat(ins[name].value) : 0;
@@ -525,7 +539,7 @@
         car: car, carCost: num('carCost'), carBenefit: num('carBenefit')
       });
       if (carFields) carFields.hidden = !car;
-      if (ins.share) ins.share.setAttribute('aria-valuetext', share + ' per cent');
+      if (ins.share) ins.share.setAttribute('aria-valuetext', PERCENT.replace('{n}', share));
       if (outs.shareLabel) outs.shareLabel.textContent = share + '%';
       for (var key in r) {
         if (Object.prototype.hasOwnProperty.call(r, key) && outs[key]) outs[key].textContent = sek(r[key]);
@@ -535,8 +549,7 @@
       if (outs.status) {
         if (timer) clearTimeout(timer);
         timer = setTimeout(function () {
-          outs.status.textContent = 'Gross monthly salary ' + sek(r.salary) +
-            '. Left on your balance ' + sek(r.balance) + '.';
+          outs.status.textContent = STATUS.replace('{salary}', sek(r.salary)).replace('{balance}', sek(r.balance));
         }, ANNOUNCE_MS);
       }
     }
@@ -616,6 +629,9 @@
   // six themes, and its hover (a brightness shift) does not depend on the bar's
   // surface the way the outlined hover fill does.
   var BUTTON_CLASS = 'btn consent__btn';
+  // "" on a page at the root, "../" on a page of a generated language: the
+  // notices are at the root, in English and Swedish only.
+  var UP = ((document.currentScript && document.currentScript.getAttribute('src')) || '').replace(/app\.js.*$/, '');
 
   // The wording, in the language of the page (Swedish when <html lang> starts
   // with sv). The bar's own text has to stand alone, because a privacy page
@@ -877,11 +893,14 @@
     section.id = 'consent-bar';
     section.setAttribute('aria-label', c.label);
     section.setAttribute('lang', l);
+    // The bar is English on a page of any other language; on a right-to-left
+    // page it still reads left to right.
+    if (root.getAttribute('dir') === 'rtl') section.setAttribute('dir', 'ltr');
     section.setAttribute('data-nosnippet', '');
 
     var text = make('p', 'consent__text', c.text + ' ');
     var link = make('a', 'consent__link', c.notice);
-    link.href = c.noticeHref;
+    link.href = UP + c.noticeHref;
     text.appendChild(link);
     section.appendChild(text);
 

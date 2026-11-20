@@ -1,6 +1,7 @@
-// Search, sharing and copy checks for every page in PAGES, run in Chromium against the local server.
+// Search, sharing and copy checks for every page in PAGES and every page of a generated language that is live,
+// run in Chromium against the local server.
 // - one canonical per page, in the form the sitemap uses; og:url, og:title and og:description
-//   match the canonical, <title> and meta description; html lang is en or sv and og:locale agrees
+//   match the canonical, <title> and meta description; html lang is a language of LANGS and og:locale agrees
 // - one robots meta per page, exactly "index, follow, max-snippet:-1, max-image-preview:large" (a withdrawn
 //   page: exactly "noindex", no hreflang, no FAQPage or Article node, and not in the sitemap);
 //   twitter:title and twitter:description repeat og:title and og:description
@@ -26,16 +27,31 @@
 // text the copy rules and the FAQ comparison see.
 const fs = require('fs');
 const path = require('path');
-const { PAGES, readRegistry, BASE, armGa, launch } = require('./_common');
+const { PAGES: WRITTEN, readRegistry, readLangs, generatedPages, BASE, armGa, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
-const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p);
+const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p.replace(/\/index\.html$/, '/'));
 const ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large';
 const ROBOTS_WITHDRAWN = 'noindex';
 // The registry of tools/seo-head.py, read as text. A withdrawn page keeps its URL but is left out of the
 // sitemap, carries noindex and has no hreflang, FAQ or Article node (TAKEDOWN.md).
 const REG = readRegistry();
+// The languages (LANGS in tools/seo-head.py). The pages of a generated language that is live are checked here
+// with the pages written by hand: 'es/services.html' takes the registry entry of services.html, as a translation
+// of it. A draft language is not public and is checked by i18n.js alone.
+const LANGS = readLangs();
+const LIVE_LANGS = Object.keys(LANGS).filter((k) => LANGS[k].kind === 'generated' && LANGS[k].status === 'live');
+const GENERATED = generatedPages().filter((p) => LIVE_LANGS.includes(p.split('/')[0]));
+for (const g of GENERATED) {
+  const [code, file] = g.split('/');
+  REG[g] = Object.assign({}, REG[file], { lang: code, alt: {}, original: false, translationOf: file });
+}
+const PAGES = WRITTEN.concat(GENERATED);
+// The live translations of a page written by hand (none for a notice, which is not translated).
+const translationsOf = (p) => GENERATED.filter((g) => g.split('/')[1] === p && REG[p] && REG[p].lang === 'en');
+const TAGS = Object.values(LANGS).map((l) => l.tag);
+const LOCALE = Object.fromEntries(Object.values(LANGS).map((l) => [l.tag, l.locale]));
 const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is in PAGES (_common.js) but not in the registry of tools/seo-head.py`); return REG[p].status === 'live'; };
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
@@ -127,8 +143,8 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
     const wantRobots = isLive(p) ? ROBOTS : ROBOTS_WITHDRAWN;
     if (d.robots.length !== 1 || d.robots[0] !== wantRobots) issues.push(`robots meta ${JSON.stringify(d.robots)} (want one, "${wantRobots}")`);
     if (!isLive(p) && d.hreflang.length) issues.push('a withdrawn page carries hreflang');
-    if (!['en', 'sv'].includes(d.lang)) issues.push(`html lang "${d.lang}"`);
-    if (d.ogLocale !== { en: 'en_GB', sv: 'sv_SE' }[d.lang]) issues.push(`og:locale ${d.ogLocale} for lang ${d.lang}`);
+    if (!TAGS.includes(d.lang)) issues.push(`html lang "${d.lang}"`);
+    if (d.ogLocale !== LOCALE[d.lang]) issues.push(`og:locale ${d.ogLocale} for lang ${d.lang}`);
     if (d.h1 !== 1) issues.push(`${d.h1} h1 elements`);
     // Structured data
     let nodes = [];
@@ -156,7 +172,9 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
       // An alt pair names its original once: the original carries workTranslation, the translation translationOfWork.
       const reg = REG[p];
       if (reg && isLive(p)) {
-        const has = Object.keys(reg.alt).length > 0;
+        // A twin written by hand, a live generated translation, or being one.
+        const twin = Object.values(reg.alt)[0];
+        const has = Object.keys(reg.alt).length > 0 || !!reg.translationOf || translationsOf(p).length > 0 || (twin && translationsOf(twin).length > 0);
         const want = has ? (reg.original ? 'workTranslation' : 'translationOfWork') : null;
         const other = reg.original ? 'translationOfWork' : 'workTranslation';
         if (want && !self[want]) issues.push(`${want} missing (this page is the ${reg.original ? 'original' : 'translation'} of its pair)`);
@@ -197,7 +215,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
   await browser.close();
 
   // hreflang reciprocity
-  const fileOf = (u) => (u === SITE ? 'index.html' : u.replace(SITE, ''));
+  const fileOf = (u) => (u === SITE ? 'index.html' : u.replace(SITE, '').replace(/\/$/, '/index.html'));
   for (const [p, alts] of Object.entries(alternates)) {
     if (!alts.length) continue;
     const langs = alts.map((a) => a[0]);

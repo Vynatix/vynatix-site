@@ -185,7 +185,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=f45201b2">
+<link rel="stylesheet" href="styles.css?v=c11fcab8">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <link rel="stylesheet" href="hero-bg.css?v=e3f2e31e">
@@ -202,7 +202,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=874e8f9b"></script>
+<script src="app.js?v=208442e5"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -265,7 +265,7 @@
         <!-- The message: what the hero fit keeps on the first screen (styles.css, "Hero fit"). -->
         <div class="hero__msg">
         <p class="eyebrow">Based in Gothenburg · Part of Ultra Group</p>
-        <h1 class="hero__h1">Engineering<br><em>that compounds.</em></h1>
+        <h1 class="hero__h1" translate="no">Engineering<br><em>that compounds.</em></h1>
         <p class="hero__lede">We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
         <div class="hero__ctas">
           <a class="btn btn--lg" href="contact.html">Start the conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
@@ -605,7 +605,7 @@
             <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
-            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
           </ul>
         </div>
       </div>

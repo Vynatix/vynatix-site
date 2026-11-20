@@ -22,6 +22,19 @@ highlights the things most worth keeping front-of-mind.
   (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
   `sheet-art.js` for the hero background, never site content and
   never run at deploy time.
+- **Six languages, two kinds.** English and Swedish are written by hand (the twenty-four pages above).
+  Spanish, Chinese, Hindi and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
+  the three notices in `es/`, `zh/`, `hi/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
+  English message to its translation (`tools/i18n.py` is the engine; `LANGS` in `seo-head.py` is the one table).
+  **Never edit a file in a language folder**: edit the English page, run `python3 tools/seo-head.py`, then
+  translate what `python3 tools/i18n.py missing <code>` lists, in all four catalogues, and run it again. A
+  changed English sentence shows in English on the generated pages until then, and `tools/verify/i18n.js`
+  fails. **All four are drafts** (`status='draft'`: excluded from the published site by `_config.yml`, `noindex`,
+  linked from nowhere, in no sitemap or lock row), because the brand voice requires a native reader's check
+  and none has been made; `status='live'` needs `checked` and `by`, and makes the language's URLs permanent.
+  Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
+  is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
+  its last block, "Languages". See AGENTS.md, *Languages*.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
   `colors_and_type.css` (the system's helpers and components, verbatim), then
@@ -89,7 +102,7 @@ highlights the things most worth keeping front-of-mind.
   those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
-  last block of `styles.css` ("The English home page: its pictures") holds it: a tall lead case beside two compact ones, the hero's
+  block of `styles.css` named "The English home page: its pictures" (the last but one) holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
   Insights as ruled rows. The Services picture and the three case pictures are generated still lifes with a
@@ -121,7 +134,8 @@ highlights the things most worth keeping front-of-mind.
   transition on hover or focus; reduced motion removes all of it. The system
   forbids auto-advancing strips and ambient loops, so the client list is still,
   the hero's drafting sheet is still and the silk has a pause control: an owner decision whose limits must not be loosened.
-  `app.js` is the only script any page loads.
+  `app.js` is the only script any page loads, and it holds no translated text: a sentence it writes is carried
+  by the page in a `data-i18n-*` attribute, so the generated languages get it from their catalogues.
   The CSP pins `script-src` to `'self'` plus one Google path, so adding any other
   third-party script means widening the CSP in **every page** first (see the
   analytics bullet).
@@ -212,6 +226,8 @@ registered, new root files excluded, footer link, storage keys named, the site's
 style rules, the hero background's rules and the retired draws), the hero background's guard, the rate
 calculator's arithmetic and no-JavaScript state (`calc.js`), accessibility
 including a contrast sweep, and a screenshot diff.
+The generated languages have their own check in the chain, `i18n.js` (catalogues complete, the draft gate,
+every generated page loaded at three widths, axe on three pages of each).
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
 (`python3 -m http.server 8000`). `THEMES` narrows the themes a run covers (see `tools/README.md`).

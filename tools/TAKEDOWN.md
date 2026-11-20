@@ -15,6 +15,14 @@ every pull request diff and branch that carried it, in forks, in search-engine c
 already fetched. For an NDA or personal-data breach the real control is not publishing before the owner has
 approved the text (`AGENTS.md`, "Posts, permanence and withdrawal"). This runbook is damage limitation.
 
+**The generated languages follow the English page.** Spanish, Chinese, Hindi and Arabic are built from the
+English pages (`AGENTS.md`, "Languages"), so withdrawing the English page withdraws its translations in the same
+run: a translation in a live language has been public and becomes the stub in its own language (the stub's
+strings are in the catalogues `tools/i18n/<code>.json`), and a translation in a draft language, which was never
+published, is deleted. The withdrawn text is also in those catalogues, keyed by the English sentence: run
+`python3 tools/i18n.py prune` after the script so the catalogues and `tools/i18n/messages.json` stop carrying
+it. They are not published, but the repository is public, and like the page they stay in git history.
+
 ## Before you start
 
 - Python 3, Node, `npm install` in `tools/` (once), Chromium, and a server for the repository root

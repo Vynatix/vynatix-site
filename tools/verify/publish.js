@@ -7,7 +7,8 @@
 //    CSP, link, SEO and consent checks, which all iterate PAGES);
 //  - every other file at the root is a page, an asset the site uses (css, js, xml, ico, png, svg, webmanifest,
 //    CNAME, robots.txt, llms.txt or the IndexNow <32 hex>.txt key) or is named in _config.yml `exclude`; a directory
-//    is assets, fonts, .well-known, tools (excluded) or .git, or is excluded; no .md document sits in assets,
+//    is assets, fonts, .well-known, tools (excluded), .git or the folder of a live generated language, or is
+//    excluded, and the folder of a draft language is always excluded; no .md document sits in assets,
 //    fonts or .well-known unless it is excluded (otherwise GitHub Pages serves it);
 //  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
@@ -22,7 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, PAGES, NOTICE_PAGES, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -92,10 +93,23 @@ function run(root = ROOT, pages = PAGES) {
   const exclude = new Set(yamlList(config || '', 'exclude'));
   const include = new Set(yamlList(config || '', 'include'));
   const stray = [];
+  // The folder of a generated language (LANGS in tools/seo-head.py): published once the language is live, and
+  // named in `exclude` for as long as it is a draft (seo-head.py keeps that list).
+  let langs = {};
+  try { langs = readLangs(root); } catch (e) { add(false, 'the LANGS table of tools/seo-head.py can be read', e.message); }
+  const generated = Object.entries(langs).filter(([, l]) => l.kind === 'generated');
+  const gateProblems = [];
+  for (const [code, l] of generated) {
+    if (l.status === 'draft' && !exclude.has(code)) gateProblems.push(`${code}/ is a draft but is not in _config.yml exclude (it would be published; run python3 tools/seo-head.py)`);
+    if (l.status === 'live' && exclude.has(code)) gateProblems.push(`${code}/ is live but still in _config.yml exclude (run python3 tools/seo-head.py)`);
+    if (l.status === 'live' && !(/^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim())) gateProblems.push(`${code} is live without a native reader's check on record (checked, by)`);
+  }
+  add(gateProblems.length === 0, `the ${generated.length} generated languages are published only when live: a draft's folder is in _config.yml exclude`, gateProblems.join(' | '));
   for (const e of entries) {
     const n = e.name;
     if (e.isDirectory()) {
       if (n === '.git' || ALWAYS_DIRS.includes(n) || exclude.has(n)) continue;
+      if (langs[n] && langs[n].kind === 'generated' && langs[n].status === 'live') continue;
       if (/^[._#~]/.test(n) && !include.has(n)) continue;           // Jekyll skips these unless `include` names them
       stray.push(`${n}/ (a directory that would be published; add it to _config.yml exclude, or move it under tools/)`);
       continue;

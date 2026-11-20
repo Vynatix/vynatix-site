@@ -142,7 +142,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=f45201b2">
+<link rel="stylesheet" href="styles.css?v=c11fcab8">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -156,7 +156,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=874e8f9b"></script>
+<script src="app.js?v=208442e5"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -311,7 +311,7 @@
           <p class="section__lead">Enter your hourly rate and the hours you bill in a month. You see the gross salary that rate carries, and every cost between the invoice and the payslip.</p>
         </div>
         <p class="calc-nojs">The calculator runs in your browser and needs JavaScript. <a href="contact.html">Write to us</a> and we go through the numbers with you.</p>
-        <div class="calc" data-calc>
+        <div class="calc" data-calc data-i18n-percent="{n} per cent" data-i18n-status="Gross monthly salary {salary}. Left on your balance {balance}.">
           <div class="calc__inputs">
             <fieldset class="calc__group">
               <legend class="calc__legend" data-calc-reveal>Your assignment</legend>
@@ -470,7 +470,7 @@
             <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
-            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
           </ul>
         </div>
       </div>

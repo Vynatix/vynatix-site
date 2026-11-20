@@ -16,7 +16,12 @@ What it rewrites, on every page it is given:
   it is not edited in every file);
 - the site header, from the HEADER template below (a nav change is made in NAV, then this is run); it stays
   English, with lang="en", on the Swedish pages;
-- sitemap.xml, from the registry's mod dates and language pairs.
+- sitemap.xml, from the registry's mod dates and language versions;
+- the generated languages (LANGS below: Spanish, Chinese, Hindi, Arabic): every English page except
+  the notices, rebuilt in <code>/ from the catalogue tools/i18n/<code>.json by tools/i18n.py, with
+  its own head block, translated header and footer and the language list; tools/i18n/messages.json,
+  the list of every message to translate; the draft languages' lines in _config.yml exclude; and,
+  for a live generated language, its block in llms.txt. Never edit a page in a language folder.
 
 What it never touches: anything inside <main>, the <title> and the meta description (the page
 is the source of truth for both; the block repeats them), and the ?v= stamps on the stylesheets
@@ -32,12 +37,15 @@ word), after moving a page's `mod` date in PAGES because its content changed (`p
 page first went live, never moves), or after changing the footer. It is idempotent: on an
 unchanged tree it changes nothing. If styles or scripts changed as well, run `npm run stamp` in
 tools/ afterwards; the stamps are not this script's business, and `npm run check` fails until
-they are current.
+they are current (stamp.js stamps the language folders with the root pages, so the two agree).
+After editing an English page, `python3 tools/i18n.py` lists what the catalogues now lack.
 """
 import json, os, re, sys, html
 from html.parser import HTMLParser
 
 EXEC = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, EXEC)
+import i18n                      # tools/i18n.py: the translation engine for the generated languages
 REPO = os.path.dirname(EXEC)
 SEO_DIR = os.path.join(EXEC, 'seo')
 SITE = 'https://vynatix.com/'
@@ -96,7 +104,7 @@ for f, p in PAGES.items():
 
 def is_original(f):
     """True for the original of an alt pair (the English page unless the registry says otherwise)."""
-    p = PAGES[f]
+    p = PAGES.get(f) or GEN[f]              # a generated page is never the original
     return p['original'] if 'original' in p else p['lang'] == 'en'
 
 for f, p in PAGES.items():
@@ -109,8 +117,96 @@ for f, p in PAGES.items():
         assert not (p['status'] == 'live' and PAGES[other]['status'] == 'withdrawn'), (
             f'{f}: alt {other} is withdrawn; remove the alt from {f} first')
 
+# ---------------------------------------------------------------- languages
+# Every language the site is in, in the order the language list shows them. One entry per line.
+# name: the language's own name. tag: the value of lang and hreflang. locale: og:locale. dir: ltr or rtl.
+# kind: 'written' (pages written by hand and registered in PAGES above: English and Swedish) or
+#       'generated' (every English page except UNTRANSLATED, rebuilt in the folder <code>/ from the
+#       catalogue tools/i18n/<code>.json by tools/i18n.py; never edit a generated page).
+# A generated language also has:
+# status: 'draft' or 'live'. A draft is built and checked but not published: its folder is named in
+#       _config.yml exclude (this script keeps that list), its pages carry noindex and no hreflang, no
+#       other page links to it, and it has no row in sitemap.xml, llms.txt or tools/urls.lock. 'live'
+#       publishes it, and its URLs are then permanent like every other; a live language never goes
+#       back to draft. The brand voice requires a native reader's check first, so 'live' needs:
+# checked, by: the date of that check and who made it (a name or a role).
+# pub: the day the language goes live (set it on that day); mod: move it when its catalogue changes.
+LANGS = {
+  'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
+  'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
+  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
+  'zh': dict(name='中文', tag='zh-Hans', locale='zh_CN', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
+  'hi': dict(name='हिन्दी', tag='hi', locale='hi_IN', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
+  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
+}
+# The notices are legal text and are not translated: the English text governs, and a generated page
+# links to it and says so (hreflang="en").
+UNTRANSLATED = ('privacy.html', 'terms.html', 'accessibility.html')
+GENERATED = [k for k, l in LANGS.items() if l['kind'] == 'generated']
+for k, l in LANGS.items():
+    assert re.fullmatch(r'[a-z]{2}', k), f'{k}: a language code is two letters (it is also the folder name)'
+    assert l['kind'] in ('written', 'generated') and l['dir'] in ('ltr', 'rtl'), f'{k}: kind or dir'
+    if l['kind'] == 'generated':
+        assert l['status'] in ('draft', 'live'), f'{k}: status is draft or live'
+        assert all(re.fullmatch(r'\d{4}-\d{2}-\d{2}', l[d]) for d in ('pub', 'mod')), f'{k}: pub and mod are dates'
+        assert l['status'] == 'draft' or (re.fullmatch(r'\d{4}-\d{2}-\d{2}', l['checked']) and l['by'].strip()), (
+            f"{k}: a language goes live only after a native reader's check (set checked to its date and by to who made it)")
+for p in PAGES.values():
+    assert LANGS.get(p['lang'], {}).get('kind') == 'written', 'PAGES holds the pages written by hand (English and Swedish) only'
+
+def locked_urls():
+    try:
+        text = open(os.path.join(REPO, 'tools', 'urls.lock'), encoding='utf-8').read()
+    except FileNotFoundError:
+        return set()
+    return {l.split()[0] for l in text.splitlines() if l.strip() and not l.startswith('#')}
+
 def url_of(f):
-    return SITE if f == 'index.html' else SITE + f
+    if f == 'index.html': return SITE
+    return SITE + (f[:-len('index.html')] if f.endswith('/index.html') else f)
+
+def sources(lang):
+    """The English pages a generated language holds: every live one that is translated, and a
+    withdrawn one whose translation has been public (its URL must keep answering, as the stub)."""
+    locked = locked_urls()
+    return [f for f, p in PAGES.items() if p['lang'] == 'en' and f not in UNTRANSLATED
+            and (p['status'] == 'live' or url_of(f'{lang}/{f}') in locked)]
+
+# The generated pages, 'es/services.html': the registry entry of the English page with the language's own dates.
+GEN = {}
+for k in GENERATED:
+    for f in sources(k):
+        p = PAGES[f]; l = LANGS[k]
+        GEN[f'{k}/{f}'] = dict(lang=k, type=p['type'], og=p['og'], pub=max(p['pub'], l['pub']), mod=max(p['mod'], l['mod']),
+                               alt={}, article=p['article'], status=p['status'], original=False, src=f)
+ALL = {**PAGES, **GEN}
+for k in GENERATED:
+    if LANGS[k]['status'] == 'draft':
+        was = sorted(u for u in locked_urls() if u.startswith(SITE + k + '/'))
+        assert not was, f'{k}: {was[0]} has been public, so the language stays live (withdraw a page instead)'
+
+def is_public(f):
+    """False for a withdrawn page and for a page of a language still in draft."""
+    p = ALL[f]
+    return p['status'] == 'live' and LANGS[p['lang']].get('status', 'live') == 'live'
+
+def english_of(f):
+    p = ALL[f]
+    return p.get('src') or (f if p['lang'] == 'en' else p['alt'].get('en'))
+
+def cluster(f, drafts=False):
+    """{language: page} of every version of a page, itself included, in the order of LANGS:
+    the hand-written twins and the generated translations (the live ones; with drafts, all)."""
+    p = ALL[f]; en = english_of(f)
+    v = {p['lang']: f}
+    v.update(PAGES[en]['alt'] if en else p['alt'])
+    if en:
+        v['en'] = en
+        if PAGES[en]['status'] == 'live':
+            for k in GENERATED:
+                if f'{k}/{en}' in GEN and (drafts or LANGS[k]['status'] == 'live'):
+                    v[k] = f'{k}/{en}'
+    return {k: v[k] for k in LANGS if k in v}
 
 # ---------------------------------------------------------------- shared nodes
 COMPANY_SENTENCE = ("Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise "
@@ -146,7 +242,7 @@ ORGANIZATION = {
   "sameAs": ["https://www.linkedin.com/company/vynatix", "https://github.com/Vynatix"],
 }
 WEBSITE = {"@type": "WebSite", "@id": WEBSITE_ID, "url": SITE, "name": "Vynatix",
-           "inLanguage": ["en", "sv"], "publisher": {"@id": ORG_ID}}
+           "inLanguage": [l['tag'] for l in LANGS.values() if l.get('status', 'live') == 'live'], "publisher": {"@id": ORG_ID}}
 
 # ---------------------------------------------------------------- parsing helpers
 VOID = ('br', 'img', 'input', 'meta', 'link', 'source', 'use', 'path', 'hr')
@@ -206,19 +302,18 @@ def h1_text(main_html):
 
 # ---------------------------------------------------------------- head block
 def head_block(f, title, desc, main_html, extra_nodes):
-    p = PAGES[f]; u = url_of(f)
+    p = ALL[f]; u = url_of(f); tag = LANGS[p['lang']]['tag']
     withdrawn = p['status'] == 'withdrawn'
-    loc = {'en': 'en_GB', 'sv': 'sv_SE'}
+    public = is_public(f)                      # a page of a draft language is built, but kept out of search
+    versions = cluster(f) if public else {p['lang']: f}
     lines = ['<!-- Search and sharing: the canonical address, the other-language version, Open Graph, and',
              '     structured data (a JSON-LD data block: never executed, so script-src does not apply). -->',
              f'<link rel="canonical" href="{u}">']
-    if p['alt'] and not withdrawn:
-        versions = {p['lang']: f, **p['alt']}
-        for lang in ('en', 'sv'):
-            if lang in versions:
-                lines.append(f'<link rel="alternate" hreflang="{lang}" href="{url_of(versions[lang])}">')
+    if len(versions) > 1:
+        for lang, other in versions.items():
+            lines.append(f'<link rel="alternate" hreflang="{LANGS[lang]["tag"]}" href="{url_of(other)}">')
         lines.append(f'<link rel="alternate" hreflang="x-default" href="{url_of(versions.get("en", f))}">')
-    robots = 'noindex' if withdrawn else 'index, follow, max-snippet:-1, max-image-preview:large'
+    robots = 'index, follow, max-snippet:-1, max-image-preview:large' if public else 'noindex'
     lines += ['<meta name="author" content="Vynatix AB">',
               f'<meta name="robots" content="{robots}">',
               f'<meta property="og:type" content="{"website" if withdrawn else p["og"]}">',
@@ -226,9 +321,10 @@ def head_block(f, title, desc, main_html, extra_nodes):
               f'<meta property="og:title" content="{html.escape(title, quote=True)}">',
               f'<meta property="og:description" content="{html.escape(desc, quote=True)}">',
               f'<meta property="og:url" content="{u}">',
-              f'<meta property="og:locale" content="{loc[p["lang"]]}">']
-    for lang in ([] if withdrawn else p['alt']):
-        lines.append(f'<meta property="og:locale:alternate" content="{loc[lang]}">')
+              f'<meta property="og:locale" content="{LANGS[p["lang"]]["locale"]}">']
+    for lang in versions:
+        if lang != p['lang']:
+            lines.append(f'<meta property="og:locale:alternate" content="{LANGS[lang]["locale"]}">')
     lines += [f'<meta property="article:published_time" content="{p["pub"]}">',
               f'<meta property="article:modified_time" content="{p["mod"]}">']
     lines += [f'<meta property="og:image" content="{SITE}assets/icon-512.png">',
@@ -240,30 +336,31 @@ def head_block(f, title, desc, main_html, extra_nodes):
               f'<meta name="twitter:description" content="{html.escape(desc, quote=True)}">']
     # JSON-LD graph
     page = {"@type": p['type'], "@id": u, "url": u, "name": title, "description": desc,
-            "inLanguage": p['lang'], "isPartOf": {"@id": WEBSITE_ID},
+            "inLanguage": tag, "isPartOf": {"@id": WEBSITE_ID},
             "publisher": {"@id": ORG_ID}, "datePublished": p['pub'], "dateModified": p['mod']}
-    if f in ('index.html', 'sv.html', 'about.html'):
+    if p.get('src', f) in ('index.html', 'sv.html', 'about.html'):
         page["about"] = {"@id": ORG_ID}
-    if p['alt'] and not withdrawn:
-        other = list(p['alt'].values())[0]
-        # The original carries workTranslation, the translation carries translationOfWork. The English
+    others = [x for x in versions.values() if x != f]
+    if others:
+        # The original carries workTranslation, a translation carries translationOfWork. The English
         # page is the original unless the registry says otherwise (original=True / original=False).
         if is_original(f):
-            page["workTranslation"] = {"@id": url_of(other)}
+            refs = [{"@id": url_of(x)} for x in others]
+            page["workTranslation"] = refs[0] if len(refs) == 1 else refs
         else:
-            page["translationOfWork"] = {"@id": url_of(other)}
+            page["translationOfWork"] = {"@id": url_of(next(x for x in others if is_original(x)))}
     faqs, frag = ([], None) if withdrawn else faq_items(main_html, f)
     graph = [ORGANIZATION, WEBSITE, page]
     if faqs:
         fid = u + '#' + frag
         page["hasPart"] = {"@id": fid}
-        graph.append({"@type": "FAQPage", "@id": fid, "url": fid, "inLanguage": p['lang'],
+        graph.append({"@type": "FAQPage", "@id": fid, "url": fid, "inLanguage": tag,
                       "isPartOf": {"@id": u},
                       "mainEntity": [{"@type": "Question", "name": q,
                                       "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]})
     if p['article'] and not withdrawn:
         graph.append({"@type": "Article", "@id": u + "#article", "headline": h1_text(main_html) or title,
-                      "description": desc, "inLanguage": p['lang'], "mainEntityOfPage": {"@id": u},
+                      "description": desc, "inLanguage": tag, "mainEntityOfPage": {"@id": u},
                       "author": {"@id": ORG_ID}, "publisher": {"@id": ORG_ID},
                       "datePublished": p['pub'], "dateModified": p['mod']})
     graph += [] if withdrawn else (extra_nodes or [])
@@ -276,9 +373,9 @@ def head_block(f, title, desc, main_html, extra_nodes):
 # The one source of the footer. Every page's footer is replaced with this on each run, so a
 # change to the contact details, the links or the fine print is made here, once.
 FOOTER = '''  <!-- ============================================================ Footer -->
-  <footer class="site-footer inverse" lang="en">
+  <footer class="site-footer inverse"@@LANG@@>
     <div class="container">
-      <div class="site-footer__grid">
+      <div class="site-footer__grid@@GRID@@">
         <div class="site-footer__brand">
           <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
             <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
@@ -310,29 +407,20 @@ FOOTER = '''  <!-- ============================================================ 
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
-        <div lang="sv">
-          <h2 class="site-footer__h">På svenska</h2>
-          <ul class="site-footer__links list-reset">
-            <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
-            <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
-            <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
-            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
-          </ul>
-        </div>
-        <div>
+@@SWEDISH@@        <div>
           <h2 class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="privacy.html">Privacy</a></li>
             <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
             <li><a href="terms.html">Terms</a></li>
             <li><a href="accessibility.html">Accessibility</a></li>
-            <li class="motion-item"><button class="motion-toggle" type="button">Pause background motion</button></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
           </ul>
         </div>
       </div>
       <div class="site-footer__fine">
         <span>© 2026 Vynatix AB</span>
-        <span>vynatix.com</span>
+@@LANGUAGES@@        <span>vynatix.com</span>
       </div>
     </div>
   </footer>'''
@@ -345,7 +433,7 @@ FOOTER = '''  <!-- ============================================================ 
 NAV = [('services.html', 'Services'), ('industries.html', 'Industries'), ('work.html', 'Cases'), ('blog.html', 'Insights'), ('membership.html', 'Career'), ('about.html', 'About'), ('contact.html', 'Contact')]
 MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
 HEADER = '''  <!-- ============================================================ Header -->
-  <header class="site-header" role="banner" lang="en">
+  <header class="site-header" role="banner"@@LANG@@>
     <div class="site-header__inner">
       <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
         <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
@@ -369,13 +457,53 @@ HEADER = '''  <!-- ============================================================ 
     </div>
   </header>'''
 
-def header_for(f):
+def header_for(f, gen=False):
     rows = []
     for href, label in NAV:
         cur = ' aria-current="page"' if href == f else ''
         rows.append(f'          <li><a href="{href}" class="site-header__link"{cur}>{label}</a></li>')
     rows.append(f'          <li class="site-header__menu-cta"><a href="{MENU_CTA[0]}" class="site-header__link">{MENU_CTA[1]}</a></li>')
-    return HEADER.replace('@@NAV@@', '\n'.join(rows))
+    # On a generated page the header is translated with the rest, so it does not declare English.
+    return HEADER.replace('@@NAV@@', '\n'.join(rows)).replace('@@LANG@@', '' if gen else ' lang="en"')
+
+# The footer's Swedish column: on the hand-written pages only. A generated page has the language list instead.
+SWEDISH_COLUMN = '        <div lang="sv">\n          <h2 class="site-footer__h">På svenska</h2>\n          <ul class="site-footer__links list-reset">\n            <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>\n            <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>\n            <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>\n            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>\n          </ul>\n        </div>\n'
+LANGUAGES_SLOT = '        <!--@@languages@@-->\n'      # where a generated page's language list goes, once it is translated
+
+def relative(target, f):
+    """The link from page f to page target ('es/about.html' to 'about.html' is '../about.html')."""
+    here = f.split('/')[:-1]; there = target.split('/')
+    if here == there[:-1]:
+        return there[-1]
+    return '../' * len(here) + target
+
+def languages_for(f, label='Language'):
+    """The language list in the footer: every language a visitor may see from this page, each in its own
+    name, linked to this page in that language or, where it has none, to that language's home page.
+    Empty while no generated language is live, so the hand-written pages stay as they are; a page of a
+    draft language lists the other drafts as well, so a reviewer can move between them."""
+    p = ALL[f]
+    drafts = LANGS[p['lang']].get('status') == 'draft'
+    shown = [k for k, l in LANGS.items() if l['kind'] == 'written' or l['status'] == 'live' or drafts]
+    if not any(LANGS[k]['kind'] == 'generated' for k in shown):
+        return ''
+    versions = cluster(f, drafts=drafts)
+    rows = []
+    for k in shown:
+        l = LANGS[k]
+        target = versions.get(k)
+        if not target or ALL[target]['status'] != 'live':      # no version, or a withdrawn one: that language's home page
+            target = l['home'] if l['kind'] == 'written' else f'{k}/index.html'
+        cur = ' aria-current="true"' if k == p['lang'] else ''
+        rows.append(f'          <li><a href="{relative(target, f)}" lang="{l["tag"]}" hreflang="{l["tag"]}"{cur}>{l["name"]}</a></li>')
+    rows = ['  ' + r for r in rows]
+    return (f'        <nav class="site-footer__langs" aria-label="{html.escape(label, quote=True)}">\n'
+            '          <ul class="site-footer__langlist list-reset">\n' + '\n'.join(rows) + '\n          </ul>\n        </nav>\n')
+
+def footer_for(f, gen=False):
+    s = FOOTER.replace('@@LANG@@', '' if gen else ' lang="en"').replace('@@GRID@@', ' site-footer__grid--four' if gen else '')
+    s = s.replace('@@SWEDISH@@', '' if gen else SWEDISH_COLUMN)
+    return s.replace('@@LANGUAGES@@', LANGUAGES_SLOT if gen else languages_for(f))
 
 # ---------------------------------------------------------------- read helpers
 CHECK = '--check' in sys.argv
@@ -390,6 +518,7 @@ def write(f, s):
         except FileNotFoundError:
             pass
         STALE.append(f); return
+    os.makedirs(os.path.dirname(os.path.join(REPO, f)), exist_ok=True)
     open(os.path.join(REPO, f), 'w', encoding='utf-8').write(s)
 
 def extra_nodes_for(f):
@@ -433,7 +562,7 @@ STUB = {
 }
 
 def stub_main(f):
-    p = PAGES[f]; t = STUB[p['lang']]
+    p = ALL[f]; t = stub_for(p['lang'])
     y, m, d = (int(x) for x in p['mod'].split('-'))
     lede = t['lede'].format(date=t['date'](y, m, d), home=t['home'])
     return ('  <main id="main">\n'
@@ -448,8 +577,8 @@ def stub_main(f):
 
 def withdraw(f, s):
     """Replaces the title, the meta description and the whole <main> with the stub."""
-    t = STUB[PAGES[f]['lang']]
-    s = re.sub(r'<title>.*?</title>', lambda m: f'<title>{t["title"]}</title>', s, count=1, flags=re.S)
+    t = stub_for(ALL[f]['lang'])
+    s = re.sub(r'<title[^>]*>.*?</title>', lambda m: f'<title>{t["title"]}</title>', s, count=1, flags=re.S)
     s = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{t["desc"]}">', s, count=1)
     s, n = re.subn(r'(\s*)<main id="main"[^>]*>.*?</main>', lambda m: m.group(1) + stub_main(f).lstrip(), s, count=1, flags=re.S)
     if n != 1:
@@ -457,10 +586,12 @@ def withdraw(f, s):
     return s
 
 # ---------------------------------------------------------------- pages
-def render(f):
+def render(f, gen=False):
     # The page is the source of truth for its title, description and FAQ markup; the head block,
     # the header and the footer are rewritten from them and from the registry. Returns the new text;
     # nothing is written here, so a run that fails on one page has written none.
+    # gen: the same page as the source of a generated language (header and footer without lang="en",
+    # no Swedish column, a slot for the language list); render_gen() below takes it from there.
     s = read(f)
     if PAGES[f]['status'] == 'withdrawn':
         s = withdraw(f, s)
@@ -469,27 +600,180 @@ def render(f):
     block = head_block(f, title, desc, main_of(s), extra_nodes_for(f))
     s = re.sub(r'\n?<!-- seo -->.*?<!-- /seo -->', '', s, flags=re.S)
     s = re.sub(r'(<meta name="description" content="[^"]*">)', lambda m: m.group(1) + '\n' + block, s, count=1)
-    s, n = re.subn(r'  <!-- =+ Footer -->\n  <footer class="site-footer inverse"( lang="en")?>.*?</footer>', lambda m: FOOTER, s, count=1, flags=re.S)
+    s, n = re.subn(r'  <!-- =+ Footer -->\n  <footer class="site-footer inverse"( lang="en")?>.*?</footer>', lambda m: footer_for(f, gen), s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no footer marker ("<!-- ==== Footer -->" then <footer class="site-footer inverse">) to rewrite')
-    s, n = re.subn(r'  <!-- =+ Header -->\n  <header class="site-header".*?</header>', lambda m: header_for(f), s, count=1, flags=re.S)
+    s, n = re.subn(r'  <!-- =+ Header -->\n  <header class="site-header".*?</header>', lambda m: header_for(f, gen), s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no header marker ("<!-- ==== Header -->" then <header class="site-header">) to rewrite')
     return s
+
+# ---------------------------------------------------------------- generated languages
+# Messages that are on no English page but are needed in every generated language: the label of the
+# language list, and the withdrawn stub with its date (TAKEDOWN.md: a translated page that has been
+# public is withdrawn with its English source, and must say so in its own language).
+STUB_LEDE = 'Vynatix removed this page on {date}. <1>Go to the home page</1>.'
+DATE_PATTERN = '{d} {month} {y}'       # a translation may use {m}, the month as a number, instead of {month}
+EXTRA_MESSAGES = (['Language', STUB['en']['title'], STUB['en']['desc'], STUB['en']['eyebrow'], STUB['en']['h1'],
+                   STUB_LEDE, DATE_PATTERN] + MONTHS['en'])
+LD_TEXT = ('name', 'description', 'serviceType', 'keywords', 'headline')     # the strings of a page's own JSON-LD nodes that are prose
+
+def stub_for(lang):
+    if lang in STUB:
+        return STUB[lang]
+    cat = i18n.load(lang)
+    t = lambda m: i18n.translate_message(m, cat) or m
+    months = [t(m) for m in MONTHS['en']]; pattern = t(DATE_PATTERN)
+    return dict(title=t(STUB['en']['title']), desc=t(STUB['en']['desc']), eyebrow=t(STUB['en']['eyebrow']), h1=t(STUB['en']['h1']),
+                home='index.html', lede=t(STUB_LEDE).replace('<1>', '<a href="{home}">').replace('</1>', '</a>'),
+                date=lambda y, m, d: pattern.format(d=d, m=m, month=months[m - 1], y=y))
+
+def ld_strings(nodes):
+    out = []
+    def walk(o, key=None):
+        if isinstance(o, dict):
+            for a, b in o.items(): walk(b, a)
+        elif isinstance(o, list):
+            for x in o: walk(x, key)
+        elif isinstance(o, str) and key in LD_TEXT:
+            out.append(html.escape(o, quote=False))
+    walk(nodes or [])
+    return out
+
+def ld_localised(nodes, lang, cat, local, missing):
+    """A page's own JSON-LD nodes for a generated language: prose from the catalogue, the addresses
+    of translated pages moved into the language folder, inLanguage set."""
+    def fix(o, key=None):
+        if isinstance(o, dict): return {a: fix(b, a) for a, b in o.items()}
+        if isinstance(o, list): return [fix(x, key) for x in o]
+        if not isinstance(o, str): return o
+        if key == 'inLanguage': return LANGS[lang]['tag'] if o == 'en' else o
+        m = re.fullmatch(re.escape(SITE) + r'([\w-]+\.html)(#.*)?', o)
+        if m and m.group(1) in local: return url_of(f'{lang}/{m.group(1)}') + (m.group(2) or '')
+        if key in LD_TEXT:
+            msg = html.escape(o, quote=False); t = i18n.translate_message(msg, cat)
+            if t is None: missing.append(msg); return o
+            return html.unescape(t)
+        return o
+    return fix(nodes) if nodes else nodes
+
+def render_gen(gf, missing):
+    """One page of a generated language: the English page, translated message by message from the
+    language's catalogue, with its own head block, links and language list."""
+    p = GEN[gf]; k = p['lang']; l = LANGS[k]; src = p['src']
+    cat = i18n.load(k); local = set(sources(k)); lost = []
+
+    def url(value, node):
+        if node.tag == 'link' and node.attrs.get('rel') in ('canonical', 'alternate'): return value
+        if value.startswith('mailto:') and 'subject=' in value:
+            # The language rides along in the subject, so an enquiry says which page it came from.
+            return re.sub(r'(subject=[^&]*)', lambda m: m.group(1) + f'%20%5B{k}%5D', value, count=1)
+        if not value or value[0] in '#/' or re.match(r'[a-zA-Z][\w+.-]*:', value): return value
+        return value if re.split(r'[?#]', value, maxsplit=1)[0] in local else '../' + value
+
+    def start_tag(raw, node):
+        if node.tag == 'html':
+            raw = re.sub(r'\slang="[^"]*"', lambda m: f' lang="{l["tag"]}" dir="{l["dir"]}"', raw, count=1)
+        if l['dir'] == 'rtl' and node.tag != 'html' and 'dir' not in node.attrs and (
+                'lang' in node.attrs or (node.tag == 'a' and (node.attrs.get('href') or '').startswith(('tel:', 'mailto:')))):
+            # English, Swedish, a phone number and an address read left to right on a right-to-left page.
+            raw = raw[:-1].rstrip('/') + ' dir="ltr"' + ('/>' if raw.endswith('/>') else '>')
+        if node.tag == 'a' and 'hreflang' not in node.attrs:
+            page = re.split(r'[?#]', node.attrs.get('href') or '', maxsplit=1)[0]
+            if page in PAGES and page not in local:          # a page that exists in English or Swedish only
+                raw = raw[:-1] + f' hreflang="{LANGS[PAGES[page]["lang"]]["tag"]}">'
+        return raw
+
+    s, lost = i18n.translate(render(src, gen=True), cat, 'en', url, start_tag, rtl=l['dir'] == 'rtl')
+    if p['status'] == 'withdrawn':
+        s = withdraw(gf, s); lost = []
+    # The hero background belongs to the English home page alone (hero-bg.css, :lang(en)).
+    s = re.sub(r'\n<link rel="stylesheet" href="\.\./hero-bg\.css[^"]*">', '', s)
+    title = html.unescape(re.search(r'<title[^>]*>(.*?)</title>', s, re.S).group(1))
+    desc = html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))
+    nodes = ld_localised(extra_nodes_for(src), k, cat, local, lost)
+    block = head_block(gf, title, desc, main_of(s), nodes)
+    s = re.sub(r'\n?<!-- seo -->.*?<!-- /seo -->', '', s, flags=re.S)
+    s = re.sub(r'(<meta name="description" content="[^"]*">)', lambda m: m.group(1) + '\n' + block, s, count=1)
+    label = i18n.translate_message('Language', cat)
+    if label is None: lost.append('Language')
+    assert LANGUAGES_SLOT in s, gf + ': the footer has no slot for the language list'
+    s = s.replace(LANGUAGES_SLOT, languages_for(gf, label or 'Language'))
+    missing.setdefault(k, {}).update(dict.fromkeys(lost))
+    return s
+
+def message_list():
+    """tools/i18n/messages.json: every message of the generated languages, with the pages it is on."""
+    seen = {}; warnings = []
+    pages = list(dict.fromkeys(f for k in GENERATED for f in sources(k)))
+    for f in pages:
+        if PAGES[f]['status'] != 'live': continue
+        found, warn = i18n.extract(render(f, gen=True))
+        warnings += [f'{f}: {w}' for w in warn]
+        for m in found + [m for m in ld_strings(extra_nodes_for(f)) if not i18n._wordless(m)]:
+            seen.setdefault(m, []).append(f)
+    for m in EXTRA_MESSAGES:
+        seen.setdefault(m, []).append('(the language list and the withdrawn stub)')
+    data = {"languages": GENERATED, "messages": [{"id": m, "pages": list(dict.fromkeys(v))} for m, v in seen.items()]}
+    write(os.path.join('tools', 'i18n', 'messages.json'), json.dumps(data, ensure_ascii=False, indent=1) + '\n')
+    return warnings
+
+# llms.txt: the pages of each live generated language, between these two lines, before "## Optional".
+# The rest of the file is written by hand; a draft language is not in it.
+LLMS_OPEN = '<!-- Generated languages: written by tools/seo-head.py from LANGS, not by hand -->'
+LLMS_CLOSE = '<!-- end of the generated languages -->'
+
+def llms(rendered):
+    text = read('llms.txt')
+    parts = []
+    for k in GENERATED:
+        if LANGS[k]['status'] != 'live': continue
+        rows = []
+        for gf, p in GEN.items():
+            if p['lang'] != k or not is_public(gf): continue
+            s = rendered.get(gf) or read(gf)
+            title = html.unescape(re.search(r'<title[^>]*>(.*?)</title>', s, re.S).group(1))
+            desc = html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))
+            rows.append(f'- [{re.sub(r"[,،，]\s*Vynatix$", "", title)}]({url_of(gf)}): {desc}')
+        parts.append(f'## {LANGS[k]["name"]} ({LANGS[k]["tag"]})\n\n' + '\n'.join(rows) + '\n')
+    block = (LLMS_OPEN + '\n\n' + '\n'.join(parts) + '\n' + LLMS_CLOSE + '\n\n') if parts else ''
+    text = re.sub(re.escape(LLMS_OPEN) + r'.*?' + re.escape(LLMS_CLOSE) + r'\n\n', '', text, flags=re.S)
+    if block:
+        if '## Optional' not in text:
+            raise SystemExit('llms.txt: no "## Optional" section to put the generated languages before')
+        text = text.replace('## Optional', block + '## Optional', 1)
+    write('llms.txt', text)
+
+# _config.yml: the folders of the draft languages are named in `exclude`, between these two lines, so a
+# draft is never published. This script keeps the list; tools/verify/publish.js reads the result.
+CONFIG_OPEN = '  # Generated languages still in draft: written by tools/seo-head.py from LANGS (AGENTS.md, "Languages")'
+CONFIG_CLOSE = '  # end of the draft languages'
+
+def config():
+    text = read('_config.yml')
+    drafts = [f'  - {k}' for k in GENERATED if LANGS[k]['status'] == 'draft']
+    block = '\n'.join([CONFIG_OPEN] + drafts + [CONFIG_CLOSE])
+    if CONFIG_OPEN in text:
+        text = re.sub(re.escape(CONFIG_OPEN) + r'.*?' + re.escape(CONFIG_CLOSE), lambda m: block, text, flags=re.S)
+    else:
+        if not re.search(r'^exclude:\n(  - .*\n?)+\Z', text, re.M):
+            raise SystemExit('_config.yml: exclude is expected to be the last list in the file')
+        text = text.rstrip('\n') + '\n' + block + '\n'
+    write('_config.yml', text)
 
 # ---------------------------------------------------------------- sitemap
 def sitemap():
     rows = ['<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
-    for f, p in PAGES.items():
-        if p['status'] != 'live': continue
+    for f, p in ALL.items():
+        if not is_public(f): continue
         rows.append('  <url>')
         rows.append(f'    <loc>{url_of(f)}</loc>')
-        if p['alt']:
-            versions = {p['lang']: f, **p['alt']}
-            for lang in ('en', 'sv'):
-                rows.append(f'    <xhtml:link rel="alternate" hreflang="{lang}" href="{url_of(versions[lang])}"/>')
-            rows.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{url_of(versions["en"])}"/>')
+        versions = cluster(f)
+        if len(versions) > 1:
+            for lang, other in versions.items():
+                rows.append(f'    <xhtml:link rel="alternate" hreflang="{LANGS[lang]["tag"]}" href="{url_of(other)}"/>')
+            rows.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{url_of(versions.get("en", f))}"/>')
         rows.append(f'    <lastmod>{p["mod"]}</lastmod>')
         rows.append('  </url>')
     rows.append('</urlset>')
@@ -520,7 +804,9 @@ def lock():
     have = {r[0] for r in rows}
     if text and not text.endswith('\n'):
         text += '\n'
-    for f, p in PAGES.items():
+    for f, p in ALL.items():
+        if f in GEN and LANGS[p['lang']]['status'] != 'live':
+            continue                                    # a draft language has no public URL yet
         if url_of(f) not in have:
             text += f'{url_of(f)} {p["pub"]}\n'
     write(LOCK, text)
@@ -536,15 +822,35 @@ if __name__ == '__main__':
         raise SystemExit('not in PAGES: ' + ', '.join(unknown))
     chosen = [f for f in PAGES if not only or f in only]
     rendered = {f: render(f) for f in chosen}      # every page first, so a failure writes nothing
+    missing = {}
+    for gf, p in GEN.items():
+        if p['src'] in chosen:
+            rendered[gf] = render_gen(gf, missing)
     for f, text in rendered.items():
         write(f, text)
-        if not CHECK: print('  updated', f)
-    sitemap(); lock()
+        if not CHECK and f in PAGES: print('  updated', f)
+    # A page left in a language folder that the registry no longer produces (a draft's, since a
+    # public one stays in tools/urls.lock and is kept as the stub).
+    for k in GENERATED:
+        folder = os.path.join(REPO, k)
+        for name in (sorted(os.listdir(folder)) if os.path.isdir(folder) else []):
+            if name.endswith('.html') and f'{k}/{name}' not in GEN:
+                if CHECK: STALE.append(f'{k}/{name} (no longer generated)')
+                else: os.remove(os.path.join(folder, name)); print('  removed', f'{k}/{name}')
+    warnings = message_list()
+    sitemap(); lock(); config(); llms(rendered)
+    for w in warnings:
+        print('  note:', w)
+    for k in GENERATED:
+        n = sum(1 for gf in rendered if gf.startswith(k + '/'))
+        gaps = len(missing.get(k, {}))
+        if not CHECK and n:
+            print(f'  {k}/: {n} pages, {LANGS[k]["status"]}' + (f', {gaps} messages not translated (shown in English)' if gaps else ''))
     if CHECK:
         scope = ', '.join(chosen) if only else 'every page'
         if STALE:
             print('stale (a run of tools/seo-head.py would change): ' + ', '.join(STALE))
             sys.exit(1)
-        print(f'every generated part is current ({scope}, sitemap.xml, tools/urls.lock)')
+        print(f'every generated part is current ({scope}, the generated languages, sitemap.xml, tools/urls.lock, _config.yml)')
     else:
-        print('  sitemap.xml'); print('  ' + LOCK.replace(os.sep, '/'))
+        print('  sitemap.xml'); print('  ' + LOCK.replace(os.sep, '/')); print('  tools/i18n/messages.json'); print('  _config.yml')

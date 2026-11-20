@@ -1,7 +1,7 @@
 // Version stamps for the four files every page loads (tokens.css, colors_and_type.css,
-// styles.css and app.js) and the two only index.html loads (hero-bg.css and hero-bg.js, the hero
-// backgrounds). Any other page that links one of those two is a problem: the point of keeping them
-// out of the shared files is that the other pages never download them.
+// styles.css and app.js) and the one only index.html loads (hero-bg.css, the hero background).
+// Any other page that links it is a problem: the point of keeping it out of the shared files is
+// that the other pages never download it.
 //
 // Why this exists. GitHub Pages serves every file at a fixed URL with
 // Cache-Control: max-age=600, and nothing forces a browser to refetch a
@@ -28,7 +28,7 @@
 //   node stamp.js           rewrite the stamps in every root *.html page
 //   node stamp.js --check   exit 1 if any stamp is missing or out of date
 //
-// Run it after any change to one of the six files, then commit the pages with
+// Run it after any change to one of the five files, then commit the pages with
 // the change. `npm run check` fails until you do.
 const crypto = require('crypto');
 const fs = require('fs');
@@ -37,7 +37,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ASSETS = ['tokens.css', 'colors_and_type.css', 'styles.css', 'app.js'];
 // Linked by the pages listed and by no other.
-const HOME_ONLY = { 'hero-bg.css': ['index.html'], 'hero-bg.js': ['index.html'] };
+const HOME_ONLY = { 'hero-bg.css': ['index.html'] };
 const ALL = ASSETS.concat(Object.keys(HOME_ONLY));
 
 // Hash the text with line endings normalised, so a Windows checkout with

@@ -11,8 +11,7 @@ The four changes, each one class or one decorative, aria-hidden element:
   1. In numbers: the list takes .metrics--story and its first figure .metric--scale, with a decorative "47" so the
      before and the after can be drawn to scale.
   2. Cases: the list takes .cases--lead, so the first case is the wide one.
-  3. Partnership: under the band's heading, a film of the drawing being made, stepped by the reader's scroll
-     (or, without film-reel.webp, four drawn frames of the hero's drawing, one stage further in each).
+  3. Partnership: four frames of the hero's drawing, one stage further in each, under the band's heading.
   4. The contents row is unchanged in markup; the stylesheet stops it pinning.
   5. Services: each column takes one decorative, aria-hidden span, which shows a third of one photograph.
   6. Cases: the three photographs are replaced by three generated still lifes, and the photo credit by a
@@ -35,10 +34,6 @@ def swap(old, new, count=1):
     out = out.replace(old, new, count)
 
 
-# The Partnership band shows the film when its frame sheet is beside this script, and the four drawn frames
-# (stage-art.js) when it is not.
-FILM = (HERE / 'film-reel.webp').exists()
-
 # 1. In numbers
 swap('<dl class="metrics metrics--3">', '<dl class="metrics metrics--3 metrics--story">')
 swap('<div class="metric">\n              <dt class="metric__lbl">Minutes per build</dt>',
@@ -53,8 +48,7 @@ i = out.index('id="partnership"')
 j = out.index('</section>', i)
 band = out[i:j]
 k = band.rindex('</div>')            # the band's own closing tag
-frames = ('  <div class="film" aria-hidden="true"><span class="film__reel"></span></div>\n      ' if FILM else
-          '  <div class="grow" aria-hidden="true">\n'
+frames = ('  <div class="grow" aria-hidden="true">\n'
           + ''.join(f'          <span class="fig fig--{n} fig--inverse"></span>\n' for n in (1, 2, 3, 4))
           + '        </div>\n      ')
 out = out[:i] + band[:k] + frames + band[k:] + out[j:]

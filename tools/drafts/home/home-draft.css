@@ -5,7 +5,7 @@
 
    The live page (the content plan of November 2026) is already short. What still closes it in is that only the
    hero has a picture of its own, four blocks in a row are a grid of three equal things, every other block sits
-   in its own tinted strip, and a second bar pins under the header. The proposal, in six moves:
+   in its own tinted strip, and a second bar pins under the header. The proposal, in seven moves:
    1. The ceiling: the contents row stays in the page and no longer pins, so the header is the only thing
       that sticks.
    2. In numbers: the figures lose their boxes, and the first one is drawn: 6 minutes laid on the 47-minute
@@ -15,7 +15,9 @@
       in each, on one datum line.
    5. One sheet: the tinted strips and the rules between blocks go, and the drawing's centre line runs down
       the left margin with a tick at each block's label.
-   6. Insights: three ruled rows on the heading's column line, not a second grid of three. */
+   6. Insights: three ruled rows on the heading's column line, not a second grid of three.
+   7. Services: one still life made for the page (services-sheet.webp, a generated image) lies across the three
+      columns, a third over each, so the block that had no picture gets one that reads as a single sheet. */
 
 /* ---------------------------------------------------------------
    1. The contents row no longer pins
@@ -242,4 +244,29 @@
     padding-top: 0;
     border-top: 0;
   }
+}
+
+/* ---------------------------------------------------------------
+   7. Services: one photograph, a third over each column
+   --------------------------------------------------------------- */
+/* One wide still life (assets made for the draft, beside this file) sits across the three services: each
+   column shows its third, so the three pictures are one sheet with one pencil line through them. The size
+   adds the two column gaps to three slice widths, and the three positions (left, centre, right) then land
+   each slice where it would lie in the uncut picture. Decorative: the spans are aria-hidden and empty. */
+.cap__art {
+  display: block;
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--md-sys-color-surface-container-highest) url(services-sheet.webp) 0 39% / calc(300% + 2 * var(--space-6)) auto no-repeat;
+}
+.cap__art--2 { background-position-x: 50%; }
+.cap__art--3 { background-position-x: 100%; }
+/* The picture is the column's top edge now, so the rule above it goes. */
+.home #services .cap {
+  padding-top: 0;
+  border-top: 0;
+}
+@media (forced-colors: active) {
+  .cap__art { display: none; }
 }

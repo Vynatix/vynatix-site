@@ -13,6 +13,7 @@ The four changes, each one class or one decorative, aria-hidden element:
   2. Cases: the list takes .cases--lead, so the first case is the wide one.
   3. Partnership: four frames of the hero's drawing, one stage further in each, under the band's heading.
   4. The contents row is unchanged in markup; the stylesheet stops it pinning.
+  5. Services: each column takes one decorative, aria-hidden span, which shows a third of one photograph.
 """
 import re
 import sys
@@ -49,6 +50,11 @@ frames = ('  <div class="grow" aria-hidden="true">\n'
           + ''.join(f'          <span class="fig fig--{n} fig--inverse"></span>\n' for n in (1, 2, 3, 4))
           + '        </div>\n      ')
 out = out[:i] + band[:k] + frames + band[k:] + out[j:]
+
+# 5. Services: one photograph across the three columns, a third in each (home-draft.css slices it)
+for n in ('01', '02', '03'):
+    swap(f'<span class="cap__num" aria-hidden="true">{n}</span>',
+         f'<span class="cap__art cap__art--{int(n)}" aria-hidden="true"></span>\n            <span class="cap__num" aria-hidden="true">{n}</span>')
 
 # ---- the head: no search block, not indexable, and the draft's own stylesheet ----------------------------------------------
 a = out.index('<!-- seo -->')

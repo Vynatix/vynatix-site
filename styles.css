@@ -1729,8 +1729,9 @@ html.consent-open .hero ~ section { content-visibility: visible; }
 
 /* On this page: a row of anchor links between the hero and the first section, in page
    order. Plain links, so it works without JavaScript and nothing scrolls on its own. Not a
-   <section>, so the content-visibility rule above leaves it alone. From 1280px, in browsers
-   with scroll-target-group, it also pins under the header (block below). */
+   <section>, so the content-visibility rule above leaves it alone. It stays in the page: the
+   header is the only thing that pins (the row used to pin under it on wide screens, which put a
+   second bar over a fifth of a laptop window). */
 .toc { border-top: 1px solid var(--md-sys-color-outline-variant); }
 .toc > .container {
   display: flex;
@@ -1758,67 +1759,6 @@ html.consent-open .hero ~ section { content-visibility: visible; }
   text-decoration: underline 1px var(--indicator);
   text-underline-offset: 0.25em;
 }
-/* The pinned contents row: from 1280px wide and 521px tall (narrower, the seven links can wrap
-   in some looks; shorter, header and row would take a third of the screen), and only where the
-   browser has scroll-target-group and :target-current (other browsers keep the row above
-   unchanged), the row sticks under the header for the rest of a long page, and a rail under its
-   links fills up to the section the reader is in. It is driven by the reader's scroll alone: no
-   script, no animation object, and no colour transition on its links. The row keeps the same
-   in-flow size in both states, so sticking never moves the page; only paint changes, inside the
-   stuck query: the header's glass, the rail, and the current link underlined in the indicator
-   colour (the body colour keeps its contrast on the glass, and the underline survives forced
-   colours). Where it can pin, the anchor reserve grows by the row's height, so a focused link or
-   a jump target never lands under it. */
-@media (min-width: 1280px) and (min-height: 521px) {
-  @supports (scroll-target-group: auto) and selector(:target-current) {
-    html:has(.toc) { scroll-padding-top: calc(var(--space-24) + var(--space-12) + var(--space-2)); }
-    .toc {
-      position: sticky;
-      top: calc(var(--space-24) - var(--space-2) - var(--space-4));
-      z-index: 45;
-      container-type: scroll-state;
-      border-top-color: transparent;
-      pointer-events: none;
-    }
-    .toc > .container {
-      position: relative;
-      width: calc(100% - 2 * var(--space-6));
-      column-gap: var(--space-6);
-    }
-    .toc > .container::before {
-      content: '';
-      position: absolute;
-      inset: 0 var(--space-6);   /* at rest the hairline spans the content, as the hero's rule does */
-      z-index: -1;
-      border-top: 1px solid var(--md-sys-color-outline-variant);
-    }
-    .toc a { pointer-events: auto; transition-property: text-decoration-thickness; }
-    .toc__list { scroll-target-group: auto; gap: 0; }
-    .toc__list li + li { padding-inline-start: var(--space-4); }
-    @container scroll-state(stuck: top) {
-      .toc > .container::before {
-        inset: var(--space-4) 0;
-        pointer-events: auto;   /* the glass takes its own clicks; the strips above and below it do not */
-        border: 1px solid var(--md-sys-color-outline-variant);
-        border-radius: var(--radius-lg);
-        background: var(--glass-tint-surface);
-        -webkit-backdrop-filter: var(--glass-blur-regular);
-        backdrop-filter: var(--glass-blur-regular);
-        box-shadow: var(--glass-specular, var(--glass-specular-light)), var(--shadow-l2);
-      }
-      .toc__list li { box-shadow: inset 0 -2px 0 var(--md-sys-color-outline-variant); }
-      .toc__list li:has(~ li > a:target-current),
-      .toc__list li:has(> a:target-current) { box-shadow: inset 0 -2px 0 var(--indicator); }
-      .toc__list a:hover { color: var(--text-body); }
-      .toc__list a:target-current {
-        color: var(--text-body);
-        text-decoration: underline 2px var(--indicator);
-        text-underline-offset: 0.3em;
-      }
-    }
-  }
-}
-
 /* A section that is an inset band (Partnership): the band sits where the section's top
    padding would be, so the gap above it is the previous section's bottom padding alone.
    After a tonal band that bottom padding is inside the tint, so the band takes its own
@@ -2436,4 +2376,286 @@ body::after {
 @media (max-width: 599px) {
   .calc__row { grid-template-columns: minmax(0, 1fr); }
   .calc__results { padding: var(--space-6); }
+}
+
+/* ===============================================================
+   The English home page: its pictures
+   ===============================================================
+   The home page tells its story in pictures as well as words, in the hero's own drafting language. The
+   rules below belong to index.html alone (the classes exist nowhere else, and the layout rules are scoped
+   to main.home), they come last so they sit over the shared components they restyle, and they move
+   nothing: no animation and no transition.
+   - In numbers: the first figure is drawn to scale, 6 minutes on the 47-minute line.
+   - Cases: a tall lead card and two compact rows.
+   - Partnership: the hero's drawing at four stages on one datum line.
+   - One sheet: no tinted strips between blocks; the drawing's centre line runs down the left margin.
+   - Insights: three ruled rows.
+   - Services and Cases: generated still lifes, a daylight set and a night set, chosen by the page's
+     colour scheme. */
+
+/* ---------------------------------------------------------------
+   In numbers, drawn: open figures, and the first one to scale
+   --------------------------------------------------------------- */
+.glance .metrics.metrics--story {
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10) var(--space-12);
+}
+.glance .metrics--story .metric {
+  padding: var(--space-6) 0 0;
+  background: none;
+  border-top: 1px solid var(--md-sys-color-outline);
+  border-radius: 0;
+}
+/* The drawn figure: the after (6) stands at the origin and the before (47) at the far end of one ruler, and
+   the first 6/47 of the ruler is the bronze stretch. It has rows of its own, so it leaves the shared tiles'
+   subgrid. */
+.glance .metrics--story .metric--scale {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: none;
+  grid-template-areas: "lbl lbl" "val from" "rule rule" "ctx ctx";
+  align-items: end;
+}
+.metric--scale .metric__lbl { grid-area: lbl; }
+.metric--scale .metric__ctx { grid-area: ctx; }
+.scale,
+.glance .metric--scale .metric__val {
+  max-width: none;
+  margin: var(--space-6) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(var(--text-h2), 8vw, calc(1.5 * var(--text-h1)));
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+}
+.glance .metric--scale .metric__val { grid-area: val; }
+.scale {
+  grid-area: from;
+  justify-self: end;
+  margin-right: 0.06em;           /* the tight tracking leaves the last figure hanging past its box */
+  color: color-mix(in srgb, var(--text-muted) 62%, var(--md-sys-color-surface));
+}
+/* The ruler, drawn in one box: a hairline with a witness tick at each end, and over its first 6/47 a bronze
+   stretch closed by its own tick. */
+.metric--scale::after {
+  content: '';
+  grid-area: rule;
+  height: var(--space-4);
+  background:
+    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) left center / calc(100% * 6 / 47) 3px no-repeat,
+    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) left / 1px 100% no-repeat,
+    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) calc(100% * 6 / 47) 0 / 1px 100% no-repeat,
+    linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) right / 1px 100% no-repeat,
+    linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) center / 100% 1px no-repeat;
+}
+.glance .metric--scale .metric__ctx {
+  margin-top: var(--space-5);
+  max-width: 44ch;
+  font-size: var(--text-body-md);
+}
+/* Wide: the drawn figure and the two plain facts share one row, so the block is no taller than its figure. */
+@media (min-width: 905px) {
+  .glance .metrics.metrics--story { grid-template-columns: 5fr 2fr 2fr; }
+  .glance .metrics--story .metric--scale { grid-column: 1; }
+  .home #numbers .section__head { margin-bottom: var(--space-12); }
+}
+@media (max-width: 599px) {
+  .glance .metrics.metrics--story { gap: var(--space-10) var(--space-6); }
+}
+
+/* ---------------------------------------------------------------
+   Cases: the first one leads
+   --------------------------------------------------------------- */
+/* Wide: the first case is the tall card and the other two are compact rows beside it, picture left. One block,
+   three sizes, and about the height the three equal cards had. */
+@media (min-width: 905px) {
+  .cases--lead {
+    grid-template-columns: 4fr 3fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .cases--lead > .case:first-child { grid-row: 1 / span 2; }
+  .cases--lead > .case:not(:first-child) { flex-direction: row; }
+  .cases--lead > .case .case__img {
+    position: relative;
+    aspect-ratio: auto;
+  }
+  .cases--lead > .case .case__img img {
+    position: absolute;
+    inset: 0;
+  }
+  .cases--lead > .case:first-child .case__img {
+    flex: 1 1 auto;
+    min-height: 16rem;
+  }
+  .cases--lead > .case:first-child .case__body {
+    flex: 0 0 auto;
+    padding: var(--space-8);
+  }
+  .cases--lead > .case:first-child h3 { font-size: var(--text-h4); }
+  .cases--lead > .case:first-child .case__body > p:not(.case__meta, .case__metric) { font-size: var(--text-body-md); }
+  .cases--lead > .case:first-child .case__metric { padding-top: var(--space-6); }
+  .cases--lead > .case:not(:first-child) .case__img { flex: 0 0 36%; }
+  .cases--lead > .case:not(:first-child) h3 { font-size: var(--text-h6); }
+  .cases--lead > .case:not(:first-child) .case__metric { font-size: var(--text-h5); }
+}
+
+/* ---------------------------------------------------------------
+   The drawing grows (Partnership)
+   --------------------------------------------------------------- */
+/* The hero's A-frame at four stages, as masks over role colours (tools/sheet-art.js writes them). Each frame's datum
+   line runs edge to edge, so four frames side by side share one line. */
+.fig {
+  --fig-ink: color-mix(in srgb, var(--md-sys-color-outline) 82%, var(--md-sys-color-surface));
+  --fig-accent: var(--md-sys-color-tertiary);
+  position: relative;
+  display: block;
+  aspect-ratio: 490 / 496;
+}
+.fig::before,
+.fig--4::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fig-ink);
+  -webkit-mask: var(--fig) center / contain no-repeat;
+  mask: var(--fig) center / contain no-repeat;
+}
+.fig--1 { --fig: url(assets/stage-1.svg); }
+.fig--2 { --fig: url(assets/stage-2.svg); }
+.fig--3 { --fig: url(assets/stage-3.svg); }
+.fig--4 { --fig: url(assets/stage-4.svg); }
+.fig--4::after {
+  --fig: url(assets/stage-edge.svg);
+  background: var(--fig-accent);
+}
+.fig--inverse {
+  --fig-ink: var(--inverse-on-surface-variant);
+  --fig-accent: var(--md-sys-color-inverse-primary);
+}
+.grow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: var(--space-12);
+}
+@media (max-width: 599px) {
+  .grow { margin-top: var(--space-10); }
+}
+@media (forced-colors: active) {
+  .grow { display: none; }
+}
+
+/* ---------------------------------------------------------------
+   One sheet: no tinted strips, and the drawing's centre line down the margin
+   --------------------------------------------------------------- */
+.home .section--surface {
+  background: none;
+  border-block: 0;
+}
+@media (min-width: 1280px) {
+  /* The hero drawing's centre line (its dash, gap, dot, gap) carried down the left margin, 40px outside the
+     text edge, through every block after the contents row and up to the closing band. Each block's label is
+     tied to it by a short tick, so the labels read as stations on one line. Decoration only: it is drawn on
+     pseudo-elements and says nothing a reader needs. */
+  .home > .section { position: relative; }
+  .home > .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - 600px - var(--space-4));
+    width: 1px;
+    background: repeating-linear-gradient(
+      var(--md-sys-color-outline) 0 34px, transparent 34px 41px,
+      var(--md-sys-color-outline) 41px 46px, transparent 46px 53px);
+  }
+  .home > .section:not(.section--band) .section__head .eyebrow { position: relative; }
+  .home > .section:not(.section--band) .section__head .eyebrow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: calc(-1 * var(--space-10));
+    width: var(--space-6);
+    border-top: 1px solid var(--md-sys-color-outline);
+  }
+}
+@media (forced-colors: active) {
+  .home > .section::before { display: none; }
+}
+
+/* ---------------------------------------------------------------
+   Insights: ruled rows on the heading's column line
+   --------------------------------------------------------------- */
+@media (min-width: 905px) {
+  .home .reads {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .home .reads > .read {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: baseline;
+    padding-block: var(--space-5);
+  }
+  .home .reads > .read:last-child { border-bottom: 1px solid var(--md-sys-color-outline); }
+  .home .reads .read__h,
+  .home .reads .read p { margin: 0; }
+  .home .reads + .chapter-foot {
+    margin-top: var(--space-6);
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+/* ---------------------------------------------------------------
+   One picture across the services
+   --------------------------------------------------------------- */
+/* One wide still life (a generated image, assets/CREDITS.md) sits across the three services: each
+   column shows its third, so the three pictures are one sheet with one pencil line through them. The size
+   adds the two column gaps to three slice widths, and the three positions (left, centre, right) then land
+   each slice where it would lie in the uncut picture. Decorative: the spans are aria-hidden and empty. */
+.cap__art {
+  display: block;
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--md-sys-color-surface-container-highest) url(assets/services-drafting-sheet.webp) 0 39% / calc(300% + 2 * var(--space-6)) auto no-repeat;
+}
+.cap__art--2 { background-position-x: 50%; }
+.cap__art--3 { background-position-x: 100%; }
+/* The picture is the column's top edge now, so the rule above it goes. */
+.home #services .cap {
+  padding-top: 0;
+  border-top: 0;
+}
+@media (forced-colors: active) {
+  .cap__art { display: none; }
+}
+
+/* ---------------------------------------------------------------
+   Two sets of pictures: one for the light theme, one for the dark
+   --------------------------------------------------------------- */
+/* Each generated picture exists twice: the daylight sheet, and its night version on dark paper with chalk
+   lines. The page's own colour scheme picks one: the design system sets `color-scheme` with the theme
+   (colors_and_type.css), and light-dark() reads it, so there is no theme selector here and a browser
+   fetches only the set it shows. A browser without light-dark() for images keeps the daylight set in both
+   themes, which is what the site's photographs do today. */
+.case__img--documents,
+.case__img--stopwatch,
+.case__img--dial {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.case__img--documents { background-image: url(assets/case-ai-bound-documents.webp); }
+.case__img--stopwatch { background-image: url(assets/case-cars-stopwatch.webp); }
+.case__img--dial { background-image: url(assets/case-trucks-radio-dial.webp); }
+@supports (background-image: light-dark(url(a.webp), url(b.webp))) {
+  .cap__art { background-image: light-dark(url(assets/services-drafting-sheet.webp), url(assets/services-drafting-sheet-dark.webp)); }
+  .case__img--documents { background-image: light-dark(url(assets/case-ai-bound-documents.webp), url(assets/case-ai-bound-documents-dark.webp)); }
+  .case__img--stopwatch { background-image: light-dark(url(assets/case-cars-stopwatch.webp), url(assets/case-cars-stopwatch-dark.webp)); }
+  .case__img--dial { background-image: light-dark(url(assets/case-trucks-radio-dial.webp), url(assets/case-trucks-radio-dial-dark.webp)); }
 }

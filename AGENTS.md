@@ -69,8 +69,8 @@ app.js              All client behaviour (vanilla JS, IIFEs, no modules): the th
                     calculator and analytics consent (see Analytics)
 hero-bg.css         The hero background, the drafting sheet (only index.html links it), in the hero's unit
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
-                    photographs (jpg + webp), app icons, the two masks of the hero's
-                    drafting sheet (bg-sheet-*.svg)
+                    photographs (jpg + webp), generated pictures (webp, light and dark), app icons, the masks of the
+                    hero's drafting sheet (bg-sheet-*.svg) and of its four stages (stage-*.svg)
 fonts/              Self-hosted woff2 subsets of the system's faces, plus licences
 favicon.svg/.ico    Theme-aware SVG icon (Forest / Cream) + 16/32/48 ICO fallback
 apple-touch-icon.png
@@ -718,36 +718,64 @@ uses. `<main>` carries the class `home`, which scopes the page's own layout rule
 (the brand line "Engineering that compounds." as the headline, two buttons, and the client row
 under the label "Trusted by companies that set the standard", the companies outside automotive
 first) comes a contents row (`.toc`, a `<nav>` of plain anchor links, one per section, in page
-order: add, rename or move a section and this row changes with it). From 1280px wide and 521px
-tall, in browsers with `scroll-target-group` and `:target-current`, the row pins under the header
-and a rail under its links fills up to the section the reader is in, the current link underlined;
-it changes paint only (the same in-flow size in both states, no script, no animation object, no
-colour transition), and other browsers, narrower and shorter screens keep the plain row. Where it
-can pin, the anchor reserve (`scroll-padding-top`) grows by its height. Then, in this order:
+order: add, rename or move a section and this row changes with it). The row stays in the page:
+the header is the only thing that pins. (Until 20 November 2026 it pinned under the header on
+wide screens, which put a second bar over a fifth of a laptop window; that block is gone from
+`styles.css`.) Then, in this order:
 
 - `#services`, "Where we make the difference": three `.cap` columns, AI engineering first, then
   cloud platforms and application development, each one promise and one link to its section of
-  `services.html`.
-- `#numbers` (`.section--surface`), "The numbers behind the promise": three metric tiles in a `dl`
-  (`.glance`, `.metrics--3`). Each figure is the owner's and is repeated elsewhere on the site: the
+  `services.html`. One generated still life lies across the three columns, a third over each
+  (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
+  up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
+  The slices are one file, positioned left, centre and right, so the line carries across.
+- `#numbers` (`.section--surface`), "The numbers behind the promise": three figures in a `dl`
+  (`.glance`, `.metrics--3`, `.metrics--story`), open, without tiles. The first
+  (`.metric--scale`) is drawn: the 6 stands at the origin and a decorative, `aria-hidden` "47" at
+  the far end of one ruler whose first 6/47 is the bronze stretch, to scale at every width. The
+  sentence under it says the same in words, so nothing depends on the drawing. Each figure is the
+  owner's and is repeated elsewhere on the site: the
   build time (the Volvo Cars case), fourteen clients (the fourteen marks in the hero) and the reply
   time. The plan had a fourth, "7 years or more" of experience in every consultant; the owner took
   it out on 20 November 2026 (it would stop being true with a hire of fewer years), so no page
   states an experience figure for the whole team.
-- `#cases`, "Real results, in production": the three published cases as `.case` cards in a
-  `.cases` row, the regulated client first, each one link to its section of `work.html`, and
-  under them the link to all cases and the line that names the photographers. A fourth
-  published case needs a decision first: the row holds three.
-- `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band. The
+- `#cases`, "Real results, in production": the three published cases as `.case` cards
+  (`.cases--lead`), the regulated client first as the tall card and the other two as compact
+  rows beside it from 905px, each one link to its section of `work.html`. Their pictures are
+  generated still lifes from the same set as the Services picture (bound documents with brass
+  page markers, a stopwatch over a long and a short pencil line, a radio tuning dial), set as
+  decorative CSS backgrounds on `.case__img--*`. Under the cards: the link to all cases and the
+  line that says the images are generated and show no client system. A fourth published case
+  needs a decision first: the block holds three.
+- `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band, and
+  under the heading the hero's drawing at four stages on one datum line (`.grow`, four
+  `aria-hidden` `.fig` spans, each a mask over a role colour; the last carries the bronze edge).
+  The owner preferred these drawn frames to a film of the drawing being made (20 November
+  2026): do not replace them with video. The
   plan's closing sentence, "Start with one engineer and add more as you grow.", is left out on the
   owner's decision of 20 November 2026: do not add it.
 - `#join`, "Great software comes from great people", with the "Join us" link (see *Audience
   switch (retired)* for why the id is `join`).
 - `#insights` (`.reads`, `.section--surface`), "Ideas that move software forward": three entries
-  and a link to `blog.html`. Every post (`kind='post'`) must be among them (`permanence.js`
+  as ruled rows from 905px (title on the heading's column line, description on the lead's), not
+  a second grid of three, and a link to `blog.html`. Every post (`kind='post'`) must be among them (`permanence.js`
   fails otherwise), and each entry repeats the linked page's `<title>` (without the brand suffix)
   and meta description word for word; a Swedish page's entry carries `lang="sv"`.
 - The call-to-action band (`#contact`), "Let's build what comes next."
+
+**The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
+the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no
+tint and no rules, so the silk runs unbroken from the client row to the closing band; from
+1280px the hero drawing's dash-dot centre line runs down the left margin, 40px outside the text
+edge, with a tick at each block's label (pseudo-elements, decoration only). **The generated
+pictures come in two sets, daylight and night**: the night version of each was made by editing
+the daylight one, so the objects and the composition match. `light-dark()` chooses the file from
+the page's own `color-scheme` (which `colors_and_type.css` sets with the theme), so there is no
+`[data-theme]` selector and a browser fetches only the set it shows; the theme toggle swaps
+them in place. A browser without `light-dark()` for images keeps the daylight set in both
+themes. Add a picture and it needs both versions and both lines of that block. None of this
+moves: the rule that the silk is the site's one ambient motion is untouched. `sv.html` keeps the
+older layout and the three photographs.
 
 What the plan took off the page: the service chapters with their "What we build" panels, the
 company sentence and the Gothenburg photograph, the four steps of How we work, the comparison
@@ -1214,18 +1242,20 @@ places where inline SVG cannot go (email, documents) and for regenerating the
 icons. The system holds the other inks (teal, ink, cloud, champagne, charcoal,
 paper) for the other directions.
 
-The three photographs on the home page (`case-*.jpg`, each with a
-`.webp` sibling, see `assets/CREDITS.md`) are shown in full colour with no filter
-or overlay, as the system's photography rules require for case-study imagery. They
-are stock photographs that illustrate the work, and the page says so: the case cards
-end with a line naming the photographers. No text is set on a
-photograph, and none is used as an uncaptioned band. The client mark in
+The English home page's pictures are generated still lifes (`services-drafting-sheet*.webp` and
+three `case-*.webp`, each with a `-dark` twin; see `assets/CREDITS.md`), shown in full colour
+with no filter or overlay. They illustrate the work and show no client system, and the page
+says so in the line under the case cards. The Swedish hub still carries the three stock
+photographs (`case-*.jpg`, each with a `.webp` sibling), under the line naming their
+photographers. No text is set on a picture, and none is used as an uncaptioned band. The client mark in
 the home-page list is an inline SVG `<symbol>` in `index.html`, referenced with
 `<use>` and filled with `currentColor` (provenance in `assets/CREDITS.md`).
 
 The hero's drafting sheet draws from two alpha-only SVG masks,
 `assets/bg-sheet-art.svg` and `bg-sheet-edge.svg` (generator in `tools/`, see
-`assets/AGENTS.md`); they are requested only from 1200px up, on the home page.
+`assets/AGENTS.md`); they are requested only from 1200px up, on the home page. The same
+generator writes the five `assets/stage-*.svg` masks of the Partnership band from the same
+constants, so the hero's drawing and its four stages cannot drift apart.
 
 The app icons (`icon-192/512.png`, `apple-touch-icon.png`) are the Cream V mark
 on a Forest field; `favicon.ico` is the Forest mark on transparent;

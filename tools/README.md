@@ -5,7 +5,7 @@ into the pages (run it after changing `tokens.css`, `colors_and_type.css`,
 `styles.css`, `app.js` or `hero-bg.css`), and `seo-head.py`, which rewrites the search block in
 every head, the header, the footer, `sitemap.xml` and `tools/urls.lock` from one registry (see the table below).
 One small generator, `sheet-art.js`, writes the two masks of the hero's drafting sheet
-into `assets/`. **None of this is part of the site build** — the site
+and the five stage masks of the home page's Partnership band into `assets/`. **None of this is part of the site build** — the site
 itself is hand-written static files with no build step, nothing here runs at
 deploy time, and everything in this directory is excluded from the published
 output via `_config.yml`.

@@ -25,12 +25,9 @@
 //     any text outside those tags fails (so a new tag is added to the reader on purpose), and every link in
 //     the joiner view goes to contact, membership or work.
 //  7. The switch and its classes exist on index.html only (the Swedish home and every other page have none).
-//  8. A visitor who lands on #join and then switches (no reload) sees the same hero, in each of the four
-//     backgrounds, as one who loaded the page directly (the dial answering the pointer afterwards, too), with
-//     no console error; #join logs no warning (an unused font preload, say) in three themes;
-//     and, in the dial, B stays where the pointer left it when the address changes with the hero showing, and
-//     after a round trip through the joiner view it is at rest and the first move obeys the slew limit (the
-//     animation does not survive display: none). BGS narrows 8a and 8c (8c runs once, when the dial is among them); THEMES is not read:
+//  8. A visitor who lands on #join and then switches (no reload) sees the same hero, drafting sheet included,
+//     as one who loaded the page directly, with no console error; #join logs no warning (an unused font
+//     preload, say) in either theme. THEMES is not read:
 //     9a sweeps all six themes, 8b runs in three, and every other check is pinned to the light theme.
 //  9. Found in review, each a regression this file now catches:
 //     a. the selected link differs from the other by more than its fill (an underline and a primary border,
@@ -49,7 +46,7 @@
 //     e. the client view's closing band follows a client section that is not a band (a hidden joiner band
 //        before it would add a margin: adjacent-sibling rules ignore display: none), and neither closing
 //        band overflows at enlarged text on a phone.
-const { PAGES, BASE, readPage, launch, pinTheme, ALL_THEMES, BGS: BGS_LIST } = require('./_common');
+const { PAGES, BASE, readPage, launch, pinTheme, ALL_THEMES } = require('./_common');
 const { PNG } = require('pngjs');
 
 let problems = 0;
@@ -117,14 +114,13 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   }
 
   const browser = await launch();
-  const pin = (theme, bg) => ({ theme, bg });
 
   // ---- 1 to 5. The two views, with and without JavaScript ------------------------------------------------------
   for (const js of [true, false]) {
     const tag = js ? 'JavaScript on' : 'JavaScript off';
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: js });
     const page = await ctx.newPage();
-    if (js) await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    if (js) await page.addInitScript(pinTheme, 'mono-light');
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
 
@@ -202,7 +198,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     // Resolved, so index.html#faq and /#faq count as same-page links too.
     const links = await page.evaluate(() => {
@@ -275,24 +271,22 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   }
 
   // ---- 8a. Switching without a reload leaves the hero as a direct load draws it ---------------------------------
-  const BGS = BGS_LIST;
-  const heroShot = async (page) => {
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(700);
-    return PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 96, width: 1440, height: 804 }, animations: 'disabled' }));
-  };
-  if (BGS.length < 4) console.log(`note: BGS narrows 8a and 8c to ${BGS.join(', ')}`);
-  for (const bg of BGS) {
+  {
+    const heroShot = async (page) => {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(700);
+      return PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 96, width: 1440, height: 804 }, animations: 'disabled' }));
+    };
     const shoot = async (url, click) => {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
       const page = await ctx.newPage();
       const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      await page.addInitScript(pinTheme, pin('mono-light', bg));
+      await page.addInitScript(pinTheme, 'mono-light');
       await page.goto(BASE + url, { waitUntil: 'load' });
       await page.waitForTimeout(400);
       if (click) await page.click('.audience__link--hire');
-      // The dial turns with the pointer; a hero that was hidden while the pointer moved must answer it again.
+      // The same pointer path on both loads, so hover states agree.
       await page.mouse.move(700, 500, { steps: 4 });
       await page.mouse.move(1100, 500, { steps: 4 });
       const png = await heroShot(page);
@@ -303,57 +297,15 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     const switched = await shoot('index.html#join', true);   // the click moves the pointer while the hero was hidden
     // The strip includes the bar. When a pill's style changes in place (the switched path) Chromium sometimes
     // rasterises two pixels of its rounded border one unit off in a channel (about one run in five; two direct
-    // loads never differ), so a channel may differ by 2. The art moving or turning differs by tens.
+    // loads never differ), so a channel may differ by 2. The art moving differs by tens.
     const TOL = 2;
     let n = 0;
     if (direct.png.width !== switched.png.width || direct.png.height !== switched.png.height) n = -1;
     else for (let i = 0; i < direct.png.data.length; i += 4) {
       if (Math.abs(direct.png.data[i] - switched.png.data[i]) > TOL || Math.abs(direct.png.data[i + 1] - switched.png.data[i + 1]) > TOL || Math.abs(direct.png.data[i + 2] - switched.png.data[i + 2]) > TOL) n++;
     }
-    ok(n === 0, `${bg}: landing on #join and switching to "Hire a team" draws the hero exactly as a direct load does`, n < 0 ? 'sizes differ' : `${n} differing pixels`);
-    ok(direct.errors.length + switched.errors.length === 0, `${bg}: no script errors on either path`, [...direct.errors, ...switched.errors].join(' | '));
-  }
-
-  // ---- 8c. The dial's B: left alone when the address changes with the hero showing, alive after the joiner view ---
-  // Keyboard presses, not clicks: a click moves the pointer, which would turn B on its own.
-  if (BGS.includes('dial')) {
-    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-    const page = await ctx.newPage();
-    const errors = [];
-    page.on('pageerror', (e) => errors.push(e.message));
-    await page.addInitScript(pinTheme, pin('mono-light', 'dial'));
-    await page.goto(BASE + 'index.html', { waitUntil: 'load' });
-    await page.waitForTimeout(400);
-    const angle = () => page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('#home .hero__h1'), '::after').rotate) || 0);
-    const settle = async (x) => { await page.mouse.move(x, 500, { steps: 6 }); await page.waitForTimeout(500); return angle(); };
-    const press = async (sel) => { await page.focus(sel); await page.keyboard.press('Enter'); await page.waitForTimeout(150); return page.evaluate(() => location.hash); };
-    const GAIN = 6 / 252 * 180 / Math.PI;   // the dial's travel in degrees at k = 1 (hero-bg.js)
-    const far = await settle(1400);
-    ok(far > 0.9, 'dial: the pointer at the right edge turns B (the probe works)', `${far}deg`);
-    const h1 = await press('.audience__link--hire');   // '' to #hire: the address changes, the hero stays
-    const kept = await angle();
-    ok(h1 === '#hire' && Math.abs(kept - far) < 0.05, 'dial: an address change with the hero showing leaves B where the pointer put it', `${far}deg before, ${kept}deg after, hash "${h1}"`);
-    const h2 = await press('.audience__link--join');
-    const h3 = await press('.audience__link--hire');
-    const rest = await angle();
-    ok(h2 === '#join' && h3 === '#hire' && Math.abs(rest) < 0.01, 'dial: after a round trip through the joiner view B is at rest', `${rest}deg, hashes "${h2}" "${h3}"`);
-    // The first move after the hero returns starts from rest and obeys the slew limit (a stale k from before the
-    // joiner view would make B jump), read on consecutive frames as bg-dial.js does.
-    const frames = await page.evaluate(() => new Promise((resolve) => {
-      const out = []; let n = 0;
-      const el = document.querySelector('#home .hero__h1');
-      const read = () => parseFloat(getComputedStyle(el, '::after').rotate) || 0;
-      out.push(read());
-      window.dispatchEvent(new PointerEvent('pointermove', { clientX: window.innerWidth - 1, clientY: 5, pointerType: 'mouse' }));
-      const tick = () => { out.push(read()); if (++n < 14) requestAnimationFrame(tick); else resolve(out); };
-      requestAnimationFrame(tick);
-    }));
-    let maxStep = 0; for (let i = 1; i < frames.length; i++) maxStep = Math.max(maxStep, Math.abs(frames[i] - frames[i - 1]));
-    ok(frames[0] === 0 && maxStep <= 0.35 * GAIN + 0.01 && frames[frames.length - 1] > 0.9 * GAIN, 'dial: the first move after the round trip starts at rest and moves B by at most 0.35 of its travel a frame', `from ${frames[0]}deg, largest step ${maxStep.toFixed(3)}deg (limit ${(0.35 * GAIN).toFixed(3)}), ends at ${frames[frames.length - 1]}deg`);
-    const again = await settle(1300);
-    ok(again > 0.9, 'dial: and it follows the pointer again', `${again}deg`);
-    ok(errors.length === 0, 'dial: no script errors', errors.join(' | '));
-    await ctx.close();
+    ok(n === 0, 'landing on #join and switching to "Hire a team" draws the hero exactly as a direct load does', n < 0 ? 'sizes differ' : `${n} differing pixels`);
+    ok(direct.errors.length + switched.errors.length === 0, 'no script errors on either path', [...direct.errors, ...switched.errors].join(' | '));
   }
 
   // ---- 8b. #join logs nothing in either theme (an unused font preload warns a few seconds after load) -----
@@ -363,7 +315,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     const logs = [];
     page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') logs.push(`${m.type()}: ${m.text().slice(0, 120)}`); });
     page.on('pageerror', (e) => logs.push(`pageerror: ${e.message}`));
-    await page.addInitScript(pinTheme, pin(theme, 'sheet'));
+    await page.addInitScript(pinTheme, theme);
     await page.goto(BASE + 'index.html#join', { waitUntil: 'load' });
     await page.waitForTimeout(5000);
     ok(logs.length === 0, `#join in ${theme}: no console warning or error`, logs.join(' | '));
@@ -396,7 +348,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   for (const theme of ALL_THEMES) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin(theme, 'sheet'));
+    await page.addInitScript(pinTheme, theme);
     const seen = {};
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     seen.hire = await page.evaluate(READ_LINKS);
@@ -416,7 +368,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, forcedColors: 'active' });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     const bad = [];
     const widths = {};
     for (const [url, sel, other] of [['index.html', 'audience__link--hire', 'audience__link--join'], ['index.html#join', 'audience__link--join', 'audience__link--hire']]) {
@@ -441,7 +393,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     // At DOMContentLoaded Chromium has not set :target yet (it does so after parsing), which is the moment a
     // slow connection paints. The joiner view has to be in force by then, not a moment later.
     await page.addInitScript(() => {
@@ -473,7 +425,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const focused = () => page.evaluate(() => ({ cls: document.activeElement.className, ring: document.activeElement.matches(':focus-visible'), inJoin: !!document.activeElement.closest('.view-join') }));
     const enter = async (sel, hash) => {
@@ -533,7 +485,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const vis = () => page.evaluate(() => getComputedStyle(document.querySelector('.audience')).visibility);
     const before = await vis();
@@ -549,7 +501,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
   {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
-    await page.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+    await page.addInitScript(pinTheme, 'mono-light');
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     const band = await page.evaluate(() => {
       const c = document.getElementById('contact'), p = c.previousElementSibling;
@@ -570,7 +522,7 @@ const brief = (s) => `hire ${s.hireShown}/${s.hire}, join ${s.joinShown}/${s.joi
     for (const [url, w] of [['index.html', 360], ['index.html', 390], ['index.html#join', 360], ['index.html#join', 390]]) {
       const c = await browser.newContext({ viewport: { width: w, height: 800 } });
       const pg = await c.newPage();
-      await pg.addInitScript(pinTheme, pin('mono-light', 'sheet'));
+      await pg.addInitScript(pinTheme, 'mono-light');
       await pg.goto(BASE + url, { waitUntil: 'load' });
       await pg.evaluate(() => document.querySelectorAll('.cta-band').forEach((b) => b.scrollIntoView()));
       await pg.evaluate(TEXT_SCALE, 1.75);

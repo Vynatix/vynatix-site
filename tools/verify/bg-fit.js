@@ -1,28 +1,25 @@
-// The four hero backgrounds on a scaled hero.
+// The hero background on a scaled hero.
 //
 // The hero fit (styles.css, "Hero fit") scales the hero to the window's height, and hero-bg.css
-// multiplies each background's constants by the same unit. The four guards run their full sweep at
-// the design size (a 1248px-high window); this script runs each of them again at the heights where
-// the hero is scaled, one width, so that the art is proven against the text there too:
+// multiplies the drafting sheet's constants by the same unit. bg-sheet.js runs its full sweep at
+// the design size (a 1248px-high window); this script runs it again at the heights where the hero
+// is scaled, one width, so that the art is proven against the text there too:
 //   900px   the unit is about 0.86: everything scales together
 //   790px   about 0.69: the lede has stopped at its floor and the rest goes on shrinking
 //   660px   about 0.47: the bottom of the envelope
 //   1100px  the state with the client row on the first screen, the unit about 0.83
-// In each run the guards multiply their own distances (the 24px clearance, the dial's box, the gaps)
-// by the unit they read from the page, and the iris's aim is left to the design size.
+// In each run the guard multiplies its own distances (the 24px clearance, the gaps) by the unit it
+// reads from the page.
 //
 //   node verify/bg-fit.js                (serve the repo root first, as for the other checks)
 //   HEIGHTS=790 node verify/bg-fit.js    one height
-// THEMES and BGS narrow it as they narrow the guards.
+// THEMES narrows it as it narrows the guard.
 const { spawnSync } = require('child_process');
 const path = require('path');
 
 const HEIGHTS = (process.env.HEIGHTS || '900,790,660,1100').split(',').map(Number);
 const GUARDS = [
-  ['bg-weave.js', { WIDTHS: '1440', ZOOMS: '1,1.5' }],
   ['bg-sheet.js', { WIDTHS: '1440', ZOOMS: '1,1.5' }],
-  ['bg-dial.js', { WIDTHS: '1440', ZOOMS: '1,1.5', STATES: 'rest' }],   // the pointer's turn is an angle: it does not depend on the scale
-  ['bg-iris.js', { WIDTHS: '1440', ZOOM_WIDTHS: '1440', ZOOMS: '1.25', CHECKS: 'BP' }],
 ];
 
 let failed = 0;

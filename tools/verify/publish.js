@@ -11,7 +11,10 @@
 //    fonts or .well-known unless it is excluded (otherwise GitHub Pages serves it);
 //  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
-//  - both notice pages name every storage key the site's scripts use (app.js and hero-bg.js), each in <code>;
+//  - both notice pages name every storage key the site's script uses (app.js), each in <code>;
+//  - the hero background is the drafting sheet alone: hero-bg.css is linked by index.html only, holds still, role-token
+//    rules and names both art files; the draw between backgrounds stays retired (no hero-bg.js, no data-bg, no
+//    vynatix-bg key in a script, a stylesheet or a notice);
 //  - the site rules of CLAUDE.md that nothing else reads: no raw hex colour in styles.css, no style="" attribute in
 //    any page, no .style, cssText or setAttribute('style' in app.js (comments excluded);
 //  - llms.txt links every URL in sitemap.xml (seo.js checks the other direction).
@@ -19,7 +22,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, CONSENT_KEY, THEME_KEY, LOOK_KEY, readApp, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, PAGES, NOTICE_PAGES, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -135,12 +138,7 @@ function run(root = ROOT, pages = PAGES) {
 
   // --- every storage key the scripts use, in both notices (the Swedish one is easy to forget when a key is added)
   const scriptKeys = new Set([(app && app.consentKey) || CONSENT_KEY, THEME_KEY]);
-  for (const f of ['app.js', 'hero-bg.js']) {
-    const src = tryRead(f);
-    if (src === null) continue;
-    for (const m of stripJsComments(src).matchAll(/['"](vynatix-[a-z-]+)['"]/g)) scriptKeys.add(m[1]);
-  }
-  scriptKeys.delete('vynatix-bg-iris-idle');            // a test hook the site only reads and never stores
+  if (app) for (const m of stripJsComments(app.src).matchAll(/['"](vynatix-[a-z-]+)['"]/g)) scriptKeys.add(m[1]);
   const keys = [...scriptKeys].sort();
   const keyBad = [];
   for (const page of Object.values(NOTICE_PAGES)) {
@@ -151,9 +149,48 @@ function run(root = ROOT, pages = PAGES) {
   }
   if (app) for (const k of [THEME_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
   // The retired colour-scheme draw: no script may write its key again, and no notice may still describe it.
-  for (const f of ['app.js', 'hero-bg.js']) { const src = tryRead(f); if (src && stripJsComments(src).includes(LOOK_KEY)) keyBad.push(`${f} uses ${LOOK_KEY}, the retired colour-scheme draw`); }
+  if (app && stripJsComments(app.src).includes(LOOK_KEY)) keyBad.push(`app.js uses ${LOOK_KEY}, the retired colour-scheme draw`);
   for (const page of Object.values(NOTICE_PAGES)) { const html = tryRead(page); if (html && html.includes(LOOK_KEY)) keyBad.push(`${page} still names ${LOOK_KEY}, which nothing writes now`); }
   add(keyBad.length === 0, `both notices name every storage key the scripts use (${keys.join(', ')}), each in <code>`, keyBad.join(' | '));
+
+  // --- the hero background: the drafting sheet alone, and the retired draw stays retired
+  {
+    const bad = [];
+    const noCss = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '');
+    const hero = tryRead('hero-bg.css');
+    if (hero === null) bad.push('hero-bg.css is missing');
+    if (tryRead('hero-bg.js') !== null) bad.push('hero-bg.js is back (the sheet has no script; the other backgrounds were removed)');
+    for (const pg of pages) {
+      const html = tryRead(pg);
+      if (html === null) continue;
+      const linksCss = /href="hero-bg\.css(\?v=[0-9a-f]*)?"/.test(html);
+      if (pg === 'index.html' && !linksCss) bad.push('index.html does not link hero-bg.css');
+      if (pg !== 'index.html' && linksCss) bad.push(`${pg} links hero-bg.css, which only index.html may`);
+      if (/hero-bg\.js/.test(html)) bad.push(`${pg} links hero-bg.js`);
+      if (new RegExp('\\s' + BG_ATTR + '\\s*=').test(stripComments(html))) bad.push(`${pg} carries ${BG_ATTR}`);
+      if (html.includes(BG_KEY_PREFIX)) bad.push(`${pg} names ${BG_KEY_PREFIX}, which nothing writes now`);
+    }
+    const sources = { 'styles.css': noCss(tryRead('styles.css') || ''), 'hero-bg.css': noCss(hero || '') };
+    if (app) sources['app.js'] = stripJsComments(app.src);
+    for (const [f, code] of Object.entries(sources)) {
+      if (code.includes(BG_KEY_PREFIX)) bad.push(`${f} uses ${BG_KEY_PREFIX}, the retired hero-background draw`);
+      if (code.includes(BG_ATTR)) bad.push(`${f} uses ${BG_ATTR}, the retired hero-background draw`);
+    }
+    if (hero !== null) {
+      const code = sources['hero-bg.css'];
+      const raw = code.match(/!important|\[data-theme|#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(|var\(--(?:forest|teal|mono|cream|bronze|champagne|cloud|neutral|grey)-/);
+      if (raw) bad.push(`hero-bg.css: ${raw[0]} (role tokens only, no !important, no theme selectors)`);
+      const moving = code.match(/@keyframes|\banimation(?:-[a-z-]+)?\s*:|\btransition(?:-[a-z-]+)?\s*:/);
+      if (moving) bad.push(`hero-bg.css: ${moving[0].trim()} (the sheet is still, and nothing that moves may be added here)`);
+      const foreign = [...new Set([...code.matchAll(/(?:^|[;{\s])(--[a-zA-Z0-9-]+)\s*:/g)].map((m) => m[1]).filter((v) => !v.startsWith('--sheet-')))];
+      if (foreign.length) bad.push(`hero-bg.css: custom properties without the --sheet- prefix: ${foreign.slice(0, 4).join(', ')}`);
+      const named = [...new Set([...code.matchAll(/url\(\s*["']?assets\/(bg-[a-z0-9-]+\.svg)["']?\s*\)/g)].map((m) => m[1]))].sort();
+      let onDisk = [];
+      try { onDisk = fs.readdirSync(path.join(root, 'assets')).filter((f) => /^bg-.*\.svg$/.test(f)).sort(); } catch (e) { /* reported as missing below */ }
+      if (named.join() !== onDisk.join()) bad.push(`hero-bg.css names [${named.join(', ')}] but assets/ holds [${onDisk.join(', ')}]`);
+    }
+    add(bad.length === 0, 'the hero background is the drafting sheet alone: hero-bg.css on index.html only, still, role tokens, its art files on disk; no hero-bg.js, data-bg or vynatix-bg anywhere', bad.join(' | '));
+  }
 
   // --- the site rules
   const css = tryRead('styles.css');

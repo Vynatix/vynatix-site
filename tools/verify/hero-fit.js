@@ -26,8 +26,8 @@
 //   node verify/hero-fit.js                      (serve the repo root first, as for the other checks)
 //   REPORT=1 node verify/hero-fit.js             prints every row of the table, not only the failures
 //
-// The four backgrounds are not this check's: bg-weave.js, bg-sheet.js, bg-dial.js and bg-iris.js prove
-// the art against the text at the design size and at a scaled one. This one runs in the first theme of
+// The hero's background is not this check's: bg-sheet.js proves the art against the text at the design
+// size and, through bg-fit.js, at a scaled one. This one runs in the first theme of
 // THEMES only: the two themes share every size.
 const { BASE, THEMES, launch, pinTheme } = require('./_common.js');
 
@@ -107,7 +107,7 @@ function measure() {
     const seen = [];
     page.on('console', (m) => { if (m.type() === 'error') seen.push(m.text()); });
     page.on('pageerror', (e) => seen.push(String(e)));
-    await page.addInitScript(pinTheme, { theme: THEME, bg: 'sheet' });
+    await page.addInitScript(pinTheme, THEME);
     await page.goto(BASE + file, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     return { ctx, page, seen };

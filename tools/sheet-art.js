@@ -1,10 +1,10 @@
 // Writes the two alpha masks of the home hero's "sheet" background: assets/bg-sheet-art.svg (neutral ink) and
 // assets/bg-sheet-edge.svg (bronze ink). Plain Node, no dependencies:  node tools/sheet-art.js
-// Run with its defaults it reproduces the shipped pair byte for byte. Geometry lives here, colour in styles.css (each file
+// Run with its defaults it reproduces the shipped pair byte for byte. Geometry lives here, colour in hero-bg.css (each file
 // is a CSS mask over a role-token colour). Coordinates are container units: x = 0 is the container's left edge, y = 0 the
 // hero's top. One SVG px is one CSS px at a 16px hero font size; the CSS sizes the mask in em so it follows text zoom.
 // To retune, override fields of P as JSON in ART (for example ART='{"A0y": 330}' node tools/sheet-art.js), change the
-// matching numbers in the sheet block of styles.css (87.5em by 50em, calc(50% + 40em - 576px)) and tools/verify/bg-sheet.js,
+// matching numbers in hero-bg.css (87.5em by 50em, calc(50% + 40em - 576px)) and tools/verify/bg-sheet.js,
 // and WRITE THE FILES UNDER NEW NAMES: assets are cached under fixed URLs and are not version-stamped (see assets/AGENTS.md).
 const fs = require('fs');
 const path = require('path');

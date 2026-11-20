@@ -9,7 +9,7 @@
 // html fresh, like a visitor whose page has expired but whose files have not.
 //
 //   1. Prime the browser cache with an old build: html plus an old copy of each of
-//      the shared files, and the two home-only ones, under the plain URLs (styles.css, app.js, hero-bg.css ...). Each
+//      the shared files, and the home-only one, under the plain URLs (styles.css, app.js, hero-bg.css ...). Each
 //      old file leaves a mark: huge black icons, default bullets, a flag on <html>.
 //   2. CONTROL: load the current pages with the version stamps removed. They must
 //      come out wrong because of the old stylesheet. If they do not, the harness no
@@ -32,14 +32,13 @@ const http = require('http');
 const path = require('path');
 
 const ENGINE = process.env.ENGINE || 'chromium';
-const { pinBg } = require('./_common');
 const launch = ENGINE === 'chromium'
   ? require('./_common').launch
   : () => require('playwright')[ENGINE].launch();
 
 const ROOT = path.join(__dirname, '..', '..');
 const ASSETS = ['tokens.css', 'colors_and_type.css', 'styles.css', 'app.js'];
-const HOME_ONLY = ['hero-bg.css', 'hero-bg.js'];   // linked by index.html only (see stamp.js)
+const HOME_ONLY = ['hero-bg.css'];   // linked by index.html only (see stamp.js)
 const ALL = ASSETS.concat(HOME_ONLY);
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -56,7 +55,6 @@ const OLD_FILES = {
   'styles.css': '.icon{width:380px;height:380px;fill:#000}',
   'app.js': "document.documentElement.setAttribute('data-stale-app', '1');",
   'hero-bg.css': '.hero{outline:9px solid #f0f}',
-  'hero-bg.js': "document.documentElement.setAttribute('data-stale-hero', '1');",
 };
 const OLD_HTML = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>old</title>' +
   ALL.map((a) => (a.endsWith('.css') ? `<link rel="stylesheet" href="${a}">` : `<script src="${a}"></script>`)).join('') +
@@ -115,7 +113,6 @@ const hashOf = (f) => crypto.createHash('sha256')
       header: cs(document.querySelector('.site-header'), 'position'),
       bullet: ul ? cs(ul, 'listStyleType') : null,
       staleApp: document.documentElement.hasAttribute('data-stale-app'),
-      staleHero: document.documentElement.hasAttribute('data-stale-hero'),
       heroOutline: document.querySelector('.hero') ? getComputedStyle(document.querySelector('.hero')).outlineStyle : null,
       sheets: [...document.styleSheets].map((s) => (s.href || '').replace(/^.*\//, '')),
       scripts: [...document.scripts].map((s) => s.getAttribute('src')).filter(Boolean),
@@ -126,7 +123,6 @@ const hashOf = (f) => crypto.createHash('sha256')
     for (const variant of ['control', 'test']) {
       // One context per run: a fresh in-memory cache, primed with the old build.
       const ctx = await browser.newContext({ viewport: { width: 430, height: 900 } });
-      await ctx.addInitScript(pinBg);   // the hero background is drawn at random per visit; pin it so the home page is the same one every run
       const page = await ctx.newPage();
       mode = 'old';
       await page.goto(base + p, { waitUntil: 'load' });         // primes the cache
@@ -149,15 +145,15 @@ const hashOf = (f) => crypto.createHash('sha256')
         say(missing.length === 0, `${p}: all ${wanted.length} files it links were fetched under their stamped URL${missing.length ? ` (not fetched: ${missing.join(', ')})` : ''}`);
         if (p !== 'index.html') {
           const strays = HOME_ONLY.filter((a) => hits.some((h) => h.startsWith(`new ${a}`)));
-          say(strays.length === 0, `${p}: the home-only files were not requested${strays.length ? ` (requested: ${strays.join(', ')})` : ''}`);
+          say(strays.length === 0, `${p}: the home-only file was not requested${strays.length ? ` (requested: ${strays.join(', ')})` : ''}`);
         }
         const applied = wanted.filter((a) => a.endsWith('.css')).every((a) => m.sheets.includes(`${a}?v=${hashOf(a)}`)) &&
           wanted.filter((a) => a.endsWith('.js')).every((a) => m.scripts.includes(`${a}?v=${hashOf(a)}`));
         say(applied, `${p}: the applied stylesheets and scripts carry the stamps of the files on disk`);
         const listOk = m.bullet === null || m.bullet === 'none';
-        const heroOk = p !== 'index.html' || (!m.staleHero && (m.heroOutline === null || m.heroOutline === 'none'));
+        const heroOk = p !== 'index.html' || (m.heroOutline === null || m.heroOutline === 'none');
         say(m.icon !== null && m.icon <= 100 && m.header === 'sticky' && listOk && !m.staleApp && heroOk,
-          `${p}: nothing of the old build shows (icon ${m.icon}px, header ${m.header}, list ${m.bullet}, old app.js ${m.staleApp ? 'ran' : 'did not run'}${p === 'index.html' ? `, old hero files ${heroOk ? 'absent' : 'showing'}` : ''})`);
+          `${p}: nothing of the old build shows (icon ${m.icon}px, header ${m.header}, list ${m.bullet}, old app.js ${m.staleApp ? 'ran' : 'did not run'}${p === 'index.html' ? `, old hero-bg.css ${heroOk ? 'absent' : 'showing'}` : ''})`);
       }
       await ctx.close();
     }

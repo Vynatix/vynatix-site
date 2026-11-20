@@ -1468,7 +1468,7 @@ dl.metrics { margin: 0; }
 
 /* Reduced motion: list markers take no transition at all. Their 0.01ms
    transitions keep running inside the content-visibility-skipped sections,
-   which the dial guard counts. */
+   which the reduced-motion check (tools/verify/a11y.js) counts. */
 @media (prefers-reduced-motion: reduce) {
   ul > li::before { transition-property: none; }
 }
@@ -1553,9 +1553,8 @@ dl.metrics { margin: 0; }
   }
 }
 
-/* The four hero backgrounds (one drawn per visit, home page only) are not here: they are in
-   hero-bg.css and hero-bg.js, which only index.html links, so no other page downloads them.
-   AGENTS.md, Hero backgrounds, says how they fit together. */
+/* The hero background (the drafting sheet, English home page only) is not here: it is in
+   hero-bg.css, which only index.html links. AGENTS.md, Hero background, has the notes. */
 
 /* ---------------------------------------------------------------
    Consent: the analytics bar, and the same two buttons in place on the
@@ -2572,9 +2571,8 @@ body::after {
 /* The hero's two buttons get a layer of their own. Over the silk, the browser
    anti-aliases a capsule's edge against the true backdrop in one compositing
    path and against the flat canvas colour in another, and which path it takes
-   depends on what else is composited (the iris, for one). The edge pixels then
-   differ by 6 to 12 levels, a faint halo, and tools/verify/bg-iris.js reads the
-   difference as art inside the buttons. Their own layer makes it one path. */
+   depends on what else is composited. The edge pixels then differ by 6 to 12
+   levels, a faint halo. Their own layer makes it one path. */
 .hero__ctas .btn { will-change: transform; }
 /* A tonal band lets the silk through. */
 .section--surface {

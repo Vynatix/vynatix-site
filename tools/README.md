@@ -176,7 +176,7 @@ THEMES=mono-dark node verify/a11y.js
 under test;
 every other page runs once). The default is **all four**, unlike `THEMES`, because
 every one of them ships and the setting only multiplies loads of the home page, never the
-other twenty-two. `BGS=sheet` narrows a run to the background the page shows without script. The
+other twenty-three. `BGS=sheet` narrows a run to the background the page shows without script. The
 guards `bg-weave.js`, `bg-sheet.js`, `bg-dial.js` and `bg-iris.js` skip themselves (exit 0, one
 line) unless `BGS` includes their background, and always pin their own. An unknown theme or
 background exits 2.

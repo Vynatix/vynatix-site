@@ -141,7 +141,7 @@ function measure() {
         Math.abs(got - want) <= TOL && got <= want + 1 ? '' : 'refit the two numbers in styles.css ("Hero fit") from this measurement and one at another u; the line may be under the measurement by a pixel at most');
     }
     const one = await at(1);
-    say(one.h1Lines === 2 && one.ledeLines === (index ? 2 : 5), `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes ${index ? '2 and 2' : '2 and 5'})`);
+    say(one.h1Lines === 2 && one.ledeLines === 2, `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes 2 and 2)`);
     say(Math.abs(one.above - one.aboveVar) <= 0.5, `M  ${file}: ${one.above}px stand above the hero, --hero-above is ${one.aboveVar}px`);
     // The headline's share of the slope: two lines at the headline's leading, 1.05.
     const lh = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.hero__h1')).lineHeight) / parseFloat(getComputedStyle(document.querySelector('.hero__h1')).fontSize));

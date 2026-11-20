@@ -61,27 +61,28 @@ WEBSITE_ID = SITE + '#website'
 # The order here is the order of sitemap.xml.
 PAGES = {
   'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-20', alt={'sv': 'sv.html'}),
-  'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-10-20'),
+  'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-11-20'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-19'),
+  'industries.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-11-20', mod='2026-11-20'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
-  'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-10-17'),
-  'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-10-17'),
+  'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-20'),
+  'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-20'),
   'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-20'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-18'),
-  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-19', alt={'en': 'index.html'}),
-  'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'sv': 'android-automotive-utveckling.html'}),
-  'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'android-automotive-development.html'}),
-  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-19', alt={'sv': 'ai-utveckling.html'}),
-  'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-10-20', alt={'en': 'ai-engineering.html'}),
-  'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}),
-  'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}),
-  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-06', article=True, original=True, alt={'en': 'choose-a-software-consultancy.html'}),
-  'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
-  'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
-  'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-10-20', article=True),
-  'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-06', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
+  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'index.html'}),
+  'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'android-automotive-utveckling.html'}),
+  'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'android-automotive-development.html'}),
+  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'ai-utveckling.html'}),
+  'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'ai-engineering.html'}),
+  'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}, status='withdrawn'),
+  'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}, status='withdrawn'),
+  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, original=True, alt={'en': 'choose-a-software-consultancy.html'}),
+  'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True),
+  'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True),
+  'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, status='withdrawn'),
+  'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-20', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-18', alt={'en': 'privacy.html'}),
 }
 for f, p in PAGES.items():
@@ -112,9 +113,8 @@ def url_of(f):
     return SITE if f == 'index.html' else SITE + f
 
 # ---------------------------------------------------------------- shared nodes
-COMPANY_SENTENCE = ("Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of "
-    "Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering "
-    "and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.")
+COMPANY_SENTENCE = ("Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise "
+    "the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.")
 
 ORGANIZATION = {
   "@type": "Organization",
@@ -125,7 +125,7 @@ ORGANIZATION = {
   "url": SITE,
   "logo": {"@type": "ImageObject", "url": SITE + "assets/icon-512.png", "width": 512, "height": 512},
   "description": COMPANY_SENTENCE,
-  "slogan": "We own the outcome. You own the code.",
+  "slogan": "Engineering that compounds",
   "foundingDate": "2023",
   "foundingLocation": {"@type": "Place", "name": "Gothenburg, Sweden"},
   "memberOf": {"@type": "Organization", "name": "Ultra Group", "url": "https://ultragroup.se/"},
@@ -134,15 +134,15 @@ ORGANIZATION = {
               "addressLocality": "Gothenburg", "addressCountry": "SE"},
   "email": "front.disk@vynatix.com",
   "telephone": "+46720710676",
-  "contactPoint": {"@type": "ContactPoint", "contactType": "Projects and membership",
+  "contactPoint": {"@type": "ContactPoint", "contactType": "Projects and careers",
                    "email": "front.disk@vynatix.com", "telephone": "+46720710676"},
   "knowsAbout": [
-    "Android Automotive (AAOS)", "In-car software", "Native mobile development for iOS and Android",
-    "Web and desktop applications", "Enterprise integration and SaaS", "AI engineering",
-    "Retrieval-augmented generation", "LLM evaluation pipelines", "MCP servers and integrations",
-    "Agent and harness engineering", "On-prem and sovereign cloud deployment",
+    "AI engineering", "Retrieval-augmented generation", "LLM evaluation pipelines",
+    "MCP servers and integrations", "Agent and harness engineering", "On-prem and sovereign cloud deployment",
     "Cloud platforms on GCP and AWS", "Kubernetes and GitOps", "Platform engineering",
-    "Build pipelines", "FinOps and cost control", "Migration off legacy systems"],
+    "Build pipelines", "FinOps and cost control", "Migration off legacy systems",
+    "Native mobile development for iOS and Android", "Web and desktop applications",
+    "Enterprise integration and SaaS", "Embedded Android", "Android Automotive (AAOS)"],
   "sameAs": ["https://www.linkedin.com/company/vynatix", "https://github.com/Vynatix"],
 }
 WEBSITE = {"@type": "WebSite", "@id": WEBSITE_ID, "url": SITE, "name": "Vynatix",
@@ -283,7 +283,7 @@ FOOTER = '''  <!-- ============================================================ 
           <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
             <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
           </a>
-          <p class="site-footer__about">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
+          <p class="site-footer__about">The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
           <address class="site-footer__addr">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a><br>
@@ -303,9 +303,10 @@ FOOTER = '''  <!-- ============================================================ 
           <h2 class="site-footer__h">Company</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="about.html">About</a></li>
+            <li><a href="industries.html">Industries</a></li>
             <li><a href="work.html">Cases</a></li>
             <li><a href="blog.html">Insights</a></li>
-            <li><a href="membership.html">Membership</a></li>
+            <li><a href="membership.html">Career</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
@@ -313,7 +314,6 @@ FOOTER = '''  <!-- ============================================================ 
           <h2 class="site-footer__h">På svenska</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
-            <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
             <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
@@ -342,7 +342,7 @@ FOOTER = '''  <!-- ============================================================ 
 # replaced with this on each run (the aria-current link is the page itself), so a nav change is made in NAV
 # below, once, and this script run. The skip link and the wordmark <symbol> above the header are still
 # copied by hand into every page.
-NAV = [('services.html', 'Services'), ('work.html', 'Cases'), ('blog.html', 'Insights'), ('about.html', 'About'), ('contact.html', 'Contact')]
+NAV = [('services.html', 'Services'), ('industries.html', 'Industries'), ('work.html', 'Cases'), ('blog.html', 'Insights'), ('membership.html', 'Career'), ('about.html', 'About'), ('contact.html', 'Contact')]
 MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
 HEADER = '''  <!-- ============================================================ Header -->
   <header class="site-header" role="banner" lang="en">
@@ -411,7 +411,7 @@ def extra_nodes_for(f):
     return [nodes[i] for i in data.get('ids', [])]
 
 def main_of(s):
-    m = re.search(r'(\s*<main id="main">.*?</main>)', s, re.S); return m.group(1) if m else ''
+    m = re.search(r'(\s*<main id="main"[^>]*>.*?</main>)', s, re.S); return m.group(1) if m else ''
 
 # ---------------------------------------------------------------- withdrawn pages
 # A withdrawn page keeps its URL (GitHub Pages cannot redirect) and says so, in about a hundred
@@ -451,7 +451,7 @@ def withdraw(f, s):
     t = STUB[PAGES[f]['lang']]
     s = re.sub(r'<title>.*?</title>', lambda m: f'<title>{t["title"]}</title>', s, count=1, flags=re.S)
     s = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{t["desc"]}">', s, count=1)
-    s, n = re.subn(r'(\s*)<main id="main">.*?</main>', lambda m: m.group(1) + stub_main(f).lstrip(), s, count=1, flags=re.S)
+    s, n = re.subn(r'(\s*)<main id="main"[^>]*>.*?</main>', lambda m: m.group(1) + stub_main(f).lstrip(), s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no <main id="main"> to replace with the stub')
     return s

@@ -24,11 +24,14 @@ against the roles and components the system defines.
 index.html          Home — hero (one of four drawn backgrounds), still client list, contents row,
                     services, three figures, three case cards, the partnership band, people,
                     insights, CTA band
-about.html          Company / team
+about.html          About: what we stand for, people
 services.html       AI engineering, cloud platforms, application development
+industries.html     Four industries, mobility last
 work.html           The three cases ("Cases" in the menu), team projects and libraries
-membership.html     "Collective" / careers for senior engineers
-contact.html        Two-inbox contact page (no form — mailto links)
+membership.html     Career ("Career" in the menu; the file name stays): the page for senior
+                    engineers and designers, in the recruit voice
+contact.html        Two-inbox contact page (no form — mailto links), how we start, and the
+                    common questions (the site's English FAQ)
 blog.html           Insights ("Insights" in the menu; the file name stays): a hand-written list of
                     the guides, in English and in Swedish
 privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
@@ -40,16 +43,16 @@ android-automotive-development.html   Android Automotive in Gothenburg (English 
 ai-engineering.html AI engineering in Gothenburg (English twin of ai-utveckling.html)
 choose-a-software-consultancy.html   How to choose a software consultancy: the English twin of
                     valja-konsultbolag.html, and the first post (kind='post')
-android-automotive-consultancies-gothenburg.html  Alphabetical, sourced list of Gothenburg
-                    consultancies working on Android Automotive (English twin)
+android-automotive-consultancies-gothenburg.html  Withdrawn on 20 November 2026 (a stub; it was
+                    a list of Gothenburg consultancies working on Android Automotive)
 sv.html             Swedish home and hub for the Swedish pages (twin of index.html)
-android-automotive-utveckling.html, ai-utveckling.html,
-konsultbolag-android-automotive-goteborg.html   Swedish twins of the three pages above
-valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html,
-ai-konsultbolag-sverige.html   Swedish guides
-integritet.html     Swedish privacy notice, the twin of privacy.html (one of six
+android-automotive-utveckling.html, ai-utveckling.html   Swedish twins of the two deep pages
+valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html   Swedish guides
+konsultbolag-android-automotive-goteborg.html, ai-konsultbolag-sverige.html   Withdrawn on
+                    20 November 2026 (stubs)
+integritet.html     Swedish privacy notice, the twin of privacy.html (one of five
                     English/Swedish pairs); the Swedish consent bar links to it.
-                    Twenty-three pages in total
+                    Twenty-four pages in total, three of them withdrawn stubs
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
@@ -217,7 +220,7 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
   layer and still get the blurred, tinted capsule from the other, which is why the
   two are separate layers rather than one declaration.
 - **The two `<filter>` elements are in the `.svg-defs` block of every page**, beside
-  the wordmark `<symbol>` (copy-pasted, like it: change all 23 together). A
+  the wordmark `<symbol>` (copy-pasted, like it: change all 24 together). A
   fragment-only `url(#id)` in an external stylesheet resolves against the page, and
   the CSP allows the map as a same-origin image.
 - **The header is not a backdrop root.** A stacking context alone is not one; only
@@ -366,7 +369,7 @@ of every text box, off wherever the visitor asks for less (see each one below).
   background is drawn and the widths it applies to. `tools/verify/bg-draw.js`
   enforces all of this.
 - **Where it lives.** In two files that only `index.html` links, after `styles.css` and
-  `app.js`, so the other twenty-two pages never download them: `hero-bg.css` and
+  `app.js`, so the other twenty-three pages never download them: `hero-bg.css` and
   `hero-bg.js`. The draw itself stays in `app.js`: it is a few lines, runs on every page and
   everything else depends on it. Each background is a block in `hero-bg.css` between
   `/* bg:<id>:begin */` and `/* bg:<id>:end */` (in the order weave, sheet, dial, iris) and
@@ -603,7 +606,7 @@ membership pitch off the home page, so the bar, the joiner view, its skip link, 
 
 - **`#join` still answers.** It was a public address, so the People section carries
   `id="join"`: an old link lands on "Great software comes from great people" and its "Join us"
-  link, which goes to `membership.html` until a career page replaces it. `#hire` has no element
+  link, which goes to `membership.html`, the Career page. `#hire` has no element
   now and lands at the top of the page, which is what it showed.
 - **`main.home`** is the scope the home page's own layout rules hang on (`styles.css`, "Home
   page"), where they used to hang on the two view classes; `.hero--clients` marks the English
@@ -722,7 +725,7 @@ a measurement work. A violation names the one host that is missing; add that hos
 by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
 
 **The policy lives in three places that change together:** the `<meta>` tag on
-all 23 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+all 24 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
 Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
 **first**: the browser enforces the meta and the header independently, so a
 narrower header silently blocks Google Analytics, while a wider one is bounded
@@ -836,15 +839,18 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
   the copy rules below on visible text.
 
 **One sentence about the company**, used verbatim wherever a page introduces it
-and in the JSON-LD description, so every source an engine reads agrees: "Vynatix
-AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of
-Ultra Group. Our senior engineers work as part of client organisations on Android
-Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars
-among our clients." (Swedish: "Vynatix AB är ett mjukvarukonsultbolag i Göteborg,
-grundat 2023 och en del av Ultra Group. Våra seniora utvecklare arbetar som en del
-av kundernas organisationer inom Android Automotive, AI och molnplattformar, med
-Volvo Trucks och Volvo Cars bland kunderna.") If a fact in it changes, change it
-everywhere, including LinkedIn, the registries and `llms.txt`.
+and in the JSON-LD description, so every source an engine reads agrees: "Vynatix is
+the senior software consultancy for scale-ups. Our engineers join your team, raise the
+pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra
+Group." (Swedish: "Vynatix är mjukvarukonsultbolaget för scaleups. Våra seniora
+utvecklare blir en del av ert team, höjer tempot och gör er mjukvara starkare i takt
+med att ni växer. Vi finns i Göteborg och är en del av Ultra Group.") These are the
+brand voice's standard descriptions, in the JSON-LD (`COMPANY_SENTENCE` in
+`tools/seo-head.py`), the footer, `llms.txt` and the guides' "About Vynatix". The
+slogan in the structured data is the brand line, "Engineering that compounds". If a
+fact in it changes, change it everywhere, including LinkedIn and the registries, which
+are outside this repository and still carry the earlier sentence until the owner
+changes them.
 
 **The English home page** follows the owner's website content plan of November 2026: nine blocks,
 each opening with a promise and backed by a fact, in the order a leading consultancy's home page
@@ -886,9 +892,8 @@ can pin, the anchor reserve (`scroll-padding-top`) grows by its height. Then, in
 What the plan took off the page: the service chapters with their "What we build" panels, the
 company sentence and the Gothenburg photograph, the four steps of How we work, the comparison
 with a typical consultancy, the pull quote, the questions (and with them the page's FAQPage
-data) and the joiner view. The questions get a new home on `contact.html`, rewritten in the
-new voice, in the plan's second step (the owner's decision of 20 November 2026); until then
-no English page carries them. The lines the plan removes from the whole site (declining work, sending a
+data) and the joiner view. The questions live on `contact.html` now, rewritten in the
+new voice (the owner's decision of 20 November 2026). The lines the plan removes from the whole site (declining work, sending a
 reader to another firm, "no pitch, no pressure", what a model cannot do as a headline,
 automotive as the headline) do not come back on any page.
 
@@ -904,17 +909,28 @@ row). The onward links (the contents row, read-more links, the insight titles an
 band's contact lines) are 44px or more tall under 905px. Nothing here needs JavaScript and
 nothing moves.
 
-**The other two pages of the first step.** `services.html` sells the offer with AI engineering
-first: a promise as each section's heading, one paragraph, and a "What we deliver" list; the
-Service nodes in `tools/seo/services.json` repeat each paragraph. `work.html` is "Cases" in the
-menu and the footer (the file name stays: a URL never changes): the three cases, the regulated
-client first, each told as challenge, work and result; the Volvo Trucks case has no challenge
-line until Volvo Trucks supplies one in its own words. The team projects and the libraries
-under them are unchanged. `blog.html` is "Insights" in the menu and the footer, with the plan's
-heading and lede; the rest of its step (reworking the guide on choosing a consultancy, retiring
-the two list pages and the Swedish comparison of AI consultancies) is not done. The About, Career
-(today's membership page), Contact and Industries pages, and every Swedish page, are later steps
-of the plan and still carry the earlier voice.
+**The other pages.** The whole site follows the content plan since 20 November 2026.
+`services.html` sells the offer with AI engineering first: a promise as each section's heading,
+one paragraph, and a "What we deliver" list; the Service nodes in `tools/seo/services.json` repeat
+each paragraph. `industries.html` is new: four industries, each naming only clients on the hero's
+row, mobility last and short. `work.html` is "Cases" in the menu and the footer (the file name
+stays: a URL never changes): the three cases, the regulated client first, each told as
+challenge, work and result; the Volvo Trucks case has no challenge line until Volvo Trucks
+supplies one in its own words. The team projects and the libraries under them are unchanged.
+`blog.html` is "Insights", with the plan's heading and lede. `membership.html` is "Career", in
+the recruit voice (one engineer to another: the work, the people, the craft; no terms, pay or
+anything about leaving on the page). `about.html` has the plan's headline, four principles
+and the people block. `contact.html` has the two routes, the three steps of "How we start" and
+the English questions (`#faq`, with the page's FAQPage data). The two deep pages
+(`ai-engineering.html`, `android-automotive-development.html`) and the guide on choosing a
+consultancy keep their structure and facts and lost the lines the plan removes; the Android
+Automotive pages stay for search, off the menu, the footer and the home pages, linked from the
+Volvo Trucks case.
+
+What the plan left open, so the pages do not have it: the two sentences about Ultra Group and
+the people section on About; the open roles, the line on how engineers join and the line on
+knowledge sharing on Career; a case outside automotive on Industries; the challenge line of the
+Volvo Trucks case. None of these is to be written without the owner's text.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
@@ -923,7 +939,7 @@ settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and 
 link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `sv`. Without JavaScript, or while the module is inert, the English link to
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
-`privacy.html`, one of six English/Swedish pairs, and the Swedish consent bar links
+`privacy.html`, one of five English/Swedish pairs, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
 `integritet.html`, which is a notice and not a guide and so is linked from that
@@ -932,21 +948,25 @@ page the footer's Legal column therefore deliberately holds one Swedish item, th
 relabelled "Cookie-inställningar" link, among English ones ("Privacy", "Terms",
 "Accessibility"); the shared footer is English by design, and the link has to match
 the Swedish bar and notice. Without JavaScript it reverts to English. The
-two home pages are not mirror images: the English one was rewritten to the content plan of
-November 2026 (see *The English home page* above) and the Swedish hub keeps the earlier stack of
-sections (its own questions, its Guider section) until the plan's Swedish step, which is written
-natively from the approved English and checked by a native reader. The Insights entries on
-index.html repeat the linked pages' `<title>` (without the brand suffix) and meta description
+two home pages follow the same plan and are not mirror images: the Swedish hub (`main.home`, as the
+English page) has the same blocks in Swedish under the English brand line (`lang="en"` on its
+`h1`), no client row and no contents row, its insights in `#guider` (the three Swedish guides)
+and, where the English questions live on `contact.html`, its own questions in `#faq`. Its case
+cards and several links lead to English pages and say so. The Swedish was written with the
+English rewrite on 20 November 2026 and **has not been checked by a native reader**, which the
+brand voice requires before it goes out. The Insights entries on both home pages repeat the
+linked pages' `<title>` (without the brand suffix) and meta description
 word for word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
 
-**The list pages** (`konsultbolag-android-automotive-goteborg.html` and its English
-twin) name other companies. Every entry quotes the firm's own website or a job ad
-it posted, with the source linked and the date it was checked; the order is
-alphabetical; a disclosure says Vynatix compiled the list and is on it. Re-check
-every entry at least twice a year, update the "Kontrollerad" dates and
-`dateModified`, and act on corrections sent to front.disk@vynatix.com. Never rank,
-rate or describe a competitor beyond what its own site says.
+**The list pages are withdrawn.** `android-automotive-consultancies-gothenburg.html`, its
+Swedish twin `konsultbolag-android-automotive-goteborg.html` and
+`ai-konsultbolag-sverige.html` named other firms; the content plan retires them, and since
+20 November 2026 each is the withdrawn stub (`status='withdrawn'` in the registry: `noindex`,
+out of the sitemap and `llms.txt`, linked from nowhere). GitHub Pages cannot redirect, so
+the plan's "redirects to the matching service page" is this stub, which points at the home
+page. The rule they were written under still holds for anything that names another firm:
+quote only its own site, alphabetical, dated, with the disclosure, never ranked.
 
 **Copy** follows the system's content fundamentals: sentence case, no em
 dashes (use a comma, a colon, parentheses or a new sentence), no exclamation
@@ -957,8 +977,8 @@ strong verbs, one clear invitation, "Start the conversation"); one name for the
 firm, consultancy, never agency or collective; every number real and every client
 named only with its approval; nothing about how Vynatix runs inside; automotive
 only inside a named case, never in a headline or a description of Vynatix. The
-home page, `services.html` and `work.html` are written in it; the other pages
-follow in the plan's later steps.
+whole site is written in it (the notices and the terms are legal text and keep their own
+register).
 
 **Icons** are Material Symbols Outlined, the system's one library, inlined as
 SVG (`<svg class="icon [icon--sm|icon--md]" viewBox="0 -960 960 960">`) from
@@ -984,9 +1004,11 @@ footer checks, the font preloads in `app.js` (any path ending `/` is treated as 
 markdown file without front matter at `/YYYY/MM/DD/name.html` and `publish.js` lets it pass. A slug is never
 reused and a URL never removed.
 
-**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; an interest
-disclosure in the lede; a "when we are the wrong choice" section; a `data-faq` block (flat, as in the SEO
-section); the company sentence verbatim under "About Vynatix"; a call-to-action band. The byline is
+**The pattern.** Eyebrow "Guide"; a question as each H2, with the answer in its first sentence; the lede
+says that Vynatix wrote the guide; a `data-faq` block (flat, as in the SEO
+section); the company sentence verbatim under "About Vynatix"; a call-to-action band. (Until November 2026
+the pattern also asked for an interest disclosure and a "when we are the wrong choice" section; the content
+plan removed both, with the argument for other firms.) The byline is
 `<p class="prose__meta">Published <time datetime="YYYY-MM-DD">…</time> · Last updated <time datetime="YYYY-MM-DD">…</time> · Vynatix</p>`
 (Swedish: "Publicerad" and "Senast uppdaterad"); the two dates are `pub` and `mod` in the registry, and
 `permanence.js` fails if they differ. No cadence promise anywhere. **Section ids must not be `article`**: the
@@ -1058,16 +1080,13 @@ lock, that no row on `main` changed. Then run `npm run check`.
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
 - The company sentence, verbatim: "One sentence about the company", above.
-- The three projects that can be discussed and the non-disclosure line, with the date: `sv.html` ("I oktober
-  2026"). The English home page and `work.html` no longer carry the sentence: since the content plan of
+- The three cases that can be discussed and the non-disclosure line. Since the content plan of
   November 2026 the `work.html` hero says "Three stories we can tell in full. More of our work is trusted to us
-  in confidence." (the owner's wording). **The scope of the non-disclosure line differs between pages.**
+  in confidence." (the owner's wording), and the home pages no longer carry a non-disclosure sentence.
+  **The scope of the non-disclosure line differs between the pages that still have one.**
   Limited to Volvo Trucks and Volvo Cars: `android-automotive-development.html`
-  and `android-automotive-utveckling.html`, and the `sv.html` work section ("Resten av vårt arbete för Volvo
-  Trucks och Volvo Cars omfattas av sekretess"). Unscoped: `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
-  work is under non-disclosure and is not described here") and the `sv.html` FAQ answer "Vilka kunder har ni?"
-  ("Övriga kunduppdrag omfattas av sekretess"; the English home page's twin of that answer left with its
-  questions). Read as "beyond the published cases", an
+  and `android-automotive-utveckling.html`. Unscoped: `terms.html` ("Clients named on this site appear with their knowledge; the remainder of our
+  work is under non-disclosure and is not described here"). Read as "beyond the published cases", an
   unscoped sentence implies the Volvo-limited one, so no two sentences contradict each other. Only the
   `terms.html` sentence was committed by the owner (e413cb9); the others come from agent commits, and all stay
   until the owner answers one question: **is all work not described on this site, for every client, under
@@ -1079,11 +1098,13 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
   Cars:"), so it is not read as the whole remainder or as a claim that the regulated client's other work is
   public. Do not reuse "That is what we can publish. The rest of our work with Volvo Trucks and Volvo Cars is under
   non-disclosure." outside the Volvo Trucks case it follows: read alone it takes in the published Volvo Cars case.
-- Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
-  only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`). The content
-  plan asks for each client's written approval before its name or logo is shown; the strip shows the same
-  fourteen as before, reordered, and the owner confirmed on 20 November 2026 that the approvals
-  are collected. A fifteenth name still needs its own.
+- Client names in prose are the ones the content plan names, all of them on the hero's row: Saab, Sony,
+  Tele2, Swisslog, Volvo Penta, Scania, Magna, Volvo Cars and Volvo Trucks (`industries.html`, the questions on
+  `contact.html` and `sv.html`, the figures). A case is told only for Volvo Trucks, Volvo Cars and the
+  regulated client; never a broader Volvo claim, and Volvo Buses appears in the logo strip only
+  (`assets/CREDITS.md`). The content plan asks for each client's written approval before its name or logo is
+  shown, and the owner confirmed on 20 November 2026 that the approvals for the fourteen are collected. A
+  fifteenth name still needs its own.
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
 - The regulated client stays anonymous (`work.html`, the closed-domain assistant case;
   `ai-assistent-interna-dokument.html`).
@@ -1250,7 +1271,7 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 23 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 24 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every

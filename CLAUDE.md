@@ -10,9 +10,11 @@ highlights the things most worth keeping front-of-mind.
 ## The short version
 
 - **Static, hand-written marketing site** for Vynatix (a Nordic software
-  consultancy). Twenty-three pages: ten core English pages (`blog.html` lists the guides), four English
+  consultancy). Twenty-four pages: eleven core English pages (`blog.html`, "Insights" in the menu, lists the guides;
+  `membership.html` is "Career"; `work.html` is "Cases"), four English
   deep pages and nine Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
-  Swedish privacy notice). No framework, no build step, no package manager for
+  Swedish privacy notice). Three of them are withdrawn stubs (the two lists of consultancies and the Swedish
+  comparison of AI consultancies). No framework, no build step, no package manager for
   the site: what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
@@ -65,7 +67,7 @@ highlights the things most worth keeping front-of-mind.
   `:root:is(:not([data-bg]), [data-bg="sheet"])`), its JS returns at once unless it
   is the drawn one, and its CSS and JS sit in `bg:<id>:begin` / `bg:<id>:end` fenced
   blocks in `hero-bg.css` and `hero-bg.js`, which **only `index.html` links** (so the other
-  twenty-two pages never download them; the draw itself stays in `app.js`); the iris
+  twenty-three pages never download them; the draw itself stays in `app.js`); the iris
   also has a fenced SVG block in `index.html`). Masks are `assets/bg-<id>-*.svg`,
   new names whenever regenerated. The art is placed from the layout and was fitted by hand
   to a three-line headline over six lines of lede; the current headline ("Engineering" / "that compounds.")
@@ -138,24 +140,26 @@ highlights the things most worth keeping front-of-mind.
   prints `scripted gates pass, N human gates open` when it passes. Switching off
   again starts with `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last
   (checklist, section 10). The CSP names Google's hosts, **a recorded security
-  downgrade** from the `'self'`-only policy: the meta on all 23
+  downgrade** from the `'self'`-only policy: the meta on all 24
   pages, `EDGE-SETUP.md` and the Cloudflare dashboard rule change together
   (dashboard first if the edge is live), and a missing host is added by name,
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
-- **The English home page, `services.html` and `work.html` follow the owner's website content plan of
-  November 2026, and the rest of the site does not yet.** The home page is nine blocks, each opening with a
-  promise and backed by a fact: the hero ("Engineering that compounds."), the client row, the three services
-  with AI engineering first, three figures, three case cards, the partnership band, people, insights and the
-  call to action. `work.html` is "Cases" and `blog.html` "Insights" in the menu (the file names stay). The voice sells: "you" before
-  "we", one name for the firm (consultancy), automotive only inside a named case, nothing about how Vynatix
-  runs inside, every number real and every client named only with its approval. The plan took the audience
-  switch, the comparison with other consultancies, the questions and the membership pitch off the home page;
-  `#join` still answers (it is the People section's id). About, the career page, Contact, Industries,
-  Insights and the Swedish pages are later steps: do not rewrite them ahead of the owner's inputs, and never
-  fill in a fact the plan marks as the owner's to supply. See AGENTS.md, *The English home page* and
-  *Audience switch (retired)*.
+- **The whole site follows the owner's website content plan and brand voice of November 2026.** Every block
+  opens with a promise and backs it with a fact; "you" before "we"; one name for the firm (consultancy, never
+  agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
+  nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
+  home page is nine blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
+  blocks in Swedish). The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
+  (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
+  removed do not come back on any page: declining work or sending a reader to another firm, comparisons with
+  other consultancies, "no pitch, no pressure", what a model cannot do as a headline, talk of size, the
+  membership pitch. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
+  engineer" sentence, the English questions live on `contact.html`. **Never fill in what the plan leaves to the
+  owner** (the Ultra Group sentences, people by name, open roles, how engineers join, a case outside
+  automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
+  AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
@@ -167,7 +171,7 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for the six English/Swedish pairs, and one
+  canonical link, Open Graph, hreflang for the five English/Swedish pairs, and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;

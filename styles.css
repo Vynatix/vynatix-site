@@ -541,16 +541,16 @@ h1 em, h2 em {
 
    The numbers are measured facts about the current copy, like the art's constants
    (hero-bg.css multiplies them by the same unit): two headline lines and two lede lines
-   in English, two and five in Swedish. tools/verify/hero-fit.js measures them again and
+   on both home pages. tools/verify/hero-fit.js measures them again and
    fails when the copy, a typeface or the spacing has moved them; refit them there.
    --------------------------------------------------------------- */
 .hero {
   --hero-above: 78px;   /* what stands above the hero on the first screen: the header's bottom edge */
   --hero-room: calc(100svh - var(--hero-above));
   --hero-min: 0.45px;
-  /* The Swedish hub's hero: two headline lines, five lede lines, its own bottom padding, no client row. */
-  --hero-f1: 66px;  --hero-k1: 633;
-  --hero-f2: 211px; --hero-k2: 458;
+  /* The Swedish hub's hero: two headline lines, two lede lines, its own bottom padding, no client row. */
+  --hero-f1: 66px;  --hero-k1: 534;
+  --hero-f2: 129px; --hero-k2: 458;
   --hero-h: 201.6;  --hero-hw: 16.8vw;
   --hero-fit: clamp(var(--hero-min),
     min(max((var(--hero-room) - var(--hero-f1)) / var(--hero-k1), (var(--hero-room) - var(--hero-f1) - var(--hero-hw)) / (var(--hero-k1) - var(--hero-h))),
@@ -589,7 +589,7 @@ h1 em, h2 em {
   /* A phone, fitted to the 390px layout: the headline goes from 40px to the 8vw it never goes under
      and the lede from 18 to 16px, and past that only the spacing gives. Narrower phones have more
      lede lines than these lines allow for, and scroll. */
-  .hero { --hero-min: 0.8px; --hero-f1: -383px; --hero-k1: 1268; --hero-f2: -383px; --hero-k2: 1268; }
+  .hero { --hero-min: 0.7px; --hero-f1: 142px; --hero-k1: 458; --hero-f2: 318px; --hero-k2: 208; }
   .hero.hero--clients { --hero-min: 0.7px; --hero-f1: 186px; --hero-k1: 344; --hero-f2: 349px; --hero-k2: 152; }
 }
 @supports (height: 100svh) and (transition-behavior: allow-discrete) {

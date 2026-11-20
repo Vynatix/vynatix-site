@@ -299,7 +299,7 @@ function selfTest() {
     ['a post missing from blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/<li><a href="choose-a-software-consultancy\.html">[\s\S]*?<\/li>\n/, '')); return PAGES; }, /is not listed on blog\.html|differ/],
     ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); return PAGES; }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
     ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); return PAGES; }, /privacy\.html: Last updated shows/],
-    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace('"numberOfItems": 5', '"numberOfItems": 9')); return PAGES; }, /numberOfItems/],
+    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); return PAGES; }, /numberOfItems/],
   ];
   let bad = 0;
   for (const [name, setup, expectPass] of cases) {

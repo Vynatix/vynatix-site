@@ -129,15 +129,18 @@ for f, p in PAGES.items():
 #       other page links to it, and it has no row in sitemap.xml, llms.txt or tools/urls.lock. 'live'
 #       publishes it, and its URLs are then permanent like every other; a live language never goes
 #       back to draft. The brand voice requires a native reader's check first, so 'live' needs:
-# checked, by: the date of that check and who made it (a name or a role).
+# checked, by: the date of that check and who made it (a name or a role); or
+# waived: the date the owner decided to publish the language without that check. It says the check has
+#       NOT been made. Never write a date in `checked` for a check nobody made; when a reader has been
+#       through the language, fill in checked and by and leave waived as the record of what came first.
 # pub: the day the language goes live (set it on that day); mod: move it when its catalogue changes.
 LANGS = {
   'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
   'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
-  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
-  'zh': dict(name='中文', tag='zh-Hans', locale='zh_CN', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
-  'hi': dict(name='हिन्दी', tag='hi', locale='hi_IN', dir='ltr', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
-  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='draft', pub='2026-11-20', mod='2026-11-20', checked='', by=''),
+  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'zh': dict(name='中文', tag='zh-Hans', locale='zh_CN', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'hi': dict(name='हिन्दी', tag='hi', locale='hi_IN', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
 }
 # The notices are legal text and are not translated: the English text governs, and a generated page
 # links to it and says so (hreflang="en").
@@ -149,8 +152,9 @@ for k, l in LANGS.items():
     if l['kind'] == 'generated':
         assert l['status'] in ('draft', 'live'), f'{k}: status is draft or live'
         assert all(re.fullmatch(r'\d{4}-\d{2}-\d{2}', l[d]) for d in ('pub', 'mod')), f'{k}: pub and mod are dates'
-        assert l['status'] == 'draft' or (re.fullmatch(r'\d{4}-\d{2}-\d{2}', l['checked']) and l['by'].strip()), (
-            f"{k}: a language goes live only after a native reader's check (set checked to its date and by to who made it)")
+        assert l['status'] == 'draft' or (re.fullmatch(r'\d{4}-\d{2}-\d{2}', l['checked']) and l['by'].strip()) or re.fullmatch(r'\d{4}-\d{2}-\d{2}', l.get('waived', '')), (
+            f"{k}: a language goes live only after a native reader's check (set checked to its date and by to who made it), "
+            f"or on the owner's decision to publish without one (set waived to the date of that decision)")
 for p in PAGES.values():
     assert LANGS.get(p['lang'], {}).get('kind') == 'written', 'PAGES holds the pages written by hand (English and Swedish) only'
 

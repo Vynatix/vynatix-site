@@ -32,6 +32,66 @@
 - [Android Automotive-utveckling i Göteborg](https://vynatix.com/android-automotive-utveckling.html)
 - [Integritetsmeddelande](https://vynatix.com/integritet.html): vad webbplatsen sparar, att statistik med Google Analytics bara mäts om ni godkänner, och hur ni utövar era rättigheter
 
+<!-- Generated languages: written by tools/seo-head.py from LANGS, not by hand -->
+
+## Español (es)
+
+- [Vynatix, la consultora sénior de software para scale-ups](https://vynatix.com/es/): Vynatix es la consultora sénior de software para scale-ups. Nuestros ingenieros se unen a tu equipo, aceleran el ritmo y fortalecen tu software a medida que creces. Con sede en Gotemburgo, parte de Ultra Group.
+- [Sobre Vynatix: creada por ingenieros, aquí para el largo plazo](https://vynatix.com/es/about.html): Vynatix es la consultora sénior de software para scale-ups: ingenieros sénior que se unen a tu equipo como socio a largo plazo. Fundada en 2023 en Gotemburgo, parte de Ultra Group.
+- [Servicios: ingeniería de IA, plataformas en la nube y desarrollo de aplicaciones](https://vynatix.com/es/services.html): Vynatix pone la IA, las plataformas en la nube y las aplicaciones a trabajar para tu producto. Nuestros ingenieros sénior trabajan dentro de tu equipo y entregan resultados duraderos.
+- [Sectores: experiencia demostrada en distintos sectores](https://vynatix.com/es/industries.html): Nuestros consultores han construido para servicios regulados, industria, telecomunicaciones, medios y productos de consumo, y llevan esa experiencia a scale-ups de los mismos ámbitos.
+- [Casos: resultados reales, en producción](https://vynatix.com/es/work.html): Tres casos de Vynatix contados por completo: un asistente de IA para un cliente de un sector regulado, compilaciones en 6 minutos en lugar de 47 con Volvo Cars y una aplicación multimedia activa en toda la flota de Volvo Trucks.
+- [Carrera en Vynatix: haz el mejor trabajo de tu carrera](https://vynatix.com/es/membership.html): Ingenieros y diseñadores sénior que aman el oficio y comparten lo que saben. Problemas que merecen tu tiempo, colegas que ya han entregado software y el papeleo resuelto.
+- [Ponte en contacto con Vynatix](https://vynatix.com/es/contact.html): Cuéntanos qué hay en tu hoja de ruta. Tendrás noticias nuestras en el plazo de un día hábil. Un solo buzón, front.disk@vynatix.com, para proyectos y para unirte a nosotros.
+- [Perspectivas: ideas que hacen avanzar el software](https://vynatix.com/es/blog.html): Ideas prácticas de los ingenieros que hacen el trabajo en Vynatix, sobre ingeniería de IA, plataformas en la nube y entrega de software, en español y en sueco.
+- [Desarrollo para Android Automotive en Gotemburgo](https://vynatix.com/es/android-automotive-development.html): Vynatix desarrolla software para Android Automotive (AAOS) en Gotemburgo, integrada en tu equipo, y llevó a producción la radio y el reproductor multimedia de cabina de Volvo Trucks.
+- [Ingeniería de IA en Gotemburgo: recuperación, evaluación y despliegue en tu entorno](https://vynatix.com/es/ai-engineering.html): Vynatix, en Gotemburgo, construye IA para producción sobre modelos fundacionales: RAG, pipelines de evaluación, servidores MCP y despliegue on-prem o en una nube soberana.
+- [Cómo elegir una consultora de software](https://vynatix.com/es/choose-a-software-consultancy.html): Vynatix sobre cómo elegir una consultora de software: las preguntas que hacer, las señales de alerta y cómo valorar si los desarrolladores son realmente sénior.
+
+## 中文 (zh-Hans)
+
+- [Vynatix，面向成长期企业的资深软件咨询公司](https://vynatix.com/zh/): Vynatix 是面向成长期企业的资深软件咨询公司。我们的工程师加入您的团队，加快节奏，让您的软件随您的成长而愈发强健。公司位于哥德堡，是 Ultra Group 旗下公司。
+- [关于 Vynatix：由工程师打造，立足长远](https://vynatix.com/zh/about.html): Vynatix 是面向成长期企业的资深软件咨询公司：资深工程师以长期伙伴的身份加入您的团队。2023年成立于哥德堡，是 Ultra Group 旗下公司。
+- [服务：AI 工程、云平台与应用开发](https://vynatix.com/zh/services.html): Vynatix 让 AI、云平台和应用为您的产品效力。我们的资深工程师融入您的团队工作，交付持久的成果。
+- [行业：历经多个行业验证](https://vynatix.com/zh/industries.html): 我们的顾问曾为受监管服务业、工业、电信、媒体和消费品领域构建软件，并把这些经验带给同领域的成长期企业。
+- [案例：真实成果，运行在生产环境](https://vynatix.com/zh/work.html): 三个完整讲述的 Vynatix 案例：为受监管行业客户打造的 AI 助手；与 Volvo Cars 合作，构建只需6分钟而不是47分钟；以及在整个 Volvo Trucks 车队上线的媒体应用。
+- [Vynatix 职业发展：做你职业生涯中最出色的工作](https://vynatix.com/zh/membership.html): 热爱这门手艺、乐于分享所知的资深工程师和设计师。值得你投入时间的问题，真正交付过的同行，文书事务有人打理。
+- [联系 Vynatix](https://vynatix.com/zh/contact.html): 告诉我们您的路线图上有什么。您将在一个工作日内收到我们的回复。一个邮箱 front.disk@vynatix.com，洽谈项目和加入我们都用它。
+- [洞察：推动软件前行的思考](https://vynatix.com/zh/blog.html): 来自 Vynatix 一线工程师的实用思考，涉及 AI 工程、云平台和软件交付，以中文和瑞典语撰写。
+- [哥德堡的 Android Automotive 开发](https://vynatix.com/zh/android-automotive-development.html): Vynatix 在哥德堡构建 Android Automotive（AAOS）软件，工程师融入您的团队，并已将 Volvo Trucks 的驾驶室收音机和媒体播放器交付投产。
+- [哥德堡的 AI 工程：检索、评估，以及在您的环境中部署](https://vynatix.com/zh/ai-engineering.html): 位于哥德堡的 Vynatix 基于基础模型构建生产级 AI：RAG、评估流水线、MCP 服务器，以及本地部署或主权云部署。
+- [如何选择软件咨询公司](https://vynatix.com/zh/choose-a-software-consultancy.html): Vynatix 谈如何选择软件咨询公司：该问哪些问题，有哪些警示信号，以及如何判断开发人员是否真正资深。
+
+## हिन्दी (hi)
+
+- [Vynatix, स्केल-अप कंपनियों के लिए सीनियर सॉफ़्टवेयर कंसल्टेंसी](https://vynatix.com/hi/): Vynatix स्केल-अप कंपनियों के लिए सीनियर सॉफ़्टवेयर कंसल्टेंसी है। हमारे इंजीनियर आपकी टीम से जुड़ते हैं, रफ़्तार बढ़ाते हैं और आपके बढ़ने के साथ आपके सॉफ़्टवेयर को और मज़बूत बनाते हैं। गोथेनबर्ग में स्थित, Ultra Group का हिस्सा।
+- [Vynatix के बारे में: इंजीनियरों ने बनाई, लंबे समय तक साथ निभाने के लिए](https://vynatix.com/hi/about.html): Vynatix स्केल-अप कंपनियों के लिए सीनियर सॉफ़्टवेयर कंसल्टेंसी है: सीनियर इंजीनियर जो लंबे समय के पार्टनर के रूप में आपकी टीम से जुड़ते हैं। 2023 में गोथेनबर्ग में स्थापित, Ultra Group का हिस्सा।
+- [सेवाएँ: AI इंजीनियरिंग, क्लाउड प्लेटफ़ॉर्म और एप्लिकेशन डेवलपमेंट](https://vynatix.com/hi/services.html): Vynatix आपके प्रोडक्ट के लिए AI, क्लाउड प्लेटफ़ॉर्म और एप्लिकेशन को काम पर लगाती है। हमारे सीनियर इंजीनियर आपकी टीम के भीतर काम करते हैं और टिकाऊ नतीजे देते हैं।
+- [उद्योग: कई उद्योगों में परखा हुआ अनुभव](https://vynatix.com/hi/industries.html): हमारे कंसल्टेंट रेगुलेटेड सेवाओं, औद्योगिक क्षेत्र, टेलीकॉम, मीडिया और कंज़्यूमर प्रोडक्ट के लिए सॉफ़्टवेयर बना चुके हैं, और वही अनुभव उन्हीं क्षेत्रों की स्केल-अप कंपनियों तक लाते हैं।
+- [केस स्टडी: असली नतीजे, प्रोडक्शन में](https://vynatix.com/hi/work.html): Vynatix की तीन केस स्टडी, पूरी कहानी के साथ: रेगुलेटेड क्षेत्र के एक क्लाइंट के लिए AI असिस्टेंट, Volvo Cars के साथ 47 की जगह 6 मिनट में बिल्ड, और Volvo Trucks के पूरे फ़्लीट में लाइव मीडिया एप्लिकेशन।
+- [Vynatix में करियर: अपने करियर का सबसे बेहतरीन काम करें](https://vynatix.com/hi/membership.html): सीनियर इंजीनियर और डिज़ाइनर, जिन्हें अपने हुनर से प्यार है और जो अपना ज्ञान साझा करते हैं। ऐसी समस्याएँ जो आपके समय के लायक हैं, ऐसे साथी जो शिप कर चुके हैं, और कागज़ी काम हम संभालते हैं।
+- [Vynatix से संपर्क करें](https://vynatix.com/hi/contact.html): हमें बताएँ कि आपके रोडमैप में क्या है। एक कार्यदिवस के भीतर आपको हमारा जवाब मिलेगा। एक ही इनबॉक्स, front.disk@vynatix.com, प्रोजेक्ट के लिए भी और हमसे जुड़ने के लिए भी।
+- [इनसाइट्स: विचार जो सॉफ़्टवेयर को आगे बढ़ाते हैं](https://vynatix.com/hi/blog.html): Vynatix में खुद काम करने वाले इंजीनियरों के व्यावहारिक विचार: AI इंजीनियरिंग, क्लाउड प्लेटफ़ॉर्म और सॉफ़्टवेयर डिलीवरी पर, हिंदी और स्वीडिश में।
+- [गोथेनबर्ग में Android Automotive डेवलपमेंट](https://vynatix.com/hi/android-automotive-development.html): Vynatix गोथेनबर्ग में Android Automotive (AAOS) सॉफ़्टवेयर बनाती है, आपकी टीम का हिस्सा बनकर, और Volvo Trucks के केबिन का रेडियो और मीडिया प्लेयर प्रोडक्शन तक शिप कर चुकी है।
+- [गोथेनबर्ग में AI इंजीनियरिंग: आपके एनवायरनमेंट में रिट्रीवल, इवैल्यूएशन और डिप्लॉयमेंट](https://vynatix.com/hi/ai-engineering.html): गोथेनबर्ग स्थित Vynatix फ़ाउंडेशन मॉडल पर प्रोडक्शन AI बनाती है: RAG, इवैल्यूएशन पाइपलाइन, MCP सर्वर और ऑन-प्रेम या सॉवरेन क्लाउड में डिप्लॉयमेंट।
+- [सॉफ़्टवेयर कंसल्टेंसी कैसे चुनें](https://vynatix.com/hi/choose-a-software-consultancy.html): सॉफ़्टवेयर कंसल्टेंसी चुनने पर Vynatix: पूछने लायक सवाल, चेतावनी के संकेत और यह कैसे परखें कि डेवलपर वाकई सीनियर हैं।
+
+## العربية (ar)
+
+- [Vynatix، شركة الاستشارات البرمجية المتمرسة للشركات سريعة النمو](https://vynatix.com/ar/): Vynatix هي شركة الاستشارات البرمجية المتمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويرفعون الوتيرة، ويجعلون برمجياتكم أقوى مع نموكم. مقرها غوتنبرغ، وهي جزء من Ultra Group.
+- [عن Vynatix: بناها مهندسون، وباقية على المدى الطويل](https://vynatix.com/ar/about.html): Vynatix هي شركة الاستشارات البرمجية المتمرسة للشركات سريعة النمو: مهندسون متمرسون ينضمون إلى فريقكم شريكا على المدى الطويل. تأسست عام 2023 في غوتنبرغ، وهي جزء من Ultra Group.
+- [الخدمات: هندسة الذكاء الاصطناعي والمنصات السحابية وتطوير التطبيقات](https://vynatix.com/ar/services.html): تسخّر Vynatix الذكاء الاصطناعي والمنصات السحابية والتطبيقات لخدمة منتجكم. يعمل مهندسونا المتمرسون ضمن فريقكم ويحققون نتائج تدوم.
+- [القطاعات: خبرة مثبتة عبر القطاعات](https://vynatix.com/ar/industries.html): بنى استشاريونا حلولا للخدمات الخاضعة للتنظيم والصناعة والاتصالات والإعلام والمنتجات الاستهلاكية، وينقلون هذه الخبرة إلى الشركات سريعة النمو في المجالات نفسها.
+- [دراسات الحالة: نتائج حقيقية، في بيئة الإنتاج](https://vynatix.com/ar/work.html): ثلاث دراسات حالة من Vynatix نرويها كاملة: مساعد ذكاء اصطناعي لعميل في قطاع خاضع للتنظيم، وعمليات بناء في 6 دقائق بدلا من 47 مع Volvo Cars، وتطبيق وسائط يعمل على أسطول Volvo Trucks.
+- [الوظائف في Vynatix: أنجز أفضل عمل في مسيرتك المهنية](https://vynatix.com/ar/membership.html): مهندسون ومصممون متمرسون يحبون حرفتهم ويشاركون ما يعرفونه. مشكلات تستحق وقتك، وأقران سبق أن أطلقوا منتجات، وأعمال ورقية نتولاها عنك.
+- [التواصل مع Vynatix](https://vynatix.com/ar/contact.html): أخبرونا بما في خارطة طريقكم. سنرد عليكم خلال يوم عمل واحد. صندوق بريد واحد، front.disk@vynatix.com، للمشاريع وللانضمام إلينا.
+- [رؤى: أفكار تدفع البرمجيات إلى الأمام](https://vynatix.com/ar/blog.html): أفكار عملية من المهندسين الذين ينجزون العمل في Vynatix، عن هندسة الذكاء الاصطناعي والمنصات السحابية وتسليم البرمجيات، بالعربية والسويدية.
+- [تطوير Android Automotive في غوتنبرغ](https://vynatix.com/ar/android-automotive-development.html): تبني Vynatix برمجيات Android Automotive (AAOS) في غوتنبرغ ضمن فريقكم، وقد أوصلت راديو ومشغل وسائط مقصورة Volvo Trucks إلى بيئة الإنتاج.
+- [هندسة الذكاء الاصطناعي في غوتنبرغ: الاسترجاع والتقييم والنشر في بيئتكم](https://vynatix.com/ar/ai-engineering.html): تبني Vynatix في غوتنبرغ أنظمة ذكاء اصطناعي إنتاجية على النماذج التأسيسية: RAG ومسارات التقييم وخوادم MCP والنشر على بنيتكم التحتية (on-prem) أو في سحابة سيادية.
+- [كيف تختارون شركة استشارات برمجية](https://vynatix.com/ar/choose-a-software-consultancy.html): تتناول Vynatix اختيار شركة استشارات برمجية: الأسئلة التي ينبغي طرحها، وعلامات التحذير، وكيف تحكمون على ما إذا كان المطورون متمرسين حقا.
+
+<!-- end of the generated languages -->
+
 ## Optional
 
 - [Privacy notice](https://vynatix.com/privacy.html)

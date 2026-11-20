@@ -13,6 +13,12 @@
 <!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
      structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
 <link rel="canonical" href="https://vynatix.com/about.html">
+<link rel="alternate" hreflang="en" href="https://vynatix.com/about.html">
+<link rel="alternate" hreflang="es" href="https://vynatix.com/es/about.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://vynatix.com/zh/about.html">
+<link rel="alternate" hreflang="hi" href="https://vynatix.com/hi/about.html">
+<link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html">
+<link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html">
 <meta name="author" content="Vynatix AB">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="website">
@@ -21,6 +27,10 @@
 <meta property="og:description" content="Vynatix is the senior software consultancy for scale-ups: senior engineers who join your team as a long-term partner. Founded in 2023 in Gothenburg, part of Ultra Group.">
 <meta property="og:url" content="https://vynatix.com/about.html">
 <meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale:alternate" content="hi_IN">
+<meta property="og:locale:alternate" content="ar_AR">
 <meta property="article:published_time" content="2026-06-27">
 <meta property="article:modified_time" content="2026-11-20">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
@@ -110,7 +120,11 @@
    "name": "Vynatix",
    "inLanguage": [
     "en",
-    "sv"
+    "sv",
+    "es",
+    "zh-Hans",
+    "hi",
+    "ar"
    ],
    "publisher": {
     "@id": "https://vynatix.com/#organization"
@@ -133,7 +147,21 @@
    "dateModified": "2026-11-20",
    "about": {
     "@id": "https://vynatix.com/#organization"
-   }
+   },
+   "workTranslation": [
+    {
+     "@id": "https://vynatix.com/es/about.html"
+    },
+    {
+     "@id": "https://vynatix.com/zh/about.html"
+    },
+    {
+     "@id": "https://vynatix.com/hi/about.html"
+    },
+    {
+     "@id": "https://vynatix.com/ar/about.html"
+    }
+   ]
   }
  ]
 }
@@ -340,6 +368,16 @@
       </div>
       <div class="site-footer__fine">
         <span>© 2026 Vynatix AB</span>
+        <nav class="site-footer__langs" aria-label="Language">
+          <ul class="site-footer__langlist list-reset">
+            <li><a href="about.html" lang="en" hreflang="en" aria-current="true">English</a></li>
+            <li><a href="sv.html" lang="sv" hreflang="sv">Svenska</a></li>
+            <li><a href="es/about.html" lang="es" hreflang="es">Español</a></li>
+            <li><a href="zh/about.html" lang="zh-Hans" hreflang="zh-Hans">中文</a></li>
+            <li><a href="hi/about.html" lang="hi" hreflang="hi">हिन्दी</a></li>
+            <li><a href="ar/about.html" lang="ar" hreflang="ar">العربية</a></li>
+          </ul>
+        </nav>
         <span>vynatix.com</span>
       </div>
     </div>

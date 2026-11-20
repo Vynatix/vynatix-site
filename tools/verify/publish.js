@@ -102,9 +102,13 @@ function run(root = ROOT, pages = PAGES) {
   for (const [code, l] of generated) {
     if (l.status === 'draft' && !exclude.has(code)) gateProblems.push(`${code}/ is a draft but is not in _config.yml exclude (it would be published; run python3 tools/seo-head.py)`);
     if (l.status === 'live' && exclude.has(code)) gateProblems.push(`${code}/ is live but still in _config.yml exclude (run python3 tools/seo-head.py)`);
-    if (l.status === 'live' && !(/^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim())) gateProblems.push(`${code} is live without a native reader's check on record (checked, by)`);
+    const checked = /^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim();
+    const waived = /^\d{4}-\d{2}-\d{2}$/.test(l.waived || '');
+    if (l.status === 'live' && !checked && !waived) gateProblems.push(`${code} is live with neither a native reader's check on record (checked, by) nor the owner's decision to publish without one (waived)`);
   }
   add(gateProblems.length === 0, `the ${generated.length} generated languages are published only when live: a draft's folder is in _config.yml exclude`, gateProblems.join(' | '));
+  const unread = generated.filter(([, l]) => l.status === 'live' && !(/^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim())).map(([code]) => code);
+  if (unread.length) console.log(`note the native reader's check is still owed for ${unread.join(', ')}: published on the owner's decision (waived in LANGS, tools/seo-head.py)`);
   for (const e of entries) {
     const n = e.name;
     if (e.isDirectory()) {

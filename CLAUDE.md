@@ -151,8 +151,9 @@ highlights the things most worth keeping front-of-mind.
   removed do not come back on any page: declining work or sending a reader to another firm, comparisons with
   other consultancies, "no pitch, no pressure", what a model cannot do as a headline, talk of size, the
   membership pitch. **One exception, asked for on 20 November 2026: the rate calculator on the Career page**
-  (`membership.html#rate-calculator`), which shows a share of the invoiced amount (70 to 80 per cent) and what a
-  salary costs. It is worked out in the browser by `app.js`, stores and sends nothing, and is not shown without
+  (`membership.html#rate-calculator`), which works from a share of the invoiced amount and shows what a
+  salary costs. The share is 70 per cent; its slider (70 to 80) is hidden, and five clicks on the "Your
+  assignment" title show it, with no hint on the page, on purpose: never add one. It is worked out in the browser by `app.js`, stores and sends nothing, and is not shown without
   JavaScript (`js-calc`). Its terms (the share, the 4.5% pension, 1.57 as the cost of a krona of salary) were
   taken from the calculator it was modelled on and are the owner's: change one in `app.js`, in the page's labels
   and in `tools/verify/calc.js` together, and add no sentence about terms around it. See AGENTS.md, *Rate

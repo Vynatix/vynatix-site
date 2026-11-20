@@ -2288,6 +2288,10 @@ body::after {
   line-height: var(--leading-headline);
   letter-spacing: var(--tracking-headline);
   color: var(--text-display);
+  /* Clicked five times, the first title shows the share slider (app.js): no
+     selection flash while it is clicked, and nothing else that gives it away. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 .calc__row {
   display: grid;
@@ -2295,7 +2299,8 @@ body::after {
   gap: var(--space-5);
   align-items: start;
 }
-.calc__row[hidden] { display: none; }
+.calc__row[hidden],
+.calc__field[hidden] { display: none; }
 .calc__row + .calc__field,
 .calc__check + .calc__row { margin-top: var(--space-5); }
 .calc__field {

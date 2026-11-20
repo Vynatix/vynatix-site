@@ -4,7 +4,8 @@
 // The page works out, in the browser, what an hourly rate pays as a monthly salary. This check types figures into
 // it and compares every figure on the card with the same model written a second time below (the search for the
 // salary is a plain loop here and a division in app.js, on purpose). It also proves that the cost lines add up to
-// the total they sit above, that the car fields appear only when asked for and count only then, that a negative or
+// the total they sit above, that the share slider stays out of sight at 70 per cent until the first title has been
+// clicked five times (and that nothing hints at it), that the car fields appear only when asked for and count only then, that a negative or
 // absurd figure is survived, that nothing is stored, that the result is announced once typing stops, that the
 // layout holds on a phone and a desktop, and that without JavaScript the calculator is not shown and the page says
 // so (no dead control).
@@ -35,7 +36,7 @@ function expected(v) {
   };
 }
 
-const ZERO = { rate: 0, hours: 0, share: 75, health: 0, mobile: 0, other: 0, savings: 0, car: false, carCost: 0, carBenefit: 0 };
+const ZERO = { rate: 0, hours: 0, share: 70, health: 0, mobile: 0, other: 0, savings: 0, car: false, carCost: 0, carBenefit: 0 };
 const CASES = [
   ['a rate and hours only', { rate: 1000, hours: 160 }],
   ['the lowest share', { rate: 950, hours: 168, share: 70 }],
@@ -103,6 +104,40 @@ const read = (page) => page.evaluate(() => {
     check(nonZero.length === 0, 'an empty calculator shows 0 SEK on every line', nonZero.map((k) => `${k}: ${got[k]}`).join(', '));
   }
 
+  // 1b. The share: 70 per cent with its slider out of sight, held there whatever the hidden slider is set to, and
+  // shown only by five quick clicks on the first title, which nothing on the page gives away.
+  {
+    const shareShown = () => page.evaluate(() => { const f = document.querySelector('[data-calc-share]'); return !f.hidden && getComputedStyle(f).display !== 'none'; });
+    const at70 = Object.assign({}, ZERO, { rate: 1000, hours: 160 });
+    await page.fill('#calc-rate', '1000');
+    await page.fill('#calc-hours', '160');
+    const first = await read(page);
+    check(!(await shareShown()) && first.shareLabel === '70%' && parse(first.revenue) === expected(at70).revenue && parse(first.salary) === expected(at70).salary,
+      'on arrival the share slider is not shown and the figures use 70 per cent', `shown ${await shareShown()}, label ${first.shareLabel}, share ${first.revenue}`);
+    await page.evaluate(() => { const el = document.getElementById('calc-share'); el.value = '80'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+    const forced = await read(page);
+    const value = await page.evaluate(() => document.getElementById('calc-share').value);
+    check(value === '70' && parse(forced.revenue) === expected(at70).revenue, 'while it is hidden the slider cannot move the share off 70 per cent (a restored form, a script)', `value ${value}, share ${forced.revenue}`);
+    const hint = await page.evaluate(() => {
+      const t = document.querySelector('[data-calc-reveal]');
+      const attrs = [...t.attributes].map((a) => a.name).filter((n) => !['class', 'data-calc-reveal'].includes(n));
+      const words = /\b(click|clicks|tap|press|times|hidden|secret|unlock)\b/i.test(document.querySelector('#rate-calculator').textContent);
+      return { tag: t.tagName, attrs, cursor: getComputedStyle(t).cursor, focusable: t.tabIndex >= 0, words };
+    });
+    check(hint.attrs.length === 0 && !/pointer/.test(hint.cursor) && !hint.focusable && !hint.words, 'nothing hints at the hidden slider: the title has no tooltip, role, tab stop or pointer cursor, and the section does not mention it', JSON.stringify(hint));
+    const title = page.locator('[data-calc-reveal]');
+    for (let i = 0; i < 4; i++) await title.click();
+    const afterFour = await shareShown();
+    await page.waitForTimeout(2300);                                             // longer than the gap app.js allows
+    for (let i = 0; i < 4; i++) await title.click();
+    const afterSlow = await shareShown();
+    check(!afterFour && !afterSlow, 'four clicks on the title do not show the slider, and clicks either side of a pause do not add up', `after four ${afterFour}, after four more ${afterSlow}`);
+    await title.click();
+    check(await shareShown(), 'the fifth quick click on the title shows the share slider');
+    const lab = await page.evaluate(() => document.getElementById('calc-share').labels.length);
+    check(lab === 1, 'once shown, the slider has its label', `labels ${lab}`);
+  }
+
   // 2. Every case: each figure is the model's, and the cost lines add up to the total salary cost.
   for (const [name, partial] of CASES) {
     const v = Object.assign({}, ZERO, partial);
@@ -122,7 +157,7 @@ const read = (page) => page.evaluate(() => {
 
   // 3. The car: its figures count while the box is ticked and stop counting when it is cleared.
   {
-    const v = Object.assign({}, ZERO, { rate: 1100, hours: 160, share: 75, car: true, carCost: 6000, carBenefit: 4000 });
+    const v = Object.assign({}, ZERO, { rate: 1100, hours: 160, car: true, carCost: 6000, carBenefit: 4000 });
     if (!(await page.isChecked('#calc-car'))) await page.click('#calc-car');
     await enter(page, v);
     const withCar = await read(page);

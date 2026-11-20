@@ -791,7 +791,7 @@ Volvo Trucks case.
 **Rate calculator.** Asked for on 20 November 2026, and an exception to two rules above (nothing
 about how Vynatix runs inside; no terms or pay on Career): `membership.html#rate-calculator`, between
 "How it works" and the closing band. The visitor types an hourly rate, the hours billed in a month,
-a share of the invoiced amount (a slider, 70 to 80 per cent, 75 to start), monthly costs, a savings
+monthly costs, a savings
 target and, behind a checkbox, a company car; the card beside the form shows the share of the
 month's invoicing, the highest gross salary it carries (a whole hundred, never under 1,000), what
 that salary costs line by line, the fixed and total costs, and what is left on the balance.
@@ -800,6 +800,15 @@ that salary costs line by line, the fixed and total costs, and what is left on t
   figures by `data-calc-out`), the fourth block of `app.js`, the last section of `styles.css`
   (`.calc`). No form element (Enter must not submit anything), no storage, no request: what is
   typed never leaves the page, so the notices do not mention it.
+- **The share is 70 per cent and its slider is out of sight** (asked for on 20 November 2026). The
+  slider (70 to 80) is in the markup with `hidden` on its field (`[data-calc-share]`); five clicks on
+  the "Your assignment" title (`[data-calc-reveal]`), each within two seconds of the last, show it
+  for the rest of the visit, and nothing is stored. The page gives no hint on purpose: no tooltip,
+  no pointer cursor, no tab stop, no word about it, so do not add one (and it has no keyboard
+  route, which is the accepted cost of that). While hidden, the share is held at the slider's
+  starting value even if a restored form or a script moves it. This keeps the control out of
+  sight, not secret: the range is readable in `app.js` and the markup, and the first figure on the
+  card (the share of the month's invoicing) is 70 per cent of rate times hours.
 - **The model** is in the comment above the block. `SALARY_COST` (1.57) is the whole cost of one
   krona of gross salary and decides the salary. The lines the card itemises (employer
   contributions 31.42%, five weeks of holiday, pension 4.5%, payroll tax of 24.26% on the pension)

@@ -422,6 +422,13 @@
 // shows the calculator only once js-calc is set (styles.css); without
 // JavaScript a paragraph says so instead, so no control is ever dead.
 //
+// The share is 70 per cent and its slider (70 to 80) is not shown. Five clicks
+// on the "Your assignment" title, each within REVEAL_GAP_MS of the last, show
+// it for the rest of the visit; nothing on the page hints at this, on purpose,
+// and nothing remembers it. While the slider is hidden the share is held at
+// its starting value, whatever a restored form says. This keeps the control
+// out of sight, not secret: the range is in this file and the page's markup.
+//
 // The model, one month at a time:
 //   share     = rate x hours x the visitor's share of the invoiced amount
 //   fixed     = healthcare + mobile + other + car cost + employer
@@ -446,6 +453,8 @@
   var MIN_SALARY = 1000;       // and never less than this
   var MAX_INPUT = 1e7;         // keeps a mistyped figure finite
   var ANNOUNCE_MS = 800;       // a screen reader hears the result once typing stops
+  var REVEAL_CLICKS = 5;       // clicks on the title that show the share slider
+  var REVEAL_GAP_MS = 2000;    // the longest pause between two of them
 
   function compute(v) {
     var share = v.rate * v.hours * (v.share / 100);
@@ -493,7 +502,11 @@
     list = calc.querySelectorAll('[data-calc-out]');
     for (i = 0; i < list.length; i++) outs[list[i].getAttribute('data-calc-out')] = list[i];
     var carFields = document.getElementById('calc-car-fields');
+    var shareField = calc.querySelector('[data-calc-share]');
+    var revealer = calc.querySelector('[data-calc-reveal]');
     var timer = null;
+    var clicks = 0;
+    var lastClick = 0;
 
     function num(name) {
       var n = ins[name] ? parseFloat(ins[name].value) : 0;
@@ -503,6 +516,8 @@
 
     function update() {
       var car = !!(ins.car && ins.car.checked);
+      // Out of sight, the share is the one the page starts with.
+      if (ins.share && shareField && shareField.hidden) ins.share.value = ins.share.defaultValue;
       var share = num('share');
       var r = compute({
         rate: num('rate'), hours: num('hours'), share: share,
@@ -528,6 +543,14 @@
 
     calc.addEventListener('input', update);
     calc.addEventListener('change', update);
+    if (revealer && shareField) {
+      revealer.addEventListener('click', function () {
+        var now = Date.now();
+        clicks = now - lastClick <= REVEAL_GAP_MS ? clicks + 1 : 1;
+        lastClick = now;
+        if (clicks >= REVEAL_CLICKS) shareField.hidden = false;
+      });
+    }
     // A reload or a step back can restore what was typed after this has run.
     window.addEventListener('pageshow', update);
     root.classList.add('js-calc');

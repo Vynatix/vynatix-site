@@ -1352,11 +1352,6 @@ ol.caps > li.cap { padding-top: var(--space-6); }
   color: var(--text-display);
 }
 
-/* At a glance: a dl, so the browser's list margin goes. The label, value and
-   context classes already set their own margins, which beat the dd and dt
-   defaults, so the dt and dd reset is kept at no weight and cannot undo them. */
-dl.metrics { margin: 0; }
-:where(.metrics) :where(dt, dd) { margin: 0; }
 
 /* A three-column comparison table (ai-engineering.html and the guide on choosing a
    consultancy). The caption is a visible title
@@ -1798,54 +1793,6 @@ html.consent-open .hero ~ section { content-visibility: visible; }
 
 /* Metric tiles in a two-up column (work.html): the tiles' own grid, then what follows. */
 .two-up .metrics { margin-bottom: var(--space-6); }
-/* In numbers: the figures across the full width, at display size. */
-.glance .metrics { gap: var(--space-6); }
-.glance .metric { padding: var(--space-6); }
-.glance .metric__lbl { font-family: var(--font-sans); letter-spacing: var(--tracking-eyebrow); }
-.glance .metric__val { font-size: var(--text-h1); margin-block: var(--space-4) var(--space-3); }
-.glance .metric__ctx { font-size: var(--text-body-sm); }
-@media (min-width: 1024px) {
-  .glance .metrics { column-gap: var(--space-16); }   /* the third tile starts on the column line */
-}
-@media (max-width: 1239px) {
-  .glance .metric__val { font-size: var(--text-h2); }
-}
-/* Where a tile's label wraps to two lines, the figures in its row still line up. */
-@supports (grid-template-rows: subgrid) {
-  @media (max-width: 904px) {
-    .glance .metric {
-      display: grid;
-      grid-row: span 3;
-      grid-template-rows: subgrid;
-      row-gap: 0;
-      align-content: start;
-    }
-  }
-}
-@media (max-width: 904px) {
-  .glance .metrics { gap: var(--space-3); }
-  .glance .metric { padding: var(--space-5); }
-  .glance .metric__val { font-size: var(--text-h3); margin-block: var(--space-3) var(--space-2); }
-}
-/* A phone: still two by two (the shared rule stacks metric grids in one column), and one
-   column wherever two tiles cannot fit their labels (enlarged text, zoom, a very narrow
-   screen). */
-@media (max-width: 599px) {
-  .glance .metrics { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(8.5em, (100% - var(--space-3)) / 2)), 1fr)); }
-  .glance .metric { padding: var(--space-4); }
-  .glance .metric__val { font-size: var(--text-h4); }
-}
-
-/* Three figures: three across from 600px (the shared rules stack a three-tile grid under 905px, and
-   the wide gap above is for four), one column on a phone, so no tile is left alone in a row. */
-.glance .metrics--3 { column-gap: var(--space-6); }
-@media (min-width: 600px) and (max-width: 904px) {
-  .glance .metrics--3 { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 599px) {
-  .glance .metrics--3 { grid-template-columns: 1fr; }
-}
-
 /* Insights: two columns of entries, a rule on top of each, the title as the link. */
 .reads {
   display: grid;
@@ -2385,86 +2332,12 @@ body::after {
    rules below belong to index.html alone (the classes exist nowhere else, and the layout rules are scoped
    to main.home), they come last so they sit over the shared components they restyle, and they move
    nothing: no animation and no transition.
-   - In numbers: the first figure is drawn to scale, 6 minutes on the 47-minute line.
    - Cases: a tall lead card and two compact rows.
    - Partnership: the hero's drawing at four stages on one datum line.
    - One sheet: no tinted strips between blocks; the drawing's centre line runs down the left margin.
    - Insights: three ruled rows.
    - Services and Cases: generated still lifes, a daylight set and a night set, chosen by the page's
      colour scheme. */
-
-/* ---------------------------------------------------------------
-   In numbers, drawn: open figures, and the first one to scale
-   --------------------------------------------------------------- */
-.glance .metrics.metrics--story {
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-10) var(--space-12);
-}
-.glance .metrics--story .metric {
-  padding: var(--space-6) 0 0;
-  background: none;
-  border-top: 1px solid var(--md-sys-color-outline);
-  border-radius: 0;
-}
-/* The drawn figure: the after (6) stands at the origin and the before (47) at the far end of one ruler, and
-   the first 6/47 of the ruler is the bronze stretch. It has rows of its own, so it leaves the shared tiles'
-   subgrid. */
-.glance .metrics--story .metric--scale {
-  grid-column: 1 / -1;
-  grid-row: auto;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: none;
-  grid-template-areas: "lbl lbl" "val from" "rule rule" "ctx ctx";
-  align-items: end;
-}
-.metric--scale .metric__lbl { grid-area: lbl; }
-.metric--scale .metric__ctx { grid-area: ctx; }
-.scale,
-.glance .metric--scale .metric__val {
-  max-width: none;
-  margin: var(--space-6) 0 var(--space-3);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(var(--text-h2), 8vw, calc(1.5 * var(--text-h1)));
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30;
-}
-.glance .metric--scale .metric__val { grid-area: val; }
-.scale {
-  grid-area: from;
-  justify-self: end;
-  margin-right: 0.06em;           /* the tight tracking leaves the last figure hanging past its box */
-  color: color-mix(in srgb, var(--text-muted) 62%, var(--md-sys-color-surface));
-}
-/* The ruler, drawn in one box: a hairline with a witness tick at each end, and over its first 6/47 a bronze
-   stretch closed by its own tick. */
-.metric--scale::after {
-  content: '';
-  grid-area: rule;
-  height: var(--space-4);
-  background:
-    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) left center / calc(100% * 6 / 47) 3px no-repeat,
-    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) left / 1px 100% no-repeat,
-    linear-gradient(var(--md-sys-color-tertiary), var(--md-sys-color-tertiary)) calc(100% * 6 / 47) 0 / 1px 100% no-repeat,
-    linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) right / 1px 100% no-repeat,
-    linear-gradient(var(--md-sys-color-outline), var(--md-sys-color-outline)) center / 100% 1px no-repeat;
-}
-.glance .metric--scale .metric__ctx {
-  margin-top: var(--space-5);
-  max-width: 44ch;
-  font-size: var(--text-body-md);
-}
-/* Wide: the drawn figure and the two plain facts share one row, so the block is no taller than its figure. */
-@media (min-width: 905px) {
-  .glance .metrics.metrics--story { grid-template-columns: 5fr 2fr 2fr; }
-  .glance .metrics--story .metric--scale { grid-column: 1; }
-  .home #numbers .section__head { margin-bottom: var(--space-12); }
-}
-@media (max-width: 599px) {
-  .glance .metrics.metrics--story { gap: var(--space-10) var(--space-6); }
-}
 
 /* ---------------------------------------------------------------
    Cases: the first one leads

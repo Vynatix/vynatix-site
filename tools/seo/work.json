@@ -3,7 +3,7 @@
   {
    "@type": "ItemList",
    "@id": "https://vynatix.com/work.html#selected-work",
-   "name": "Selected work",
+   "name": "Cases",
    "mainEntityOfPage": {
     "@id": "https://vynatix.com/work.html"
    },
@@ -14,20 +14,15 @@
      "position": 1,
      "item": {
       "@type": "CreativeWork",
-      "@id": "https://vynatix.com/work.html#volvo-trucks",
-      "url": "https://vynatix.com/work.html#volvo-trucks",
-      "name": "An in-cab radio, rebuilt for Android Automotive",
-      "dateCreated": "2024",
+      "@id": "https://vynatix.com/work.html#regulated-client",
+      "url": "https://vynatix.com/work.html#regulated-client",
+      "name": "An AI assistant people can trust",
+      "dateCreated": "2025",
       "creator": {
        "@id": "https://vynatix.com/#organization"
       },
-      "about": {
-       "@type": "Organization",
-       "name": "Volvo Trucks",
-       "url": "https://www.volvotrucks.com/"
-      },
-      "keywords": "Android Automotive (AAOS), in-cab media player",
-      "description": "Vynatix rebuilt the in-cab radio and media player for Volvo Trucks on Android Automotive, and shipped it to production across the fleet."
+      "keywords": "Closed-domain AI assistant, grounded answers, citations",
+      "description": "We built a closed-domain assistant that answers from approved documents and cites its source. Questions outside the documents go to a person."
      }
     },
     {
@@ -37,7 +32,7 @@
       "@type": "CreativeWork",
       "@id": "https://vynatix.com/work.html#volvo-cars",
       "url": "https://vynatix.com/work.html#volvo-cars",
-      "name": "A build pipeline cut from 47 minutes to 6",
+      "name": "Builds in 6 minutes instead of 47",
       "dateCreated": "2025",
       "creator": {
        "@id": "https://vynatix.com/#organization"
@@ -48,7 +43,7 @@
        "url": "https://www.volvocars.com/"
       },
       "keywords": "Build pipeline, 87% shorter build time",
-      "description": "Vynatix took a Volvo Cars build pipeline from a 47 minute wait to 6."
+      "description": "Together with Volvo Cars, we rebuilt the pipeline and kept the same tests and coverage. 6 minutes on every commit, 87% shorter, for the whole team."
      }
     },
     {
@@ -56,15 +51,20 @@
      "position": 3,
      "item": {
       "@type": "CreativeWork",
-      "@id": "https://vynatix.com/work.html#regulated-client",
-      "url": "https://vynatix.com/work.html#regulated-client",
-      "name": "A closed-domain assistant that refuses to guess",
-      "dateCreated": "2025",
+      "@id": "https://vynatix.com/work.html#volvo-trucks",
+      "url": "https://vynatix.com/work.html#volvo-trucks",
+      "name": "A new media application, live across a whole fleet",
+      "dateCreated": "2024",
       "creator": {
        "@id": "https://vynatix.com/#organization"
       },
-      "keywords": "Closed-domain AI assistant, grounded answers, citations",
-      "description": "For a regulated client, Vynatix built an assistant that answers inside a defined domain and hands everything else to a person, on purpose. It declines questions it cannot ground in source, rather than inventing an answer."
+      "about": {
+       "@type": "Organization",
+       "name": "Volvo Trucks",
+       "url": "https://www.volvotrucks.com/"
+      },
+      "keywords": "Android Automotive (AAOS), in-cab media player",
+      "description": "Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive. In production across the fleet."
      }
     }
    ]

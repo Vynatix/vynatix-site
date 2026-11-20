@@ -10,9 +10,11 @@ highlights the things most worth keeping front-of-mind.
 ## The short version
 
 - **Static, hand-written marketing site** for Vynatix (a Nordic software
-  consultancy). Twenty-three pages: ten core English pages (`blog.html` lists the guides), four English
+  consultancy). Twenty-four pages: eleven core English pages (`blog.html`, "Insights" in the menu, lists the guides;
+  `membership.html` is "Career"; `work.html` is "Cases"), four English
   deep pages and nine Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
-  Swedish privacy notice). No framework, no build step, no package manager for
+  Swedish privacy notice). Three of them are withdrawn stubs (the two lists of consultancies and the Swedish
+  comparison of AI consultancies). No framework, no build step, no package manager for
   the site: what's in the repo is what ships, served via GitHub Pages at
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
@@ -60,24 +62,25 @@ highlights the things most worth keeping front-of-mind.
 - **One hero background, the drafting sheet.** The English home hero carries one piece of
   decorative art: ruled guides behind the headline, a scale under the header and, from
   75rem, an A-frame drawing. It is pure CSS in `hero-bg.css`, which **only `index.html`
-  links** (so the other twenty-two pages never download it): no script, no storage, no
+  links** (so the other twenty-three pages never download it): no script, no storage, no
   motion, the same with and without JavaScript, every rule on the hero carrying
   `:lang(en)`, custom properties named `--sheet-*`, role tokens only. Its two masks are
   `assets/bg-sheet-*.svg` (from `tools/sheet-art.js`, new names whenever regenerated).
   It was one of four drawn at random until 20 November 2026; the owner kept the sheet,
   and the weave, the dial, the iris, the draw (`data-bg`, the `vynatix-bg*` keys in
   `sessionStorage`) and `hero-bg.js` are gone. `publish.js` fails if `hero-bg.js`,
-  `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout and fitted by hand
-  to the current headline copy ("Your in-house software team." / "Without the
-  hiring."): **a change to the headline, the lede, the hero spacing or the clients row
+  `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout and was fitted by hand
+  to a three-line headline over six lines of lede; the current headline ("Engineering" / "that compounds.")
+  is two lines over two, and the hero keeps the art's room instead (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
   can move art into text, and `npm run check:bg` (`tools/verify/bg-sheet.js`, at the
   design size and, through `bg-fit.js`, on a scaled hero) fails and says which rule.**
   Constants, the bronze budget and how to change it are in AGENTS.md, *Hero background*.
 - **The home hero is fitted to the window, and its numbers are measured.** On both home pages the first
   screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
-  size), and solves it from the window's height (`100svh`) so that the header, the audience bar and the
-  message end on the fold, with the clients' rule lying on it; from 1092px of height the client row is on the
-  first screen too, pinned to its bottom edge. Every vertical size in the hero is `calc(N * var(--hero-u))`
+  size), and solves it from the window's height (`100svh`) so that the header and the
+  message end on the fold, with the clients' rule lying on it; from 1060px of height (at 1100px and wider) the client row is on the
+  first screen too, pinned to its bottom edge. From 1100px the English hero keeps 336 units, not 96, between its buttons and that
+  rule: the room the art was fitted to under the longer headline it replaced. Every vertical size in the hero is `calc(N * var(--hero-u))`
   (N is the token the comment names), `hero-bg.css` multiplies the art's constants by the same unit, the
   eyebrow and buttons keep their size and the lede stops at 18px (16px on a phone). Outside the envelope (a
   window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the
@@ -89,8 +92,7 @@ highlights the things most worth keeping front-of-mind.
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
-  `*.html` file — there is no include system — so a change to either is made in **all** pages
-  (the home page also has a second skip link, for its joiner view).
+  `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css`
   carries one too, in `index.html` only), because GitHub Pages
@@ -100,9 +102,8 @@ highlights the things most worth keeping front-of-mind.
   editing any of the five, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
   (rename one if a stale copy would show).
-- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
-  (theme toggle, mobile nav, the audience switch's
-  `js-view-join`, `aria-current` and focus, the silk background's `js-waves` and pause
+- **`app.js`** is vanilla, IIFE-per-feature, element-guarded: four features
+  (theme toggle, mobile nav, the silk background's `js-waves` and pause
   button, and last, where `consent.js` expects it, analytics consent)
   and no CDN/animation stack. **One thing on
   the site moves on its own, and no second may be added: the silk background is drawn
@@ -134,24 +135,26 @@ highlights the things most worth keeping front-of-mind.
   prints `scripted gates pass, N human gates open` when it passes. Switching off
   again starts with `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last
   (checklist, section 10). The CSP names Google's hosts, **a recorded security
-  downgrade** from the `'self'`-only policy: the meta on all 23
+  downgrade** from the `'self'`-only policy: the meta on all 24
   pages, `EDGE-SETUP.md` and the Cloudflare dashboard rule change together
   (dashboard first if the edge is live), and a missing host is added by name,
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
   `[[CONFIRM: what is needed]]` markers in the notices are facts only a human
   supplies; never fill one in.
-- **The English home page has two views, picked by the address, with nothing stored.** A bar above the hero
-  ("Hire a team" / "Join the team") links to `#hire` and `#join`; CSS `:target` shows the client view or the
-  joiner view for senior engineers, so it works without JavaScript and is linkable (`index.html#join`); with
-  script `app.js` adds `js-view-join` in the head (so a load on `#join` never paints the client hero first),
-  `aria-current` and focus kept on the pressed link. Every child of `<main>` but the anchors and the bar (the
-  sections, and the contents row) carries exactly one of `view-hire` or `view-join`, and the client closing band
-  comes before the joiner sections (adjacent-sibling rules ignore `display: none`); a `:target` view survives
-  one fragment, and any fragment but `#join` is the client view, so same-page links inside the client view (the
-  contents row) are fine and every other one is `#main`, `#hire` or `#join`; the joiner view's blocks are lifted word for
-  word from `membership.html` (`data-from`) and any other text in it is on the review list in `audience.js`;
-  `sv.html` has none. `tools/verify/audience.js` enforces it. Details and known limits in AGENTS.md,
-  *Audience switch*.
+- **The whole site follows the owner's website content plan and brand voice of November 2026.** Every block
+  opens with a promise and backs it with a fact; "you" before "we"; one name for the firm (consultancy, never
+  agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
+  nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
+  home page is nine blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
+  blocks in Swedish). The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
+  (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
+  removed do not come back on any page: declining work or sending a reader to another firm, comparisons with
+  other consultancies, "no pitch, no pressure", what a model cannot do as a headline, talk of size, the
+  membership pitch. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
+  engineer" sentence, the English questions live on `contact.html`. **Never fill in what the plan leaves to the
+  owner** (the Ultra Group sentences, people by name, open roles, how engineers join, a case outside
+  automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
+  AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
   `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
@@ -163,7 +166,7 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for the six English/Swedish pairs, and one
+  canonical link, Open Graph, hreflang for the five English/Swedish pairs, and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;
@@ -178,7 +181,7 @@ highlights the things most worth keeping front-of-mind.
   get the final visible state, nothing hidden pending JS, and no control left
   dead. JS opts in by adding a class to `<html>` (`.js-nav` for the menu button,
   `.js-theme` for the theme toggle, `.js-motion` for the background motion button, `.js-consent` once the consent module is
-  active, `.js-view-join` while the address is the home page's `#join`). Copy follows the system's content rules: no
+  active). Copy follows the system's content rules: no
   em dashes, no exclamation marks, sentence case. Don't regress any of this.
 
 ## Verifying work

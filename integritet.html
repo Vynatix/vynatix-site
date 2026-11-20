@@ -51,8 +51,8 @@
     "width": 512,
     "height": 512
    },
-   "description": "Vynatix AB is a software consultancy in Gothenburg, Sweden, founded in 2023 and part of Ultra Group. Our senior engineers work as part of client organisations on Android Automotive, AI engineering and cloud platforms, with Volvo Trucks and Volvo Cars among our clients.",
-   "slogan": "We own the outcome. You own the code.",
+   "description": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "slogan": "Engineering that compounds",
    "foundingDate": "2023",
    "foundingLocation": {
     "@type": "Place",
@@ -79,16 +79,11 @@
    "telephone": "+46720710676",
    "contactPoint": {
     "@type": "ContactPoint",
-    "contactType": "Projects and membership",
+    "contactType": "Projects and careers",
     "email": "front.disk@vynatix.com",
     "telephone": "+46720710676"
    },
    "knowsAbout": [
-    "Android Automotive (AAOS)",
-    "In-car software",
-    "Native mobile development for iOS and Android",
-    "Web and desktop applications",
-    "Enterprise integration and SaaS",
     "AI engineering",
     "Retrieval-augmented generation",
     "LLM evaluation pipelines",
@@ -100,7 +95,12 @@
     "Platform engineering",
     "Build pipelines",
     "FinOps and cost control",
-    "Migration off legacy systems"
+    "Migration off legacy systems",
+    "Native mobile development for iOS and Android",
+    "Web and desktop applications",
+    "Enterprise integration and SaaS",
+    "Embedded Android",
+    "Android Automotive (AAOS)"
    ],
    "sameAs": [
     "https://www.linkedin.com/company/vynatix",
@@ -149,7 +149,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=2918c0c8">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=89dd998e">
+<link rel="stylesheet" href="styles.css?v=63b65f3c">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -163,7 +163,7 @@
 <!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
      scheme is set before first paint and the page never flashes the wrong theme. It is
      first-party and small; the CSP rules out the inline alternative. -->
-<script src="app.js?v=6241560d"></script>
+<script src="app.js?v=3c44823a"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Hoppa till innehållet</a>
@@ -191,8 +191,10 @@
       <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
         <ul class="site-header__list list-reset">
           <li><a href="services.html" class="site-header__link">Services</a></li>
-          <li><a href="work.html" class="site-header__link">Work</a></li>
-          <li><a href="blog.html" class="site-header__link">Blog</a></li>
+          <li><a href="industries.html" class="site-header__link">Industries</a></li>
+          <li><a href="work.html" class="site-header__link">Cases</a></li>
+          <li><a href="blog.html" class="site-header__link">Insights</a></li>
+          <li><a href="membership.html" class="site-header__link">Career</a></li>
           <li><a href="about.html" class="site-header__link">About</a></li>
           <li><a href="contact.html" class="site-header__link">Contact</a></li>
           <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">Get in touch</a></li>
@@ -312,7 +314,7 @@
           <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
             <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
           </a>
-          <p class="site-footer__about">A Nordic software consultancy. Senior engineers, embedded in your team, and work you can read afterwards.</p>
+          <p class="site-footer__about">The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
           <address class="site-footer__addr">
             <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
             <a href="tel:+46720710676">+46 72 071 06 76</a><br>
@@ -323,18 +325,19 @@
         <div>
           <h2 class="site-footer__h">Services</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="services.html#application-development">Application development</a></li>
             <li><a href="services.html#ai-engineering">AI engineering</a></li>
             <li><a href="services.html#cloud-platforms">Cloud platforms</a></li>
+            <li><a href="services.html#application-development">Application development</a></li>
           </ul>
         </div>
         <div>
           <h2 class="site-footer__h">Company</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="about.html">About</a></li>
-            <li><a href="work.html">Work</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="membership.html">Membership</a></li>
+            <li><a href="industries.html">Industries</a></li>
+            <li><a href="work.html">Cases</a></li>
+            <li><a href="blog.html">Insights</a></li>
+            <li><a href="membership.html">Career</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
@@ -342,7 +345,6 @@
           <h2 class="site-footer__h">På svenska</h2>
           <ul class="site-footer__links list-reset">
             <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
-            <li><a href="android-automotive-utveckling.html" hreflang="sv">Android Automotive</a></li>
             <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
             <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
             <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>

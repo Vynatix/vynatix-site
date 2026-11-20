@@ -147,8 +147,8 @@ highlights the things most worth keeping front-of-mind.
 - **The English home page, `services.html` and `work.html` follow the owner's website content plan of
   November 2026, and the rest of the site does not yet.** The home page is nine blocks, each opening with a
   promise and backed by a fact: the hero ("Engineering that compounds."), the client row, the three services
-  with AI engineering first, four figures, three case cards, the partnership band, people, insights and the
-  call to action. `work.html` is "Cases" in the menu (the file name stays). The voice sells: "you" before
+  with AI engineering first, three figures, three case cards, the partnership band, people, insights and the
+  call to action. `work.html` is "Cases" and `blog.html` "Insights" in the menu (the file names stay). The voice sells: "you" before
   "we", one name for the firm (consultancy), automotive only inside a named case, nothing about how Vynatix
   runs inside, every number real and every client named only with its approval. The plan took the audience
   switch, the comparison with other consultancies, the questions and the membership pitch off the home page;

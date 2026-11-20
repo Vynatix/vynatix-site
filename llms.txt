@@ -10,13 +10,13 @@
 
 ## Pages in English
 
-- [Home](https://vynatix.com/): the senior software consultancy for scale-ups: services, the numbers behind the promise, three cases, how the partnership works, the people and the latest insights
+- [Home](https://vynatix.com/): the senior software consultancy for scale-ups: services, three figures, three cases, how the partnership works, the people and the latest insights
 - [Services](https://vynatix.com/services.html): AI engineering (assistants, retrieval and grounded answers, agents, workflow automation, MCP servers, SDKs, evaluation and monitoring, on-prem or in a sovereign cloud); cloud platforms (GCP, AWS and on-prem, Kubernetes and GitOps, FinOps, moving off legacy); application development (native mobile, web, desktop and SaaS, embedded Android, wearables and VR, enterprise integrations)
 - [Android Automotive development in Gothenburg](https://vynatix.com/android-automotive-development.html): what we build on Android Automotive and the Volvo Trucks in-cab radio
 - [AI engineering in Gothenburg](https://vynatix.com/ai-engineering.html): retrieval, evaluation and deployment in your environment, and the closed-domain assistant
 - [How to choose a software consultancy](https://vynatix.com/choose-a-software-consultancy.html): the questions to ask, the warning signs and when a larger firm is the better choice; also available in Swedish
 - [Cases](https://vynatix.com/work.html): a regulated client, an AI assistant that answers from approved documents and cites its source (2025); Volvo Cars, builds in 6 minutes instead of 47 (2025); Volvo Trucks, a new media application live across a whole fleet (2024); plus more projects our engineers have shipped, and the Kotlin libraries they maintain
-- [Blog](https://vynatix.com/blog.html): guides from Vynatix on choosing a software consultancy, platform engineering and AI work, in English and Swedish
+- [Insights](https://vynatix.com/blog.html): practical ideas from Vynatix on AI engineering, cloud platforms and software delivery, with guides in English and Swedish
 - [Software consultancies in Gothenburg working on Android Automotive](https://vynatix.com/android-automotive-consultancies-gothenburg.html): an alphabetical list compiled by Vynatix, with sources
 - [About](https://vynatix.com/about.html): why we exist, how we work, what we hold to
 - [Membership](https://vynatix.com/membership.html): the collective for senior freelance engineers, with no non-competes and a transparent revenue split

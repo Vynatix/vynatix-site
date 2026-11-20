@@ -22,14 +22,15 @@ against the roles and components the system defines.
 
 ```
 index.html          Home — hero (one of four drawn backgrounds), still client list, contents row,
-                    services, four figures, three case cards, the partnership band, people,
+                    services, three figures, three case cards, the partnership band, people,
                     insights, CTA band
 about.html          Company / team
 services.html       AI engineering, cloud platforms, application development
 work.html           The three cases ("Cases" in the menu), team projects and libraries
 membership.html     "Collective" / careers for senior engineers
 contact.html        Two-inbox contact page (no form — mailto links)
-blog.html           The blog: a hand-written list of the guides, in English and in Swedish
+blog.html           Insights ("Insights" in the menu; the file name stays): a hand-written list of
+                    the guides, in English and in Swedish
 privacy.html        Privacy notice (GDPR Art. 13), with the analytics and cookies
                     section (#cookies) and the in-page consent buttons
 terms.html          Website terms of use
@@ -487,7 +488,8 @@ So the art is still 24px or more from the text, the contrast behind the text equ
 plain page's, the sheet's rules register to the glyphs and the dial and the iris sit where
 they did (one number did move: the iris's index mark is aimed at the end of the new italic
 line, 303 degrees where it was 296); the cost is open space under the buttons. Refitting the art to the short message
-(and taking the 336 back to 96) is the alternative, and it is the owner's call.
+(and taking the 336 back to 96) was the alternative; the owner chose to keep the art as it is
+(20 November 2026).
 **A change to the headline, the lede (its words or its measure), the hero's spacing, the
 clients row or a typeface can move the art into the text.** Run `npm run check:bg` after
 any such change: the guards fail and name the rule (clearance, contrast, registration,
@@ -860,17 +862,19 @@ can pin, the anchor reserve (`scroll-padding-top`) grows by its height. Then, in
 - `#services`, "Where we make the difference": three `.cap` columns, AI engineering first, then
   cloud platforms and application development, each one promise and one link to its section of
   `services.html`.
-- `#numbers` (`.section--surface`), "The numbers behind the promise": four metric tiles in a `dl`
-  (`.glance`). Each figure is the owner's and is repeated elsewhere on the site: the build time
-  (the Volvo Cars case), fourteen clients (the fourteen marks in the hero), seven years or more of
-  experience in every consultant, and the reply time. **The experience figure has to match
-  hiring**: it holds only while every consultant has seven years, so a hire with fewer changes
-  this tile first.
+- `#numbers` (`.section--surface`), "The numbers behind the promise": three metric tiles in a `dl`
+  (`.glance`, `.metrics--3`). Each figure is the owner's and is repeated elsewhere on the site: the
+  build time (the Volvo Cars case), fourteen clients (the fourteen marks in the hero) and the reply
+  time. The plan had a fourth, "7 years or more" of experience in every consultant; the owner took
+  it out on 20 November 2026 (it would stop being true with a hire of fewer years), so no page
+  states an experience figure for the whole team.
 - `#cases`, "Real results, in production": the three published cases as `.case` cards in a
   `.cases` row, the regulated client first, each one link to its section of `work.html`, and
   under them the link to all cases and the line that names the photographers. A fourth
   published case needs a decision first: the row holds three.
-- `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band.
+- `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band. The
+  plan's closing sentence, "Start with one engineer and add more as you grow.", is left out on the
+  owner's decision of 20 November 2026: do not add it.
 - `#join`, "Great software comes from great people", with the "Join us" link (see *Audience
   switch (retired)* for why the id is `join`).
 - `#insights` (`.reads`, `.section--surface`), "Ideas that move software forward": three entries
@@ -882,9 +886,9 @@ can pin, the anchor reserve (`scroll-padding-top`) grows by its height. Then, in
 What the plan took off the page: the service chapters with their "What we build" panels, the
 company sentence and the Gothenburg photograph, the four steps of How we work, the comparison
 with a typical consultancy, the pull quote, the questions (and with them the page's FAQPage
-data) and the joiner view. The questions have no new home yet: the plan says they move out of
-the home page and does not say where, so that is an open owner decision, not a deletion to
-repeat elsewhere. The lines the plan removes from the whole site (declining work, sending a
+data) and the joiner view. The questions get a new home on `contact.html`, rewritten in the
+new voice, in the plan's second step (the owner's decision of 20 November 2026); until then
+no English page carries them. The lines the plan removes from the whole site (declining work, sending a
 reader to another firm, "no pitch, no pressure", what a model cannot do as a headline,
 automotive as the headline) do not come back on any page.
 
@@ -906,9 +910,11 @@ Service nodes in `tools/seo/services.json` repeat each paragraph. `work.html` is
 menu and the footer (the file name stays: a URL never changes): the three cases, the regulated
 client first, each told as challenge, work and result; the Volvo Trucks case has no challenge
 line until Volvo Trucks supplies one in its own words. The team projects and the libraries
-under them are unchanged. The About, Career (today's membership page), Contact, Industries and
-Insights pages, and every Swedish page, are later steps of the plan and still carry the earlier
-voice.
+under them are unchanged. `blog.html` is "Insights" in the menu and the footer, with the plan's
+heading and lede; the rest of its step (reworking the guide on choosing a consultancy, retiring
+the two list pages and the Swedish comparison of AI consultancies) is not done. The About, Career
+(today's membership page), Contact and Industries pages, and every Swedish page, are later steps
+of the plan and still carry the earlier voice.
 
 **Swedish pages** set `<html lang="sv">` and keep the shared English header and
 footer, which carry `lang="en"` so screen readers switch voice; only the skip link
@@ -1076,7 +1082,8 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
 - Prose says "Volvo Trucks and Volvo Cars", never a broader Volvo claim. Volvo Buses and Volvo Penta appear
   only in the logo strip on `index.html`, taken from Ultra Group's site (`assets/CREDITS.md`). The content
   plan asks for each client's written approval before its name or logo is shown; the strip shows the same
-  fourteen as before, reordered, and the approvals are the owner's to collect.
+  fourteen as before, reordered, and the owner confirmed on 20 November 2026 that the approvals
+  are collected. A fifteenth name still needs its own.
 - The Volvo Trucks case and the Volvo Cars case (`work.html`, `index.html`) and the figures in them.
 - The regulated client stays anonymous (`work.html`, the closed-domain assistant case;
   `ai-assistent-interna-dokument.html`).

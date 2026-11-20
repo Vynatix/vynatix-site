@@ -729,10 +729,16 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
   up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
   The slices are one file, positioned left, centre and right, so the line carries across.
-- `#numbers` (`.section--surface`), "The numbers behind the promise": three figures in a `dl`
-  (`.glance`, `.metrics--3`, `.metrics--story`), open, without tiles. The first
-  (`.metric--scale`) is drawn: the 6 stands at the origin and a decorative, `aria-hidden` "47" at
-  the far end of one ruler whose first 6/47 is the bronze stretch, to scale at every width. The
+- `#numbers` (`.section--surface`), "The numbers behind the promise": three figures
+  (`.glance`, `.metrics--3`, `.metrics--story`), open, without tiles, each a label, a figure and a
+  sentence in three `<p>` elements, as on `work.html`. They were a `dl` from October to 20 November
+  2026; the Geoptie audit of that day read it as "Minutes per build476Down from 47", because its
+  reader keeps paragraphs apart but not `dt` and `dd`, and reads `aria-hidden` text. So: paragraphs
+  (here and on `sv.html`), and **a decorative figure is never text in the page.** The first
+  (`.metric--scale`) is drawn: the 6 stands at the origin and a decorative "47" at the far end of
+  one ruler whose first 6/47 is the bronze stretch, to scale at every width. That 47 is an empty,
+  `aria-hidden` `<p class="scale" data-from="47">` whose figure the stylesheet draws
+  (`content: attr(data-from)`). The
   sentence under it says the same in words, so nothing depends on the drawing. Each figure is the
   owner's and is repeated elsewhere on the site: the
   build time (the Volvo Cars case), fourteen clients (the fourteen marks in the hero) and the reply

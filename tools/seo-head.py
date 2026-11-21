@@ -137,11 +137,11 @@ for f, p in PAGES.items():
 LANGS = {
   'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
   'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
-  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-21', checked='', by='', waived='2026-11-20'),
   'fr': dict(name='Français', tag='fr', locale='fr_FR', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
   'de': dict(name='Deutsch', tag='de', locale='de_DE', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
   'ja': dict(name='日本語', tag='ja', locale='ja_JP', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
-  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-21', checked='', by='', waived='2026-11-20'),
 }
 # The notices are legal text and are not translated: the English text governs, and a generated page
 # links to it and says so (hreflang="en").

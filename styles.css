@@ -2578,7 +2578,11 @@ body::after {
    taller lines. Tracking goes to zero (spacing breaks joined letters and loosens kana), the tight
    display leadings open up, and each family list gains the system faces of the script after the
    site's own: the Latin stays in Geist, Aptos and Fraunces, the rest falls through to a face every
-   current system ships. No font is downloaded for them. French and German need nothing here. */
+   current system ships. No font is downloaded for them. French and German need nothing here.
+   Only the family tokens change (--font-sans, --font-fraunces, --font-aptos), never the roles
+   (--font-display, --font-body, --font-editorial): colors_and_type.css maps roles to families per
+   direction, and Monochrome sets display and body in Geist. Setting a role here outranks that map
+   and put these pages' headlines in Fraunces and their menu in Aptos. */
 :root:lang(ja),
 :root:lang(ar) {
   --tracking-display: 0;
@@ -2589,19 +2593,17 @@ body::after {
   --leading-tight: 1.3;
   --leading-snug: 1.35;
   --leading-headline: 1.45;
-  --font-display: 'Fraunces', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
-  --font-editorial: var(--font-display);
   --font-sans: 'Geist', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
-  --font-body: 'Aptos', 'Geist', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
+  --font-fraunces: 'Fraunces', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
+  --font-aptos: 'Aptos', 'Geist', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
 }
 :root:lang(ar) {
   --leading-tight: 1.4;
   --leading-snug: 1.45;
   --leading-headline: 1.5;
-  --font-display: 'Fraunces', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', sans-serif;
-  --font-editorial: var(--font-display);
   --font-sans: 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
-  --font-body: 'Aptos', 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
+  --font-fraunces: 'Fraunces', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', sans-serif;
+  --font-aptos: 'Aptos', 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
 }
 /* An English island on such a page (the brand line in the home hero, a sentence not yet
    translated) keeps the system's own figures: these six repeat tokens.css, "Tracking" and

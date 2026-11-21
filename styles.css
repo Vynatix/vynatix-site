@@ -1638,6 +1638,11 @@ ol.caps > li.cap { padding-top: var(--space-6); }
     html.consent-open { scroll-padding-bottom: 12rem; }
     .consent-open .site-footer { padding-bottom: 12rem; }
   }
+  /* Up to the four-column footer (905px) the language list is the last row of links, low
+     enough that at 1.5 times the text the reopened bar reached it (768px wide): 16rem clears it. */
+  @media (min-width: 700px) and (max-width: 904px) {
+    .consent-open .site-footer { padding-bottom: 16rem; }
+  }
 }
 
 /* The home pages skip the rendering of every section after the hero until it

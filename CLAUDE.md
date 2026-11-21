@@ -22,18 +22,21 @@ highlights the things most worth keeping front-of-mind.
   (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
   `sheet-art.js` for the hero background, never site content and
   never run at deploy time.
-- **Six languages, two kinds.** English and Swedish are written by hand (the twenty-four pages above).
-  Spanish, Chinese, Hindi and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
-  the three notices in `es/`, `zh/`, `hi/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
+- **Seven languages, two kinds.** English and Swedish are written by hand (the twenty-four pages above).
+  Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
+  the three notices in `es/`, `fr/`, `de/`, `ja/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
   English message to its translation (`tools/i18n.py` is the engine; `LANGS` in `seo-head.py` is the one table).
   **Never edit a file in a language folder**: edit the English page, run `python3 tools/seo-head.py`, then
-  translate what `python3 tools/i18n.py missing <code>` lists, in all four catalogues, and run it again. A
+  translate what `python3 tools/i18n.py missing <code>` lists, in all five catalogues, and run it again. A
   changed English sentence shows in English on the generated pages until then, and `tools/verify/i18n.js`
-  fails. **All four are live since 20 November 2026 on the owner's decision, and no native reader has checked
-  them** (`waived` in `LANGS` records that; `checked` and `by` stay empty until a reader has, and are never
+  fails. **All five are live on the owner's decision (Spanish and Arabic since 20 November 2026, French, German
+  and Japanese since 21 November), and no native reader has checked them** (`waived` in `LANGS` records that; `checked` and `by` stay empty until a reader has, and are never
   filled in for a check nobody made). Their URLs are permanent like every other: a live language never goes
   back to draft, and a new language starts as `status='draft'` (excluded by `_config.yml`, `noindex`, linked
-  from nowhere, in no sitemap or lock row).
+  from nowhere, in no sitemap or lock row). **The one exception, the owner's decision of 21 November 2026:**
+  Chinese (`zh/`) and Hindi (`hi/`), live for a day, were deleted outright and their 22 URLs now answer 404.
+  Their rows stay in `tools/urls.lock`; `tools/urls.retired` records the removal, and `permanence.js` accepts a
+  locked URL without a file only when it is listed there (and never linked, never reused).
   Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
   is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
   its last block, "Languages". See AGENTS.md, *Languages*.
@@ -200,7 +203,7 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for every language version of the page (the five English/Swedish pairs, and the four generated languages), and one
+  canonical link, Open Graph, hreflang for every language version of the page (the five English/Swedish pairs, and the five generated languages), and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;

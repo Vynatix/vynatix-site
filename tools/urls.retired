@@ -1,0 +1,31 @@
+# URLs that were public and have been removed on the owner's decision, so they no longer answer (404).
+# Not published (tools/ is excluded). One row per URL as "<url> <YYYY-MM-DD>", the date of the removal.
+# Their rows stay in tools/urls.lock, which is append-only: this list is the record that the removal was
+# meant. tools/verify/permanence.js accepts a locked URL with no file only when it is listed here, and fails
+# if a URL listed here is not locked, still has a file, is in sitemap.xml or llms.txt, or is linked by a page.
+# A URL listed here is never reused. AGENTS.md, "Posts, permanence and withdrawal".
+#
+# 2026-11-21: Chinese (zh/) and Hindi (hi/), live since 20 November 2026, removed on the owner's decision
+# when French, German and Japanese replaced them.
+https://vynatix.com/zh/ 2026-11-21
+https://vynatix.com/zh/about.html 2026-11-21
+https://vynatix.com/zh/services.html 2026-11-21
+https://vynatix.com/zh/industries.html 2026-11-21
+https://vynatix.com/zh/work.html 2026-11-21
+https://vynatix.com/zh/membership.html 2026-11-21
+https://vynatix.com/zh/contact.html 2026-11-21
+https://vynatix.com/zh/blog.html 2026-11-21
+https://vynatix.com/zh/android-automotive-development.html 2026-11-21
+https://vynatix.com/zh/ai-engineering.html 2026-11-21
+https://vynatix.com/zh/choose-a-software-consultancy.html 2026-11-21
+https://vynatix.com/hi/ 2026-11-21
+https://vynatix.com/hi/about.html 2026-11-21
+https://vynatix.com/hi/services.html 2026-11-21
+https://vynatix.com/hi/industries.html 2026-11-21
+https://vynatix.com/hi/work.html 2026-11-21
+https://vynatix.com/hi/membership.html 2026-11-21
+https://vynatix.com/hi/contact.html 2026-11-21
+https://vynatix.com/hi/blog.html 2026-11-21
+https://vynatix.com/hi/android-automotive-development.html 2026-11-21
+https://vynatix.com/hi/ai-engineering.html 2026-11-21
+https://vynatix.com/hi/choose-a-software-consultancy.html 2026-11-21

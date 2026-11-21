@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hans" dir="ltr" data-theme="mono-light">
+<html lang="fr" dir="ltr" data-theme="mono-light">
 <head>
 <meta charset="utf-8">
 <!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
@@ -7,41 +7,43 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>哥德堡的 AI 工程：检索、评估，以及在您的环境中部署, Vynatix</title>
-<meta name="description" content="位于哥德堡的 Vynatix 基于基础模型构建生产级 AI：RAG、评估流水线、MCP 服务器，以及本地部署或主权云部署。">
+<title>AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment, Vynatix</title>
+<meta name="description" content="Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.">
 <!-- seo -->
 <!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
      structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
-<link rel="canonical" href="https://vynatix.com/zh/ai-engineering.html">
+<link rel="canonical" href="https://vynatix.com/fr/ai-engineering.html">
 <link rel="alternate" hreflang="en" href="https://vynatix.com/ai-engineering.html">
 <link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-utveckling.html">
 <link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-engineering.html">
-<link rel="alternate" hreflang="zh-Hans" href="https://vynatix.com/zh/ai-engineering.html">
-<link rel="alternate" hreflang="hi" href="https://vynatix.com/hi/ai-engineering.html">
+<link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-engineering.html">
+<link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-engineering.html">
+<link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html">
 <link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html">
 <link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html">
 <meta name="author" content="Vynatix AB">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vynatix">
-<meta property="og:title" content="哥德堡的 AI 工程：检索、评估，以及在您的环境中部署, Vynatix">
-<meta property="og:description" content="位于哥德堡的 Vynatix 基于基础模型构建生产级 AI：RAG、评估流水线、MCP 服务器，以及本地部署或主权云部署。">
-<meta property="og:url" content="https://vynatix.com/zh/ai-engineering.html">
-<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment, Vynatix">
+<meta property="og:description" content="Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.">
+<meta property="og:url" content="https://vynatix.com/fr/ai-engineering.html">
+<meta property="og:locale" content="fr_FR">
 <meta property="og:locale:alternate" content="en_GB">
 <meta property="og:locale:alternate" content="sv_SE">
 <meta property="og:locale:alternate" content="es_ES">
-<meta property="og:locale:alternate" content="hi_IN">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="ja_JP">
 <meta property="og:locale:alternate" content="ar_AR">
-<meta property="article:published_time" content="2026-11-20">
-<meta property="article:modified_time" content="2026-11-20">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta property="og:image:alt" content="The Vynatix mark">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="哥德堡的 AI 工程：检索、评估，以及在您的环境中部署, Vynatix">
-<meta name="twitter:description" content="位于哥德堡的 Vynatix 基于基础模型构建生产级 AI：RAG、评估流水线、MCP 服务器，以及本地部署或主权云部署。">
+<meta name="twitter:title" content="AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment, Vynatix">
+<meta name="twitter:description" content="Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -124,8 +126,9 @@
     "en",
     "sv",
     "es",
-    "zh-Hans",
-    "hi",
+    "fr",
+    "de",
+    "ja",
     "ar"
    ],
    "publisher": {
@@ -134,169 +137,169 @@
   },
   {
    "@type": "WebPage",
-   "@id": "https://vynatix.com/zh/ai-engineering.html",
-   "url": "https://vynatix.com/zh/ai-engineering.html",
-   "name": "哥德堡的 AI 工程：检索、评估，以及在您的环境中部署, Vynatix",
-   "description": "位于哥德堡的 Vynatix 基于基础模型构建生产级 AI：RAG、评估流水线、MCP 服务器，以及本地部署或主权云部署。",
-   "inLanguage": "zh-Hans",
+   "@id": "https://vynatix.com/fr/ai-engineering.html",
+   "url": "https://vynatix.com/fr/ai-engineering.html",
+   "name": "AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment, Vynatix",
+   "description": "Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.",
+   "inLanguage": "fr",
    "isPartOf": {
     "@id": "https://vynatix.com/#website"
    },
    "publisher": {
     "@id": "https://vynatix.com/#organization"
    },
-   "datePublished": "2026-11-20",
-   "dateModified": "2026-11-20",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
    "translationOfWork": {
     "@id": "https://vynatix.com/ai-engineering.html"
    },
    "hasPart": {
-    "@id": "https://vynatix.com/zh/ai-engineering.html#faq"
+    "@id": "https://vynatix.com/fr/ai-engineering.html#faq"
    }
   },
   {
    "@type": "FAQPage",
-   "@id": "https://vynatix.com/zh/ai-engineering.html#faq",
-   "url": "https://vynatix.com/zh/ai-engineering.html#faq",
-   "inLanguage": "zh-Hans",
+   "@id": "https://vynatix.com/fr/ai-engineering.html#faq",
+   "url": "https://vynatix.com/fr/ai-engineering.html#faq",
+   "inLanguage": "fr",
    "isPartOf": {
-    "@id": "https://vynatix.com/zh/ai-engineering.html"
+    "@id": "https://vynatix.com/fr/ai-engineering.html"
    },
    "mainEntity": [
     {
      "@type": "Question",
-     "name": "什么是 RAG？",
+     "name": "What is RAG?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "RAG（retrieval-augmented generation，检索增强生成）是这样一种技术：系统先从文档集合（例如您自己的文档）中检索相关段落，再让语言模型依据这些段落撰写回答。由于回答建立在检索到的段落之上，它可以注明出处。其目的是让回答中的事实来自文档，而不是来自模型的通用训练。这样回答就可以核查，而您通过控制放入哪些文档，就能控制助手依据什么作答。"
+      "text": "RAG (retrieval-augmented generation) is a technique in which the system first retrieves relevant passages from a document collection, such as your own documents, and then has a language model write the answer from those passages. Because the answer is built on retrieved passages, it can cite its source. The aim is for the facts in an answer to come from the documents rather than from the model's general training. That makes answers checkable, and you control what the assistant answers from by controlling which documents go in."
      }
     },
     {
      "@type": "Question",
-     "name": "系统能在本地部署或主权云中运行吗？",
+     "name": "Can the system run on-prem or in a sovereign cloud?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "可以。作为 AI 工程服务的一部分，Vynatix 把 AI 系统部署到客户自己的环境中，包括本地部署和主权云，让系统运行在您的数据获准存放的地方。届时可以使用哪种模型，取决于该环境中能运行什么，我们会明确说明这一选择对质量意味着什么。"
+      "text": "Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, as part of the AI engineering service, so the system can run where your data is allowed to be. Which model you can use then depends on what can run in that environment, and we say plainly what that choice means for quality."
      }
     },
     {
      "@type": "Question",
-     "name": "助手能拒绝回答经批准文档之外的问题吗？",
+     "name": "Can the assistant refuse to answer outside the approved documents?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "可以。Vynatix 在2025年为一家受监管行业的客户构建的助手就是这样工作的：它只依据经批准的文档作答，每个回答都注明出处，无法在资料中找到依据的问题会被拒答并交由人工处理。这条线是有意划定的，我们可以说明它划在哪里，以及为什么。"
+      "text": "Yes. That is how the assistant Vynatix built in 2025 for a regulated client works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why."
      }
     },
     {
      "@type": "Question",
-     "name": "你们构建 MCP 服务器吗？",
+     "name": "Do you build MCP servers?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "是的。构建 MCP 服务器和集成是 Vynatix AI 工程工作的一部分。MCP（Model Context Protocol）是一种开放协议，让 AI 助手或智能体通过明确定义的接口调用您的工具、读取您的数据。开放哪些内容由服务器决定，因此访问权限是明确的，并且可以加以限制。"
+      "text": "Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface. The server decides what is made available, so access is explicit and can be limited."
      }
     },
     {
      "@type": "Question",
-     "name": "工作如何计费？",
+     "name": "How is the work billed?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Vynatix 按实际工作小时计费，并每周报告工时，让您看得到自己在为什么付费，以及为什么。"
+      "text": "Vynatix bills for the hours worked and reports them every week, so you can see what you are paying for and why."
      }
     },
     {
      "@type": "Question",
-     "name": "如何开始？",
+     "name": "How do we get started?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "发邮件至 front.disk@vynatix.com，邮件主题以“Project”开头，并说明系统应该做什么，以及哪些地方绝不能出错。Vynatix 会在一个工作日内回复。第一次交谈通常在哥德堡当面进行，此后大部分工作以书面形式进行。"
+      "text": "Email front.disk@vynatix.com with a subject line starting \"Project\", and describe what the system should do and what it must not get wrong. Vynatix replies within one working day. The first conversation is usually in person, in Gothenburg, and after that most of the work happens in writing."
      }
     }
    ]
   },
   {
    "@type": "Service",
-   "@id": "https://vynatix.com/zh/ai-engineering.html#service",
-   "url": "https://vynatix.com/zh/ai-engineering.html",
-   "name": "AI 工程",
-   "serviceType": "AI 工程",
+   "@id": "https://vynatix.com/fr/ai-engineering.html#service",
+   "url": "https://vynatix.com/fr/ai-engineering.html",
+   "name": "AI engineering",
+   "serviceType": "AI engineering",
    "provider": {
     "@id": "https://vynatix.com/#organization"
    },
-   "description": "Vynatix 基于基础模型构建生产系统，资深工程师融入客户团队：检索与有据可依的回答、评估流水线、部署到客户环境（包括本地部署和主权云），以及生产环境可观测性。",
+   "description": "Vynatix builds production systems on foundation models, with senior engineers embedded in the client's team: retrieval and grounded answers, evaluation pipelines, deployment into the client's environment including on-prem and sovereign cloud, and production observability.",
    "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "AI 工程",
+    "name": "AI engineering",
     "itemListElement": [
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "聊天机器人与助手",
-       "description": "人们用日常语言与之对话的软件，用来获得答案或完成任务。"
+       "name": "Chatbots and assistants",
+       "description": "Software people talk to in plain language to get an answer or get a task done."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "检索与有据可依的回答（RAG）",
-       "description": "系统先在您的文档中查找相关段落，模型再依据这些段落作答，并注明出处。"
+       "name": "Retrieval and grounded answers (RAG)",
+       "description": "The system first looks up the relevant passages in your documents, and the model answers from those, citing the source."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "智能体与 Harness 工程",
-       "description": "智能体是能自行选择下一步并调用工具的模型。Harness 是模型外围的代码，规定它可以做什么，并检查结果。"
+       "name": "Agent and harness engineering",
+       "description": "An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "工作流自动化",
-       "description": "流程中的人工步骤，例如分拣、提取信息或起草，由模型在既定流程内处理。"
+       "name": "Workflow automation",
+       "description": "Manual steps in a process, such as sorting, extracting details or drafting, handled by a model inside a defined flow."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "MCP 服务器与集成",
-       "description": "Model Context Protocol 服务器，让助手以明确、受限的方式访问您的系统和数据，并与您现有的系统连接。"
+       "name": "MCP servers and integrations",
+       "description": "Model Context Protocol servers that give an assistant defined, limited access to your systems and data, and connections to what you already run."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "SDK 与开发者工具",
-       "description": "让您自己的开发人员能在系统之上构建、测试并扩展它的库和工具。"
+       "name": "SDKs and developer tooling",
+       "description": "Libraries and tools that let your own developers build on the system, test it and extend it."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "评估流水线",
-       "description": "自动化测试，用带有已知答案的问题来检验系统，让您看到一次改动让它变好还是变差。"
+       "name": "Evaluation pipelines",
+       "description": "Automated tests that run the system against questions with known answers, so you can see whether a change made it better or worse."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "部署到您的环境",
-       "description": "系统运行在您的数据获准存放的地方：您自己的环境，包括在您自己服务器上的本地部署，或主权云。"
+       "name": "Deployment into your environment",
+       "description": "The system runs where your data is allowed to be: in your own environment, including on-prem on your own servers or in a sovereign cloud."
       }
      },
      {
       "@type": "Offer",
       "itemOffered": {
        "@type": "Service",
-       "name": "生产环境可观测性",
-       "description": "记录并监控系统如何处理真实问题，让错误、拒答、响应时间和成本在上线后清晰可见。"
+       "name": "Production observability",
+       "description": "Logging and monitoring of what the system does with real questions, so errors, refusals, response times and cost are visible after launch."
       }
      }
     ]
@@ -329,7 +332,7 @@
 <script src="../app.js?v=208442e5"></script>
 </head>
 <body>
-<a class="skip-link" href="#main">跳至主要内容</a>
+<a lang="en" dir="ltr" class="skip-link" href="#main">Skip to content</a>
 <div id="app">
 
   <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
@@ -344,31 +347,31 @@
   <!-- ============================================================ Header -->
   <header class="site-header" role="banner">
     <div class="site-header__inner">
-      <a href="index.html" class="site-header__logo" aria-label="Vynatix 首页">
+      <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
         <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
       </a>
-      <button class="icon-btn mobile-toggle" type="button" aria-label="菜单" aria-expanded="false" aria-controls="primary-nav">
+      <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
         <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
         <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
       </button>
-      <nav class="site-header__nav" id="primary-nav" aria-label="主导航">
+      <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
         <ul class="site-header__list list-reset">
-          <li><a href="services.html" class="site-header__link">服务</a></li>
-          <li><a href="industries.html" class="site-header__link">行业</a></li>
-          <li><a href="work.html" class="site-header__link">案例</a></li>
-          <li><a href="blog.html" class="site-header__link">洞察</a></li>
-          <li><a href="membership.html" class="site-header__link">职业发展</a></li>
-          <li><a href="about.html" class="site-header__link">关于我们</a></li>
-          <li><a href="contact.html" class="site-header__link">联系我们</a></li>
-          <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">与我们联系</a></li>
+          <li><a lang="en" dir="ltr" href="services.html" class="site-header__link">Services</a></li>
+          <li><a lang="en" dir="ltr" href="industries.html" class="site-header__link">Industries</a></li>
+          <li><a lang="en" dir="ltr" href="work.html" class="site-header__link">Cases</a></li>
+          <li><a lang="en" dir="ltr" href="blog.html" class="site-header__link">Insights</a></li>
+          <li><a lang="en" dir="ltr" href="membership.html" class="site-header__link">Career</a></li>
+          <li><a lang="en" dir="ltr" href="about.html" class="site-header__link">About</a></li>
+          <li><a lang="en" dir="ltr" href="contact.html" class="site-header__link">Contact</a></li>
+          <li class="site-header__menu-cta"><a lang="en" dir="ltr" href="contact.html" class="site-header__link">Get in touch</a></li>
         </ul>
       </nav>
       <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" type="button" title="深色模式" aria-label="深色模式" aria-pressed="false">
+        <button class="icon-btn theme-toggle" type="button" title="Dark theme" aria-label="Dark theme" aria-pressed="false">
           <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
           <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
         </button>
-        <a href="contact.html" class="btn btn--sm site-header__cta">与我们联系</a>
+        <a lang="en" dir="ltr" href="contact.html" class="btn btn--sm site-header__cta">Get in touch</a>
       </div>
     </div>
   </header>
@@ -377,9 +380,9 @@
     <!-- ============================================================ Hero -->
     <section class="page-hero">
       <div class="container">
-        <p class="eyebrow">服务</p>
-        <h1 class="page-hero__h1">哥德堡的 AI 工程，为真正投入生产的系统而做。</h1>
-        <p class="page-hero__lede">把 AI 从路线图上的一个想法，变成用户每天都依赖的功能。Vynatix 基于基础模型构建用于生产环境的 AI 系统，资深工程师融入您的团队：能返回正确上下文的检索，能告诉您模型何时出错的评估，部署到您的环境（包括本地部署和主权云），以及上线后的可观测性。</p>
+        <p lang="en" dir="ltr" class="eyebrow">Services</p>
+        <h1 lang="en" dir="ltr" class="page-hero__h1">AI engineering in Gothenburg, for systems that go into production.</h1>
+        <p lang="en" dir="ltr" class="page-hero__lede">Turn AI from an idea on the roadmap into a feature your users rely on every day. Vynatix builds AI systems on foundation models for production use, with senior engineers inside your team: retrieval that returns the right context, evaluation that tells you when the model is wrong, deployment into your environment (including on-prem and sovereign cloud) and observability after launch.</p>
       </div>
     </section>
 
@@ -388,47 +391,47 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <p class="eyebrow">范围</p>
-            <h2 class="section__h2">我们构建什么</h2>
+            <p lang="en" dir="ltr" class="eyebrow">Scope</p>
+            <h2 lang="en" dir="ltr" class="section__h2">What we build</h2>
           </div>
-          <p class="section__lead">以下所有内容都属于同一件事：基于基础模型的生产系统，也就是围绕大语言模型构建、并已投入实际使用的软件，以及模型周边的工程，它让您能够核查回答，看清系统在做什么。</p>
+          <p lang="en" dir="ltr" class="section__lead">Everything below is part of one thing: production systems on foundation models, meaning software built around a large language model that is in real use, and the engineering around the model that lets you check the answers and see what the system does.</p>
         </div>
         <div class="caps">
           <div class="cap">
-            <h3>聊天机器人与助手</h3>
-            <p>人们用日常语言与之对话的软件，用来获得答案或完成任务。</p>
+            <h3 lang="en" dir="ltr">Chatbots and assistants</h3>
+            <p lang="en" dir="ltr">Software people talk to in plain language to get an answer or get a task done.</p>
           </div>
           <div class="cap">
-            <h3>检索与有据可依的回答（RAG）</h3>
-            <p>系统先在您的文档中查找相关段落，模型再依据这些段落作答，并注明出处。</p>
+            <h3 lang="en" dir="ltr">Retrieval and grounded answers (RAG)</h3>
+            <p lang="en" dir="ltr">The system first looks up the relevant passages in your documents, and the model answers from those, citing the source.</p>
           </div>
           <div class="cap">
-            <h3>智能体与 Harness 工程</h3>
-            <p>智能体是能自行选择下一步并调用工具的模型。Harness 是模型外围的代码，规定它可以做什么，并检查结果。</p>
+            <h3 lang="en" dir="ltr">Agent and harness engineering</h3>
+            <p lang="en" dir="ltr">An agent is a model that chooses its own next step and calls tools. The harness is the code around the model that sets what it may do and checks the result.</p>
           </div>
           <div class="cap">
-            <h3>工作流自动化</h3>
-            <p>流程中的人工步骤，例如分拣、提取信息或起草，由模型在既定流程内处理。</p>
+            <h3 lang="en" dir="ltr">Workflow automation</h3>
+            <p lang="en" dir="ltr">Manual steps in a process, such as sorting, extracting details or drafting, handled by a model inside a defined flow.</p>
           </div>
           <div class="cap">
-            <h3>MCP 服务器与集成</h3>
-            <p>Model Context Protocol 服务器，让助手以明确、受限的方式访问您的系统和数据，并与您现有的系统连接。</p>
+            <h3 lang="en" dir="ltr">MCP servers and integrations</h3>
+            <p lang="en" dir="ltr">Model Context Protocol servers that give an assistant defined, limited access to your systems and data, and connections to what you already run.</p>
           </div>
           <div class="cap">
-            <h3>SDK 与开发者工具</h3>
-            <p>让您自己的开发人员能在系统之上构建、测试并扩展它的库和工具。</p>
+            <h3 lang="en" dir="ltr">SDKs and developer tooling</h3>
+            <p lang="en" dir="ltr">Libraries and tools that let your own developers build on the system, test it and extend it.</p>
           </div>
           <div class="cap">
-            <h3>评估流水线</h3>
-            <p>自动化测试，用带有已知答案的问题来检验系统，让您看到一次改动让它变好还是变差。</p>
+            <h3 lang="en" dir="ltr">Evaluation pipelines</h3>
+            <p lang="en" dir="ltr">Automated tests that run the system against questions with known answers, so you can see whether a change made it better or worse.</p>
           </div>
           <div class="cap">
-            <h3>部署到您的环境</h3>
-            <p>系统运行在您的数据获准存放的地方：您自己的环境，包括在您自己服务器上的本地部署，或主权云。</p>
+            <h3 lang="en" dir="ltr">Deployment into your environment</h3>
+            <p lang="en" dir="ltr">The system runs where your data is allowed to be: in your own environment, including on-prem on your own servers or in a sovereign cloud.</p>
           </div>
           <div class="cap">
-            <h3>生产环境可观测性</h3>
-            <p>记录并监控系统如何处理真实问题，让错误、拒答、响应时间和成本在上线后清晰可见。</p>
+            <h3 lang="en" dir="ltr">Production observability</h3>
+            <p lang="en" dir="ltr">Logging and monitoring of what the system does with real questions, so errors, refusals, response times and cost are visible after launch.</p>
           </div>
         </div>
       </div>
@@ -439,19 +442,19 @@
       <div class="container">
         <div class="two-up">
           <div>
-            <p class="eyebrow">建议</p>
-            <h2 class="section__h2 two-up__h2">为每个问题选对工具</h2>
-            <p class="two-up__body">语言模型是读写语言的合适工具：基于文档回答问题、摘要、分类、提取信息和起草。</p>
-            <p class="two-up__body">如果答案必须精确且每次相同，或者问题已经能靠它们解决，那么普通代码、一条查询或一次搜索才是合适的工具。</p>
-            <p class="two-up__body">所以，在您为模型花钱之前，我们先和您一起选定工具。如果更简单的工具更适合您，我们就推荐它。</p>
+            <p lang="en" dir="ltr" class="eyebrow">Advice</p>
+            <h2 lang="en" dir="ltr" class="section__h2 two-up__h2">The right tool for each problem</h2>
+            <p lang="en" dir="ltr" class="two-up__body">A language model is the right tool for reading and writing language: answering questions over documents, summarising, classifying, extracting details and drafting.</p>
+            <p lang="en" dir="ltr" class="two-up__body">Ordinary code, a query or a search is the right tool when the answer has to be exact and the same every time, or when it already solves the problem.</p>
+            <p lang="en" dir="ltr" class="two-up__body">So we choose the tool with you before you spend on a model. If a simpler one serves you better, we recommend it.</p>
           </div>
           <div class="panel">
-            <p class="eyebrow eyebrow--muted">往往更合适的工具</p>
+            <p lang="en" dir="ltr" class="eyebrow eyebrow--muted">Often the better tool</p>
             <ul>
-              <li>普通代码或数据库查询，适用于答案必须精确的情况</li>
-              <li>规则引擎，适用于逻辑已经成文的情况</li>
-              <li>搜索，适用于人们需要文档本身而不是摘要的情况</li>
-              <li>表单，适用于输入本来就是结构化的情况</li>
+              <li lang="en" dir="ltr">Ordinary code or a database query, when the answer has to be exact</li>
+              <li lang="en" dir="ltr">A rules engine, when the logic is already written down</li>
+              <li lang="en" dir="ltr">Search, when people need the document rather than a summary of it</li>
+              <li lang="en" dir="ltr">A form, when the input is structured anyway</li>
             </ul>
           </div>
         </div>
@@ -461,21 +464,21 @@
     <!-- ============================================================ Case: Regulated client -->
     <section class="section" id="case">
       <div class="container">
-        <p class="eyebrow">受监管行业客户 · <time datetime="2025">2025</time></p>
-        <h2 class="section__h2 section__h2--wide">只依据经批准的文档作答的助手。</h2>
+        <p lang="en" dir="ltr" class="eyebrow">Regulated client · <time datetime="2025">2025</time></p>
+        <h2 lang="en" dir="ltr" class="section__h2 section__h2--wide">An assistant that answers only from approved documents.</h2>
         <div class="two-up u-mt-12">
           <div>
-            <p class="two-up__body">我们为一家受监管行业的客户构建了一个封闭域助手，它只依据经批准的文档作答。每个回答都注明出处。无法在资料中找到依据的问题，它会拒答并交由人工处理，而不是靠猜测作答。</p>
-            <p class="two-up__body"><strong class="lead-in">边界。</strong>这条线是我们有意划定的，我们可以向您说明它划在哪里，以及为什么。</p>
-            <a class="more" href="work.html#regulated-client"><span>阅读案例</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
+            <p lang="en" dir="ltr" class="two-up__body">For a regulated client, we built a closed-domain assistant that answers only from approved documents. Every answer cites its source. A question it cannot ground in source is declined and handed to a person, rather than answered with a guess.</p>
+            <p lang="en" dir="ltr" class="two-up__body"><strong class="lead-in">The boundary.</strong> We set that line deliberately, and we can show you where it sits and why.</p>
+            <a class="more" href="work.html#regulated-client"><span lang="en" dir="ltr">Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="panel">
-            <p class="eyebrow eyebrow--muted">我们已交付的内容</p>
+            <p lang="en" dir="ltr" class="eyebrow eyebrow--muted">What we delivered</p>
             <ul>
-              <li>封闭域 AI 助手</li>
-              <li>依据经批准的文档作答</li>
-              <li>每个回答都附有出处</li>
-              <li>超出文档范围的问题交由人工处理</li>
+              <li lang="en" dir="ltr">A closed-domain AI assistant</li>
+              <li lang="en" dir="ltr">Answers from approved documents</li>
+              <li lang="en" dir="ltr">A source with every answer</li>
+              <li lang="en" dir="ltr">Questions outside the documents go to a person</li>
             </ul>
           </div>
         </div>
@@ -487,20 +490,20 @@
       <div class="container">
         <div class="two-up">
           <div>
-            <p class="eyebrow">评估与可观测性</p>
-            <h2 class="section__h2 two-up__h2">如何知道系统是对的？</h2>
-            <p class="two-up__body">因为它在上线前后都经过度量：评估流水线用带有已知答案的问题测试每一次改动，生产环境可观测性则展示系统如何处理真实问题。</p>
-            <p class="two-up__body"><strong class="lead-in">上线之前。</strong>评估集是一组有代表性的问题，每个问题都附有系统应给出的答案，或注明系统应当拒答。评估集与熟悉该领域的人一起编写。每当模型、提示词、检索或文档发生变化，流水线都会自动运行评估集，并将结果与上一版本对比，这样效果回退会在发布之前暴露出来，而不是出现在用户面前。</p>
-            <p class="two-up__body"><strong class="lead-in">上线之后。</strong>可观测性意味着记录每个问题检索到了什么、系统回答了什么、引用了哪个出处，并遵守您的数据处理规则。它还意味着长期跟踪拒答、错误回答、响应时间和成本。在生产环境中发现的失败案例会回到评估集中，这样同样的错误从此都会被测试。</p>
-            <p class="two-up__body">两者都不能让模型变得完美。两者结合，能让模型的错误看得见、可度量，您也因此能够决定这条线该划在哪里。</p>
+            <p lang="en" dir="ltr" class="eyebrow">Evaluation and observability</p>
+            <h2 lang="en" dir="ltr" class="section__h2 two-up__h2">How do you know the system is right?</h2>
+            <p lang="en" dir="ltr" class="two-up__body">You know because it is measured, before and after it ships: an evaluation pipeline tests every change against questions with known answers, and production observability shows what the system does with real questions.</p>
+            <p lang="en" dir="ltr" class="two-up__body"><strong class="lead-in">Before it ships.</strong> An evaluation set is a collection of representative questions, each with the answer the system should give or the note that it should decline. The set is written with the people who know the domain. The pipeline runs it automatically whenever the model, the prompts, the retrieval or the documents change, and compares the result with the previous version, so a regression shows up before release rather than in front of a user.</p>
+            <p lang="en" dir="ltr" class="two-up__body"><strong class="lead-in">After it ships.</strong> Observability means logging what was retrieved for each question, what the system answered and which source it cited, within your rules for how data may be handled. It also means following refusals, wrong answers, response times and cost over time. Failures found in production go back into the evaluation set, so the same mistake is tested for from then on.</p>
+            <p lang="en" dir="ltr" class="two-up__body">Neither makes a model perfect. Together they make its errors visible and measurable, which is what lets you decide where the line should sit.</p>
           </div>
           <div class="panel">
-            <p class="eyebrow eyebrow--muted">评估检查什么</p>
+            <p lang="en" dir="ltr" class="eyebrow eyebrow--muted">What the evaluation checks</p>
             <ul>
-              <li>回答有其引用的出处支持</li>
-              <li>超出文档范围的问题会被拒答</li>
-              <li>文档能够回答的问题不会被拒答</li>
-              <li>对模型、提示词或文档的改动不会让结果变差</li>
+              <li lang="en" dir="ltr">Answers are supported by the source they cite</li>
+              <li lang="en" dir="ltr">Questions outside the documents are declined</li>
+              <li lang="en" dir="ltr">Questions the documents do answer are not declined</li>
+              <li lang="en" dir="ltr">A change to the model, prompts or documents does not make results worse</li>
             </ul>
           </div>
         </div>
@@ -512,23 +515,23 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <p class="eyebrow">我们如何工作</p>
-            <h2 class="section__h2">谁来做这项工作？</h2>
+            <p lang="en" dir="ltr" class="eyebrow">How we work</p>
+            <h2 lang="en" dir="ltr" class="section__h2">Who does the work?</h2>
           </div>
-          <p class="section__lead">工作由 Vynatix 的资深工程师完成：他们是哥德堡的 AI 顾问，项目需要多久，就在您的团队中工作多久。Vynatix 是面向成长期企业的资深软件咨询公司。我们的工程师加入您的团队，加快节奏，让您的软件随您的成长而愈发强健。公司位于哥德堡，是 Ultra Group 旗下公司。</p>
+          <p lang="en" dir="ltr" class="section__lead">Senior engineers from Vynatix do the work: AI consultants in Gothenburg who work inside your team for as long as the assignment needs them. Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.</p>
         </div>
         <div class="caps">
           <div class="cap">
-            <h3>您见到的人就是做事的人</h3>
-            <p>您直接与做事的人共事。第一次交谈通常在哥德堡当面进行。</p>
+            <h3 lang="en" dir="ltr">The people you meet do the work</h3>
+            <p lang="en" dir="ltr">You work directly with the people who do the work. The first conversation is usually in person, in Gothenburg.</p>
           </div>
           <div class="cap">
-            <h3>每周报告工时</h3>
-            <p>您按实际工作小时付费，并且每周都能看到工时。</p>
+            <h3 lang="en" dir="ltr">Hours reported every week</h3>
+            <p lang="en" dir="ltr">You pay for the hours worked and see them every week.</p>
           </div>
           <div class="cap">
-            <h3>代码归您所有</h3>
-            <p>我们构建的一切都归您所有，并且都有文档，您的团队可以在此基础上继续构建。</p>
+            <h3 lang="en" dir="ltr">You own the code</h3>
+            <p lang="en" dir="ltr">Everything we build is yours, and it is documented, so your team can keep building on it.</p>
           </div>
         </div>
       </div>
@@ -538,36 +541,36 @@
     <section class="section section--surface" id="faq">
       <div class="container">
         <div class="prose">
-          <h2>常见问题</h2>
+          <h2 lang="en" dir="ltr">Frequently asked questions</h2>
           <div data-faq>
             <div data-faq-item>
-              <h3>什么是 RAG？</h3>
-              <p>RAG（retrieval-augmented generation，检索增强生成）是这样一种技术：系统先从文档集合（例如您自己的文档）中检索相关段落，再让语言模型依据这些段落撰写回答。由于回答建立在检索到的段落之上，它可以注明出处。其目的是让回答中的事实来自文档，而不是来自模型的通用训练。这样回答就可以核查，而您通过控制放入哪些文档，就能控制助手依据什么作答。</p>
+              <h3 lang="en" dir="ltr">What is RAG?</h3>
+              <p lang="en" dir="ltr">RAG (retrieval-augmented generation) is a technique in which the system first retrieves relevant passages from a document collection, such as your own documents, and then has a language model write the answer from those passages. Because the answer is built on retrieved passages, it can cite its source. The aim is for the facts in an answer to come from the documents rather than from the model's general training. That makes answers checkable, and you control what the assistant answers from by controlling which documents go in.</p>
             </div>
             <div data-faq-item>
-              <h3>系统能在本地部署或主权云中运行吗？</h3>
-              <p>可以。作为 AI 工程服务的一部分，Vynatix 把 AI 系统部署到客户自己的环境中，包括本地部署和主权云，让系统运行在您的数据获准存放的地方。届时可以使用哪种模型，取决于该环境中能运行什么，我们会明确说明这一选择对质量意味着什么。</p>
+              <h3 lang="en" dir="ltr">Can the system run on-prem or in a sovereign cloud?</h3>
+              <p lang="en" dir="ltr">Yes. Vynatix deploys AI systems into the client's own environment, including on-prem and sovereign cloud, as part of the AI engineering service, so the system can run where your data is allowed to be. Which model you can use then depends on what can run in that environment, and we say plainly what that choice means for quality.</p>
             </div>
             <div data-faq-item>
-              <h3>助手能拒绝回答经批准文档之外的问题吗？</h3>
-              <p>可以。Vynatix 在2025年为一家受监管行业的客户构建的助手就是这样工作的：它只依据经批准的文档作答，每个回答都注明出处，无法在资料中找到依据的问题会被拒答并交由人工处理。这条线是有意划定的，我们可以说明它划在哪里，以及为什么。</p>
+              <h3 lang="en" dir="ltr">Can the assistant refuse to answer outside the approved documents?</h3>
+              <p lang="en" dir="ltr">Yes. That is how the assistant Vynatix built in 2025 for a regulated client works: it answers only from approved documents, every answer cites its source, and a question it cannot ground in source is declined and handed to a person. The line was set deliberately, and we can show where it sits and why.</p>
             </div>
             <div data-faq-item>
-              <h3>你们构建 MCP 服务器吗？</h3>
-              <p>是的。构建 MCP 服务器和集成是 Vynatix AI 工程工作的一部分。MCP（Model Context Protocol）是一种开放协议，让 AI 助手或智能体通过明确定义的接口调用您的工具、读取您的数据。开放哪些内容由服务器决定，因此访问权限是明确的，并且可以加以限制。</p>
+              <h3 lang="en" dir="ltr">Do you build MCP servers?</h3>
+              <p lang="en" dir="ltr">Yes. Vynatix builds MCP servers and integrations as part of its AI engineering work. MCP (Model Context Protocol) is an open protocol that lets an AI assistant or agent call your tools and read your data through a defined interface. The server decides what is made available, so access is explicit and can be limited.</p>
             </div>
             <div data-faq-item>
-              <h3>工作如何计费？</h3>
-              <p>Vynatix 按实际工作小时计费，并每周报告工时，让您看得到自己在为什么付费，以及为什么。</p>
+              <h3 lang="en" dir="ltr">How is the work billed?</h3>
+              <p lang="en" dir="ltr">Vynatix bills for the hours worked and reports them every week, so you can see what you are paying for and why.</p>
             </div>
             <div data-faq-item>
-              <h3>如何开始？</h3>
-              <p>发邮件至 <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a>，邮件主题以“Project”开头，并说明系统应该做什么，以及哪些地方绝不能出错。Vynatix 会在一个工作日内回复。第一次交谈通常在哥德堡当面进行，此后大部分工作以书面形式进行。</p>
+              <h3 lang="en" dir="ltr">How do we get started?</h3>
+              <p lang="en" dir="ltr">Email <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a> with a subject line starting "Project", and describe what the system should do and what it must not get wrong. Vynatix replies within one working day. The first conversation is usually in person, in Gothenburg, and after that most of the work happens in writing.</p>
             </div>
           </div>
 
-          <h2>延伸阅读</h2>
-          <p><a href="services.html">服务页面</a>介绍了我们做的全部三件事，<a href="work.html">案例页面</a>有三个完整讲述的案例。我们还用瑞典语写了一篇指南，讲述<a href="../ai-assistent-interna-dokument.html" hreflang="sv">如何构建基于内部文档的 AI 助手</a>。</p>
+          <h2 lang="en" dir="ltr">Read more</h2>
+          <p lang="en" dir="ltr">The <a href="services.html">services page</a> covers all three things we do, and the <a href="work.html">cases page</a> has three cases told in full. In Swedish, we have written a guide to <a href="../ai-assistent-interna-dokument.html" hreflang="sv">building an AI assistant over internal documents</a>.</p>
         </div>
       </div>
     </section>
@@ -576,13 +579,13 @@
     <section class="cta-band band--inset inverse" aria-labelledby="cta-title">
       <div class="cta-band__inner">
         <div>
-          <p class="eyebrow">联系我们</p>
-          <h2 class="cta-band__h2" id="cta-title">一起构建<em>接下来的一切。</em></h2>
+          <p lang="en" dir="ltr" class="eyebrow">Contact</p>
+          <h2 lang="en" dir="ltr" class="cta-band__h2" id="cta-title">Let's build <em>what comes next.</em></h2>
         </div>
         <div class="cta-band__actions">
-          <p class="cta-band__lede">告诉我们您的路线图上有什么。您将在一个工作日内收到我们的回复。</p>
-          <a class="btn btn--lg btn--tertiary" href="contact.html">开启对话 <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
-          <p class="cta-band__contact"><a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
+          <p lang="en" dir="ltr" class="cta-band__lede">Tell us what is on your roadmap. You will hear from us within one working day.</p>
+          <a lang="en" dir="ltr" class="btn btn--lg btn--tertiary" href="contact.html">Start the conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact"><a lang="en" dir="ltr" href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
         </div>
       </div>
     </section>
@@ -594,57 +597,61 @@
     <div class="container">
       <div class="site-footer__grid site-footer__grid--four">
         <div class="site-footer__brand">
-          <a href="index.html" class="site-footer__logo" aria-label="Vynatix 首页">
+          <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
             <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
           </a>
-          <p class="site-footer__about">面向成长期企业的资深软件咨询公司。我们的工程师加入您的团队，加快节奏，让您的软件随您的成长而愈发强健。</p>
-          <address class="site-footer__addr">
-            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br> <a href="tel:+46720710676">+46 72 071 06 76</a><br> Mailbox 1611, 411 42 Gothenburg<br> Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Ultra Group 旗下公司</a>
+          <p lang="en" dir="ltr" class="site-footer__about">The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
+          <address lang="en" dir="ltr" class="site-footer__addr">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
+            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
+            Mailbox 1611, 411 42 Gothenburg<br>
+            Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Part of Ultra Group</a>
           </address>
         </div>
         <div>
-          <h2 class="site-footer__h">服务</h2>
+          <h2 lang="en" dir="ltr" class="site-footer__h">Services</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="services.html#ai-engineering">AI 工程</a></li>
-            <li><a href="services.html#cloud-platforms">云平台</a></li>
-            <li><a href="services.html#application-development">应用开发</a></li>
+            <li><a lang="en" dir="ltr" href="services.html#ai-engineering">AI engineering</a></li>
+            <li><a lang="en" dir="ltr" href="services.html#cloud-platforms">Cloud platforms</a></li>
+            <li><a lang="en" dir="ltr" href="services.html#application-development">Application development</a></li>
           </ul>
         </div>
         <div>
-          <h2 class="site-footer__h">公司</h2>
+          <h2 lang="en" dir="ltr" class="site-footer__h">Company</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="about.html">关于我们</a></li>
-            <li><a href="industries.html">行业</a></li>
-            <li><a href="work.html">案例</a></li>
-            <li><a href="blog.html">洞察</a></li>
-            <li><a href="membership.html">职业发展</a></li>
-            <li><a href="contact.html">联系我们</a></li>
+            <li><a lang="en" dir="ltr" href="about.html">About</a></li>
+            <li><a lang="en" dir="ltr" href="industries.html">Industries</a></li>
+            <li><a lang="en" dir="ltr" href="work.html">Cases</a></li>
+            <li><a lang="en" dir="ltr" href="blog.html">Insights</a></li>
+            <li><a lang="en" dir="ltr" href="membership.html">Career</a></li>
+            <li><a lang="en" dir="ltr" href="contact.html">Contact</a></li>
           </ul>
         </div>
         <div>
-          <h2 class="site-footer__h">法律信息</h2>
+          <h2 lang="en" dir="ltr" class="site-footer__h">Legal</h2>
           <ul class="site-footer__links list-reset">
-            <li><a href="../privacy.html" hreflang="en">隐私</a></li>
-            <li><a href="../privacy.html#cookies" data-consent-open hreflang="en">Cookie 设置</a></li>
-            <li><a href="../terms.html" hreflang="en">条款</a></li>
-            <li><a href="../accessibility.html" hreflang="en">无障碍</a></li>
-            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="播放背景动画">暂停背景动画</button></li>
+            <li><a lang="en" dir="ltr" href="../privacy.html" hreflang="en">Privacy</a></li>
+            <li><a lang="en" dir="ltr" href="../privacy.html#cookies" data-consent-open hreflang="en">Cookie settings</a></li>
+            <li><a lang="en" dir="ltr" href="../terms.html" hreflang="en">Terms</a></li>
+            <li><a lang="en" dir="ltr" href="../accessibility.html" hreflang="en">Accessibility</a></li>
+            <li class="motion-item"><button lang="en" dir="ltr" class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
           </ul>
         </div>
       </div>
       <div class="site-footer__fine">
-        <span>© 2026 Vynatix AB</span>
-        <nav class="site-footer__langs" aria-label="语言">
+        <span lang="en" dir="ltr">© 2026 Vynatix AB</span>
+        <nav class="site-footer__langs" aria-label="Language">
           <ul class="site-footer__langlist list-reset">
             <li><a href="../ai-engineering.html" lang="en" hreflang="en">English</a></li>
             <li><a href="../ai-utveckling.html" lang="sv" hreflang="sv">Svenska</a></li>
             <li><a href="../es/ai-engineering.html" lang="es" hreflang="es">Español</a></li>
-            <li><a href="ai-engineering.html" lang="zh-Hans" hreflang="zh-Hans" aria-current="true">中文</a></li>
-            <li><a href="../hi/ai-engineering.html" lang="hi" hreflang="hi">हिन्दी</a></li>
+            <li><a href="ai-engineering.html" lang="fr" hreflang="fr" aria-current="true">Français</a></li>
+            <li><a href="../de/ai-engineering.html" lang="de" hreflang="de">Deutsch</a></li>
+            <li><a href="../ja/ai-engineering.html" lang="ja" hreflang="ja">日本語</a></li>
             <li><a href="../ar/ai-engineering.html" lang="ar" hreflang="ar">العربية</a></li>
           </ul>
         </nav>
-        <span>vynatix.com</span>
+        <span lang="en" dir="ltr">vynatix.com</span>
       </div>
     </div>
   </footer>

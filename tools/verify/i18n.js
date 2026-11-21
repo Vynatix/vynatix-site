@@ -1,4 +1,4 @@
-// The generated languages (es/, zh/, hi/, ar/: LANGS in tools/seo-head.py). The other checks iterate PAGES, the
+// The generated languages (es/, fr/, de/, ja/, ar/: LANGS in tools/seo-head.py). The other checks iterate PAGES, the
 // pages written by hand at the root; this one is for the pages tools/seo-head.py builds from them and from the
 // catalogues in tools/i18n/. Serve the repo root first, as for the others.
 //   node verify/i18n.js            every check below

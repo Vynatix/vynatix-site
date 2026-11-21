@@ -17,7 +17,7 @@ What it rewrites, on every page it is given:
 - the site header, from the HEADER template below (a nav change is made in NAV, then this is run); it stays
   English, with lang="en", on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language versions;
-- the generated languages (LANGS below: Spanish, Chinese, Hindi, Arabic): every English page except
+- the generated languages (LANGS below: Spanish, French, German, Japanese, Arabic): every English page except
   the notices, rebuilt in <code>/ from the catalogue tools/i18n/<code>.json by tools/i18n.py, with
   its own head block, translated header and footer and the language list; tools/i18n/messages.json,
   the list of every message to translate; the draft languages' lines in _config.yml exclude; and,
@@ -138,8 +138,9 @@ LANGS = {
   'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
   'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
   'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
-  'zh': dict(name='中文', tag='zh-Hans', locale='zh_CN', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
-  'hi': dict(name='हिन्दी', tag='hi', locale='hi_IN', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
+  'fr': dict(name='Français', tag='fr', locale='fr_FR', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
+  'de': dict(name='Deutsch', tag='de', locale='de_DE', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
+  'ja': dict(name='日本語', tag='ja', locale='ja_JP', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
   'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-20', checked='', by='', waived='2026-11-20'),
 }
 # The notices are legal text and are not translated: the English text governs, and a generated page

@@ -32,7 +32,7 @@
   // <name>-latin.woff2.
   var DISPLAY_FACES = ['geist-variable', 'fraunces-italic-variable'];
   // Where the site's root is from this page: "" on a page at the root, "../" on
-  // a page of a generated language (es/, zh/ ...), read from this script's own
+  // a page of a generated language (es/, fr/ ...), read from this script's own
   // address, which is the one thing every page spells out.
   var UP = ((document.currentScript && document.currentScript.getAttribute('src')) || '').replace(/app\.js.*$/, '');
 

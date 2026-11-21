@@ -57,9 +57,10 @@ robots.txt          Allows every crawler, names the AI search agents, points at 
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
 llms.txt            A plain-text summary of the company and every page, in both languages
-es/ zh/ hi/ ar/     The generated languages (Spanish, Chinese, Hindi, Arabic): the English pages rebuilt by
-                    tools/seo-head.py from the catalogues in tools/i18n/. Never edited by hand. Live since
-                    20 November 2026, on the owner's decision, before a native reader's check (see Languages)
+es/ fr/ de/ ja/ ar/ The generated languages (Spanish, French, German, Japanese, Arabic): the English pages
+                    rebuilt by tools/seo-head.py from the catalogues in tools/i18n/. Never edited by hand. Live
+                    since 20 November 2026 (es, ar) and 21 November 2026 (fr, de, ja), on the owner's decision,
+                    before a native reader's check (see Languages)
 <32 hex>.txt        The IndexNow key file (tools/indexnow.js proves ownership with it)
 tokens.css          Design system layer 1: the tokens, generated from the system's
                     tokens.json (colour roles for six themes, spacing, radii, type
@@ -897,11 +898,11 @@ linked pages' `<title>` (without the brand suffix) and meta description
 word for word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
 
-**Languages.** The site is in six languages under one table, `LANGS` in `tools/seo-head.py`: English and
-Swedish are *written* (the pages in `PAGES`, by hand, as above), and Spanish, Simplified Chinese, Hindi and
+**Languages.** The site is in seven languages under one table, `LANGS` in `tools/seo-head.py`: English and
+Swedish are *written* (the pages in `PAGES`, by hand, as above), and Spanish, French, German, Japanese and
 Arabic are *generated*. A generated language is every English page except the three notices, rebuilt in a
 folder named by its code (`es/services.html`, home page `es/index.html` at `https://vynatix.com/es/`). The
-English page is the only source: nobody edits a file in `es/`, `zh/`, `hi/` or `ar/`, and a run of
+English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja/` or `ar/`, and a run of
 `python3 tools/seo-head.py` rewrites all of them. How it works:
 
 - *Messages.* `tools/i18n.py` reads the rendered English page and takes out every message: the inner HTML of
@@ -918,9 +919,9 @@ English page is the only source: nobody edits a file in `es/`, `zh/`, `hi/` or `
   Organization node stays the one English node every page carries.
 - *Drift is a failed check.* When an English sentence changes, its message is no longer in the catalogues.
   The generated pages then show that sentence in English, marked `lang="en"`, and `python3 tools/i18n.py`
-  and `tools/verify/i18n.js` fail until all four catalogues have it again. So **an edit to an English page
-  is not finished until the four catalogues are**: run `python3 tools/seo-head.py`, then
-  `python3 tools/i18n.py missing es` (and `zh`, `hi`, `ar`) for the list, add the translations, run the script
+  and `tools/verify/i18n.js` fail until all five catalogues have it again. So **an edit to an English page
+  is not finished until the five catalogues are**: run `python3 tools/seo-head.py`, then
+  `python3 tools/i18n.py missing es` (and `fr`, `de`, `ja`, `ar`) for the list, add the translations, run the script
   again and move the language's `mod` in `LANGS`. `python3 tools/i18n.py prune` drops entries no page uses.
 - *Links.* A link to a page the language has keeps its name; everything else gains `../` (stylesheets,
   images, the notices, the Swedish pages) and a link to a page in another language gets `hreflang`, which
@@ -941,7 +942,7 @@ English page is the only source: nobody edits a file in `es/`, `zh/`, `hi/` or `
   calculator) and the English is only the fallback. A new sentence written by script goes the same way. On a
   page in a language folder `app.js` finds the site's root from its own `src` (`UP`).
 - *Type and direction.* The last block of `styles.css` ("Languages") is all the CSS there is: no tracking,
-  taller display leading and upright emphasis for Chinese, Hindi and Arabic; the system faces of each script
+  taller display leading and upright emphasis for Japanese and Arabic (French and German need nothing); the system faces of each script
   appended to the family lists (**no font is self-hosted for them yet**, an open decision for the owner:
   system faces cost nothing and differ by device); and the few physical sides that right-to-left mirrors,
   most of them in the design system's own sheet. The layout itself is flex, grid and logical properties and
@@ -962,15 +963,27 @@ a translated page is withdrawn with its English source, as the stub in its own l
 two records in `LANGS`: `checked` and `by` (the date of a native reader's check and who made it), or `waived`
 (the date the owner decided to publish without one).
 
-**All four are live since 20 November 2026 on the owner's decision (`waived`), and no native reader has
-checked them: the translations were written by a model that day.** `waived` says exactly that; never put a
+**All five are live on the owner's decision (`waived`): Spanish and Arabic since 20 November 2026, French,
+German and Japanese since 21 November. No native reader has checked them: the translations were written by a
+model on those days.** `waived` says exactly that; never put a
 date in `checked` for a check nobody made. The check is still owed, and `publish.js` prints a note naming the
 languages that lack it on every run. When a reader has been through a language, correct its catalogue, move
 its `mod`, and fill in `checked` and `by`. Still open, and the owner's to give: a sentence in
-`accessibility.html` about the four languages (and, for Arabic, right to left), and the decision above about
+`accessibility.html` about the five languages (and, for Arabic, right to left), and the decision above about
 the consent bar and the notices before analytics is switched on. Adding a language is one line in `LANGS`
 (as a draft first), a catalogue, and for a new script a family list in the "Languages" block; a draft is
 removed by deleting its line, its catalogue and its folder, a live one never.
+
+**The one exception: Chinese and Hindi, deleted on 21 November 2026.** Simplified Chinese (`zh/`) and Hindi
+(`hi/`) went live with the others on 20 November and were removed the next day on the owner's decision, when
+French, German and Japanese replaced them. The owner chose deletion over the withdrawn stub, so their 22 URLs
+answer 404. Their rows stay in `tools/urls.lock` (append-only, and checked against main), and
+`tools/urls.retired` lists each with the date of the removal: `permanence.js` accepts a locked URL that has no
+file only when it is listed there, and fails if a listed URL has a file again, is in `sitemap.xml` or
+`llms.txt`, or is linked from any page. A retired URL is never reused, and a retired language code is not
+brought back without the owner. Asking search engines to drop the URLs (Search Console, Bing Webmaster Tools)
+is the owner's to do. This is not a precedent: any other page or language that has been public is withdrawn as
+the stub (`tools/TAKEDOWN.md`).
 
 **The list pages are withdrawn.** `android-automotive-consultancies-gothenburg.html`, its
 Swedish twin `konsultbolag-android-automotive-goteborg.html` and

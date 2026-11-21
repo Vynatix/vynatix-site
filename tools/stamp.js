@@ -26,7 +26,7 @@
 //
 // Usage, from tools/:
 //   node stamp.js           rewrite the stamps in every root *.html page and every page of a generated
-//                           language (es/, zh/ ...: the folders tools/i18n/messages.json lists)
+//                           language (es/, fr/ ...: the folders tools/i18n/messages.json lists)
 //   node stamp.js --check   exit 1 if any stamp is missing or out of date
 //
 // Run it after any change to one of the five files, then commit the pages with

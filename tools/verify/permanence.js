@@ -13,7 +13,9 @@
 //     to it, however it is written), so nothing of the old text is served and nothing points at the stub
 //  L  tools/urls.lock lists every URL ever registered, one row per URL as "<url> <YYYY-MM-DD>": each locked URL
 //     still has a file (the live page or the stub), every registered URL is locked, no pub date moved, and,
-//     when git can show origin/main's lock, no row that is on main has been changed or removed
+//     when git can show origin/main's lock, no row that is on main has been changed or removed. The one
+//     exception to "still has a file" is a URL in tools/urls.retired (removed on the owner's decision): it must be
+//     locked, have no file, and be in no sitemap.xml or llms.txt and linked by no page
 //  C  no [[CONFIRM: ...]] marker on any page that is not one of the two notices, nor in llms.txt, robots.txt,
 //     sitemap.xml, the manifest or a feed (release-gate.js reads only the notices, and only at the analytics
 //     flip, so a marker in a post would ship)
@@ -149,9 +151,41 @@ function run(root = ROOT, pages = PAGES) {
       if (m[1] in locked) problems.push(`duplicate row for ${m[1]}; the lock is append-only, one row per URL`);
       locked[m[1]] = m[2];
     }
+    // R. URLs removed on the owner's decision (tools/urls.retired): locked, and gone on purpose.
+    const retired = {};
+    const retiredText = tryRead(path.join('tools', 'urls.retired'));
+    for (const raw of (retiredText || '').split(/\r?\n/)) {
+      const l = raw.trim();
+      if (!l || l.startsWith('#')) continue;
+      const m = /^(https:\/\/vynatix\.com\/\S*) (\d{4}-\d{2}-\d{2})$/.exec(l);
+      if (!m) { problems.push(`tools/urls.retired: not a row "<url> <YYYY-MM-DD>": ${l.slice(0, 80)}`); continue; }
+      if (m[1] in retired) problems.push(`tools/urls.retired: duplicate row for ${m[1]}`);
+      retired[m[1]] = m[2];
+    }
     for (const u of Object.keys(locked)) {
       const f = fileOf(u);
+      if (u in retired) continue;
       if (!f || !fs.existsSync(path.join(root, f))) problems.push(`gone: ${u} was public and has no file. Restore it and register it with status='withdrawn' (tools/TAKEDOWN.md)`);
+    }
+    const allHtml = [...htmlFiles];
+    for (const d of fs.readdirSync(root, { withFileTypes: true })) {
+      if (d.isDirectory() && /^[a-z]{2}$/.test(d.name)) for (const f of fs.readdirSync(path.join(root, d.name))) if (/\.html$/.test(f)) allHtml.push(`${d.name}/${f}`);
+    }
+    const retiredPaths = new Set(Object.keys(retired).map((u) => '/' + u.slice(SITE.length)));
+    for (const u of Object.keys(retired)) {
+      const f = fileOf(u);
+      if (!(u in locked)) problems.push(`retired but never locked: ${u} (tools/urls.retired lists only URLs that were public)`);
+      if (f && fs.existsSync(path.join(root, f))) problems.push(`retired but still has a file: ${u} (a retired URL is never reused)`);
+      if (sitemap.includes(`<loc>${u}</loc>`)) problems.push(`retired but in sitemap.xml: ${u}`);
+      if (llms.includes(u)) problems.push(`retired but in llms.txt: ${u}`);
+    }
+    if (retiredPaths.size) for (const other of allHtml) {
+      const src = tryRead(other) || '';
+      const base = SITE + other;
+      const hit = ['a', 'link', 'area'].map((tag) => parseTags(src, tag)).flat().map((t) => {
+        try { const r = new URL(decodeEntities(String(t.attrs.href || '')).replace(/[\t\n\r]/g, '').trim(), base); return host.test(r.hostname) ? r.pathname.replace(/\/$/, '/index.html') : null; } catch (e) { return null; }
+      }).find((pn) => pn && [...retiredPaths].some((rp) => rp.replace(/\/$/, '/index.html') === pn));
+      if (hit) problems.push(`${other} links to the retired ${hit}`);
     }
     for (const f of files) {
       if (!(urlOf(f) in locked)) problems.push(`not locked: ${urlOf(f)} (run python3 tools/seo-head.py)`);
@@ -168,7 +202,7 @@ function run(root = ROOT, pages = PAGES) {
         else if (locked[m[1]] !== m[2]) problems.push(`lock row changed: ${m[1]} is ${locked[m[1]]}, main has ${m[2]} (a row is never edited once its URL has been on main)`);
       }
     }
-    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file, none unregistered, no pub date moved${mainLock ? ', rows on main unchanged' : ' (origin/main has no lock yet)'}`, problems.join('; '));
+    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file or is retired (${Object.keys(retired).length} in tools/urls.retired, none linked), none unregistered, no pub date moved${mainLock ? ', rows on main unchanged' : ' (origin/main has no lock yet)'}`, problems.join('; '));
   }
 
   // C. unresolved owner-fact markers
@@ -256,14 +290,14 @@ function selfTest() {
   const copy = () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vynatix-perm-'));
     for (const f of fs.readdirSync(ROOT)) if (/\.html$/.test(f) || PUBLISHED_TEXT.includes(f)) { if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(dir, f)); }
-    // The folders of the generated languages (es/, zh/ ...): their pages are in the lock once a language is live.
+    // The folders of the generated languages (es/, fr/ ...): their pages are in the lock once a language is live.
     for (const d of fs.readdirSync(ROOT, { withFileTypes: true })) {
       if (!d.isDirectory() || !/^[a-z]{2}$/.test(d.name)) continue;
       fs.mkdirSync(path.join(dir, d.name), { recursive: true });
       for (const f of fs.readdirSync(path.join(ROOT, d.name))) if (/\.html$/.test(f)) fs.copyFileSync(path.join(ROOT, d.name, f), path.join(dir, d.name, f));
     }
     fs.mkdirSync(path.join(dir, 'tools', 'seo'), { recursive: true });
-    for (const f of ['seo-head.py', 'urls.lock']) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
+    for (const f of ['seo-head.py', 'urls.lock', 'urls.retired']) if (fs.existsSync(path.join(ROOT, 'tools', f))) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
     for (const f of fs.readdirSync(path.join(ROOT, 'tools', 'seo'))) fs.copyFileSync(path.join(ROOT, 'tools', 'seo', f), path.join(dir, 'tools', 'seo', f));
     return dir;
   };
@@ -299,6 +333,11 @@ function selfTest() {
     ['an unknown registry key', (d) => { edit(d, PY, (s) => s.replace("'terms.html':        dict(lang='en',", "'terms.html':        dict(staus='withdrawn', lang='en',")); return PAGES; }, /unknown registry key/],
     ['a duplicate row in the lock', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/about.html 2026-07-01\n'); return PAGES; }, /duplicate row/],
     ['a locked URL with no file', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); return PAGES; }, /gone: https:\/\/vynatix\.com\/ghost\.html/],
+    ['control: a locked URL with no file, listed in urls.retired, passes', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); return PAGES; }, true],
+    ['a retired URL that was never locked', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/never.html 2026-11-21\n'); return PAGES; }, /retired but never locked/],
+    ['a retired URL that still has a file', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/about.html 2026-11-21\n'); return PAGES; }, /retired but still has a file/],
+    ['a page linking a retired URL', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/xx/ 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/xx/ 2026-11-21\n'); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="xx/index.html">x</a></main>')); return PAGES; }, /about\.html links to the retired/],
+    ['a retired URL still in llms.txt', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); edit(d, 'llms.txt', (s) => s + '- [x](https://vynatix.com/ghost.html)\n'); return PAGES; }, /retired but in llms\.txt/],
     ['a moved pub date', (d) => { edit(d, PY, (s) => s.replace(/('about\.html':[^\n]*?\bpub=')\d{4}-\d{2}-\d{2}'/, (m, a) => a + "2001-01-01'")); return PAGES; }, /pub moved/],
     ['a [[CONFIRM marker in llms.txt', (d) => { edit(d, 'llms.txt', (s) => s + '[[CONFIRM: a figure]]\n'); return PAGES; }, /found in llms\.txt/],
     ['a [[CONFIRM marker in a post', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace('<h1', '[[CONFIRM: x]]<h1')); return PAGES; }, /found in choose-a-software-consultancy\.html/],

@@ -18,7 +18,11 @@
 //    words);
 //  - the page's direction is the language's; the strings app.js writes come from the page (the background motion
 //    button, the rate calculator's announcement);
-//  - axe finds nothing on each language's home page, Career page and one long page.
+//  - axe finds nothing on each language's home page, Career page and one long page;
+//  - on the pages of a script Geist does not draw (Japanese, Arabic), the browser is asked which font drew each
+//    run of text (the DevTools protocol's platform fonts): the script's text face where Geist stands, its accent
+//    face where Fraunces italic stands, and never a device font, which is what a character missing from the
+//    subsets in fonts/ falls back to. `python3 tools/lang-fonts.py` cuts them again.
 const fs = require('fs');
 const path = require('path');
 const { ROOT, PAGES, BASE, THEMES, readLangs, readRegistry, generatedPages, pinTheme, launch, pool } = require('./_common');
@@ -238,12 +242,83 @@ async function axe(browser) {
   add(!problems.length, `axe finds nothing on ${AXE_PAGES.join(', ')} of each language (${jobs.length} scans)`, few(problems, 6));
 }
 
+// The faces of the scripts Geist does not draw: tokens.css declares them (the end of its @font-face block),
+// styles.css lists them after the Latin faces ("Languages"), tools/lang-fonts.py cuts the files. `own` is what the
+// script's faces are asked to draw, the unicode-range of their @font-face rules.
+const SCRIPT_FACES = {
+  ja: { text: ['Geist', 'M PLUS 2'], accent: ['Fraunces', 'Shippori Mincho'], own: [[0x2E80, 0x2FDF], [0x3000, 0x30FF], [0x31F0, 0x31FF], [0x3400, 0x4DBF], [0x4E00, 0x9FFF], [0xF900, 0xFAFF], [0xFF00, 0xFFEF]] },
+  ar: { text: ['Geist', 'Noto Sans Arabic'], accent: ['Fraunces', 'Amiri'], own: [[0x0600, 0x06FF], [0x0750, 0x077F], [0xFB50, 0xFDFF], [0xFE70, 0xFEFF]] },
+};
+
+async function faces(browser) {
+  const problems = [];
+  let runs = 0;
+  const jobs = pages.filter((p) => SCRIPT_FACES[p.split('/')[0]]);
+  await pool(jobs, 4, async (p) => {
+    const want = SCRIPT_FACES[p.split('/')[0]];
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    await ctx.addInitScript(pinTheme, THEMES[0]);
+    const page = await ctx.newPage();
+    await page.goto(BASE + p, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    // Every element that sets characters of the script in the page's own language (an English island and the
+    // other languages' names in the footer list are not this script's faces' business), and the role its
+    // family list gives it: the accent wherever the list opens with Fraunces.
+    const probes = await page.evaluate((own) => {
+      const mine = (c) => own.some(([a, b]) => c >= a && c <= b);
+      const out = [];
+      const seen = new Set();
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        const el = n.parentElement;
+        if (!el || seen.has(el) || el.closest('script, style, noscript, .svg-defs')) continue;
+        seen.add(el);
+        const said = el.closest('[lang]');
+        if (!said || said.lang !== document.documentElement.lang) continue;
+        const text = [...el.childNodes].filter((c) => c.nodeType === 3).map((c) => c.nodeValue).join('');
+        const chars = [...text].filter((c) => mine(c.codePointAt(0)));
+        if (!chars.length) continue;
+        el.setAttribute('data-face-probe', String(out.length));
+        // The protocol reports the fonts of everything inside the element, so a headline answers for its accent
+        // too (the <em> is asked again on its own, where only the accent face will do).
+        const role = (e) => (/^["']?Fraunces/.test(getComputedStyle(e).fontFamily) ? 'accent' : 'text');
+        out.push({
+          role: role(el),
+          roles: [...new Set([el, ...el.querySelectorAll('*')].map(role))],
+          where: el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.split(' ')[0] : ''),
+          sample: chars.slice(0, 10).join(''),
+        });
+      }
+      return out;
+    }, want.own);
+    const cdp = await ctx.newCDPSession(page);
+    await cdp.send('DOM.enable');
+    await cdp.send('CSS.enable');
+    const { root } = await cdp.send('DOM.getDocument', { depth: 0 });
+    const { nodeIds } = await cdp.send('DOM.querySelectorAll', { nodeId: root.nodeId, selector: '[data-face-probe]' });
+    for (const nodeId of nodeIds) {
+      const { attributes } = await cdp.send('DOM.getAttributes', { nodeId });
+      const probe = probes[Number(attributes[attributes.indexOf('data-face-probe') + 1])];
+      const { fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId });
+      if (!fonts.length) continue;                        // not rendered (a hidden panel)
+      runs += 1;
+      // A variable file reports the name of its default instance ("M PLUS 2 Thin"): compare the opening.
+      const allowed = probe.roles.flatMap((r) => want[r]);
+      const stray = fonts.filter((f) => !f.isCustomFont || !allowed.some((name) => f.familyName.startsWith(name)));
+      if (stray.length) problems.push(`${p}: "${probe.sample}" in ${probe.where} is drawn in ${stray.map((f) => f.familyName + (f.isCustomFont ? '' : ' (a device font)')).join(', ')}, not ${want[probe.role][1]} (the ${probe.role} face)`);
+    }
+    await ctx.close();
+  });
+  add(!problems.length && runs > 0, `Japanese and Arabic are drawn by their own faces and no device font (${runs} runs of text on ${jobs.length} pages; python3 tools/lang-fonts.py cuts the fonts again)`, few(problems, 6));
+}
+
 (async () => {
   if (!process.argv.includes('--static')) {
     const browser = await launch();
     await sweep(browser);
     await strings(browser);
     await axe(browser);
+    await faces(browser);
     await browser.close();
   }
   const failed = results.filter((r) => !r.ok).length;

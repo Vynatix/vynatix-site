@@ -75,7 +75,8 @@ hero-bg.css         The hero background, the drafting sheet (only index.html lin
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
                     photographs (jpg + webp), generated pictures (webp, light and dark), app icons, the masks of the
                     hero's drafting sheet (bg-sheet-*.svg) and of its four stages (stage-*.svg)
-fonts/              Self-hosted woff2 subsets of the system's faces, plus licences
+fonts/              Self-hosted woff2 subsets of the system's faces and of the four Japanese and Arabic
+                    faces (*-ja.woff2, *-ar.woff2), plus licences
 favicon.svg/.ico    Theme-aware SVG icon (Forest / Cream) + 16/32/48 ICO fallback
 apple-touch-icon.png
 site.webmanifest    Name, colours and icons for installed/Android use
@@ -942,14 +943,51 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   calculator) and the English is only the fallback. A new sentence written by script goes the same way. On a
   page in a language folder `app.js` finds the site's root from its own `src` (`UP`).
 - *Type and direction.* The last block of `styles.css` ("Languages") is all the CSS there is: no tracking,
-  taller display leading and upright emphasis for Japanese and Arabic (French and German need nothing); the system faces of each script
-  appended to the family lists (**no font is self-hosted for them yet**, an open decision for the owner:
-  system faces cost nothing and differ by device); and the few physical sides that right-to-left mirrors,
-  most of them in the design system's own sheet. The layout itself is flex, grid and logical properties and
+  taller display leading and upright emphasis for Japanese and Arabic (French and German need nothing); the
+  script's own faces appended to the family lists (next point); and the few physical sides that right-to-left
+  mirrors, most of them in the design system's own sheet. The layout itself is flex, grid and logical properties and
   mirrors with `dir="rtl"`. A phone number, an address, the brand line and any message that stays in Latin
   script get `dir="ltr"` on an Arabic page. `hero-bg.css` is not linked: the hero background is the English
   home page's alone, and the hero fit's constants were measured on English and Swedish copy, so a longer
   translation simply scrolls (`min-height`, never `height`).
+- *The faces of the other scripts* (the owner asked for them on 22 November 2026: faces in the spirit of the
+  English type). Spanish, French, German and Swedish are Latin and are set in Geist and Fraunces like English.
+  Japanese and Arabic get two faces each, **for the two roles the Latin type has**, self-hosted like the rest:
+
+  | | where Geist stands (text, headlines, the interface) | where Fraunces italic stands (the accent) |
+  |---|---|---|
+  | Japanese | M PLUS 2, variable (`fonts/mplus2-variable-ja.woff2`) | Shippori Mincho Medium (`fonts/shippori-mincho-500-ja.woff2`) |
+  | Arabic | Noto Sans Arabic, variable (`fonts/noto-sans-arabic-variable-ar.woff2`) | Amiri Regular (`fonts/amiri-400-ar.woff2`) |
+
+  The text faces were chosen by measurement and then by eye on the real pages: both are drawn in one even
+  stroke, and their stems are within a few per cent of Geist's at each weight the site uses (M PLUS 2 between
+  0.95 and 1.07 of Geist's stem from 400 to 700, Noto Sans Arabic 0.91 to 0.94), so a page has the same colour
+  in every language. The accent is a translation of the role, not of the shape: these scripts have no italic
+  (a slanted copy is what a browser draws, and the Languages block forbids it), and what they have in its
+  place is a second genre, a Mincho against the gothic and a Naskh against the sans. Before this the accent
+  was simply lost on those pages. Shippori Mincho ships as its Medium, declared at weight 400: a Mincho reads
+  lighter than a gothic at the same number. None of the four declares a Reserved Font Name, so a subset may
+  keep its name (IBM Plex, Readex Pro and Aref Ruqaa, which were also considered, reserve theirs).
+  **Geist and Fraunces still draw every Latin letter, digit and the brand name on those pages**: the script
+  faces hold no Latin and their `@font-face` rules (the end of the block in `tokens.css`) carry a
+  `unicode-range` of their own script, so a page in another language never fetches one either. After each
+  face the family list names the device's faces of the same genre, for the moment before the file arrives
+  (`font-display: swap`). Japanese headlines, pull quotes and the case metric also set kana to their own
+  widths (`palt`) and break lines between phrases where the browser can (`word-break: auto-phrase`).
+  **The files are cut from the pages.** A Japanese family is 4 to 9 MB; the pages use about 650 of its
+  characters, so `python3 tools/lang-fonts.py` reads the generated pages and subsets each source to what they
+  set (196 KB for M PLUS 2 with its weight axis, 30 to 40 KB for each of the other three). Kana and the Arabic
+  language's whole repertoire are always in the cut, so only a new kanji asks for a new one: **after a
+  translation adds a kanji, or puts a new one in an accent, `node tools/verify/i18n.js` fails, names the
+  characters and says which face should have drawn them; run `python3 tools/lang-fonts.py` and commit the
+  fonts with the catalogues.** That check asks the browser which font drew each run of text (the DevTools
+  protocol's platform fonts), so it also fails on a wrong `unicode-range`, a family list that drops a face or
+  a file that does not load. The sources are fetched from google/fonts and pinned by SHA-256 in the script's
+  `FACES` table, which is also where a face is swapped: change the source and the file name there, the family
+  name in `tokens.css`, the list in the Languages block and `SCRIPT_FACES` in `verify/i18n.js`, and look at
+  the pages in both themes. **No native reader has judged these faces**, as none has checked the translations:
+  the choice is the owner's, and a reader's verdict on register (above all on Amiri as the accent) is welcome.
+  The other languages' names in the footer list (日本語 on an English page) are left to the device's fonts.
 
 **A generated language is a draft until it is set live, and the brand voice asks for a native reader's check
 first.** `status='draft'` in `LANGS` means: built and checked, but its folder is named in `_config.yml`
@@ -1378,7 +1416,9 @@ preloads the drawn direction's display face and its italic (Fraunces for
 Forest, Instrument Serif for Teal, Geist and Fraunces italic for Monochrome),
 one for each line of the hero headline. Instrument Serif and JetBrains
 Mono are SIL Open Font License fonts (`fonts/licences/`), Fraunces and Geist
-too. **Aptos is Microsoft's typeface**: the design system itself says to check
+too, and so are the four faces of the other scripts (M PLUS 2, Shippori Mincho, Noto Sans Arabic, Amiri:
+*Languages*, "The faces of the other scripts"; they are cut by `tools/lang-fonts.py`, not by the commands
+above). **Aptos is Microsoft's typeface**: the design system itself says to check
 its terms before shipping it outside Vynatix's own documents, and that check
 has not been recorded here. If it fails, delete the seven `aptos-*.woff2`
 files and their `@font-face` rules; `--font-body` falls back to Geist. Don't

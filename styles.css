@@ -2575,10 +2575,18 @@ body::after {
 }
 
 /* Japanese and Arabic: no capitals and no italics, letters that join or carry no spaces, and
-   taller lines. Tracking goes to zero (spacing breaks joined letters and loosens kana), the tight
-   display leadings open up, and each family list gains the system faces of the script after the
-   site's own: the Latin stays in Geist, Aptos and Fraunces, the rest falls through to a face every
-   current system ships. No font is downloaded for them. French and German need nothing here.
+   taller lines. Tracking goes to zero (spacing breaks joined letters and loosens kana) and the
+   tight display leadings open up.
+   Each family list gains the script's own face after the Latin one, so the two roles of the
+   Latin type survive the change of script. Where Geist stands: M PLUS 2 for Japanese and Noto
+   Sans Arabic for Arabic, both drawn in one even stroke at Geist's weights. Where Fraunces
+   italic stands, the accent: these scripts have no italic, and what they have in its place is a
+   second genre, so the accent is Shippori Mincho (a Mincho against the gothic) and Amiri (a
+   Naskh against the sans). The four are self-hosted subsets (tokens.css, the end of its
+   @font-face block; tools/lang-fonts.py cuts them from the generated pages) and hold no Latin:
+   letters, digits and the brand name stay in Geist and Fraunces in every language. After them
+   come the device's faces of the same genre, for the moment before the file arrives.
+   French and German need nothing here.
    Only the family tokens change (--font-sans, --font-fraunces, --font-aptos), never the roles
    (--font-display, --font-body, --font-editorial): colors_and_type.css maps roles to families per
    direction, and Monochrome sets display and body in Geist. Setting a role here outranks that map
@@ -2593,17 +2601,17 @@ body::after {
   --leading-tight: 1.3;
   --leading-snug: 1.35;
   --leading-headline: 1.45;
-  --font-sans: 'Geist', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
-  --font-fraunces: 'Fraunces', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
-  --font-aptos: 'Aptos', 'Geist', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
+  --font-sans: 'Geist', 'M PLUS 2', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
+  --font-fraunces: 'Fraunces', 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+  --font-aptos: 'Aptos', 'Geist', 'M PLUS 2', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', 'Noto Sans CJK JP', system-ui, sans-serif;
 }
 :root:lang(ar) {
   --leading-tight: 1.4;
   --leading-snug: 1.45;
   --leading-headline: 1.5;
-  --font-sans: 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
-  --font-fraunces: 'Fraunces', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', sans-serif;
-  --font-aptos: 'Aptos', 'Geist', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', 'Tahoma', system-ui, sans-serif;
+  --font-sans: 'Geist', 'Noto Sans Arabic', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+  --font-fraunces: 'Fraunces', 'Amiri', 'Geeza Pro', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+  --font-aptos: 'Aptos', 'Geist', 'Noto Sans Arabic', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Tahoma', system-ui, sans-serif;
 }
 /* An English island on such a page (the brand line in the home hero, a sentence not yet
    translated) keeps the system's own figures: these six repeat tokens.css, "Tracking" and
@@ -2624,6 +2632,15 @@ body::after {
 /* Japanese has no spaces to break at: let a line end between any two characters (strict kinsoku, so no
    line opens on small kana or closing punctuation), never inside a Latin word. */
 :root:lang(ja) body { line-break: strict; word-break: normal; overflow-wrap: anywhere; }
+/* Large Japanese: kana set to their own widths instead of the full square (palt, the tight setting
+   Geist's display tracking gives the Latin; the first four features repeat the body's, since the
+   property replaces the list), and a line that ends between phrases, not inside a word, where the
+   browser can tell (auto-phrase; elsewhere the rule above still holds). The English brand line is
+   exempt by its lang. */
+:root:lang(ja) :is(h1, h2, h3, blockquote, .case__metric--text):lang(ja) {
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1, 'palt' 1;
+  word-break: auto-phrase;
+}
 
 /* Right to left (Arabic). The layout above is flex, grid and logical properties, so it mirrors
    with the document; these are the few physical sides left, most of them in the design

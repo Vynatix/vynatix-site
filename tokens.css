@@ -977,3 +977,43 @@
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+/* The scripts Geist does not draw. The site's own, like the src lines above: the design system
+   has no face for Japanese or Arabic. Two per language, for the two roles the Latin type has:
+   the text face stands where Geist does and the accent face where Fraunces italic does
+   (styles.css, "Languages", lists them after Geist and Fraunces). Each file is a subset cut from
+   the generated pages by tools/lang-fonts.py; unicode-range keeps a face to its own script, so
+   Latin letters, digits and the brand name stay in Geist, and a page in another language never
+   fetches one. Shippori Mincho is its Medium, declared at 400: a Mincho reads lighter than a
+   gothic at the same number, and 400 is the weight every accent asks for. */
+@font-face {
+  font-family: "M PLUS 2";
+  src: url("fonts/mplus2-variable-ja.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2E80-2FDF, U+3000-30FF, U+31F0-31FF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
+}
+@font-face {
+  font-family: "Shippori Mincho";
+  src: url("fonts/shippori-mincho-500-ja.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2E80-2FDF, U+3000-30FF, U+31F0-31FF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
+}
+@font-face {
+  font-family: "Noto Sans Arabic";
+  src: url("fonts/noto-sans-arabic-variable-ar.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: "Amiri";
+  src: url("fonts/amiri-400-ar.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF;
+}

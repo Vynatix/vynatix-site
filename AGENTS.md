@@ -724,7 +724,8 @@ each opening with a promise and backed by a fact, in the order a leading consult
 uses. `<main>` carries the class `home`, which scopes the page's own layout rules. After the hero
 (the brand line "Engineering that compounds." as the headline, two buttons, and the client row
 under the label "Trusted by companies that set the standard", the companies outside automotive
-first) comes a contents row (`.toc`, a `<nav>` of plain anchor links, one per section, in page
+first, its one line ending in a link to `industries.html`, the page that says what was built
+for which of them) comes a contents row (`.toc`, a `<nav>` of plain anchor links, one per section, in page
 order: add, rename or move a section and this row changes with it). The row stays in the page:
 the header is the only thing that pins. (Until 20 November 2026 it pinned under the header on
 wide screens, which put a second bar over a fifth of a laptop window; that block is gone from
@@ -749,7 +750,11 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   a figure and its sentence go in separate `<p>` elements, as on `work.html`.
 - `#cases`, "Real results, in production": the three published cases as `.case` cards
   (`.cases--lead`), the regulated client first as the tall card and the other two as compact
-  rows beside it from 905px, each one link to its section of `work.html`. Their pictures are
+  rows beside it from 905px, each one link to its section of `work.html`: the heading is the
+  link and covers the card, and the "Read the case" line under the figure repeats it for the
+  eye and for a reader of plain text (`tabindex="-1"` and `aria-hidden`, so a keyboard and a
+  screen reader meet one link per card, the heading). Each card says what the system is or what
+  was measured, in sentences taken from `work.html`: change a case there first. Their pictures are
   generated still lifes from the same set as the Services picture (bound documents with brass
   page markers, a stopwatch over a long and a short pencil line, a radio tuning dial), set as
   decorative CSS backgrounds on `.case__img--*`. Under the cards: the link to all cases and the
@@ -759,7 +764,8 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   under the heading the hero's drawing at four stages on one datum line (`.grow`, four
   `aria-hidden` `.fig` spans, each a mask over a role colour; the last carries the bronze edge).
   The owner preferred these drawn frames to a film of the drawing being made (20 November
-  2026): do not replace them with video. The
+  2026): do not replace them with video. Under the lead, one link to `contact.html#faq`, where
+  the questions say how the work starts, how it is billed and reported, and whose the code is. The
   plan's closing sentence, "Start with one engineer and add more as you grow.", is left out on the
   owner's decision of 20 November 2026: do not add it.
 - `#join`, "Great software comes from great people", with the "Join us" link (see *Audience
@@ -769,7 +775,18 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   a second grid of three, and a link to `blog.html`. Every post (`kind='post'`) must be among them (`permanence.js`
   fails otherwise), and each entry repeats the linked page's `<title>` (without the brand suffix)
   and meta description word for word; a Swedish page's entry carries `lang="sv"`.
-- The call-to-action band (`#contact`), "Let's build what comes next."
+- The call-to-action band (`#contact`), "Let's build what comes next." Its contact lines carry
+  "Part of Ultra Group" with the footer's link, and no sentence about the group beyond that.
+
+**What the Geoptie audit of 23 November 2026 changed** (76 of 100 on the live page; its reader
+drops a link inside a heading and the footer, and it judges only what the page itself says).
+Each of its comments was answered with a fact a published page already carried, and with a link
+to that page: the case cards (above), the client row's link to `industries.html`, the
+Partnership link to the questions on `contact.html`, the Ultra Group line in the closing band,
+and the meta description, which is now the first two sentences of the company sentence (147
+characters, so a result shows it whole; the JSON-LD keeps all three). What it asked for that
+only the owner can supply is not on the page: the regulated client's name, what was done for
+each company on the client row, and how the 47 and the 6 minutes were measured.
 
 **The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
 the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no

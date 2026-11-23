@@ -14,10 +14,10 @@
    ]
   },
   {
-   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
    "pages": [
     "index.html",
-    "choose-a-software-consultancy.html"
+    "contact.html"
    ]
   },
   {
@@ -266,7 +266,7 @@
    ]
   },
   {
-   "id": "The standard they demand, at the pace your growth needs.",
+   "id": "The standard they demand, at the pace your growth needs. <1>See what we build in each industry</1>.",
    "pages": [
     "index.html"
    ]
@@ -501,7 +501,7 @@
    ]
   },
   {
-   "id": "Every answer comes from approved documents.",
+   "id": "A closed-domain assistant that answers only from approved documents. Questions outside the documents go to a person.",
    "pages": [
     "index.html"
    ]
@@ -510,6 +510,14 @@
    "id": "Every answer cites its source",
    "pages": [
     "index.html"
+   ]
+  },
+  {
+   "id": "Read the case",
+   "pages": [
+    "index.html",
+    "industries.html",
+    "ai-engineering.html"
    ]
   },
   {
@@ -526,7 +534,7 @@
    ]
   },
   {
-   "id": "On every commit, for the whole team, with the same tests and coverage.",
+   "id": "Engineers waited 47 minutes for every build. Together with Volvo Cars, we rebuilt the pipeline: 6 minutes on every commit, for the whole team, with the same tests and coverage.",
    "pages": [
     "index.html"
    ]
@@ -583,6 +591,12 @@
   },
   {
    "id": "When your roadmap outgrows your team, our senior engineers join you and raise the pace. You keep the lead on your product and work directly with the people who do the work. You see progress every week, and everything we build is yours.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "How the work starts and how it is billed",
    "pages": [
     "index.html"
    ]
@@ -685,10 +699,9 @@
    ]
   },
   {
-   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Privacy notice</6>",
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Part of Ultra Group</6><7/> <8>Privacy notice</8>",
    "pages": [
-    "index.html",
-    "blog.html"
+    "index.html"
    ]
   },
   {
@@ -1230,13 +1243,6 @@
    "id": "Building for a regulated market? Bring AI into your product and keep full control of your data. We build assistants that answer only from approved documents, on-prem or in a sovereign cloud. Our consultants have also built for banking, health and digital identity.",
    "pages": [
     "industries.html"
-   ]
-  },
-  {
-   "id": "Read the case",
-   "pages": [
-    "industries.html",
-    "ai-engineering.html"
    ]
   },
   {
@@ -2335,12 +2341,6 @@
    ]
   },
   {
-   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
    "id": "AI engineering: assistants, agents and automation that deliver in production.",
    "pages": [
     "contact.html"
@@ -2511,6 +2511,12 @@
   },
   {
    "id": "These guides are written in Swedish for Swedish readers. They are listed with the other Swedish pages on <1>the Swedish home page</1>.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Privacy notice</6>",
    "pages": [
     "blog.html"
    ]
@@ -3707,6 +3713,12 @@
   },
   {
    "id": "Hours should be reported regularly, preferably every week, and in enough detail for you to see what the time was spent on. The invoice should be possible to check against the report.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
    "pages": [
     "choose-a-software-consultancy.html"
    ]

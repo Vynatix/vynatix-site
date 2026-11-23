@@ -205,22 +205,122 @@
   </url>
   <url>
     <loc>https://vynatix.com/testautomatisering.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/systemutveckling.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/systemintegration-och-forvaltning.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ai-i-befintlig-produkt.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fordonsmjukvara.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
@@ -244,7 +344,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/about.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/services.html</loc>
@@ -255,7 +355,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/services.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/services.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/services.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/industries.html</loc>
@@ -266,7 +366,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/industries.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/industries.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/industries.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/work.html</loc>
@@ -277,7 +377,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/work.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/work.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/membership.html</loc>
@@ -288,7 +388,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/membership.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/membership.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/membership.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/contact.html</loc>
@@ -299,7 +399,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/contact.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/contact.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/blog.html</loc>
@@ -322,7 +422,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/ai-engineering.html</loc>
@@ -334,7 +434,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/choose-a-software-consultancy.html</loc>
@@ -346,7 +446,67 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/choose-a-software-consultancy.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/es/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/es/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/es/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/es/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/es/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/</loc>
@@ -369,7 +529,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/about.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/services.html</loc>
@@ -380,7 +540,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/services.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/services.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/services.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/industries.html</loc>
@@ -391,7 +551,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/industries.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/industries.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/industries.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/work.html</loc>
@@ -402,7 +562,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/work.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/work.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/membership.html</loc>
@@ -413,7 +573,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/membership.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/membership.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/membership.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/contact.html</loc>
@@ -424,7 +584,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/contact.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/contact.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/blog.html</loc>
@@ -447,7 +607,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/ai-engineering.html</loc>
@@ -459,7 +619,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/choose-a-software-consultancy.html</loc>
@@ -471,7 +631,67 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/choose-a-software-consultancy.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fr/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fr/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fr/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fr/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fr/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/</loc>
@@ -494,7 +714,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/about.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/services.html</loc>
@@ -505,7 +725,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/services.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/services.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/services.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/industries.html</loc>
@@ -516,7 +736,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/industries.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/industries.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/industries.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/work.html</loc>
@@ -527,7 +747,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/work.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/work.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/membership.html</loc>
@@ -538,7 +758,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/membership.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/membership.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/membership.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/contact.html</loc>
@@ -549,7 +769,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/contact.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/contact.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/blog.html</loc>
@@ -572,7 +792,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/ai-engineering.html</loc>
@@ -584,7 +804,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/choose-a-software-consultancy.html</loc>
@@ -596,7 +816,67 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/choose-a-software-consultancy.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/de/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/de/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/de/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/de/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/de/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/</loc>
@@ -619,7 +899,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/about.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/services.html</loc>
@@ -630,7 +910,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/services.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/services.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/services.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/industries.html</loc>
@@ -641,7 +921,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/industries.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/industries.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/industries.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/work.html</loc>
@@ -652,7 +932,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/work.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/work.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/membership.html</loc>
@@ -663,7 +943,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/membership.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/membership.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/membership.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/contact.html</loc>
@@ -674,7 +954,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/contact.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/contact.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/blog.html</loc>
@@ -697,7 +977,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/ai-engineering.html</loc>
@@ -709,7 +989,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/choose-a-software-consultancy.html</loc>
@@ -721,7 +1001,67 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/choose-a-software-consultancy.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ja/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ja/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ja/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ja/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ja/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/</loc>
@@ -744,7 +1084,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/about.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/about.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/services.html</loc>
@@ -755,7 +1095,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/services.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/services.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/services.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/industries.html</loc>
@@ -766,7 +1106,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/industries.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/industries.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/industries.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/work.html</loc>
@@ -777,7 +1117,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/work.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/work.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/membership.html</loc>
@@ -788,7 +1128,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/membership.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/membership.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/membership.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/contact.html</loc>
@@ -799,7 +1139,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/contact.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/contact.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/blog.html</loc>
@@ -822,7 +1162,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/android-automotive-development.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/android-automotive-development.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/ai-engineering.html</loc>
@@ -834,7 +1174,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-engineering.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-engineering.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/choose-a-software-consultancy.html</loc>
@@ -846,6 +1186,66 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/choose-a-software-consultancy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/choose-a-software-consultancy.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ar/test-automation.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ar/custom-software-development.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemutveckling.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/custom-software-development.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/custom-software-development.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ar/system-integration-and-maintenance.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ar/ai-in-your-existing-product.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html"/>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ar/automotive-software.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/fordonsmjukvara.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vynatix.com/es/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://vynatix.com/de/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/automotive-software.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/automotive-software.html"/>
+    <lastmod>2026-11-23</lastmod>
   </url>
 </urlset>

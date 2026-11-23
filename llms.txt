@@ -29,6 +29,11 @@
 - [Platform engineering: vad det är och när det lönar sig](https://vynatix.com/platform-engineering.html)
 - [Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa](https://vynatix.com/ai-assistent-interna-dokument.html)
 - [Så väljer ni konsultbolag för mjukvaruutveckling](https://vynatix.com/valja-konsultbolag.html)
+- [Så lägger ni till AI i er befintliga produkt och kör modellerna i er egen miljö](https://vynatix.com/ai-i-befintlig-produkt.html): Guide från Vynatix: så lägger ni till AI i en befintlig produkt, kör modellerna i er egen miljö och automatiserar administrativa arbetsflöden.
+- [Systemutveckling med konsultbolag: från skräddarsydd affärsapplikation till BankID-inloggning](https://vynatix.com/systemutveckling.html): Vynatix om systemutveckling: skräddarsydda affärsapplikationer, seniora team, arkitekter, frontendutvecklare och webbappar med BankID-inloggning.
+- [Systemintegration och förvaltning: så håller ni egenutvecklade system friska](https://vynatix.com/systemintegration-och-forvaltning.html): Vynatix om integrationer mellan affärssystem, förvaltning av egenutvecklade system, oberoende kodgranskning och Kubernetes: vad ni ska kräva och avtala.
+- [Så inför ni automatiserade mjukvarutester](https://vynatix.com/testautomatisering.html): Vynatix om att införa automatiserade mjukvarutester: var ni börjar, vilka tester som kommer först, CI-pipelinen, instabila tester och vad ni ska mäta.
+- [Fordonsmjukvara: HIL-testning, ISO 26262, embedded Linux och C++](https://vynatix.com/fordonsmjukvara.html): Vynatix guide till fordonsmjukvara: HIL-testning i CI, utveckling enligt ISO 26262, embedded Linux för fordon och seniora C++-konsulter.
 - [Android Automotive-utveckling i Göteborg](https://vynatix.com/android-automotive-utveckling.html)
 - [Integritetsmeddelande](https://vynatix.com/integritet.html): vad webbplatsen sparar, att statistik med Google Analytics bara mäts om ni godkänner, och hur ni utövar era rättigheter
 

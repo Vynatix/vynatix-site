@@ -10,9 +10,9 @@ highlights the things most worth keeping front-of-mind.
 ## The short version
 
 - **Static, hand-written marketing site** for Vynatix (a Nordic software
-  consultancy). Twenty-four pages: eleven core English pages (`blog.html`, "Insights" in the menu, lists the guides;
+  consultancy). Twenty-nine pages: eleven core English pages (`blog.html`, "Insights" in the menu, lists the guides;
   `membership.html` is "Career"; `work.html` is "Cases"), four English
-  deep pages and nine Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
+  deep pages and fourteen Swedish pages (`sv.html` is the Swedish hub; `integritet.html` is the
   Swedish privacy notice). Three of them are withdrawn stubs (the two lists of consultancies and the Swedish
   comparison of AI consultancies). No framework, no build step, no package manager for
   the site: what's in the repo is what ships, served via GitHub Pages at
@@ -22,7 +22,7 @@ highlights the things most worth keeping front-of-mind.
   (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
   `sheet-art.js` for the hero background, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
   never run at deploy time.
-- **Seven languages, two kinds.** English and Swedish are written by hand (the twenty-four pages above).
+- **Seven languages, two kinds.** English and Swedish are written by hand (the twenty-nine pages above).
   Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
   the three notices in `es/`, `fr/`, `de/`, `ja/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
   English message to its translation (`tools/i18n.py` is the engine; `LANGS` in `seo-head.py` is the one table).
@@ -169,7 +169,7 @@ highlights the things most worth keeping front-of-mind.
   prints `scripted gates pass, N human gates open` when it passes. Switching off
   again starts with `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last
   (checklist, section 10). The CSP names Google's hosts, **a recorded security
-  downgrade** from the `'self'`-only policy: the meta on all 24
+  downgrade** from the `'self'`-only policy: the meta on all 29
   pages, `EDGE-SETUP.md` and the Cloudflare dashboard rule change together
   (dashboard first if the edge is live), and a missing host is added by name,
   never `https://*.google.com`. Details in AGENTS.md, *Analytics*.
@@ -198,7 +198,12 @@ highlights the things most worth keeping front-of-mind.
   taken from the calculator it was modelled on and are the owner's: change one in `app.js`, in the page's labels
   and in `tools/verify/calc.js` together, and add no sentence about terms around it. See AGENTS.md, *Rate
   calculator*. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
-  engineer" sentence, the English questions live on `contact.html`. **Never fill in what the plan leaves to the
+  engineer" sentence, the English questions live on `contact.html`. Owner decisions of 23 November 2026: Vynatix
+  delivers, and the site may say so, HIL testing, software to ISO 26262, embedded Linux for vehicles, web apps
+  with BankID login, senior C++ and frontend consultants, test automation, ongoing maintenance (förvaltning) of
+  custom systems, independent code review, architects for longer engagements and complete senior teams; these
+  are stated in the five Swedish posts of that day, and `fordonsmjukvara.html` is the one page where automotive
+  stands in a headline (no past project in those areas is claimed anywhere). **Never fill in what the plan leaves to the
   owner** (the Ultra Group sentences, people by name, open roles, how engineers join, a case outside
   automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
   AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.

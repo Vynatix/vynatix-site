@@ -75,11 +75,11 @@ PAGES = {
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-20'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-20'),
-  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-20'),
+  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-23'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20'),
-  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'index.html'}),
+  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-23', alt={'en': 'index.html'}),
   'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'android-automotive-utveckling.html'}),
   'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'android-automotive-development.html'}),
   'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'ai-utveckling.html'}),
@@ -92,6 +92,11 @@ PAGES = {
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, status='withdrawn'),
   'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-20', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-20', alt={'en': 'privacy.html'}),
+  'testautomatisering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
+  'systemutveckling.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
+  'systemintegration-och-forvaltning.html':   dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
+  'ai-i-befintlig-produkt.html':              dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
+  'fordonsmjukvara.html':                     dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
 }
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')

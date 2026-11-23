@@ -15,7 +15,7 @@
  "Get in touch": "تواصلوا معنا",
  "Dark theme": "المظهر الداكن",
  "Based in Gothenburg · Part of Ultra Group": "مقرنا في غوتنبرغ · جزء من Ultra Group",
- "We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.": "نحن شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويسرّعون وتيرة العمل، ويجعلون برمجياتكم أقوى مع نموكم.",
+ "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.": "Vynatix شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسوها إلى فريقكم ويبنون أنظمة الذكاء الاصطناعي والمنصات السحابية والتطبيقات.",
  "Start the conversation <1/>": "ابدؤوا المحادثة <1/>",
  "See our results": "اطّلعوا على نتائجنا",
  "Trusted by companies that set the standard": "تثق بنا شركات ترسي المعايير",
@@ -42,12 +42,15 @@
  "Our senior engineers work inside your team, from your next release to the platform your growth runs on, and deliver results that last.": "يعمل مهندسونا المتمرسون ضمن فريقكم، من إصداركم القادم إلى المنصة التي يقوم عليها نموكم، ويحققون نتائج تدوم.",
  "AI engineering": "هندسة الذكاء الاصطناعي",
  "Put AI into your product, with assistants, agents and automation that deliver in production.": "أدمجوا الذكاء الاصطناعي في منتجكم، بمساعدين ووكلاء وأتمتة تحقق النتائج في بيئة الإنتاج.",
+ "What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.": "ما نقدمه: روبوتات المحادثة والمساعدون، الاسترجاع والإجابات المستندة إلى المصادر (RAG)، الوكلاء، أتمتة سير العمل، خوادم MCP والتكاملات، حزم SDK وأدوات المطورين، التقييم والمراقبة.",
  "More on AI engineering": "المزيد عن هندسة الذكاء الاصطناعي",
  "Cloud platforms": "المنصات السحابية",
  "Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.": "امنحوا فريقكم المتنامي منصة تواكب إقبال مستخدميكم: سريعة وموثوقة وجاهزة للقطاعات الخاضعة للتنظيم.",
+ "What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.": "ما نقدمه: هندسة المنصات، Kubernetes وGitOps، FinOps وضبط التكاليف، الانتقال من الأنظمة القديمة.",
  "More on cloud platforms": "المزيد عن المنصات السحابية",
  "Application development": "تطوير التطبيقات",
  "Launch applications your users come back to, on mobile, web and embedded devices.": "أطلقوا تطبيقات يعود إليها مستخدموكم، على الجوال والويب والأجهزة المدمجة.",
+ "What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.": "ما نقدمه: تطبيقات جوال أصلية لنظامي iOS وAndroid، الويب وسطح المكتب وSaaS، Android للأنظمة المدمجة، الأجهزة القابلة للارتداء والواقع الافتراضي، منصات المؤسسات والتكاملات.",
  "More on application development": "المزيد عن تطوير التطبيقات",
  "Real results, in production": "نتائج حقيقية، في بيئة الإنتاج",
  "A regulated client · 2025": "عميل في قطاع خاضع للتنظيم · 2025",
@@ -590,5 +593,6 @@
  "October": "أكتوبر",
  "November": "نوفمبر",
  "December": "ديسمبر",
- "Engineering<1/><2>that compounds.</2>": "هندسة<1/><2>يتراكم أثرها.</2>"
+ "Engineering<1/><2>that compounds.</2>": "هندسة<1/><2>يتراكم أثرها.</2>",
+ "Questions": "أسئلة"
 }

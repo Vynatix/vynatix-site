@@ -15,7 +15,7 @@
  "Get in touch": "Nous contacter",
  "Dark theme": "Thème sombre",
  "Based in Gothenburg · Part of Ultra Group": "Basé à Göteborg · Membre d'Ultra Group",
- "We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.": "Nous sommes le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez.",
+ "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.": "Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Ses ingénieurs rejoignent votre équipe et développent des systèmes d'IA, des plateformes cloud et des applications.",
  "Start the conversation <1/>": "Engager la conversation <1/>",
  "See our results": "Voir nos résultats",
  "Trusted by companies that set the standard": "Des entreprises qui font référence nous font confiance",
@@ -42,12 +42,15 @@
  "Our senior engineers work inside your team, from your next release to the platform your growth runs on, and deliver results that last.": "Nos ingénieurs seniors travaillent au sein de votre équipe, de votre prochaine version à la plateforme qui porte votre croissance, et obtiennent des résultats durables.",
  "AI engineering": "Ingénierie IA",
  "Put AI into your product, with assistants, agents and automation that deliver in production.": "Intégrez l'IA à votre produit, avec des assistants, des agents et de l'automatisation qui font leurs preuves en production.",
+ "What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.": "Nos prestations : chatbots et assistants ; recherche documentaire et réponses sourcées (RAG) ; agents ; automatisation des processus ; serveurs MCP et intégrations ; SDK et outils pour développeurs ; évaluation et supervision.",
  "More on AI engineering": "En savoir plus sur l'ingénierie IA",
  "Cloud platforms": "Plateformes cloud",
  "Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.": "Donnez à votre équipe en croissance une plateforme qui suit le rythme de vos utilisateurs : rapide, fiable et prête pour les secteurs réglementés.",
+ "What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.": "Nos prestations : ingénierie de plateforme ; Kubernetes et GitOps ; FinOps et maîtrise des coûts ; migration des systèmes existants.",
  "More on cloud platforms": "En savoir plus sur les plateformes cloud",
  "Application development": "Développement d'applications",
  "Launch applications your users come back to, on mobile, web and embedded devices.": "Lancez des applications auxquelles vos utilisateurs reviennent, sur mobile, sur le web et sur les systèmes embarqués.",
+ "What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.": "Nos prestations : mobile natif pour iOS et Android ; web, poste de travail et SaaS ; Android embarqué ; objets connectés portables et réalité virtuelle ; plateformes d'entreprise et intégrations.",
  "More on application development": "En savoir plus sur le développement d'applications",
  "Real results, in production": "Des résultats concrets, en production",
  "A regulated client · 2025": "Client d'un secteur réglementé · 2025",
@@ -589,5 +592,6 @@
  "September": "septembre",
  "October": "octobre",
  "November": "novembre",
- "December": "décembre"
+ "December": "décembre",
+ "Questions": "Questions"
 }

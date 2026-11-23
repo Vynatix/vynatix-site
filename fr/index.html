@@ -155,7 +155,69 @@
    },
    "translationOfWork": {
     "@id": "https://vynatix.com/"
+   },
+   "hasPart": {
+    "@id": "https://vynatix.com/fr/#faq"
    }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://vynatix.com/fr/#faq",
+   "url": "https://vynatix.com/fr/#faq",
+   "inLanguage": "fr",
+   "isPartOf": {
+    "@id": "https://vynatix.com/fr/"
+   },
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Que fait Vynatix ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez. Ingénierie IA : des assistants, des agents et de l'automatisation qui font leurs preuves en production. Plateformes cloud : rapides, fiables et prêtes pour les secteurs réglementés, sur GCP, sur AWS ou sur site. Développement d'applications : des applications pour le mobile, le web, le poste de travail et l'embarqué."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment démarre une collaboration avec Vynatix ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Elle commence par un échange sur votre feuille de route, et se déroule en trois étapes. 1. Un premier échange de 30 minutes sur votre feuille de route. 2. Vous rencontrez les ingénieurs qui rejoindraient votre équipe. 3. Nous convenons du premier objectif et nous commençons. Ensuite, nos ingénieurs seniors travaillent au sein de votre équipe. Vous gardez la main sur votre produit et échangez directement avec ceux qui font le travail."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment le travail est-il facturé ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "La facturation porte sur les heures travaillées, que vous voyez chaque semaine. Vous voyez aussi les avancées chaque semaine, et tout ce que nous réalisons vous appartient."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Qui sont les clients de Vynatix ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Parmi nos clients figurent Saab, Sony, Tele2, Swisslog, Volvo Cars et Volvo Trucks. Trois cas clients sont racontés en détail : un assistant IA pour un client d'un secteur réglementé, des builds en 6 minutes au lieu de 47 avec Volvo Cars, et une application multimédia en service sur toute la flotte de Volvo Trucks."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Vynatix peut-il exploiter des systèmes d'IA dans notre propre environnement, y compris sur site ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Oui. Nous exploitons les systèmes d'IA là où vos données sont autorisées à être hébergées : sur site ou dans un cloud souverain. Chaque système s'appuie sur vos sources, est testé sur des questions aux réponses connues et reste supervisé après le lancement."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Quel est le lien entre Vynatix et Ultra Group ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Vynatix fait partie d'Ultra Group. L'entité juridique est Vynatix AB, org.nr 559445-6542, un cabinet de conseil logiciel à Göteborg, en Suède."
+     }
+    }
+   ]
   },
   {
    "@type": "Service",
@@ -200,7 +262,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="../tokens.css?v=c92545cd">
 <link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="../styles.css?v=6a6d688e">
+<link rel="stylesheet" href="../styles.css?v=ef3c53ab">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
@@ -280,7 +342,7 @@
         <div class="hero__msg">
         <p class="eyebrow">Basé à Göteborg · Membre d'Ultra Group</p>
         <h1 lang="en" dir="ltr" class="hero__h1" translate="no">Engineering<br><em>that compounds.</em></h1>
-        <p class="hero__lede">Nous sommes le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez.</p>
+        <p class="hero__lede">Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Ses ingénieurs rejoignent votre équipe et développent des systèmes d'IA, des plateformes cloud et des applications.</p>
         <div class="hero__ctas">
           <a class="btn btn--lg" href="contact.html">Engager la conversation <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <a class="btn btn--lg btn--secondary" href="work.html">Voir nos résultats</a>
@@ -384,6 +446,7 @@
           <li><a href="#partnership">Partenariat</a></li>
           <li><a href="#join">Équipe</a></li>
           <li><a href="#insights">Ressources</a></li>
+          <li><a href="#faq">Questions</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -408,6 +471,7 @@
             <span class="cap__num" aria-hidden="true">01</span>
             <h3>Ingénierie IA</h3>
             <p>Intégrez l'IA à votre produit, avec des assistants, des agents et de l'automatisation qui font leurs preuves en production.</p>
+            <p class="cap__scope">Nos prestations : chatbots et assistants ; recherche documentaire et réponses sourcées (RAG) ; agents ; automatisation des processus ; serveurs MCP et intégrations ; SDK et outils pour développeurs ; évaluation et supervision.</p>
             <a class="more" href="services.html#ai-engineering"><span>En savoir plus sur l'ingénierie IA</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -415,6 +479,7 @@
             <span class="cap__num" aria-hidden="true">02</span>
             <h3>Plateformes cloud</h3>
             <p>Donnez à votre équipe en croissance une plateforme qui suit le rythme de vos utilisateurs : rapide, fiable et prête pour les secteurs réglementés.</p>
+            <p class="cap__scope">Nos prestations : ingénierie de plateforme ; Kubernetes et GitOps ; FinOps et maîtrise des coûts ; migration des systèmes existants.</p>
             <a class="more" href="services.html#cloud-platforms"><span>En savoir plus sur les plateformes cloud</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -422,6 +487,7 @@
             <span class="cap__num" aria-hidden="true">03</span>
             <h3>Développement d'applications</h3>
             <p>Lancez des applications auxquelles vos utilisateurs reviennent, sur mobile, sur le web et sur les systèmes embarqués.</p>
+            <p class="cap__scope">Nos prestations : mobile natif pour iOS et Android ; web, poste de travail et SaaS ; Android embarqué ; objets connectés portables et réalité virtuelle ; plateformes d'entreprise et intégrations.</p>
             <a class="more" href="services.html#application-development"><span>En savoir plus sur le développement d'applications</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
         </div>
@@ -491,7 +557,7 @@
           <div>
             <p class="section__lead">Quand votre feuille de route dépasse la capacité de votre équipe, nos ingénieurs seniors vous rejoignent et accélèrent le rythme. Vous gardez la main sur votre produit et échangez directement avec ceux qui font le travail. Chaque semaine, vous voyez les avancées, et tout ce que nous réalisons vous appartient.</p>
             <p class="section__lead">La facturation porte sur les heures travaillées, que vous voyez chaque semaine.</p>
-            <p class="u-mt-6 u-mb-0"><a class="more" href="contact.html#faq"><span>Comment la collaboration démarre et comment le travail est facturé</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+            <p class="u-mt-6 u-mb-0"><a class="more" href="#faq"><span>Comment la collaboration démarre et comment le travail est facturé</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
         <!-- The hero's drawing at four stages on one datum line: decoration, drawn from masks
@@ -561,6 +627,59 @@
         </ul>
         <div class="chapter-foot">
           <p class="chapter-foot__links"><a class="more" href="blog.html"><span>Toutes nos ressources</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Questions -->
+    <!-- Back on the home page on the owner's word of 23 November 2026. Six of the questions on
+         contact.html, word for word: change an answer there and here together. The FAQ structured
+         data in the head is generated from this markup (data-faq): one h3, then p and li elements,
+         flat. Run python3 tools/seo-head.py after editing it. -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Questions</p>
+            <h2 class="section__h2" id="faq-title">Questions fréquentes</h2>
+          </div>
+        </div>
+        <div class="caps caps--2" data-faq>
+          <div class="cap" data-faq-item>
+            <h3>Que fait Vynatix ?</h3>
+            <p>Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez.</p>
+            <ul>
+              <li>Ingénierie IA : des assistants, des agents et de l'automatisation qui font leurs preuves en production.</li>
+              <li>Plateformes cloud : rapides, fiables et prêtes pour les secteurs réglementés, sur GCP, sur AWS ou sur site.</li>
+              <li>Développement d'applications : des applications pour le mobile, le web, le poste de travail et l'embarqué.</li>
+            </ul>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>Comment démarre une collaboration avec Vynatix ?</h3>
+            <p>Elle commence par un échange sur votre feuille de route, et se déroule en trois étapes.</p>
+            <ol>
+              <li>Un premier échange de 30 minutes sur votre feuille de route.</li>
+              <li>Vous rencontrez les ingénieurs qui rejoindraient votre équipe.</li>
+              <li>Nous convenons du premier objectif et nous commençons.</li>
+            </ol>
+            <p>Ensuite, nos ingénieurs seniors travaillent au sein de votre équipe. Vous gardez la main sur votre produit et échangez directement avec ceux qui font le travail.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>Comment le travail est-il facturé ?</h3>
+            <p>La facturation porte sur les heures travaillées, que vous voyez chaque semaine. Vous voyez aussi les avancées chaque semaine, et tout ce que nous réalisons vous appartient.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>Qui sont les clients de Vynatix ?</h3>
+            <p>Parmi nos clients figurent Saab, Sony, Tele2, Swisslog, Volvo Cars et Volvo Trucks. Trois <a href="work.html">cas clients</a> sont racontés en détail : un assistant IA pour un client d'un secteur réglementé, des builds en 6 minutes au lieu de 47 avec Volvo Cars, et une application multimédia en service sur toute la flotte de Volvo Trucks.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>Vynatix peut-il exploiter des systèmes d'IA dans notre propre environnement, y compris sur site ?</h3>
+            <p>Oui. Nous exploitons les systèmes d'IA là où vos données sont autorisées à être hébergées : sur site ou dans un cloud souverain. Chaque système s'appuie sur vos sources, est testé sur des questions aux réponses connues et reste supervisé après le lancement.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>Quel est le lien entre Vynatix et Ultra Group ?</h3>
+            <p>Vynatix fait partie d'Ultra Group. L'entité juridique est Vynatix AB, org.nr 559445-6542, un cabinet de conseil logiciel à Göteborg, en Suède.</p>
+          </div>
         </div>
       </div>
     </section>

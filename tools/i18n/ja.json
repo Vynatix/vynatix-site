@@ -15,7 +15,7 @@
  "Get in touch": "相談する",
  "Dark theme": "ダークテーマ",
  "Based in Gothenburg · Part of Ultra Group": "ヨーテボリ拠点 · Ultra Groupの一員",
- "We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.": "Vynatixは、スケールアップ企業のための、シニアエンジニアによるソフトウェアコンサルティング会社です。貴社のチームに当社のエンジニアが加わり、開発のスピードを上げ、成長に合わせてソフトウェアをより堅牢にします。",
+ "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.": "Vynatixは、スケールアップ企業のための、シニアエンジニアによるソフトウェアコンサルティング会社です。貴社のチームに当社のエンジニアが加わり、AIシステム、クラウドプラットフォーム、アプリケーションを開発します。",
  "Start the conversation <1/>": "まずは相談する <1/>",
  "See our results": "実績を見る",
  "Trusted by companies that set the standard": "業界の基準をつくる企業に選ばれています",
@@ -42,12 +42,15 @@
  "Our senior engineers work inside your team, from your next release to the platform your growth runs on, and deliver results that last.": "次のリリースから成長を支えるプラットフォームまで、貴社のチームの一員として当社のシニアエンジニアが働き、長く続く成果を出します。",
  "AI engineering": "AIエンジニアリング",
  "Put AI into your product, with assistants, agents and automation that deliver in production.": "本番環境で成果を出すアシスタント、エージェント、自動化で、プロダクトにAIを組み込みます。",
+ "What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.": "提供するもの：チャットボットとアシスタント、検索と出典に基づく回答（RAG）、エージェント、ワークフローの自動化、MCPサーバーとシステム連携、SDKと開発者向けツール、評価とモニタリング。",
  "More on AI engineering": "AIエンジニアリングの詳細",
  "Cloud platforms": "クラウドプラットフォーム",
  "Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.": "成長するチームに、ユーザーの増加についていけるプラットフォームを。高速で信頼性が高く、規制産業の要件にも対応します。",
+ "What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.": "提供するもの：プラットフォームエンジニアリング、KubernetesとGitOps、FinOpsとコスト管理、レガシーからの移行。",
  "More on cloud platforms": "クラウドプラットフォームの詳細",
  "Application development": "アプリケーション開発",
  "Launch applications your users come back to, on mobile, web and embedded devices.": "ユーザーが使い続けるアプリケーションを、モバイル、Web、組み込み機器向けにリリースします。",
+ "What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.": "提供するもの：iOS・Android向けネイティブモバイルアプリ、Web・デスクトップ・SaaS、組み込みAndroid、ウェアラブルとVR、エンタープライズプラットフォームとシステム連携。",
  "More on application development": "アプリケーション開発の詳細",
  "Real results, in production": "本番環境での確かな成果",
  "A regulated client · 2025": "規制産業のクライアント · 2025",
@@ -590,5 +593,6 @@
  "October": "10月",
  "November": "11月",
  "December": "12月",
- "Engineering<1/><2>that compounds.</2>": "エンジニアリングは、<1/><2>複利で効く。</2>"
+ "Engineering<1/><2>that compounds.</2>": "エンジニアリングは、<1/><2>複利で効く。</2>",
+ "Questions": "質問"
 }

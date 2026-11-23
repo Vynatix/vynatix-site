@@ -155,7 +155,69 @@
    },
    "translationOfWork": {
     "@id": "https://vynatix.com/"
+   },
+   "hasPart": {
+    "@id": "https://vynatix.com/es/#faq"
    }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://vynatix.com/es/#faq",
+   "url": "https://vynatix.com/es/#faq",
+   "inLanguage": "es",
+   "isPartOf": {
+    "@id": "https://vynatix.com/es/"
+   },
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "¿Qué hace Vynatix?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces. Ingeniería de IA: asistentes, agentes y automatización que dan resultados en producción. Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en GCP, AWS y on-prem. Desarrollo de aplicaciones: aplicaciones para móvil, web, escritorio y dispositivos embebidos."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Cómo empieza el trabajo con Vynatix?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Empieza con una conversación sobre tu hoja de ruta y consta de tres pasos. 1. Una primera conversación sobre tu hoja de ruta, 30 minutos. 2. Conoces a los ingenieros que se incorporarían a tu equipo. 3. Acordamos el primer objetivo y empezamos. A partir de ahí, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Cómo se factura el trabajo?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Te facturamos las horas trabajadas y las ves cada semana, igual que los avances. Además, todo lo que desarrollamos es tuyo."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Quiénes son los clientes de Vynatix?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Entre nuestros clientes están Saab, Sony, Tele2, Swisslog, Volvo Cars y Volvo Trucks. Puedes leer tres casos completos: un asistente de IA para un cliente de un sector regulado, compilaciones en 6 minutos en lugar de 47 con Volvo Cars y una aplicación multimedia en funcionamiento en toda la flota de Volvo Trucks."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Puede Vynatix ejecutar sistemas de IA en nuestro propio entorno, incluso on-prem?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem o en una nube soberana. Basamos cada sistema en tus fuentes, lo probamos con preguntas de respuesta conocida y lo monitorizamos tras el lanzamiento."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "¿Qué relación tiene Vynatix con Ultra Group?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Vynatix forma parte de Ultra Group. La sociedad es Vynatix AB, org.nr 559445-6542, una consultora de software de Gotemburgo, Suecia."
+     }
+    }
+   ]
   },
   {
    "@type": "Service",
@@ -200,7 +262,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="../tokens.css?v=c92545cd">
 <link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="../styles.css?v=6a6d688e">
+<link rel="stylesheet" href="../styles.css?v=ef3c53ab">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
@@ -280,7 +342,7 @@
         <div class="hero__msg">
         <p class="eyebrow">Con sede en Gotemburgo · Parte de Ultra Group</p>
         <h1 lang="en" dir="ltr" class="hero__h1" translate="no">Engineering<br><em>that compounds.</em></h1>
-        <p class="hero__lede">Somos la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces.</p>
+        <p class="hero__lede">Vynatix es la consultora de software de perfil sénior para scale-ups. Sus ingenieros se incorporan a tu equipo y desarrollan sistemas de IA, plataformas en la nube y aplicaciones.</p>
         <div class="hero__ctas">
           <a class="btn btn--lg" href="contact.html">Empecemos a hablar <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
           <a class="btn btn--lg btn--secondary" href="work.html">Ver nuestros resultados</a>
@@ -384,6 +446,7 @@
           <li><a href="#partnership">Colaboración</a></li>
           <li><a href="#join">Personas</a></li>
           <li><a href="#insights">Artículos</a></li>
+          <li><a href="#faq">Preguntas</a></li>
           <li><a href="#contact">Contacto</a></li>
         </ul>
       </div>
@@ -408,6 +471,7 @@
             <span class="cap__num" aria-hidden="true">01</span>
             <h3>Ingeniería de IA</h3>
             <p>Lleva la IA a tu producto, con asistentes, agentes y automatización que dan resultados en producción.</p>
+            <p class="cap__scope">Lo que hacemos: chatbots y asistentes; recuperación y respuestas fundamentadas (RAG); agentes; automatización de flujos de trabajo; servidores MCP e integraciones; SDK y herramientas para desarrolladores; evaluación y monitorización.</p>
             <a class="more" href="services.html#ai-engineering"><span>Más sobre ingeniería de IA</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -415,6 +479,7 @@
             <span class="cap__num" aria-hidden="true">02</span>
             <h3>Plataformas en la nube</h3>
             <p>Dale a tu equipo en crecimiento una plataforma que siga el ritmo de tus usuarios: rápida, fiable y lista para sectores regulados.</p>
+            <p class="cap__scope">Lo que hacemos: ingeniería de plataformas; Kubernetes y GitOps; FinOps y control de costes; migración desde sistemas heredados.</p>
             <a class="more" href="services.html#cloud-platforms"><span>Más sobre plataformas en la nube</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -422,6 +487,7 @@
             <span class="cap__num" aria-hidden="true">03</span>
             <h3>Desarrollo de aplicaciones</h3>
             <p>Lanza aplicaciones a las que tus usuarios vuelvan, en móvil, web y dispositivos embebidos.</p>
+            <p class="cap__scope">Lo que hacemos: desarrollo móvil nativo para iOS y Android; web, escritorio y SaaS; Android embebido; wearables y realidad virtual; plataformas empresariales e integraciones.</p>
             <a class="more" href="services.html#application-development"><span>Más sobre desarrollo de aplicaciones</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
         </div>
@@ -491,7 +557,7 @@
           <div>
             <p class="section__lead">Cuando tu hoja de ruta le queda grande a tu equipo, nuestros ingenieros sénior se incorporan a él y aceleran el ritmo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo. Ves avances cada semana, y todo lo que desarrollamos es tuyo.</p>
             <p class="section__lead">Te facturamos las horas trabajadas y las ves cada semana.</p>
-            <p class="u-mt-6 u-mb-0"><a class="more" href="contact.html#faq"><span>Cómo empieza el trabajo y cómo se factura</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+            <p class="u-mt-6 u-mb-0"><a class="more" href="#faq"><span>Cómo empieza el trabajo y cómo se factura</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
         <!-- The hero's drawing at four stages on one datum line: decoration, drawn from masks
@@ -561,6 +627,59 @@
         </ul>
         <div class="chapter-foot">
           <p class="chapter-foot__links"><a class="more" href="blog.html"><span>Todos los artículos</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Questions -->
+    <!-- Back on the home page on the owner's word of 23 November 2026. Six of the questions on
+         contact.html, word for word: change an answer there and here together. The FAQ structured
+         data in the head is generated from this markup (data-faq): one h3, then p and li elements,
+         flat. Run python3 tools/seo-head.py after editing it. -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Preguntas</p>
+            <h2 class="section__h2" id="faq-title">Preguntas frecuentes</h2>
+          </div>
+        </div>
+        <div class="caps caps--2" data-faq>
+          <div class="cap" data-faq-item>
+            <h3>¿Qué hace Vynatix?</h3>
+            <p>Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces.</p>
+            <ul>
+              <li>Ingeniería de IA: asistentes, agentes y automatización que dan resultados en producción.</li>
+              <li>Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en GCP, AWS y on-prem.</li>
+              <li>Desarrollo de aplicaciones: aplicaciones para móvil, web, escritorio y dispositivos embebidos.</li>
+            </ul>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>¿Cómo empieza el trabajo con Vynatix?</h3>
+            <p>Empieza con una conversación sobre tu hoja de ruta y consta de tres pasos.</p>
+            <ol>
+              <li>Una primera conversación sobre tu hoja de ruta, 30 minutos.</li>
+              <li>Conoces a los ingenieros que se incorporarían a tu equipo.</li>
+              <li>Acordamos el primer objetivo y empezamos.</li>
+            </ol>
+            <p>A partir de ahí, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>¿Cómo se factura el trabajo?</h3>
+            <p>Te facturamos las horas trabajadas y las ves cada semana, igual que los avances. Además, todo lo que desarrollamos es tuyo.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>¿Quiénes son los clientes de Vynatix?</h3>
+            <p>Entre nuestros clientes están Saab, Sony, Tele2, Swisslog, Volvo Cars y Volvo Trucks. Puedes leer tres <a href="work.html">casos</a> completos: un asistente de IA para un cliente de un sector regulado, compilaciones en 6 minutos en lugar de 47 con Volvo Cars y una aplicación multimedia en funcionamiento en toda la flota de Volvo Trucks.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>¿Puede Vynatix ejecutar sistemas de IA en nuestro propio entorno, incluso on-prem?</h3>
+            <p>Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem o en una nube soberana. Basamos cada sistema en tus fuentes, lo probamos con preguntas de respuesta conocida y lo monitorizamos tras el lanzamiento.</p>
+          </div>
+          <div class="cap" data-faq-item>
+            <h3>¿Qué relación tiene Vynatix con Ultra Group?</h3>
+            <p>Vynatix forma parte de Ultra Group. La sociedad es Vynatix AB, org.nr 559445-6542, una consultora de software de Gotemburgo, Suecia.</p>
+          </div>
         </div>
       </div>
     </section>

@@ -732,7 +732,9 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
 `styles.css`.) Then, in this order:
 
 - `#services`, "Where we make the difference": three `.cap` columns, AI engineering first, then
-  cloud platforms and application development, each one promise and one link to its section of
+  cloud platforms and application development, each one promise, one line of what is delivered
+  (`cap__scope`: the items of that service's "What we deliver" list on `services.html`, in its
+  order; change the list there and the line here together) and one link to its section of
   `services.html`. One generated still life lies across the three columns, a third over each
   (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
   up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
@@ -782,6 +784,9 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   description in English, with "In Swedish" on the date line, so the page reads in one language
   and the generated languages can translate it. Each entry shows the day its page was published
   (`read__date`): the page's `pub` in `tools/seo-head.py`, which never moves.
+- `#faq`, "Common questions": six of the questions on `contact.html`, word for word, as
+  `.caps--2` columns (the markup of the Swedish hub's questions), with the page's FAQPage data.
+  Change an answer on `contact.html` and here together.
 - The call-to-action band (`#contact`), "Let's build what comes next." Its contact lines carry
   "Part of Ultra Group" with the footer's link, and no sentence about the group beyond that.
 
@@ -797,10 +802,15 @@ only the owner can supply is not on the page: the regulated client's name and ho
 were tested, what was done for each company on the client row (and whether each is a client:
 the questions on `contact.html` name six as clients, the row shows fourteen), how and when the
 47 and the 6 minutes were measured, whether each case still stands as told, and how the model
-differs from hiring or from another kind of firm (which the plan keeps off every page). What it
-asked for that a decision of 20 November 2026 keeps off the home page was left to the owner: a
-block of questions, a list of deliverables under each service, a rewritten hero sentence and a
-visible page date.
+differs from hiring or from another kind of firm (which the plan keeps off every page). Four
+of its comments ran against decisions of 20 November 2026, so they were put to the owner, who
+decided on 23 November 2026: the questions are back on the home page (`#faq`, and still on
+`contact.html`), each service carries a line of deliverables, and the hero's sentence says
+what the engineers build instead of "raise the pace and make your software stronger"
+("Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and
+build AI systems, cloud platforms and applications."). That sentence is the hero's alone: the
+company sentence below is unchanged everywhere else. A visible "Last updated" line on the
+home page was offered and not chosen: do not add one.
 
 **The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
 the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no
@@ -819,8 +829,10 @@ older layout and the three photographs.
 What the plan took off the page: the service chapters with their "What we build" panels, the
 company sentence and the Gothenburg photograph, the four steps of How we work, the comparison
 with a typical consultancy, the pull quote, the questions (and with them the page's FAQPage
-data) and the joiner view. The questions live on `contact.html` now, rewritten in the
-new voice (the owner's decision of 20 November 2026). The lines the plan removes from the whole site (declining work, sending a
+data) and the joiner view. The questions were rewritten in the new voice on `contact.html`
+(the owner's decision of 20 November 2026), and six of them came back to the home page on the
+owner's word of 23 November 2026 (`#faq`, above). The service panels did not come back: the
+one line under each service is all the home page says about deliverables. The lines the plan removes from the whole site (declining work, sending a
 reader to another firm, "no pitch, no pressure", what a model cannot do as a headline,
 automotive as the headline) do not come back on any page.
 

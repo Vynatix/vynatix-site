@@ -180,7 +180,11 @@ highlights the things most worth keeping front-of-mind.
   agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
   nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
   home page is eight blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
-  blocks in Swedish). The brand line is English on every page but two: on the owner's word of 23 November
+  blocks in Swedish), and, on the owner's word of 23 November 2026 after that day's Geoptie report, a ninth,
+  "Common questions" (`#faq`: six of the questions on `contact.html`, word for word, with FAQPage data), a line
+  of deliverables under each service (the lists of `services.html`) and a hero sentence that says what the
+  engineers build (the hero's alone: the company sentence is unchanged everywhere else). A visible "Last
+  updated" line was offered then and not chosen. The brand line is English on every page but two: on the owner's word of 23 November
   2026 the Japanese and Arabic home pages set it in their own language (エンジニアリングは、複利で効く。 and
   هندسة يتراكم أثرها., the second line in the accent face). The catalogues carry it as an optional message
   (`translate="no"` still holds it in English everywhere else); no native reader has checked the wording, and
@@ -198,7 +202,7 @@ highlights the things most worth keeping front-of-mind.
   taken from the calculator it was modelled on and are the owner's: change one in `app.js`, in the page's labels
   and in `tools/verify/calc.js` together, and add no sentence about terms around it. See AGENTS.md, *Rate
   calculator*. Owner decisions of 20 November 2026: no experience figure for the team, no "start with one
-  engineer" sentence, the English questions live on `contact.html`. **Never fill in what the plan leaves to the
+  engineer" sentence, the English questions live on `contact.html` (and six of them on the home page too since 23 November). **Never fill in what the plan leaves to the
   owner** (the Ultra Group sentences, people by name, open roles, how engineers join, a case outside
   automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
   AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.

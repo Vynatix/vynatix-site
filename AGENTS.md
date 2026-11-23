@@ -764,29 +764,43 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   under the heading the hero's drawing at four stages on one datum line (`.grow`, four
   `aria-hidden` `.fig` spans, each a mask over a role colour; the last carries the bronze edge).
   The owner preferred these drawn frames to a film of the drawing being made (20 November
-  2026): do not replace them with video. Under the lead, one link to `contact.html#faq`, where
-  the questions say how the work starts, how it is billed and reported, and whose the code is. The
+  2026): do not replace them with video. Under the lead, the sentence that says what "every
+  week" holds (the hours worked, which are what is billed; the words of the questions on
+  `contact.html`) and one link to `contact.html#faq`, where the questions say how the work
+  starts, how it is billed and reported, and whose the code is. The
   plan's closing sentence, "Start with one engineer and add more as you grow.", is left out on the
   owner's decision of 20 November 2026: do not add it.
-- `#join`, "Great software comes from great people", with the "Join us" link (see *Audience
-  switch (retired)* for why the id is `join`).
+- `#join`, "Great software comes from great people", with a link to the open-source libraries
+  on `work.html#libraries` (the proof of the block's "in open source") and the "Join us" link
+  (see *Audience switch (retired)* for why the id is `join`).
 - `#insights` (`.reads`, `.section--surface`), "Ideas that move software forward": three entries
   as ruled rows from 905px (title on the heading's column line, description on the lead's), not
   a second grid of three, and a link to `blog.html`. Every post (`kind='post'`) must be among them (`permanence.js`
   fails otherwise), and each entry repeats the linked page's `<title>` (without the brand suffix)
-  and meta description word for word; a Swedish page's entry carries `lang="sv"`.
+  and meta description word for word. A Swedish page's entry is the exception since 23 November
+  2026: its title stays Swedish (`lang="sv"` on the link) and its description is that page's meta
+  description in English, with "In Swedish" on the date line, so the page reads in one language
+  and the generated languages can translate it. Each entry shows the day its page was published
+  (`read__date`): the page's `pub` in `tools/seo-head.py`, which never moves.
 - The call-to-action band (`#contact`), "Let's build what comes next." Its contact lines carry
   "Part of Ultra Group" with the footer's link, and no sentence about the group beyond that.
 
 **What the Geoptie audit of 23 November 2026 changed** (76 of 100 on the live page; its reader
 drops a link inside a heading and the footer, and it judges only what the page itself says).
 Each of its comments was answered with a fact a published page already carried, and with a link
-to that page: the case cards (above), the client row's link to `industries.html`, the
-Partnership link to the questions on `contact.html`, the Ultra Group line in the closing band,
-and the meta description, which is now the first two sentences of the company sentence (147
+to that page: the case cards (above; "87% shorter build time" says what the figure measures),
+the client row's link to `industries.html`, the Partnership sentence and link to the questions
+on `contact.html`, the People link to the libraries, the dates and the English description in
+Insights, the Ultra Group line in the closing band, and the meta description, which is now the first two sentences of the company sentence (147
 characters, so a result shows it whole; the JSON-LD keeps all three). What it asked for that
-only the owner can supply is not on the page: the regulated client's name, what was done for
-each company on the client row, and how the 47 and the 6 minutes were measured.
+only the owner can supply is not on the page: the regulated client's name and how its answers
+were tested, what was done for each company on the client row (and whether each is a client:
+the questions on `contact.html` name six as clients, the row shows fourteen), how and when the
+47 and the 6 minutes were measured, whether each case still stands as told, and how the model
+differs from hiring or from another kind of firm (which the plan keeps off every page). What it
+asked for that a decision of 20 November 2026 keeps off the home page was left to the owner: a
+block of questions, a list of deliverables under each service, a rewritten hero sentence and a
+visible page date.
 
 **The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
 the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no

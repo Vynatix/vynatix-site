@@ -540,7 +540,7 @@
    ]
   },
   {
-   "id": "87% shorter",
+   "id": "87% shorter build time",
    "pages": [
     "index.html"
    ]
@@ -559,7 +559,7 @@
    ]
   },
   {
-   "id": "The in-cab radio, rebuilt as a full media player.",
+   "id": "Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive.",
    "pages": [
     "index.html"
    ]
@@ -596,6 +596,12 @@
    ]
   },
   {
+   "id": "You are billed for the hours worked, and you see them every week.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "How the work starts and how it is billed",
    "pages": [
     "index.html"
@@ -613,6 +619,12 @@
    "pages": [
     "index.html",
     "about.html"
+   ]
+  },
+  {
+   "id": "See the open-source code our engineers maintain",
+   "pages": [
+    "index.html"
    ]
   },
   {
@@ -651,6 +663,12 @@
    ]
   },
   {
+   "id": "Published <1>18 October 2026</1>",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "How to choose a software consultancy",
    "pages": [
     "index.html",
@@ -663,6 +681,24 @@
    "pages": [
     "index.html",
     "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Published <1>6 November 2026</1>",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Platform engineering explained by Vynatix in Gothenburg: what an internal developer platform is, when it pays off, what to measure and how to start.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Published <1>18 October 2026</1> · In Swedish",
+   "pages": [
+    "index.html"
    ]
   },
   {

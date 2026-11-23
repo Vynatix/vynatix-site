@@ -200,7 +200,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="../tokens.css?v=c92545cd">
 <link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="../styles.css?v=5af43245">
+<link rel="stylesheet" href="../styles.css?v=6a6d688e">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
@@ -458,7 +458,7 @@
               <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">ビルド時間を47分から6分に</a></h3>
               <p>エンジニアはビルドのたびに47分待っていました。Volvo Carsとともにパイプラインを再構築し、テストとカバレッジはそのままに、チーム全員のすべてのコミットで6分になりました。</p>
-              <p class="case__metric">87%短縮</p>
+              <p class="case__metric">ビルド時間を87%短縮</p>
               <p class="case__more"><a class="more" href="work.html#volvo-cars" tabindex="-1" aria-hidden="true"><span>事例を読む</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
           </article>
@@ -467,7 +467,7 @@
             <div class="case__body">
               <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">フリート全体で稼働する新しいメディアアプリケーション</a></h3>
-              <p>車載ラジオを、本格的なメディアプレーヤーとして再構築しました。</p>
+              <p>Volvo Trucksとともに、車載ラジオをAndroid Automotive上の本格的なメディアプレーヤーとして再構築しました。</p>
               <p class="case__metric case__metric--text">フリート全体で本番稼働</p>
               <p class="case__more"><a class="more" href="work.html#volvo-trucks" tabindex="-1" aria-hidden="true"><span>事例を読む</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -490,6 +490,7 @@
           </div>
           <div>
             <p class="section__lead">ロードマップに対してチームの手が足りなくなったら、当社のシニアエンジニアが加わり、開発のスピードを上げます。プロダクトの主導権は貴社に残したまま、実際に手を動かす人と直接やり取りできます。進捗は毎週確認でき、つくったものはすべて貴社のものです。</p>
+            <p class="section__lead">作業時間に応じて請求し、その時間は毎週確認できます。</p>
             <p class="u-mt-6 u-mb-0"><a class="more" href="contact.html#faq"><span>仕事の始まり方と請求のしくみ</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
@@ -515,7 +516,7 @@
           </div>
           <div>
             <p class="section__lead">Vynatixをつくっているのは、技術を愛し、その知識をオープンソースで、そして貴社のチームと共有するシニアエンジニアです。</p>
-            <p class="u-mt-6 u-mb-0"><a class="more" href="membership.html"><span>採用情報を見る</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+            <p class="u-mt-6 u-mb-0 more-row"><a class="more" href="work.html#libraries"><span>エンジニアがメンテナンスしているオープンソースのコードを見る</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a> <a class="more" href="membership.html"><span>採用情報を見る</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
       </div>
@@ -523,7 +524,9 @@
 
     <!-- ============================================================ Insights -->
     <!-- Each entry repeats the linked page's <title> (without the brand suffix) and its meta description
-         word for word: when one of those changes, change the entry with it. -->
+         word for word: when one of those changes, change the entry with it. A Swedish guide keeps its
+         Swedish title (lang="sv") and is described in English, so the page reads in one language. The
+         date is the page's pub in tools/seo-head.py, which never moves. -->
     <section class="section section--surface" id="insights" aria-labelledby="insights-title">
       <div class="container">
         <div class="section__head">
@@ -536,15 +539,24 @@
         <ul class="reads list-reset">
           <li class="read">
             <h3 class="read__h"><a href="ai-engineering.html">ヨーテボリのAIエンジニアリング：検索、評価、自社環境へのデプロイ</a></h3>
-            <p>ヨーテボリのVynatixは、基盤モデルの上に本番運用のAIを構築します。RAG、評価パイプライン、MCPサーバーを開発し、オンプレミスまたはソブリンクラウドにデプロイします。</p>
+            <div>
+              <p>ヨーテボリのVynatixは、基盤モデルの上に本番運用のAIを構築します。RAG、評価パイプライン、MCPサーバーを開発し、オンプレミスまたはソブリンクラウドにデプロイします。</p>
+              <p class="read__date">公開日：<time datetime="2026-10-18">2026年10月18日</time></p>
+            </div>
           </li>
           <li class="read">
             <h3 class="read__h"><a href="choose-a-software-consultancy.html">ソフトウェアコンサルティング会社の選び方</a></h3>
-            <p>ソフトウェアコンサルティング会社の選び方について、Vynatixがまとめました。相手に聞くべき質問、注意すべき兆候、そして開発者が本当にシニアかどうかを見極める方法を紹介します。</p>
+            <div>
+              <p>ソフトウェアコンサルティング会社の選び方について、Vynatixがまとめました。相手に聞くべき質問、注意すべき兆候、そして開発者が本当にシニアかどうかを見極める方法を紹介します。</p>
+              <p class="read__date">公開日：<time datetime="2026-11-06">2026年11月6日</time></p>
+            </div>
           </li>
-          <li class="read" lang="sv">
-            <h3 class="read__h"><a href="../platform-engineering.html" hreflang="sv">Platform engineering: vad det är, när det lönar sig och hur ni börjar</a></h3>
-            <p>Platform engineering förklarat av Vynatix i Göteborg: vad en intern utvecklarplattform är, när den lönar sig, vad ni ska mäta och hur ni börjar.</p>
+          <li class="read">
+            <h3 class="read__h"><a href="../platform-engineering.html" hreflang="sv" lang="sv">Platform engineering: vad det är, när det lönar sig och hur ni börjar</a></h3>
+            <div>
+              <p>ヨーテボリのVynatixによるプラットフォームエンジニアリングの解説。社内開発者プラットフォームとは何か、どんなときに効果が出るか、何を測るか、どう始めるか。</p>
+              <p class="read__date">公開日：<time datetime="2026-10-18">2026年10月18日</time> · スウェーデン語</p>
+            </div>
           </li>
         </ul>
         <div class="chapter-foot">

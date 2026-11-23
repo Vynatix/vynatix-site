@@ -217,7 +217,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=c92545cd">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=5af43245">
+<link rel="stylesheet" href="styles.css?v=6a6d688e">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <link rel="stylesheet" href="hero-bg.css?v=e3f2e31e">
@@ -476,7 +476,7 @@
               <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">Builds in 6 minutes instead of 47</a></h3>
               <p>Engineers waited 47 minutes for every build. Together with Volvo Cars, we rebuilt the pipeline: 6 minutes on every commit, for the whole team, with the same tests and coverage.</p>
-              <p class="case__metric">87% shorter</p>
+              <p class="case__metric">87% shorter build time</p>
               <p class="case__more"><a class="more" href="work.html#volvo-cars" tabindex="-1" aria-hidden="true"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
           </article>
@@ -485,7 +485,7 @@
             <div class="case__body">
               <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">A new media application, live across a whole fleet</a></h3>
-              <p>The in-cab radio, rebuilt as a full media player.</p>
+              <p>Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive.</p>
               <p class="case__metric case__metric--text">In production across the fleet</p>
               <p class="case__more"><a class="more" href="work.html#volvo-trucks" tabindex="-1" aria-hidden="true"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -508,6 +508,7 @@
           </div>
           <div>
             <p class="section__lead">When your roadmap outgrows your team, our senior engineers join you and raise the pace. You keep the lead on your product and work directly with the people who do the work. You see progress every week, and everything we build is yours.</p>
+            <p class="section__lead">You are billed for the hours worked, and you see them every week.</p>
             <p class="u-mt-6 u-mb-0"><a class="more" href="contact.html#faq"><span>How the work starts and how it is billed</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
@@ -533,7 +534,7 @@
           </div>
           <div>
             <p class="section__lead">Vynatix is built by senior engineers who love their craft and share what they know, in open source and with your team.</p>
-            <p class="u-mt-6 u-mb-0"><a class="more" href="membership.html"><span>Join us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
+            <p class="u-mt-6 u-mb-0 more-row"><a class="more" href="work.html#libraries"><span>See the open-source code our engineers maintain</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a> <a class="more" href="membership.html"><span>Join us</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
           </div>
         </div>
       </div>
@@ -541,7 +542,9 @@
 
     <!-- ============================================================ Insights -->
     <!-- Each entry repeats the linked page's <title> (without the brand suffix) and its meta description
-         word for word: when one of those changes, change the entry with it. -->
+         word for word: when one of those changes, change the entry with it. A Swedish guide keeps its
+         Swedish title (lang="sv") and is described in English, so the page reads in one language. The
+         date is the page's pub in tools/seo-head.py, which never moves. -->
     <section class="section section--surface" id="insights" aria-labelledby="insights-title">
       <div class="container">
         <div class="section__head">
@@ -554,15 +557,24 @@
         <ul class="reads list-reset">
           <li class="read">
             <h3 class="read__h"><a href="ai-engineering.html">AI engineering in Gothenburg: retrieval, evaluation and deployment in your environment</a></h3>
-            <p>Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.</p>
+            <div>
+              <p>Vynatix in Gothenburg builds production AI on foundation models: RAG, evaluation pipelines, MCP servers and deployment on-prem or in a sovereign cloud.</p>
+              <p class="read__date">Published <time datetime="2026-10-18">18 October 2026</time></p>
+            </div>
           </li>
           <li class="read">
             <h3 class="read__h"><a href="choose-a-software-consultancy.html">How to choose a software consultancy</a></h3>
-            <p>Vynatix on choosing a software consultancy: the questions to ask, the warning signs and how to judge whether the developers are really senior.</p>
+            <div>
+              <p>Vynatix on choosing a software consultancy: the questions to ask, the warning signs and how to judge whether the developers are really senior.</p>
+              <p class="read__date">Published <time datetime="2026-11-06">6 November 2026</time></p>
+            </div>
           </li>
-          <li class="read" lang="sv">
-            <h3 class="read__h"><a href="platform-engineering.html" hreflang="sv">Platform engineering: vad det är, när det lönar sig och hur ni börjar</a></h3>
-            <p>Platform engineering förklarat av Vynatix i Göteborg: vad en intern utvecklarplattform är, när den lönar sig, vad ni ska mäta och hur ni börjar.</p>
+          <li class="read">
+            <h3 class="read__h"><a href="platform-engineering.html" hreflang="sv" lang="sv">Platform engineering: vad det är, när det lönar sig och hur ni börjar</a></h3>
+            <div>
+              <p>Platform engineering explained by Vynatix in Gothenburg: what an internal developer platform is, when it pays off, what to measure and how to start.</p>
+              <p class="read__date">Published <time datetime="2026-10-18">18 October 2026</time> · In Swedish</p>
+            </div>
           </li>
         </ul>
         <div class="chapter-foot">

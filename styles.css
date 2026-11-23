@@ -1862,6 +1862,11 @@ html.consent-open .hero ~ section { content-visibility: visible; }
     margin-block: calc(-1 * var(--space-3));
   }
 }
+/* A second sentence under a section's lead (Partnership), two onward links side by side (People),
+   and the date line of an insight. */
+.home .section__lead + .section__lead { margin-top: var(--space-4); }
+.home .more-row { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-8); }
+.home .reads .read .read__date { margin-top: var(--space-2); font-size: var(--text-caption); }
 /* Wide: the closing band's contact lines are 24px targets, so links on neighbouring lines
    (the Ultra Group line sits right above the privacy notice) keep WCAG's target spacing. */
 @media (min-width: 905px) {

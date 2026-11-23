@@ -24,6 +24,13 @@ module does:
 What is never translated: scripts, styles, inline SVG, <code>, anything with translate="no"
 or with a lang attribute of its own, and messages without a letter in them (figures).
 
+One way out of translate="no", and it is the catalogue's to take: an element held that way which
+has words of its own (the brand line in the home hero) is an optional message. No language owes
+it a translation and none is reported as missing; a catalogue that does carry one releases the
+element for that language, and it is then set like any other message, in the page's language.
+That is how the brand line is English in Spanish, French and German and has a rendering of its
+own in Japanese and Arabic. optional(text) lists these messages; messages.json keeps them apart.
+
     python3 tools/i18n.py                 per language: messages, missing, obsolete; exits 1 if any is missing
     python3 tools/i18n.py missing <lang>  the missing messages of one language, as a JSON list
     python3 tools/i18n.py prune           drop catalogue entries no page uses any more
@@ -220,6 +227,30 @@ def extract(text):
     return [m for m in seen if not _wordless(m)], warn
 
 
+def _releasable(n):
+    """Held by translate="no" and with words of its own: a catalogue may carry it (an optional message)."""
+    return n.attrs.get('translate') == 'no' and n.text and not n.void and n.tag not in OPAQUE and n.tag not in SKIP
+
+
+def optional(text):
+    """The optional messages of a page: the outermost translate="no" elements with words of their own."""
+    tree = _Tree(text); seen = {}
+
+    def walk(n):
+        for k in n.kids:
+            if k.tag in SKIP or k.tag in OPAQUE:
+                continue
+            if _releasable(k):
+                msg, _ = _message(text, k)
+                if not _wordless(msg):
+                    seen.setdefault(msg, None)
+                continue
+            if not _held(k):
+                walk(k)
+    walk(tree.root)
+    return list(seen)
+
+
 PLACEHOLDER = re.compile(r'<(/?)(\d+)(/?)>')
 RTL_CHARS = re.compile('[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFC]')     # Hebrew and Arabic letters
 
@@ -275,9 +306,17 @@ class Page:
         out.append(self.src[at:n.inner_end]); out.append(self.src[n.inner_end:n.end])
         return ''.join(out)
 
-    def unit(self, n):
+    def released(self, n):
+        """The catalogue's translation of an optional message (a translate="no" element), or None."""
+        if not _releasable(n):
+            return None
+        msg, _ = _message(self.src, n)
+        t = self.cat.get(msg)
+        return t if t and t.strip() and placeholders(t) == placeholders(msg) else None
+
+    def unit(self, n, release=False):
         msg, pieces = _message(self.src, n)
-        t = self.lookup(msg)
+        t = self.released(n) if release else self.lookup(msg)
         if t is None:                                     # not translated: the English, marked as English
             return self.plain(n, mark_source=True, units=False)
         inner = self.src[n.inner:n.inner_end]
@@ -291,7 +330,10 @@ class Page:
         # On a right-to-left page a message that stays in Latin script (a name, "© 2026 Vynatix AB") keeps its
         # own order: without dir="ltr" the line's direction would reorder its figures and marks.
         ltr = self.rtl and n.tag != 'title' and not RTL_CHARS.search(t) and re.search(r'[A-Za-z]', PLACEHOLDER.sub('', t))
-        return self.tag(n, ltr=bool(ltr)) + lead + PLACEHOLDER.sub(piece, t) + trail + self.src[n.inner_end:n.end]
+        start = self.tag(n, ltr=bool(ltr))
+        if release:                                       # now in the page's language: no longer held
+            start = re.sub(r'\s+translate="no"', '', start, count=1)
+        return start + lead + PLACEHOLDER.sub(piece, t) + trail + self.src[n.inner_end:n.end]
 
     def plain(self, n, mark_source=False, units=True):
         out = [] if n.tag == '#root' else [self.tag(n, mark_source=mark_source)]
@@ -305,7 +347,7 @@ class Page:
         if n.tag in SKIP or n.tag in OPAQUE or n.void:
             return self.whole(n, translate_attrs=n.void)
         if _held(n):
-            return self.whole(n)
+            return self.unit(n, release=True) if units and self.released(n) else self.whole(n)
         if units and n.text:
             return self.unit(n)
         return self.plain(n, units=units)
@@ -365,7 +407,9 @@ def status(lang):
     data = messages(); cat = load(lang); ids = [m['id'] for m in data['messages']]
     missing = [i for i in ids if i not in cat]
     broken = {i: problems(i, cat[i]) for i in ids if i in cat and problems(i, cat[i])}
-    obsolete = [i for i in cat if i not in set(ids)]
+    optional_ids = set(data.get('optional', []))           # may be translated, never owed
+    broken.update({i: problems(i, cat[i]) for i in optional_ids if i in cat and problems(i, cat[i])})
+    obsolete = [i for i in cat if i not in set(ids) and i not in optional_ids]
     return ids, missing, broken, obsolete
 
 
@@ -384,7 +428,7 @@ if __name__ == '__main__':
             cat = load(lang)
             for i in obsolete:
                 del cat[i]
-            save(lang, {i: cat[i] for i in ids if i in cat})
+            save(lang, {i: cat[i] for i in ids + data.get('optional', []) if i in cat})
             print(f'  {lang}: {len(obsolete)} obsolete entries removed')
         sys.exit(0)
     if args:

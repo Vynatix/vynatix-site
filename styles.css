@@ -2613,8 +2613,8 @@ body::after {
   --font-fraunces: 'Fraunces', 'Amiri', 'Geeza Pro', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
   --font-aptos: 'Aptos', 'Geist', 'Noto Sans Arabic', 'SF Arabic', 'Geeza Pro', 'Segoe UI', 'Tahoma', system-ui, sans-serif;
 }
-/* An English island on such a page (the brand line in the home hero, a sentence not yet
-   translated) keeps the system's own figures: these six repeat tokens.css, "Tracking" and
+/* An English island on such a page (a sentence not yet translated; the brand line is set in the
+   page's language on these two) keeps the system's own figures: these six repeat tokens.css, "Tracking" and
    "Leading", and change with it. */
 :root:is(:lang(ja), :lang(ar)) :lang(en) {
   --tracking-display: -0.035em;
@@ -2632,14 +2632,28 @@ body::after {
 /* Japanese has no spaces to break at: let a line end between any two characters (strict kinsoku, so no
    line opens on small kana or closing punctuation), never inside a Latin word. */
 :root:lang(ja) body { line-break: strict; word-break: normal; overflow-wrap: anywhere; }
-/* Large Japanese: kana set to their own widths instead of the full square (palt, the tight setting
-   Geist's display tracking gives the Latin; the first four features repeat the body's, since the
-   property replaces the list), and a line that ends between phrases, not inside a word, where the
-   browser can tell (auto-phrase; elsewhere the rule above still holds). The English brand line is
-   exempt by its lang. */
+/* Large Japanese. The gothic headlines set kana to their own widths instead of the full square (palt,
+   the tight setting Geist's display tracking gives the Latin; the first four features repeat the body's,
+   since the property replaces the list). The accent is set solid, every character on its square: the
+   Mincho's own proportional widths open a gap after some kana and close others up (in the brand line,
+   after the particle), and an even beat is what a short Mincho line wants. Both end a line between
+   phrases, not inside a word, where the browser can tell (auto-phrase; elsewhere the rule above still
+   holds). An English island is exempt by its lang. */
 :root:lang(ja) :is(h1, h2, h3, blockquote, .case__metric--text):lang(ja) {
   font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1, 'palt' 1;
   word-break: auto-phrase;
+}
+:root:lang(ja) :is(h1 em, h2 em, blockquote, .case__metric--text):lang(ja) {
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
+}
+/* The brand line in Japanese (the home hero; the catalogue carries it, AGENTS.md, "Languages"). Its first
+   line is ten full squares, where "Engineering" is eleven narrow letters, so the size is solved from that
+   line: 8.4vw keeps ten squares inside the gutters from 320px up, and the measure is counted in em, since
+   ch is the width of a Latin figure. The ceiling is the English one, in the hero's unit. A longer first
+   line needs a smaller factor: i18n.js fails if the headline runs past two lines. */
+.hero__h1:lang(ja) {
+  font-size: clamp(calc(26 * var(--hero-u)), 8.4vw, calc(96 * var(--hero-u)));
+  max-width: 11em;
 }
 
 /* Right to left (Arabic). The layout above is flex, grid and logical properties, so it mirrors
@@ -2671,6 +2685,6 @@ body::after {
   [dir="rtl"] .home > .section::before { left: auto; right: calc(50% - 600px - var(--space-4)); }
   [dir="rtl"] .home > .section:not(.section--band) .section__head .eyebrow::before { left: auto; right: calc(-1 * var(--space-10)); }
 }
-/* An island of another language on a right-to-left page (the brand line, a Swedish guide's title, a
+/* An island of another language on a right-to-left page (a Swedish guide's title, a
    sentence not yet translated) reads left to right but starts at the page's edge, the right. */
 [dir="rtl"] [dir="ltr"] { text-align: right; }

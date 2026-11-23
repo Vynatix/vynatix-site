@@ -6,7 +6,9 @@
 //
 // Static:
 //  - the catalogues: every message of tools/i18n/messages.json has a usable translation in every language (the
-//    same numbered placeholders and {tokens}, no other markup), so no sentence falls back to English;
+//    same numbered placeholders and {tokens}, no other markup), so no sentence falls back to English; an
+//    optional message (the brand line, held in English by translate="no") is checked only where a catalogue
+//    carries it, which is what sets it in that language (Japanese and Arabic);
 //  - every generated page declares its language and direction, has its own canonical address, carries the same
 //    Content-Security-Policy as the English pages, links no hero-bg.css, and every relative link, script, style
 //    and image in it resolves to a file (and a #fragment to an id);
@@ -15,7 +17,7 @@
 // Browser (the first theme under test for the sweep, every theme for axe):
 //  - every generated page loads without a console error, a failed request or an off-origin request, at 360, 768
 //    and 1280 pixels wide, and nothing runs past the edge of the window (the test for right-to-left and for long
-//    words);
+//    words); the home hero's headline stays on its two lines;
 //  - the page's direction is the language's; the strings app.js writes come from the page (the background motion
 //    button, the rate calculator's announcement);
 //  - axe finds nothing on each language's home page, Career page and one long page;
@@ -62,6 +64,9 @@ for (const [code] of generated) {
   try { cat = JSON.parse(read(`tools/i18n/${code}.json`)); } catch (e) { /* reported as missing below */ }
   const missing = messages.messages.filter((m) => !(m.id in cat)).map((m) => m.id.slice(0, 50));
   const bad = messages.messages.filter((m) => m.id in cat && unusable(m.id, cat[m.id])).map((m) => `${unusable(m.id, cat[m.id])}: "${m.id.slice(0, 40)}"`);
+  // An optional message (what translate="no" holds: the brand line) is owed by no language; a catalogue that
+  // carries one releases the element for its language, so what it carries has to be usable like any other.
+  for (const id of messages.optional || []) if (id in cat && unusable(id, cat[id])) bad.push(`${unusable(id, cat[id])}: "${id.slice(0, 40)}"`);
   add(!missing.length && !bad.length, `${code}: all ${messages.messages.length} messages are translated and usable`,
     [missing.length ? `${missing.length} missing (python3 tools/i18n.py missing ${code}): ${few(missing, 3)}` : '', bad.length ? few(bad, 3) : ''].filter(Boolean).join('; '));
 }
@@ -170,6 +175,13 @@ async function sweep(browser) {
     const state = await page.evaluate(() => ({
       over: document.documentElement.scrollWidth - window.innerWidth,
       dir: getComputedStyle(document.documentElement).direction,
+      // The home hero's headline is two lines by its markup (a <br>): a third means a line of it wrapped.
+      h1Lines: (() => {
+        const h1 = document.querySelector('.hero__h1');
+        if (!h1) return 0;
+        const range = document.createRange(); range.selectNodeContents(h1);
+        return new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+      })(),
       wide: [...document.querySelectorAll('main *, .site-footer *, .site-header *')].filter((el) => {
         const r = el.getBoundingClientRect();
         return r.width > 0 && (r.right > window.innerWidth + 1 || r.left < -1) && getComputedStyle(el).position !== 'fixed' && !el.closest('.sr-only, .svg-defs, [hidden], .site-header__nav');
@@ -178,6 +190,7 @@ async function sweep(browser) {
     const code = p.split('/')[0];
     if (state.over > 1) problems.push(`${p} at ${w}px: the page is ${state.over}px wider than the window (${state.wide.join(', ') || 'no element found'})`);
     if (state.dir !== langs[code].dir) problems.push(`${p}: direction is ${state.dir}, the language is ${langs[code].dir}`);
+    if (state.h1Lines > 2) problems.push(`${p} at ${w}px: the hero headline takes ${state.h1Lines} lines, not two (a line of it wrapped: styles.css, "Languages", sizes the Japanese one from its first line)`);
     for (const e of errors) problems.push(`${p} at ${w}px: ${e}`);
     await ctx.close();
   });

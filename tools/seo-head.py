@@ -709,17 +709,20 @@ def render_gen(gf, missing):
 
 def message_list():
     """tools/i18n/messages.json: every message of the generated languages, with the pages it is on."""
-    seen = {}; warnings = []
+    seen = {}; warnings = []; optional = {}
     pages = list(dict.fromkeys(f for k in GENERATED for f in sources(k)))
     for f in pages:
         if PAGES[f]['status'] != 'live': continue
         found, warn = i18n.extract(render(f, gen=True))
+        optional.update(dict.fromkeys(i18n.optional(render(f, gen=True))))
         warnings += [f'{f}: {w}' for w in warn]
         for m in found + [m for m in ld_strings(extra_nodes_for(f)) if not i18n._wordless(m)]:
             seen.setdefault(m, []).append(f)
     for m in EXTRA_MESSAGES:
         seen.setdefault(m, []).append('(the language list and the withdrawn stub)')
-    data = {"languages": GENERATED, "messages": [{"id": m, "pages": list(dict.fromkeys(v))} for m, v in seen.items()]}
+    # optional: what translate="no" holds (the brand line). A catalogue may carry one and no language owes it.
+    data = {"languages": GENERATED, "messages": [{"id": m, "pages": list(dict.fromkeys(v))} for m, v in seen.items()],
+            "optional": [m for m in optional if m not in seen]}
     write(os.path.join('tools', 'i18n', 'messages.json'), json.dumps(data, ensure_ascii=False, indent=1) + '\n')
     return warnings
 

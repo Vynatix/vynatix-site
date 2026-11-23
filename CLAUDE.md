@@ -180,7 +180,12 @@ highlights the things most worth keeping front-of-mind.
   agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
   nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
   home page is eight blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
-  blocks in Swedish); the plan's In numbers block was removed from both on the owner's word of 20 November
+  blocks in Swedish). The brand line is English on every page but two: on the owner's word of 23 November
+  2026 the Japanese and Arabic home pages set it in their own language (エンジニアリングは、複利で効く。 and
+  هندسة يتراكم أثرها., the second line in the accent face). The catalogues carry it as an optional message
+  (`translate="no"` still holds it in English everywhere else); no native reader has checked the wording, and
+  a change to it goes through the catalogue, `seo-head.py`, `lang-fonts.py` and the stamps (AGENTS.md,
+  *Languages*, "The brand line"); the plan's In numbers block was removed from both on the owner's word of 20 November
   2026 and does not come back. The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
   (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
   removed do not come back on any page: declining work or sending a reader to another firm, comparisons with

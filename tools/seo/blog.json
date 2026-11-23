@@ -7,7 +7,7 @@
    "mainEntityOfPage": {
     "@id": "https://vynatix.com/blog.html"
    },
-   "numberOfItems": 4,
+   "numberOfItems": 9,
    "itemListElement": [
     {
      "@type": "ListItem",
@@ -50,6 +50,61 @@
       "@id": "https://vynatix.com/ai-assistent-interna-dokument.html#article",
       "url": "https://vynatix.com/ai-assistent-interna-dokument.html",
       "name": "Så bygger ni en AI-assistent som söker i interna dokument och vägrar gissa",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 5,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/ai-i-befintlig-produkt.html#article",
+      "url": "https://vynatix.com/ai-i-befintlig-produkt.html",
+      "name": "Så lägger ni till AI i er befintliga produkt och kör modellerna i er egen miljö",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 6,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/systemutveckling.html#article",
+      "url": "https://vynatix.com/systemutveckling.html",
+      "name": "Systemutveckling med konsultbolag: från skräddarsydd affärsapplikation till BankID-inloggning",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 7,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/systemintegration-och-forvaltning.html#article",
+      "url": "https://vynatix.com/systemintegration-och-forvaltning.html",
+      "name": "Systemintegration och förvaltning: så håller ni egenutvecklade system friska",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 8,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/testautomatisering.html#article",
+      "url": "https://vynatix.com/testautomatisering.html",
+      "name": "Så inför ni automatiserade mjukvarutester",
+      "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 9,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/fordonsmjukvara.html#article",
+      "url": "https://vynatix.com/fordonsmjukvara.html",
+      "name": "Fordonsmjukvara: HIL-testning, ISO 26262, embedded Linux och C++",
       "inLanguage": "sv"
      }
     }

@@ -2619,6 +2619,36 @@
    ]
   },
   {
+   "id": "Så lägger ni till AI i er befintliga produkt och kör modellerna i er egen miljö",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Systemutveckling med konsultbolag: från skräddarsydd affärsapplikation till BankID-inloggning",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Systemintegration och förvaltning: så håller ni egenutvecklade system friska",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Så inför ni automatiserade mjukvarutester",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "Fordonsmjukvara: HIL-testning, ISO 26262, embedded Linux och C++",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
    "id": "Android Automotive development in Gothenburg, Vynatix",
    "pages": [
     "android-automotive-development.html"

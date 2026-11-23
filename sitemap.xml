@@ -87,7 +87,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/privacy.html</loc>
@@ -114,7 +114,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/"/>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/android-automotive-development.html</loc>
@@ -204,6 +204,26 @@
     <lastmod>2026-11-20</lastmod>
   </url>
   <url>
+    <loc>https://vynatix.com/testautomatisering.html</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/systemutveckling.html</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/systemintegration-och-forvaltning.html</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/ai-i-befintlig-produkt.html</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://vynatix.com/fordonsmjukvara.html</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
     <loc>https://vynatix.com/es/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://vynatix.com/"/>
     <xhtml:link rel="alternate" hreflang="sv" href="https://vynatix.com/sv.html"/>
@@ -290,7 +310,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/es/android-automotive-development.html</loc>
@@ -415,7 +435,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/fr/android-automotive-development.html</loc>
@@ -540,7 +560,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/de/android-automotive-development.html</loc>
@@ -665,7 +685,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ja/android-automotive-development.html</loc>
@@ -790,7 +810,7 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/blog.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/blog.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vynatix.com/blog.html"/>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
   </url>
   <url>
     <loc>https://vynatix.com/ar/android-automotive-development.html</loc>

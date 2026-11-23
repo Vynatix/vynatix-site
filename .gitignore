@@ -3,3 +3,6 @@
 *.swo
 .vscode/
 .idea/
+
+# graphify output (rebuilt per machine, never committed)
+graphify-out/

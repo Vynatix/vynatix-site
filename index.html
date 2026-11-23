@@ -191,7 +191,7 @@
      "name": "What does Vynatix do?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. AI engineering: assistants, agents and automation that deliver in production. Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem. Application development: applications for mobile, web, desktop and embedded devices."
+      "text": "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications. AI engineering: assistants, agents and automation that deliver in production. Cloud platforms: fast, reliable and ready for regulated industries, on Google Cloud (GCP), Amazon Web Services (AWS) and your own servers (on-prem). Application development: applications for mobile, web, desktop and embedded devices."
      }
     },
     {
@@ -199,7 +199,7 @@
      "name": "How does working with Vynatix start?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "It starts with a talk about your roadmap, and it takes three steps. 1. A first talk about your roadmap, 30 minutes. 2. You meet the engineers who would join your team. 3. We agree on the first goal and begin. From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work."
+      "text": "It starts with a 30-minute talk about your roadmap, and it takes three steps. 1. A first talk about your roadmap, 30 minutes. 2. You meet the engineers who would join your team. 3. We agree on the first goal and begin. Once the work has begun, our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work."
      }
     },
     {
@@ -223,7 +223,7 @@
      "name": "Can Vynatix run AI systems in our own environment, including on-prem?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch."
+      "text": "Yes. We run AI systems where your data is allowed to be: on-prem, on your own servers, or in a sovereign cloud, a cloud that keeps your data under your own jurisdiction. Every system answers from your sources, is tested against known answers and is monitored after launch."
      }
     },
     {
@@ -279,7 +279,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=c92545cd">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=ef3c53ab">
+<link rel="stylesheet" href="styles.css?v=19dd3f2b">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <link rel="stylesheet" href="hero-bg.css?v=e3f2e31e">
@@ -489,7 +489,16 @@
             <span class="cap__num" aria-hidden="true">01</span>
             <h3>AI engineering</h3>
             <p>Put AI into your product, with assistants, agents and automation that deliver in production.</p>
-            <p class="cap__scope">What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.</p>
+            <p class="cap__scope">What we deliver</p>
+            <ul class="cap__list">
+              <li>Chatbots and assistants</li>
+              <li>Retrieval-augmented generation (RAG) and grounded answers</li>
+              <li>Agents</li>
+              <li>Workflow automation</li>
+              <li>Model Context Protocol (MCP) servers and integrations</li>
+              <li>SDKs and developer tooling</li>
+              <li>Evaluation and monitoring</li>
+            </ul>
             <a class="more" href="services.html#ai-engineering"><span>More on AI engineering</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -497,7 +506,13 @@
             <span class="cap__num" aria-hidden="true">02</span>
             <h3>Cloud platforms</h3>
             <p>Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.</p>
-            <p class="cap__scope">What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.</p>
+            <p class="cap__scope">What we deliver</p>
+            <ul class="cap__list">
+              <li>Platform engineering</li>
+              <li>Kubernetes and GitOps</li>
+              <li>FinOps and cost control</li>
+              <li>Moving off legacy</li>
+            </ul>
             <a class="more" href="services.html#cloud-platforms"><span>More on cloud platforms</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -505,7 +520,14 @@
             <span class="cap__num" aria-hidden="true">03</span>
             <h3>Application development</h3>
             <p>Launch applications your users come back to, on mobile, web and embedded devices.</p>
-            <p class="cap__scope">What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.</p>
+            <p class="cap__scope">What we deliver</p>
+            <ul class="cap__list">
+              <li>Native mobile for iOS and Android</li>
+              <li>Web, desktop and SaaS</li>
+              <li>Embedded Android</li>
+              <li>Wearables and VR</li>
+              <li>Enterprise platforms and integrations</li>
+            </ul>
             <a class="more" href="services.html#application-development"><span>More on application development</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
         </div>
@@ -529,9 +551,10 @@
           <article class="case">
             <div class="case__img case__img--documents"></div>
             <div class="case__body">
-              <p class="case__meta"><span>A regulated client · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Client and year:</span> <span>A regulated client · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#regulated-client">An AI assistant people can trust</a></h3>
               <p>A closed-domain assistant that answers only from approved documents. Questions outside the documents go to a person.</p>
+              <p class="sr-only">Result:</p>
               <p class="case__metric case__metric--text">Every answer cites its source</p>
               <p class="case__more"><a class="more" href="work.html#regulated-client" tabindex="-1" aria-hidden="true"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -539,9 +562,10 @@
           <article class="case">
             <div class="case__img case__img--stopwatch"></div>
             <div class="case__body">
-              <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Client and year:</span> <span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">Builds in 6 minutes instead of 47</a></h3>
               <p>Engineers waited 47 minutes for every build. Together with Volvo Cars, we rebuilt the pipeline: 6 minutes on every commit, for the whole team, with the same tests and coverage.</p>
+              <p class="sr-only">Result:</p>
               <p class="case__metric">87% shorter build time</p>
               <p class="case__more"><a class="more" href="work.html#volvo-cars" tabindex="-1" aria-hidden="true"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -549,9 +573,10 @@
           <article class="case">
             <div class="case__img case__img--dial"></div>
             <div class="case__body">
-              <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Client and year:</span> <span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">A new media application, live across a whole fleet</a></h3>
               <p>Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive.</p>
+              <p class="sr-only">Result:</p>
               <p class="case__metric case__metric--text">In production across the fleet</p>
               <p class="case__more"><a class="more" href="work.html#volvo-trucks" tabindex="-1" aria-hidden="true"><span>Read the case</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -665,22 +690,22 @@
         <div class="caps caps--2" data-faq>
           <div class="cap" data-faq-item>
             <h3>What does Vynatix do?</h3>
-            <p>Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
+            <p>Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.</p>
             <ul>
               <li>AI engineering: assistants, agents and automation that deliver in production.</li>
-              <li>Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem.</li>
+              <li>Cloud platforms: fast, reliable and ready for regulated industries, on Google Cloud (GCP), Amazon Web Services (AWS) and your own servers (on-prem).</li>
               <li>Application development: applications for mobile, web, desktop and embedded devices.</li>
             </ul>
           </div>
           <div class="cap" data-faq-item>
             <h3>How does working with Vynatix start?</h3>
-            <p>It starts with a talk about your roadmap, and it takes three steps.</p>
+            <p>It starts with a 30-minute talk about your roadmap, and it takes three steps.</p>
             <ol>
               <li>A first talk about your roadmap, 30 minutes.</li>
               <li>You meet the engineers who would join your team.</li>
               <li>We agree on the first goal and begin.</li>
             </ol>
-            <p>From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.</p>
+            <p>Once the work has begun, our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.</p>
           </div>
           <div class="cap" data-faq-item>
             <h3>How is the work billed?</h3>
@@ -692,7 +717,7 @@
           </div>
           <div class="cap" data-faq-item>
             <h3>Can Vynatix run AI systems in our own environment, including on-prem?</h3>
-            <p>Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.</p>
+            <p>Yes. We run AI systems where your data is allowed to be: on-prem, on your own servers, or in a sovereign cloud, a cloud that keeps your data under your own jurisdiction. Every system answers from your sources, is tested against known answers and is monitored after launch.</p>
           </div>
           <div class="cap" data-faq-item>
             <h3>How is Vynatix related to Ultra Group?</h3>

@@ -14,10 +14,10 @@
    ]
   },
   {
-   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
    "pages": [
     "index.html",
-    "choose-a-software-consultancy.html"
+    "contact.html"
    ]
   },
   {
@@ -235,7 +235,7 @@
    ]
   },
   {
-   "id": "We are the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
+   "id": "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.",
    "pages": [
     "index.html"
    ]
@@ -266,7 +266,7 @@
    ]
   },
   {
-   "id": "The standard they demand, at the pace your growth needs.",
+   "id": "The standard they demand, at the pace your growth needs. <1>See what we build in each industry</1>.",
    "pages": [
     "index.html"
    ]
@@ -383,6 +383,12 @@
    ]
   },
   {
+   "id": "Questions",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "Where we make the difference",
    "pages": [
     "index.html"
@@ -418,6 +424,12 @@
    ]
   },
   {
+   "id": "What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "More on AI engineering",
    "pages": [
     "index.html",
@@ -442,6 +454,12 @@
   },
   {
    "id": "Give your growing team a platform that keeps up with your users: fast, reliable and ready for regulated industries.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.",
    "pages": [
     "index.html"
    ]
@@ -475,6 +493,12 @@
    ]
   },
   {
+   "id": "What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "More on application development",
    "pages": [
     "index.html"
@@ -501,7 +525,7 @@
    ]
   },
   {
-   "id": "Every answer comes from approved documents.",
+   "id": "A closed-domain assistant that answers only from approved documents. Questions outside the documents go to a person.",
    "pages": [
     "index.html"
    ]
@@ -510,6 +534,14 @@
    "id": "Every answer cites its source",
    "pages": [
     "index.html"
+   ]
+  },
+  {
+   "id": "Read the case",
+   "pages": [
+    "index.html",
+    "industries.html",
+    "ai-engineering.html"
    ]
   },
   {
@@ -526,13 +558,13 @@
    ]
   },
   {
-   "id": "On every commit, for the whole team, with the same tests and coverage.",
+   "id": "Engineers waited 47 minutes for every build. Together with Volvo Cars, we rebuilt the pipeline: 6 minutes on every commit, for the whole team, with the same tests and coverage.",
    "pages": [
     "index.html"
    ]
   },
   {
-   "id": "87% shorter",
+   "id": "87% shorter build time",
    "pages": [
     "index.html"
    ]
@@ -551,7 +583,7 @@
    ]
   },
   {
-   "id": "The in-cab radio, rebuilt as a full media player.",
+   "id": "Together with Volvo Trucks, we rebuilt the in-cab radio as a full media player on Android Automotive.",
    "pages": [
     "index.html"
    ]
@@ -588,6 +620,18 @@
    ]
   },
   {
+   "id": "You are billed for the hours worked, and you see them every week.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "How the work starts and how it is billed",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "Great software comes from great people",
    "pages": [
     "index.html",
@@ -599,6 +643,12 @@
    "pages": [
     "index.html",
     "about.html"
+   ]
+  },
+  {
+   "id": "See the open-source code our engineers maintain",
+   "pages": [
+    "index.html"
    ]
   },
   {
@@ -637,6 +687,12 @@
    ]
   },
   {
+   "id": "Published <1>18 October 2026</1>",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "How to choose a software consultancy",
    "pages": [
     "index.html",
@@ -652,9 +708,161 @@
    ]
   },
   {
+   "id": "Published <1>6 November 2026</1>",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Platform engineering explained by Vynatix in Gothenburg: what an internal developer platform is, when it pays off, what to measure and how to start.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Published <1>18 October 2026</1> · In Swedish",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
    "id": "All insights",
    "pages": [
     "index.html"
+   ]
+  },
+  {
+   "id": "Common questions",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "What does Vynatix do?",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "AI engineering: assistants, agents and automation that deliver in production.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Application development: applications for mobile, web, desktop and embedded devices.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How does working with Vynatix start?",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "It starts with a talk about your roadmap, and it takes three steps.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "A first talk about your roadmap, 30 minutes.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "You meet the engineers who would join your team.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "We agree on the first goal and begin.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How is the work billed?",
+   "pages": [
+    "index.html",
+    "contact.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "You are billed for the hours worked, and you see them every week. You see progress every week too, and everything we build is yours.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Who are Vynatix's clients?",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Our clients include Saab, Sony, Tele2, Swisslog, Volvo Cars and Volvo Trucks. Three <1>cases</1> are told in full: an AI assistant for a regulated client, builds in 6 minutes instead of 47 with Volvo Cars, and a media application live across the Volvo Trucks fleet.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Can Vynatix run AI systems in our own environment, including on-prem?",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "How is Vynatix related to Ultra Group?",
+   "pages": [
+    "index.html",
+    "contact.html"
+   ]
+  },
+  {
+   "id": "Vynatix is part of Ultra Group. The company itself is Vynatix AB, org.nr 559445-6542, a software consultancy in Gothenburg, Sweden.",
+   "pages": [
+    "index.html",
+    "contact.html"
    ]
   },
   {
@@ -685,10 +893,9 @@
    ]
   },
   {
-   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Privacy notice</6>",
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Part of Ultra Group</6><7/> <8>Privacy notice</8>",
    "pages": [
-    "index.html",
-    "blog.html"
+    "index.html"
    ]
   },
   {
@@ -1230,13 +1437,6 @@
    "id": "Building for a regulated market? Bring AI into your product and keep full control of your data. We build assistants that answer only from approved documents, on-prem or in a sovereign cloud. Our consultants have also built for banking, health and digital identity.",
    "pages": [
     "industries.html"
-   ]
-  },
-  {
-   "id": "Read the case",
-   "pages": [
-    "industries.html",
-    "ai-engineering.html"
    ]
   },
   {
@@ -2323,42 +2523,6 @@
    ]
   },
   {
-   "id": "Common questions",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "What does Vynatix do?",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "AI engineering: assistants, agents and automation that deliver in production.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Application development: applications for mobile, web, desktop and embedded devices.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
    "id": "Where is Vynatix based?",
    "pages": [
     "contact.html"
@@ -2366,91 +2530,6 @@
   },
   {
    "id": "Vynatix is based in Gothenburg (Göteborg), Sweden, where Vynatix AB was founded in 2023. Its postal address is Mailbox 1611, 411 42 Gothenburg.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Can Vynatix run AI systems in our own environment, including on-prem?",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "How does working with Vynatix start?",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "It starts with a talk about your roadmap, and it takes three steps.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "A first talk about your roadmap, 30 minutes.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "You meet the engineers who would join your team.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "We agree on the first goal and begin.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "How is the work billed?",
-   "pages": [
-    "contact.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "You are billed for the hours worked, and you see them every week. You see progress every week too, and everything we build is yours.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Who are Vynatix's clients?",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Our clients include Saab, Sony, Tele2, Swisslog, Volvo Cars and Volvo Trucks. Three <1>cases</1> are told in full: an AI assistant for a regulated client, builds in 6 minutes instead of 47 with Volvo Cars, and a media application live across the Volvo Trucks fleet.",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "How is Vynatix related to Ultra Group?",
-   "pages": [
-    "contact.html"
-   ]
-  },
-  {
-   "id": "Vynatix is part of Ultra Group. The company itself is Vynatix AB, org.nr 559445-6542, a software consultancy in Gothenburg, Sweden.",
    "pages": [
     "contact.html"
    ]
@@ -2511,6 +2590,12 @@
   },
   {
    "id": "These guides are written in Swedish for Swedish readers. They are listed with the other Swedish pages on <1>the Swedish home page</1>.",
+   "pages": [
+    "blog.html"
+   ]
+  },
+  {
+   "id": "<1>front.disk@vynatix.com</1><2/> <3>+46 72 071 06 76</3><4/> Vynatix AB, Mailbox 1611, 411 42 Gothenburg<5/> <6>Privacy notice</6>",
    "pages": [
     "blog.html"
    ]
@@ -3737,6 +3822,12 @@
   },
   {
    "id": "Hours should be reported regularly, preferably every week, and in enough detail for you to see what the time was spent on. The invoice should be possible to check against the report.",
+   "pages": [
+    "choose-a-software-consultancy.html"
+   ]
+  },
+  {
+   "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
    "pages": [
     "choose-a-software-consultancy.html"
    ]

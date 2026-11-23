@@ -41,7 +41,7 @@
 
 ## Español (es)
 
-- [Vynatix, consultora de software de perfil sénior para scale-ups](https://vynatix.com/es/): Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces. Tiene su sede en Gotemburgo y forma parte de Ultra Group.
+- [Vynatix, consultora de software de perfil sénior para scale-ups](https://vynatix.com/es/): Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces.
 - [Sobre Vynatix: hecha por ingenieros, con vocación de largo plazo](https://vynatix.com/es/about.html): Vynatix es la consultora de software de perfil sénior para scale-ups: ingenieros sénior que se incorporan a tu equipo como socio a largo plazo. Fundada en 2023 en Gotemburgo, parte de Ultra Group.
 - [Servicios: ingeniería de IA, plataformas en la nube y desarrollo de aplicaciones](https://vynatix.com/es/services.html): Vynatix pone la IA, las plataformas en la nube y las aplicaciones al servicio de tu producto. Nuestros ingenieros sénior trabajan integrados en tu equipo y consiguen resultados duraderos.
 - [Sectores: experiencia demostrada en distintos sectores](https://vynatix.com/es/industries.html): Nuestros consultores han trabajado en servicios regulados, industria, telecomunicaciones, medios y productos de consumo. Llevan esa experiencia a scale-ups de esos mismos ámbitos.
@@ -55,7 +55,7 @@
 
 ## Français (fr)
 
-- [Vynatix, cabinet de conseil logiciel senior pour scale-ups](https://vynatix.com/fr/): Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez. Basé à Göteborg, Vynatix fait partie d'Ultra Group.
+- [Vynatix, cabinet de conseil logiciel senior pour scale-ups](https://vynatix.com/fr/): Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez.
 - [À propos de Vynatix : fondé par des ingénieurs, là pour durer](https://vynatix.com/fr/about.html): Vynatix, le cabinet de conseil logiciel senior au service des scale-ups : des ingénieurs seniors qui rejoignent durablement votre équipe. Fondé en 2023 à Göteborg, membre d'Ultra Group.
 - [Services : ingénierie IA, plateformes cloud et développement d'applications](https://vynatix.com/fr/services.html): Vynatix met l'IA, les plateformes cloud et les applications au service de votre produit, avec des ingénieurs seniors au sein de votre équipe et des résultats durables.
 - [Secteurs : une expérience multisectorielle éprouvée](https://vynatix.com/fr/industries.html): Secteurs réglementés, industrie, télécoms, médias, grand public : nos consultants y ont travaillé et en font profiter les scale-ups de ces mêmes domaines.
@@ -69,7 +69,7 @@
 
 ## Deutsch (de)
 
-- [Vynatix, die Senior-Softwareberatung für Scale-ups](https://vynatix.com/de/): Vynatix ist die Senior-Softwareberatung für Scale-ups. Unsere Engineers verstärken Ihr Team, sorgen für mehr Tempo und machen Ihre Software mit jedem Wachstumsschritt robuster. Mit Sitz in Göteborg, Teil der Ultra Group.
+- [Vynatix, die Senior-Softwareberatung für Scale-ups](https://vynatix.com/de/): Vynatix ist die Senior-Softwareberatung für Scale-ups. Unsere Engineers verstärken Ihr Team, sorgen für mehr Tempo und machen Ihre Software mit jedem Wachstumsschritt robuster.
 - [Über Vynatix: von Engineers gegründet, gekommen, um zu bleiben](https://vynatix.com/de/about.html): Vynatix ist die Senior-Softwareberatung für Scale-ups und verstärkt Ihr Team als langfristiger Partner mit Senior Engineers. Gegründet 2023 in Göteborg, Teil der Ultra Group.
 - [Leistungen: KI-Engineering, Cloud-Plattformen und Anwendungsentwicklung](https://vynatix.com/de/services.html): Vynatix setzt KI, Cloud-Plattformen und Anwendungen für Ihr Produkt ein. Unsere Senior Engineers arbeiten direkt in Ihrem Team und liefern Ergebnisse, die Bestand haben.
 - [Branchen: bewährt in vielen Branchen](https://vynatix.com/de/industries.html): Unsere Consultants haben für regulierte Branchen, Industrie, Telekommunikation, Medien und Konsumgüter entwickelt und bringen diese Erfahrung in Scale-ups dieser Bereiche ein.
@@ -83,7 +83,7 @@
 
 ## 日本語 (ja)
 
-- [Vynatix｜スケールアップ企業向けシニアエンジニアのソフトウェアコンサルティング](https://vynatix.com/ja/): Vynatixは、スケールアップ企業のための、シニアエンジニアによるソフトウェアコンサルティング会社です。貴社のチームに当社のエンジニアが加わり、開発のスピードを上げ、成長に合わせてソフトウェアをより堅牢にします。ヨーテボリを拠点とし、Ultra Groupの一員です。
+- [Vynatix｜スケールアップ企業向けシニアエンジニアのソフトウェアコンサルティング](https://vynatix.com/ja/): Vynatixは、スケールアップ企業のための、シニアエンジニアによるソフトウェアコンサルティング会社です。貴社のチームに当社のエンジニアが加わり、開発のスピードを上げ、成長に合わせてソフトウェアをより堅牢にします。
 - [会社概要：エンジニアがつくり、長く伴走する会社｜Vynatix](https://vynatix.com/ja/about.html): Vynatixは、スケールアップ企業のための、シニアエンジニアによるソフトウェアコンサルティング会社です。長期的なパートナーとして貴社のチームに加わります。2023年にヨーテボリで設立。Ultra Groupの一員です。
 - [サービス：AIエンジニアリング・クラウドプラットフォーム・アプリケーション開発｜Vynatix](https://vynatix.com/ja/services.html): Vynatixは、AI、クラウドプラットフォーム、アプリケーションを貴社のプロダクトに活かします。貴社のチームの一員として当社のシニアエンジニアが働き、長く続く成果を出します。
 - [業界：多様な業界での実績｜Vynatix](https://vynatix.com/ja/industries.html): 当社のコンサルタントは、規制産業、製造業、通信、メディア、消費者向け製品の各分野で開発に携わってきました。その経験を、同じ分野のスケールアップ企業のために活かします。
@@ -97,7 +97,7 @@
 
 ## العربية (ar)
 
-- [Vynatix، شركة استشارات برمجية متمرسة للشركات سريعة النمو](https://vynatix.com/ar/): Vynatix شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويسرّعون وتيرة العمل، ويجعلون برمجياتكم أقوى مع نموكم. مقرها في غوتنبرغ، وهي جزء من Ultra Group.
+- [Vynatix، شركة استشارات برمجية متمرسة للشركات سريعة النمو](https://vynatix.com/ar/): Vynatix شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويسرّعون وتيرة العمل، ويجعلون برمجياتكم أقوى مع نموكم.
 - [عن Vynatix: بناها مهندسون لتبقى على المدى الطويل](https://vynatix.com/ar/about.html): Vynatix شركة استشارات برمجية متمرسة للشركات سريعة النمو: مهندسون متمرسون ينضمون إلى فريقكم شريكا على المدى الطويل. تأسست عام 2023 في غوتنبرغ، وهي جزء من Ultra Group.
 - [الخدمات: هندسة الذكاء الاصطناعي والمنصات السحابية وتطوير التطبيقات](https://vynatix.com/ar/services.html): تسخّر Vynatix الذكاء الاصطناعي والمنصات السحابية والتطبيقات لخدمة منتجكم. يعمل مهندسونا المتمرسون ضمن فريقكم ويحققون نتائج تدوم.
 - [القطاعات: خبرة مثبتة في مختلف القطاعات](https://vynatix.com/ar/industries.html): بنى استشاريونا حلولا للخدمات الخاضعة للتنظيم والصناعة والاتصالات والإعلام والمنتجات الاستهلاكية، وينقلون خبرتهم إلى الشركات سريعة النمو في المجالات نفسها.

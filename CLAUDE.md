@@ -20,7 +20,7 @@ highlights the things most worth keeping front-of-mind.
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
   (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
-  `sheet-art.js` for the hero background, never site content and
+  `sheet-art.js` for the hero background, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
   never run at deploy time.
 - **Seven languages, two kinds.** English and Swedish are written by hand (the twenty-four pages above).
   Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
@@ -39,7 +39,12 @@ highlights the things most worth keeping front-of-mind.
   locked URL without a file only when it is listed there (and never linked, never reused).
   Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
   is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
-  its last block, "Languages". See AGENTS.md, *Languages*.
+  its last block, "Languages". **Japanese and Arabic have their own faces, two each for the two roles of the
+  Latin type** (M PLUS 2 and Noto Sans Arabic where Geist stands, Shippori Mincho and Amiri where Fraunces
+  italic stands; Geist still draws the Latin and the digits on those pages). They are subsets cut from the
+  generated pages by `python3 tools/lang-fonts.py` (needs `pip install fonttools brotli`): when a translation
+  adds a kanji the fonts lack, `tools/verify/i18n.js` fails and names it, and the fonts are cut again and
+  committed with the catalogues. See AGENTS.md, *Languages*.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
   system's generated tokens, read-only here except its `@font-face` block) and
   `colors_and_type.css` (the system's helpers and components, verbatim), then
@@ -175,7 +180,12 @@ highlights the things most worth keeping front-of-mind.
   agency or collective); automotive only inside a named case, never in a headline or a description of Vynatix;
   nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
   home page is eight blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
-  blocks in Swedish); the plan's In numbers block was removed from both on the owner's word of 20 November
+  blocks in Swedish). The brand line is English on every page but two: on the owner's word of 23 November
+  2026 the Japanese and Arabic home pages set it in their own language (エンジニアリングは、複利で効く。 and
+  هندسة يتراكم أثرها., the second line in the accent face). The catalogues carry it as an optional message
+  (`translate="no"` still holds it in English everywhere else); no native reader has checked the wording, and
+  a change to it goes through the catalogue, `seo-head.py`, `lang-fonts.py` and the stamps (AGENTS.md,
+  *Languages*, "The brand line"); the plan's In numbers block was removed from both on the owner's word of 20 November
   2026 and does not come back. The menu is Services, Industries, Cases (`work.html`), Insights (`blog.html`), Career
   (`membership.html`, in the recruit voice), About, Contact; file names never change. The lines the plan
   removed do not come back on any page: declining work or sending a reader to another firm, comparisons with

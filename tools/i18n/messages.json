@@ -16,8 +16,7 @@
   {
    "id": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.",
    "pages": [
-    "index.html",
-    "contact.html"
+    "index.html"
    ]
   },
   {
@@ -237,7 +236,8 @@
   {
    "id": "Vynatix is the senior software consultancy for scale-ups. Its engineers join your team and build AI systems, cloud platforms and applications.",
    "pages": [
-    "index.html"
+    "index.html",
+    "contact.html"
    ]
   },
   {
@@ -424,9 +424,62 @@
    ]
   },
   {
-   "id": "What we deliver: chatbots and assistants; retrieval and grounded answers (RAG); agents; workflow automation; MCP servers and integrations; SDKs and developer tooling; evaluation and monitoring.",
+   "id": "What we deliver",
    "pages": [
-    "index.html"
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Chatbots and assistants",
+   "pages": [
+    "index.html",
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Retrieval-augmented generation (RAG) and grounded answers",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Agents",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Workflow automation",
+   "pages": [
+    "index.html",
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Model Context Protocol (MCP) servers and integrations",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "SDKs and developer tooling",
+   "pages": [
+    "index.html",
+    "services.html",
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "Evaluation and monitoring",
+   "pages": [
+    "index.html",
+    "services.html"
    ]
   },
   {
@@ -459,9 +512,31 @@
    ]
   },
   {
-   "id": "What we deliver: platform engineering; Kubernetes and GitOps; FinOps and cost control; moving off legacy.",
+   "id": "Platform engineering",
    "pages": [
-    "index.html"
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Kubernetes and GitOps",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "FinOps and cost control",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Moving off legacy",
+   "pages": [
+    "index.html",
+    "services.html"
    ]
   },
   {
@@ -493,9 +568,38 @@
    ]
   },
   {
-   "id": "What we deliver: native mobile for iOS and Android; web, desktop and SaaS; embedded Android; wearables and VR; enterprise platforms and integrations.",
+   "id": "Native mobile for iOS and Android",
    "pages": [
-    "index.html"
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Web, desktop and SaaS",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Embedded Android",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Wearables and VR",
+   "pages": [
+    "index.html",
+    "services.html"
+   ]
+  },
+  {
+   "id": "Enterprise platforms and integrations",
+   "pages": [
+    "index.html",
+    "services.html"
    ]
   },
   {
@@ -509,6 +613,12 @@
    "pages": [
     "index.html",
     "work.html"
+   ]
+  },
+  {
+   "id": "Client and year:",
+   "pages": [
+    "index.html"
    ]
   },
   {
@@ -526,6 +636,12 @@
   },
   {
    "id": "A closed-domain assistant that answers only from approved documents. Questions outside the documents go to a person.",
+   "pages": [
+    "index.html"
+   ]
+  },
+  {
+   "id": "Result:",
    "pages": [
     "index.html"
    ]
@@ -753,7 +869,7 @@
    ]
   },
   {
-   "id": "Cloud platforms: fast, reliable and ready for regulated industries, on GCP, AWS and on-prem.",
+   "id": "Cloud platforms: fast, reliable and ready for regulated industries, on Google Cloud (GCP), Amazon Web Services (AWS) and your own servers (on-prem).",
    "pages": [
     "index.html",
     "contact.html"
@@ -774,7 +890,7 @@
    ]
   },
   {
-   "id": "It starts with a talk about your roadmap, and it takes three steps.",
+   "id": "It starts with a 30-minute talk about your roadmap, and it takes three steps.",
    "pages": [
     "index.html",
     "contact.html"
@@ -802,7 +918,7 @@
    ]
   },
   {
-   "id": "From there our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.",
+   "id": "Once the work has begun, our senior engineers work inside your team. You keep the lead on your product and work directly with the people who do the work.",
    "pages": [
     "index.html",
     "contact.html"
@@ -845,7 +961,7 @@
    ]
   },
   {
-   "id": "Yes. We run AI systems where your data is allowed to be: on-prem or in a sovereign cloud. Every system is grounded in your sources, tested against known answers and monitored after launch.",
+   "id": "Yes. We run AI systems where your data is allowed to be: on-prem, on your own servers, or in a sovereign cloud, a cloud that keeps your data under your own jurisdiction. Every system answers from your sources, is tested against known answers and is monitored after launch.",
    "pages": [
     "index.html",
     "contact.html"
@@ -1261,59 +1377,6 @@
    ]
   },
   {
-   "id": "What we deliver",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Chatbots and assistants",
-   "pages": [
-    "services.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "Retrieval and grounded answers (RAG)",
-   "pages": [
-    "services.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "Agents",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Workflow automation",
-   "pages": [
-    "services.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "MCP servers and integrations",
-   "pages": [
-    "services.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "SDKs and developer tooling",
-   "pages": [
-    "services.html",
-    "ai-engineering.html"
-   ]
-  },
-  {
-   "id": "Evaluation and monitoring",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
    "id": "02 · Cloud platforms",
    "pages": [
     "services.html"
@@ -1332,30 +1395,6 @@
    ]
   },
   {
-   "id": "Platform engineering",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Kubernetes and GitOps",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "FinOps and cost control",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Moving off legacy",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
    "id": "03 · Application development",
    "pages": [
     "services.html"
@@ -1369,36 +1408,6 @@
   },
   {
    "id": "Read the Volvo Trucks case",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Native mobile for iOS and Android",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Web, desktop and SaaS",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Embedded Android",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Wearables and VR",
-   "pages": [
-    "services.html"
-   ]
-  },
-  {
-   "id": "Enterprise platforms and integrations",
    "pages": [
     "services.html"
    ]
@@ -3058,6 +3067,12 @@
    ]
   },
   {
+   "id": "Retrieval and grounded answers (RAG)",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
    "id": "The system first looks up the relevant passages in your documents, and the model answers from those, citing the source.",
    "pages": [
     "ai-engineering.html"
@@ -3077,6 +3092,12 @@
   },
   {
    "id": "Manual steps in a process, such as sorting, extracting details or drafting, handled by a model inside a defined flow.",
+   "pages": [
+    "ai-engineering.html"
+   ]
+  },
+  {
+   "id": "MCP servers and integrations",
    "pages": [
     "ai-engineering.html"
    ]

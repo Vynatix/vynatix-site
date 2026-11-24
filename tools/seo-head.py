@@ -70,11 +70,11 @@ WEBSITE_ID = SITE + '#website'
 PAGES = {
   'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-23', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-11-20'),
-  'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-19'),
+  'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-23'),
   'industries.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-11-20', mod='2026-11-20'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-20'),
-  'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-20'),
+  'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-23'),
   'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-23'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),

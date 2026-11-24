@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="mono-light">
+<head>
+<meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة، Vynatix</title>
+<meta name="description" content="دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.">
+<!-- seo -->
+<!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
+     structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
+<link rel="canonical" href="https://vynatix.com/ar/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="en" href="https://vynatix.com/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="sv" href="https://vynatix.com/ai-i-befintlig-produkt.html">
+<link rel="alternate" hreflang="es" href="https://vynatix.com/es/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="de" href="https://vynatix.com/de/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/ai-in-your-existing-product.html">
+<link rel="alternate" hreflang="x-default" href="https://vynatix.com/ai-in-your-existing-product.html">
+<meta name="author" content="Vynatix AB">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vynatix">
+<meta property="og:title" content="كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة، Vynatix">
+<meta property="og:description" content="دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.">
+<meta property="og:url" content="https://vynatix.com/ar/ai-in-your-existing-product.html">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="sv_SE">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="article:published_time" content="2026-11-24">
+<meta property="article:modified_time" content="2026-11-24">
+<meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="The Vynatix mark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة، Vynatix">
+<meta name="twitter:description" content="دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://vynatix.com/#organization",
+   "name": "Vynatix",
+   "legalName": "Vynatix AB",
+   "alternateName": "Vynatix AB",
+   "url": "https://vynatix.com/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://vynatix.com/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "description": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "slogan": "Engineering that compounds",
+   "foundingDate": "2023",
+   "foundingLocation": {
+    "@type": "Place",
+    "name": "Gothenburg, Sweden"
+   },
+   "memberOf": {
+    "@type": "Organization",
+    "name": "Ultra Group",
+    "url": "https://ultragroup.se/"
+   },
+   "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "Swedish organisationsnummer",
+    "value": "559445-6542"
+   },
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mailbox 1611",
+    "postalCode": "411 42",
+    "addressLocality": "Gothenburg",
+    "addressCountry": "SE"
+   },
+   "email": "front.disk@vynatix.com",
+   "telephone": "+46720710676",
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Projects and careers",
+    "email": "front.disk@vynatix.com",
+    "telephone": "+46720710676"
+   },
+   "knowsAbout": [
+    "AI engineering",
+    "Retrieval-augmented generation",
+    "LLM evaluation pipelines",
+    "MCP servers and integrations",
+    "Agent and harness engineering",
+    "On-prem and sovereign cloud deployment",
+    "Cloud platforms on GCP and AWS",
+    "Kubernetes and GitOps",
+    "Platform engineering",
+    "Build pipelines",
+    "FinOps and cost control",
+    "Migration off legacy systems",
+    "Native mobile development for iOS and Android",
+    "Web and desktop applications",
+    "Enterprise integration and SaaS",
+    "Embedded Android",
+    "Android Automotive (AAOS)"
+   ],
+   "sameAs": [
+    "https://www.linkedin.com/company/vynatix",
+    "https://github.com/Vynatix"
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://vynatix.com/#website",
+   "url": "https://vynatix.com/",
+   "name": "Vynatix",
+   "inLanguage": [
+    "en",
+    "sv",
+    "es",
+    "fr",
+    "de",
+    "ja",
+    "ar"
+   ],
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html",
+   "url": "https://vynatix.com/ar/ai-in-your-existing-product.html",
+   "name": "كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة، Vynatix",
+   "description": "دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.",
+   "inLanguage": "ar",
+   "isPartOf": {
+    "@id": "https://vynatix.com/#website"
+   },
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "datePublished": "2026-11-24",
+   "dateModified": "2026-11-24",
+   "translationOfWork": {
+    "@id": "https://vynatix.com/ai-i-befintlig-produkt.html"
+   },
+   "hasPart": {
+    "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html#vanliga-fragor"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html#vanliga-fragor",
+   "url": "https://vynatix.com/ar/ai-in-your-existing-product.html#vanliga-fragor",
+   "inLanguage": "ar",
+   "isPartOf": {
+    "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html"
+   },
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "هل يمكننا الانتقال إلى نموذج لغوي آخر لاحقا؟",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "نعم، إذا كان النموذج خلف طبقة API خاصة بكم وكانت لديكم مجموعة تقييم. عندها تغيّرون النموذج في مكان واحد، وتبيّن مجموعة التقييم نفسها هل تحسنت الإجابات أم ساءت قبل أن يصل التغيير إلى مستخدميكم."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "ما هو النموذج مفتوح الأوزان (open-weight)؟",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "النموذج مفتوح الأوزان نموذج لغوي أوزانه المدربة منشورة، بحيث يمكن تنزيله وتشغيله على عتادكم الخاص. وتختلف التراخيص، وكثيرا ما تبقى بيانات التدريب غير منشورة، لذلك اقرؤوا شروط الاستخدام التجاري قبل أن تختاروا."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "ما العتاد الذي تحتاجون إليه لتشغيل نموذج لغوي على خوادمكم الخاصة (on-prem)؟",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "تحتاجون إلى معالجات رسومية بذاكرة تكفي لأوزان النموذج ولجميع الطلبات الجارية في آن واحد، إضافة إلى خوادم للاسترجاع والفهرس والسجلات. ويتوقف القدر الذي تحتاجون إليه على حجم النموذج وعلى عدد من يستخدمون الميزة في الوقت نفسه."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "هل تستطيع Vynatix تشغيل نماذج الذكاء الاصطناعي في بيئتنا الخاصة؟",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "نعم. تنشر Vynatix أنظمة الذكاء الاصطناعي في بيئتكم أنتم، بما في ذلك الخوادم الخاصة (on-prem) والسحابة السيادية، وتراقبها في بيئة الإنتاج. وعندها يتوقف النموذج الذي يمكنكم استخدامه على ما يمكن تشغيله في تلك البيئة، ونقول بوضوح ما يترتب على هذا الاختيار من حيث الجودة."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "Article",
+   "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html#article",
+   "headline": "كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة",
+   "description": "دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.",
+   "inLanguage": "ar",
+   "mainEntityOfPage": {
+    "@id": "https://vynatix.com/ar/ai-in-your-existing-product.html"
+   },
+   "author": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "datePublished": "2026-11-24",
+   "dateModified": "2026-11-24"
+  }
+ ]
+}
+</script>
+<!-- /seo -->
+<!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
+     colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
+     The markup names the Monochrome light theme, the site's one colour scheme; app.js
+     switches it to Monochrome dark when the visitor or their system asks (see its header). -->
+<link rel="stylesheet" href="../tokens.css?v=c92545cd">
+<link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
+<link rel="stylesheet" href="../styles.css?v=a31b9853">
+<!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
+<meta name="theme-color" content="#F5F1EA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="../app.js?v=78af7a5c"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">الانتقال إلى المحتوى</a>
+<div id="app">
+
+  <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
+       design system's logo artwork (assets/vynatix-wordmark-*.svg hold the same geometry), which
+       fills with currentColor so it follows the theme. -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="vx-lens" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../assets/glass-lens-wide.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.06" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="vx-lens-narrow" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../assets/glass-lens-narrow.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.12" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <symbol id="vx-wordmark" viewBox="90.1052 381.871 2654.79 653.758"><g fill="currentColor"><path d="M397.299 823.784L240.915 453.728L240.917 453.735C234.456 438.447 227.143 421.141 203.518 421.141L107.415 421.141L107.415 421.141C103.717 421.141 95.655 421.141 92.4292 421.141L92.4292 421.141C91.1417 421.143 90.1052 422.293 90.1052 423.723L90.1052 431.978C90.1052 433.409 91.1425 434.561 92.4309 434.561C115.726 434.729 120.384 451.83 126.802 467.017L367.638 1035.63L608.073 466.623C614.452 451.536 619.183 434.728 642.277 434.561C643.565 434.561 644.603 433.409 644.603 431.978L644.603 423.723C644.603 422.293 643.566 421.143 642.279 421.141L645.259 421.141L645.259 421.141L590.748 421.142C567.433 421.323 560.129 438.475 553.705 453.676L397.299 823.784Z" fill-rule="evenodd"/><path d="M452.438 551.62L411.074 453.738C411.073 453.735 411.072 453.733 411.071 453.731C404.61 438.444 397.296 421.144 373.674 421.144L373.674 421.142L311.764 421.141L311.764 421.141C308.066 421.141 300.004 421.141 296.778 421.141L296.778 421.141C295.49 421.141 294.454 422.293 294.454 423.723L294.454 431.978C294.454 433.409 295.491 434.56 296.78 434.56C296.665 434.56 296.896 434.56 296.78 434.56C320.373 434.56 324.95 452.343 331.404 467.616L409.671 652.821L452.438 551.62Z" fill-rule="evenodd"/><path d="M542.24 764.12L499.473 865.322C457.163 965.442 537.25 1035.63 571.444 1035.63L656.978 1035.63L656.978 1035.63L672.758 1035.63C674.012 1035.58 675.013 1034.46 675.013 1033.06L675.013 1024.81C675.013 1023.38 673.976 1022.22 672.688 1022.22L674.554 1022.22C601.559 990.791 549.605 782.803 557.153 760.668L557.082 760.84C557.623 759.54 557.104 758.009 555.919 757.408L549.078 753.941C547.893 753.34 546.504 753.902 545.962 755.2L542.24 764.12Z" fill-rule="evenodd"/><path d="M899.812 593.257L899.812 649.72C922.211 625.455 943.676 607.801 964.208 596.757C984.74 585.713 1006.83 580.191 1030.47 580.191C1058.78 580.191 1082.27 588.047 1100.93 603.757C1119.6 619.467 1132.04 638.988 1138.26 662.32C1143.24 680.052 1145.73 714.116 1145.73 764.513L1145.73 934.369C1145.73 967.967 1148.76 988.888 1154.83 997.132C1160.9 1005.38 1173.57 1010.59 1192.86 1012.76L1192.86 1029.56L972.141 1029.56L972.141 1012.76C988.629 1010.59 1000.45 1003.74 1007.61 992.232C1012.58 984.455 1015.07 965.167 1015.07 934.369L1015.07 740.248C1015.07 704.472 1013.67 681.918 1010.87 672.586C1008.07 663.253 1003.33 656.02 996.639 650.887C989.951 645.754 982.562 643.187 974.474 643.187C947.72 643.187 922.833 662.32 899.812 700.584L899.812 934.369C899.812 967.034 902.845 987.721 908.911 996.432C914.978 1005.14 926.255 1010.59 942.743 1012.76L942.743 1029.56L722.023 1029.56L722.023 1012.76C740.378 1010.9 753.443 1004.99 761.221 995.032C766.509 988.188 769.154 967.967 769.154 934.369L769.154 687.985C769.154 655.009 766.12 634.477 760.054 626.389C753.988 618.3 741.311 613.012 722.023 610.523L722.023 593.257L899.812 593.257Z" fill-rule="nonzero"/><path d="M1493.84 965.167C1440.64 1012.14 1392.89 1035.63 1350.58 1035.63C1325.7 1035.63 1305.01 1027.46 1288.52 1011.13C1272.03 994.799 1263.79 974.344 1263.79 949.768C1263.79 916.481 1278.1 886.539 1306.72 859.94C1335.34 833.342 1397.71 797.955 1493.84 753.78L1493.84 709.917C1493.84 676.941 1492.05 656.176 1488.47 647.621C1484.9 639.066 1478.13 631.599 1468.18 625.222C1458.22 618.845 1447.02 615.656 1434.58 615.656C1414.36 615.656 1397.71 620.167 1384.65 629.188C1376.56 634.788 1372.52 641.321 1372.52 648.787C1372.52 655.32 1376.87 663.408 1385.58 673.052C1397.4 686.429 1403.31 699.339 1403.31 711.783C1403.31 727.027 1397.64 740.015 1386.28 750.747C1374.93 761.48 1360.07 766.846 1341.72 766.846C1322.12 766.846 1305.71 760.936 1292.49 749.114C1279.27 737.293 1272.65 723.449 1272.65 707.583C1272.65 685.185 1281.52 663.797 1299.25 643.421C1316.99 623.044 1341.72 607.412 1373.45 596.524C1405.18 585.636 1438.16 580.191 1472.38 580.191C1513.75 580.191 1546.49 588.98 1570.6 606.556C1594.71 624.133 1610.34 643.187 1617.5 663.72C1621.86 676.785 1624.03 706.806 1624.03 753.78L1624.03 923.17C1624.03 943.08 1624.81 955.601 1626.37 960.734C1627.92 965.867 1630.25 969.678 1633.37 972.167C1636.48 974.655 1640.05 975.9 1644.1 975.9C1652.19 975.9 1660.43 970.145 1668.83 958.634L1682.83 969.833C1667.27 992.854 1651.18 1009.58 1634.53 1020C1617.89 1030.42 1598.99 1035.63 1577.84 1035.63C1552.95 1035.63 1533.51 1029.8 1519.51 1018.13C1505.51 1006.46 1496.95 988.81 1493.84 965.167ZM1493.84 931.103L1493.84 785.045C1456.2 807.133 1428.2 830.776 1409.85 855.974C1397.71 872.773 1391.65 889.727 1391.65 906.837C1391.65 921.148 1396.78 933.747 1407.05 944.635C1414.82 953.034 1425.71 957.234 1439.71 957.234C1455.27 957.234 1473.31 948.524 1493.84 931.103Z" fill-rule="nonzero"/><path d="M1904.01 433.667L1904.01 593.257L2007.61 593.257L2007.61 639.454L1904.01 639.454L1904.01 908.704C1904.01 933.902 1905.18 950.157 1907.51 957.468C1909.85 964.778 1913.97 970.689 1919.88 975.2C1925.79 979.711 1931.24 981.966 1936.21 981.966C1956.43 981.966 1975.57 966.567 1993.61 935.769L2007.61 946.035C1982.41 1005.76 1941.5 1035.63 1884.88 1035.63C1857.2 1035.63 1833.79 1027.93 1814.65 1012.53C1795.52 997.132 1783.31 979.944 1778.02 960.967C1774.91 950.39 1773.36 921.77 1773.36 875.106L1773.36 639.454L1716.43 639.454L1716.43 623.122C1755.62 595.435 1788.99 566.348 1816.52 535.861C1844.05 505.374 1868.08 471.31 1888.62 433.667L1904.01 433.667Z" fill-rule="nonzero"/><path d="M2154.13 381.871C2174.35 381.871 2191.46 388.948 2205.46 403.103C2219.46 417.257 2226.46 434.29 2226.46 454.199C2226.46 474.109 2219.38 491.064 2205.23 505.063C2191.07 519.062 2174.04 526.062 2154.13 526.062C2134.22 526.062 2117.27 519.062 2103.27 505.063C2089.27 491.064 2082.27 474.109 2082.27 454.199C2082.27 434.29 2089.27 417.257 2103.27 403.103C2117.27 388.948 2134.22 381.871 2154.13 381.871ZM2219.46 593.257L2219.46 939.035C2219.46 969.833 2223.04 989.51 2230.19 998.065C2237.35 1006.62 2251.35 1011.52 2272.19 1012.76L2272.19 1029.56L2036.54 1029.56L2036.54 1012.76C2055.83 1012.14 2070.14 1006.54 2079.47 995.965C2085.69 988.81 2088.8 969.833 2088.8 939.035L2088.8 684.252C2088.8 653.454 2085.23 633.777 2078.07 625.222C2070.92 616.667 2057.07 611.767 2036.54 610.523L2036.54 593.257L2219.46 593.257Z" fill-rule="nonzero"/><path d="M2572.71 762.18L2648.3 905.904C2674.43 955.99 2695.12 987.721 2710.36 1001.1C2718.76 1008.25 2730.27 1012.14 2744.89 1012.76L2744.89 1029.56L2501.78 1029.56L2501.78 1012.76C2520.75 1011.21 2532.5 1008.72 2537.01 1005.3C2541.52 1001.88 2543.77 997.209 2543.77 991.299C2543.77 982.588 2538.8 968.9 2528.84 950.235L2491.04 879.306L2458.85 926.436C2444.23 947.901 2435.98 960.656 2434.11 964.7C2431.63 970.611 2430.38 975.9 2430.38 980.566C2430.38 987.721 2431.86 993.71 2434.81 998.532C2437.77 1003.35 2441.81 1006.93 2446.95 1009.26C2452.08 1011.6 2461.49 1012.76 2475.18 1012.76L2475.18 1029.56L2304.39 1029.56L2304.39 1012.76C2325.54 1012.76 2344.91 1006.93 2362.49 995.265C2380.06 983.599 2405.65 953.034 2439.25 903.571L2475.18 850.374L2400.05 711.317C2375.47 665.897 2357.12 638.054 2344.99 627.788C2332.85 617.522 2319.32 611.767 2304.39 610.523L2304.39 593.257L2546.11 593.257L2546.11 610.523L2533.51 610.99L2509.24 619.389C2506.75 621.567 2505.51 625.144 2505.51 630.122C2505.51 634.788 2506.29 639.61 2507.84 644.587C2508.78 646.765 2513.13 655.165 2520.91 669.786L2554.97 733.248L2572.71 708.05C2597.59 673.83 2610.04 649.876 2610.04 636.188C2610.04 629.655 2607.31 624.133 2601.87 619.622C2596.43 615.111 2586.7 612.078 2572.71 610.523L2572.71 593.257L2727.16 593.257L2727.16 610.523C2708.19 611.145 2690.45 616.978 2673.97 628.022C2657.48 639.066 2638.97 660.453 2618.44 692.184L2572.71 762.18Z" fill-rule="nonzero"/></g></symbol>
+  </svg>
+
+  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="index.html" class="site-header__logo" aria-label="الصفحة الرئيسية لـ Vynatix">
+        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+      </a>
+      <button class="icon-btn mobile-toggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="primary-nav">
+        <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
+        <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
+      </button>
+      <nav class="site-header__nav" id="primary-nav" aria-label="التنقل الرئيسي">
+        <ul class="site-header__list list-reset">
+          <li><a href="services.html" class="site-header__link">الخدمات</a></li>
+          <li><a href="industries.html" class="site-header__link">القطاعات</a></li>
+          <li><a href="work.html" class="site-header__link">دراسات الحالة</a></li>
+          <li><a href="blog.html" class="site-header__link">رؤى</a></li>
+          <li><a href="membership.html" class="site-header__link">الوظائف</a></li>
+          <li><a href="about.html" class="site-header__link">من نحن</a></li>
+          <li><a href="contact.html" class="site-header__link">اتصلوا بنا</a></li>
+          <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">تواصلوا معنا</a></li>
+        </ul>
+      </nav>
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" type="button" title="المظهر الداكن" aria-label="المظهر الداكن" aria-pressed="false">
+          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
+          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
+        </button>
+        <a href="contact.html" class="btn btn--sm site-header__cta">تواصلوا معنا</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================================================ Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">دليل</p>
+        <h1 class="page-hero__h1">كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة</h1>
+        <p class="page-hero__lede">تضيفون الذكاء الاصطناعي إلى منتج قائم بأن تبدؤوا بميزة واحدة محددة بوضوح، وتضعوا النموذج خلف طبقة خاصة به في بنيتكم، وتقيسوا الإجابات بعد كل تغيير، وتشغّلوا كل شيء حيث يُسمح بوجود بياناتكم. كتبت هذا الدليل Vynatix، وهي شركة استشارات برمجية في غوتنبرغ تبني أنظمة ذكاء اصطناعي لبيئة الإنتاج.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ Short answer, who can help, the first feature -->
+    <section class="section" id="intro">
+      <div class="container">
+        <div class="prose">
+          <p class="prose__meta">نُشر في <time datetime="2026-11-24">24 نوفمبر 2026</time> · آخر تحديث <time datetime="2026-11-24">24 نوفمبر 2026</time> · Vynatix</p>
+          <p>باختصار، تسير الأمور على هذا النحو:</p>
+          <ol>
+            <li>اختاروا ميزة في سير عمل قائم، حيث يمكن اكتشاف الأخطاء.</li>
+            <li>ضعوا النموذج خلف واجهة API داخلية، بحيث لا يستدعيه المنتج مباشرة أبدا.</li>
+            <li>قيسوا الإجابات بمقارنتها بإجابات معروفة بعد كل تغيير.</li>
+            <li>قرروا أين سيعمل النموذج: عبر واجهة API لدى مزوّد، أو في سحابة سيادية، أو على خوادمكم الخاصة.</li>
+            <li>راقبوا الميزة في بيئة الإنتاج، وحوّلوا كل خطأ إلى حالة اختبار جديدة.</li>
+          </ol>
+
+          <h2>ما الشركات التي يمكنها مساعدتنا على إضافة ميزات ذكاء اصطناعي إلى منتجنا الحالي؟</h2>
+          <p>يمكن لشركة استشارات برمجية تبني أنظمة ذكاء اصطناعي لبيئة الإنتاج وتعمل ضمن فريقكم أن تساعدكم على إضافة ميزات ذكاء اصطناعي إلى منتجكم الحالي. وVynatix شركة استشارات من هذا النوع. ونادرا ما يكون الجزء الصعب في ميزة ذكاء اصطناعي ضمن منتج له مستخدمون بالفعل هو النموذج نفسه، بل هو كل ما يحيط به: ربطه ببياناتكم وصلاحياتكم، واختبار الإجابات، وطرحه لمجموعة واحدة من المستخدمين في كل مرة، ومراقبته بعد ذلك. لذلك اسألوا شركة الاستشارات كيف تقاس الإجابات، وأين سيعمل النموذج، وهل سيكون الكود والموجّهات ومجموعة التقييم ملكا لكم.</p>
+
+          <h2>بأي ميزة ذكاء اصطناعي ينبغي أن تبدؤوا؟</h2>
+          <p>ابدؤوا بميزة يقرأ فيها نموذج لغوي نصا أو يكتبه ضمن سير عمل موجود أصلا في المنتج، حيث تكون الأخطاء ظاهرة وقابلة للتصحيح، وحيث تستطيعون قياس ما إذا كانت مفيدة. ومن الخيارات الجيدة للبداية: البحث في وثائقكم بإجابات تذكر مصدرها (RAG)، وتلخيص التذاكر، وتصنيف التذاكر الواردة، واستخراج التفاصيل من العقود أو الفواتير، ومسودات يراجعها المستخدم. ويبقى الكود العادي أو استعلام قاعدة البيانات أو محرك القواعد الأداة المناسبة حين يجب أن تكون الإجابة دقيقة ومتطابقة في كل مرة.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Architecture -->
+    <section class="section section--surface" id="arkitektur">
+      <div class="container">
+        <div class="two-up">
+          <div>
+            <p class="eyebrow">البنية</p>
+            <h2 class="section__h2 two-up__h2">ما الذي يتغير في بنية المنتج؟</h2>
+            <p class="two-up__body">يحصل المنتج على طبقة جديدة: واجهة API داخلية هي الطريق الوحيد إلى النموذج، يحيط بها الاسترجاع والتحقق والمراقبة. ونادرا ما يحتاج باقي المنتج إلى إعادة بناء، لكن عليه أن يتعامل مع الحالات التي يكون فيها جزء الذكاء الاصطناعي بطيئا أو يعطي إجابات خاطئة أو متوقفا عن العمل.</p>
+            <p class="two-up__body"><strong class="lead-in">طبقة API.</strong> فيها توجد الموجّهات، واختيار النموذج، ومفاتيح API، ومهل الانتظار، وحدود التكلفة، بحيث لا يمس تبديل النموذج إلا هذه الطبقة، لا المنتج.</p>
+            <p class="two-up__body"><strong class="lead-in">الاسترجاع.</strong> يسترجع النظام المقاطع ذات الصلة من بياناتكم ويصفّيها بحسب صلاحيات المستخدم قبل أن يرى النموذج أي نص، كما في الدليل عن <a href="../ai-assistent-interna-dokument.html" hreflang="sv">مساعدي الذكاء الاصطناعي التي تبحث في الوثائق الداخلية</a> (بالسويدية).</p>
+            <p class="two-up__body"><strong class="lead-in">التحقق.</strong> يتحقق النظام من صحة الإجابات المهيكلة مقابل مخطط (schema)، ولا يسمح للوكيل إلا باستدعاء الأدوات التي يحتاج إليها. وقد يحتوي النص في الوثائق أو رسائل البريد الإلكتروني على تعليمات موجهة إلى النموذج، لذلك لا تمنحوا النموذج أي صلاحية وصول يمكن أن تستغلها مثل هذه التعليمات.</p>
+            <p class="two-up__body"><strong class="lead-in">البديل الاحتياطي.</strong> ضعوا الميزة خلف مفتاح تفعيل (feature flag)، وفعّلوها أولا لبعض مستخدميكم، وتأكدوا من أن المنتج يعمل كالمعتاد حين تكون معطّلة.</p>
+          </div>
+          <div class="panel">
+            <p class="eyebrow eyebrow--muted">الجديد في البنية</p>
+            <ul>
+              <li>واجهة API داخلية أمام النموذج</li>
+              <li>فهرس للاسترجاع، مع الصلاحيات</li>
+              <li>التحقق من المدخلات والإجابات في الكود</li>
+              <li>مجموعة تقييم يجري تشغيلها مع كل تغيير</li>
+              <li>سجلات للسؤال، والسياق المسترجع، والإجابة، وزمن الاستجابة، والتكلفة</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Right answers, your own environment -->
+    <section class="section" id="egen-miljo">
+      <div class="container">
+        <div class="prose">
+          <h2>كيف تعرفون أن الإجابات صحيحة؟</h2>
+          <p>تعرفون ذلك بالقياس: مجموعة تقييم إجاباتها معروفة يجري تشغيلها تلقائيا في كل مرة يتغير فيها النموذج أو الموجّهات أو الاسترجاع أو المواد المصدرية، والمراقبة في بيئة الإنتاج تبيّن ما تفعله الميزة مع الأسئلة الحقيقية. والمنتج القائم يمنحكم أفضلية منذ البداية: تذاكر وعمليات بحث حقيقية تبنون منها مجموعة التقييم، بعد إزالة البيانات الشخصية. أضيفوا إلى المجموعة كل خطأ تجدونه بعد الإطلاق. ولمزيد من التفاصيل عن التقييم، اقرؤوا <a href="ai-engineering.html#evaluation">كيف تعرفون أن النظام على صواب</a> في صفحة هندسة الذكاء الاصطناعي.</p>
+
+          <h2>ما الشركات التي يمكنها مساعدتنا على تشغيل نماذج الذكاء الاصطناعي في بيئة تقنية المعلومات الخاصة بنا؟</h2>
+          <p>يمكن لشركة استشارات تجمع بين بناء نظام الذكاء الاصطناعي ونشره في بيئتكم أن تساعدكم على تشغيل نماذج الذكاء الاصطناعي في بيئة تقنية المعلومات الخاصة بكم، على خوادمكم الخاصة (on-prem) أو في سحابة سيادية. وVynatix تقوم بالأمرين. وتشغيل النموذج بأنفسكم يمنحكم التحكم في مكان وجود البيانات وفي من يمكنه الوصول إليها، لكنكم تتولون أيضا التشغيل الذي كان المزوّد سيتولاه عنكم لولا ذلك.</p>
+          <table>
+            <thead>
+              <tr><th scope="col">الخيار</th><th scope="col">الأنسب حين</th><th scope="col">ما ينبغي مراعاته</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>واجهة API لدى مزوّد</strong></td><td>يجوز أن تغادر البيانات بيئتكم بموجب عقد، وتفضّلون ألا تشغّلوا عتادا خاصا بكم.</td><td>أين تعالج البيانات، وكم مدة الاحتفاظ بها، وهل تستخدم في التدريب.</td></tr>
+              <tr><td><strong>سحابة سيادية</strong></td><td>يجب أن تبقى البيانات والتشغيل ضمن ولاية قضائية محددة، هي عادة الاتحاد الأوروبي أو السويد.</td><td>ما المتاح هناك من نماذج وعتاد.</td></tr>
+              <tr><td><strong>الخوادم الخاصة (on-prem)</strong></td><td>لا يجوز أن تغادر البيانات المبنى، أو يجب أن يعمل النظام دون اتصال بالخارج.</td><td>يصبح العتاد والسعة والتشغيل من مسؤوليتكم.</td></tr>
+            </tbody>
+          </table>
+          <p>في الحالتين الأخيرتين كثيرا ما تشغّلون نموذجا مفتوح الأوزان (open-weight)، أي نموذجا يمكن تنزيله وتشغيله على عتادكم الخاص. وقد يعطي مثل هذا النموذج إجابات أضعف من أكبر النماذج التي يقدمها المزوّدون، لذلك قارنوا بين النماذج المرشحة على مجموعة التقييم نفسها. وخططوا أيضا لما يلي:</p>
+          <ul>
+            <li><strong>معالجات رسومية (GPU) بذاكرة كافية.</strong> بدقة 16 بت يشغل كل معامل بايتين، لذا يحتاج نموذج فيه 8 مليارات معامل إلى نحو 16 GB للأوزان وحدها. والتكميم (quantisation) يقلل الذاكرة المطلوبة، وكثيرا ما يكون ذلك على حساب شيء من الجودة.</li>
+            <li><strong>ذاكرة للمستخدمين المتزامنين.</strong> كل طلب قيد المعالجة يستهلك ذاكرة إضافية تزداد بازدياد طول النص.</li>
+            <li><strong>أكثر من النموذج.</strong> خادم استدلال (inference)، ونموذج تضمين (embedding)، وفهرس للاسترجاع، وسجلات، وكلها في البيئة نفسها.</li>
+            <li><strong>التشغيل المستمر.</strong> التحديثات، ومراقبة الحمل وأزمنة الاستجابة، وخطة لحالة توقف أحد الخوادم، وجولة تقييم جديدة كلما غيّرتم النموذج.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Data and GDPR, administrative workflows -->
+    <section class="section section--surface" id="data-och-gdpr">
+      <div class="container">
+        <div class="prose">
+          <h2>ما الذي ينبغي أن تراعوه بشأن البيانات واللائحة العامة لحماية البيانات (GDPR)؟</h2>
+          <p>تعاملوا مع كل ميزة ذكاء اصطناعي على أنها معالجة جديدة للبيانات الشخصية: عليكم أن تعرفوا أي بيانات يراها النموذج، وأين تعالج، وكم مدة الاحتفاظ بها، ومن يمكنه الوصول إليها. وينطبق هذا أينما عمل النموذج.</p>
+          <ul>
+            <li><strong>الغرض:</strong> تحققوا من أن الاستخدام الجديد يتوافق مع الغرض الذي جرى جمع البيانات من أجله.</li>
+            <li><strong>المزوّدون:</strong> تحتاجون إلى اتفاقية معالجة بيانات مع أي مزوّد يعالج بيانات شخصية نيابة عنكم، والمعالجة خارج الاتحاد الأوروبي/المنطقة الاقتصادية الأوروبية تتطلب أساسا صالحا لنقل البيانات إلى دولة ثالثة. وتحققوا مما إذا كان يحق للمزوّد تدريب نماذج على بياناتكم.</li>
+            <li><strong>تقليل البيانات:</strong> لا ترسلوا إلا ما يحتاج إليه النموذج، واحجبوا أرقام الهوية الوطنية وأي تفاصيل أخرى يمكن للإجابة الاستغناء عنها.</li>
+            <li><strong>السجلات:</strong> كثيرا ما تحتوي الأسئلة والإجابات المخزنة على بيانات شخصية. وهي تحتاج إلى الحماية نفسها التي تحظى بها بيانات المصدر، وإلى قواعد احتفاظ خاصة بها.</li>
+            <li><strong>تقييم الأثر:</strong> إذا كان من المرجح أن تؤدي المعالجة إلى خطر مرتفع على الأفراد المعنيين، فيلزم إجراء تقييم أثر لحماية البيانات.</li>
+            <li><strong>الشفافية:</strong> أخبروا المستخدمين حين يتلقون إجابات من نظام ذكاء اصطناعي. كما يضع قانون الذكاء الاصطناعي الأوروبي (EU AI Act) متطلبات تتوقف على الغرض من استخدام النظام.</li>
+          </ul>
+          <p>هذه ليست مشورة قانونية، فاطلبوا من مسؤول حماية البيانات لديكم أو من محام أن يراجع هذا الإعداد.</p>
+
+          <h2>ما شركات الاستشارات التي يمكنها أتمتة سير العمل الإداري بالذكاء الاصطناعي؟</h2>
+          <p>يمكن لشركة استشارات تفهم النماذج اللغوية كما تفهم التكامل مع الأنظمة التي تشغّلونها حاليا أن تؤتمت سير عملكم الإداري بالذكاء الاصطناعي. وتبني Vynatix الأتمتة والتكاملات معا، بما في ذلك خوادم MCP. وأنسب أنواع سير العمل هي تلك التي تتألف في معظمها من قراءة النصوص وفرزها وكتابتها: تذاكر ينبغي إسنادها، وتفاصيل ينبغي نسخها من الفواتير والعقود إلى نظام ERP، وردود تستند كتابتها إلى المواد المصدرية نفسها في كل مرة.</p>
+          <ol>
+            <li>ارسموا سير العمل خطوة بخطوة، واختاروا الخطوة التي يفيد فيها النموذج أكثر من غيرها.</li>
+            <li>دعوا النموذج يقترح وشخصا يعتمد الاقتراح، وسجّلوا الأمرين كليهما.</li>
+            <li>تحققوا من الإجابات بقواعد في الكود: يجب أن يكون المبلغ مبلغا والتاريخ تاريخا.</li>
+            <li>امنحوا الأتمتة صلاحيات وصول محدودة. فخادم MCP (Model Context Protocol) هو الذي يحدد الأدوات والبيانات التي يستطيع الوكيل الوصول إليها، وكثيرا ما تكفي صلاحية القراءة فقط في البداية.</li>
+            <li>تابعوا نسبة المقترحات المعتمدة دون تعديل، ودعوا الأتمتة تتولى مزيدا من الخطوات حين تبقى هذه النسبة مرتفعة مع مرور الوقت.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ How Vynatix works -->
+    <section class="section" id="vynatix">
+      <div class="container">
+        <div class="prose">
+          <h2>كيف تعمل Vynatix مع الذكاء الاصطناعي في المنتجات القائمة؟</h2>
+          <p>تساعدكم Vynatix على إدخال الذكاء الاصطناعي إلى منتجكم الحالي، بمهندسين متمرسين ينضمون إلى فريقكم. نبني روبوتات المحادثة والمساعدين، والاسترجاع والإجابات المستندة إلى المصادر (RAG)، والوكلاء، وأتمتة سير العمل، وخوادم MCP والتكاملات، وحزم SDK وأدوات المطورين، ومسارات التقييم. وننشر الأنظمة في بيئتكم أنتم، بما في ذلك الخوادم الخاصة (on-prem) والسحابة السيادية، ونراقبها في بيئة الإنتاج.</p>
+          <p>مثال منشور على طريقتنا في بناء أنظمة الذكاء الاصطناعي: في عام 2025، بنينا لعميل في قطاع خاضع للتنظيم مساعدا مغلق المجال لا يجيب إلا استنادا إلى وثائق معتمدة. كل إجابة تذكر مصدرها. وإذا لم يجد للسؤال سندا في المصادر، أحاله إلى شخص. <a href="work.html#regulated-client">اقرؤوا دراسة الحالة</a>.</p>
+          <p>الكود ملك لكم. كل ما نبنيه موثق ليواصل فريقكم البناء عليه، وترون ساعات العمل كل أسبوع. اقرؤوا المزيد عن <a href="ai-engineering.html">هندسة الذكاء الاصطناعي</a> لدينا.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Frequently asked questions, about Vynatix -->
+    <section class="section section--surface" id="vanliga-fragor">
+      <div class="container">
+        <div class="prose">
+          <h2>الأسئلة الشائعة</h2>
+          <div data-faq>
+            <div data-faq-item>
+              <h3>هل يمكننا الانتقال إلى نموذج لغوي آخر لاحقا؟</h3>
+              <p>نعم، إذا كان النموذج خلف طبقة API خاصة بكم وكانت لديكم مجموعة تقييم. عندها تغيّرون النموذج في مكان واحد، وتبيّن مجموعة التقييم نفسها هل تحسنت الإجابات أم ساءت قبل أن يصل التغيير إلى مستخدميكم.</p>
+            </div>
+            <div data-faq-item>
+              <h3>ما هو النموذج مفتوح الأوزان (open-weight)؟</h3>
+              <p>النموذج مفتوح الأوزان نموذج لغوي أوزانه المدربة منشورة، بحيث يمكن تنزيله وتشغيله على عتادكم الخاص. وتختلف التراخيص، وكثيرا ما تبقى بيانات التدريب غير منشورة، لذلك اقرؤوا شروط الاستخدام التجاري قبل أن تختاروا.</p>
+            </div>
+            <div data-faq-item>
+              <h3>ما العتاد الذي تحتاجون إليه لتشغيل نموذج لغوي على خوادمكم الخاصة (on-prem)؟</h3>
+              <p>تحتاجون إلى معالجات رسومية بذاكرة تكفي لأوزان النموذج ولجميع الطلبات الجارية في آن واحد، إضافة إلى خوادم للاسترجاع والفهرس والسجلات. ويتوقف القدر الذي تحتاجون إليه على حجم النموذج وعلى عدد من يستخدمون الميزة في الوقت نفسه.</p>
+            </div>
+            <div data-faq-item>
+              <h3>هل تستطيع Vynatix تشغيل نماذج الذكاء الاصطناعي في بيئتنا الخاصة؟</h3>
+              <p>نعم. تنشر Vynatix أنظمة الذكاء الاصطناعي في بيئتكم أنتم، بما في ذلك الخوادم الخاصة (on-prem) والسحابة السيادية، وتراقبها في بيئة الإنتاج. وعندها يتوقف النموذج الذي يمكنكم استخدامه على ما يمكن تشغيله في تلك البيئة، ونقول بوضوح ما يترتب على هذا الاختيار من حيث الجودة.</p>
+            </div>
+          </div>
+
+          <h2>عن Vynatix</h2>
+          <p>Vynatix شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويسرّعون وتيرة العمل، ويجعلون برمجياتكم أقوى مع نموكم. مقرها في غوتنبرغ، وهي جزء من Ultra Group.</p>
+          <p>النسخة السويدية من هذا الدليل هي <a href="../ai-i-befintlig-produkt.html" hreflang="sv" lang="sv" dir="ltr">Så lägger ni till AI i er befintliga produkt och kör modellerna i er egen miljö</a> (بالسويدية). ولتروا كيف نعمل، ابدؤوا من <a href="about.html">صفحة من نحن</a> ومن <a href="work.html">دراسات الحالة</a>.</p>
+          <p>في الدليل عن <a href="choose-a-software-consultancy.html">كيف تختارون شركة استشارات برمجية</a>، نستعرض ما ينبغي أن تسألوا عنه قبل أن تستعينوا بأي جهة، بما في ذلك نحن.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ CTA band -->
+    <section class="cta-band band--inset inverse" aria-labelledby="cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">الخطوة التالية</p>
+          <h2 class="cta-band__h2" id="cta-title">ابدؤوا بميزة تستطيعون قياسها. <em>سنرد عليكم خلال يوم عمل واحد.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">أخبرونا بما في خارطة طريقكم.</p>
+          <a class="btn btn--lg btn--tertiary" href="mailto:front.disk@vynatix.com?subject=Project:%20ai-in-your-existing-product%20%5Bar%5D" dir="ltr">راسلونا بشأن مشروع <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact">موضوع الرسالة يذكر اسم هذا الدليل لنعرف أي صفحة قرأتم (انظروا <a href="../privacy.html#email" hreflang="en">إشعار الخصوصية</a>). غيّروه إن شئتم.</p>
+          <p class="cta-band__contact"><a dir="ltr" href="mailto:front.disk@vynatix.com" dir="ltr">front.disk@vynatix.com</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer inverse">
+    <div class="container">
+      <div class="site-footer__grid site-footer__grid--four">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo" aria-label="الصفحة الرئيسية لـ Vynatix">
+            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+          </a>
+          <p class="site-footer__about">شركة استشارات برمجية متمرسة للشركات سريعة النمو. ينضم مهندسونا إلى فريقكم، ويسرّعون وتيرة العمل، ويجعلون برمجياتكم أقوى مع نموكم.</p>
+          <address class="site-footer__addr">
+            <a href="mailto:front.disk@vynatix.com" dir="ltr">front.disk@vynatix.com</a><br> <a href="tel:+46720710676" dir="ltr">+46 72 071 06 76</a><br> Mailbox 1611, 411 42 Gothenburg<br> Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">جزء من Ultra Group</a>
+          </address>
+        </div>
+        <div>
+          <h2 class="site-footer__h">الخدمات</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="services.html#ai-engineering">هندسة الذكاء الاصطناعي</a></li>
+            <li><a href="services.html#cloud-platforms">المنصات السحابية</a></li>
+            <li><a href="services.html#application-development">تطوير التطبيقات</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">الشركة</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="industries.html">القطاعات</a></li>
+            <li><a href="work.html">دراسات الحالة</a></li>
+            <li><a href="blog.html">رؤى</a></li>
+            <li><a href="membership.html">الوظائف</a></li>
+            <li><a href="contact.html">اتصلوا بنا</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">معلومات قانونية</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../privacy.html" hreflang="en">الخصوصية</a></li>
+            <li><a href="../privacy.html#cookies" data-consent-open hreflang="en">إعدادات ملفات تعريف الارتباط</a></li>
+            <li><a href="../terms.html" hreflang="en">الشروط</a></li>
+            <li><a href="../accessibility.html" hreflang="en">إمكانية الوصول</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="تشغيل حركة الخلفية">إيقاف حركة الخلفية مؤقتا</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <span dir="ltr">© 2026 Vynatix AB</span>
+        <nav class="site-footer__langs" aria-label="اللغة">
+          <ul class="site-footer__langlist list-reset">
+            <li><a href="../ai-in-your-existing-product.html" lang="en" hreflang="en">English</a></li>
+            <li><a href="../ai-i-befintlig-produkt.html" lang="sv" hreflang="sv">Svenska</a></li>
+            <li><a href="../es/ai-in-your-existing-product.html" lang="es" hreflang="es">Español</a></li>
+            <li><a href="../fr/ai-in-your-existing-product.html" lang="fr" hreflang="fr">Français</a></li>
+            <li><a href="../de/ai-in-your-existing-product.html" lang="de" hreflang="de">Deutsch</a></li>
+            <li><a href="../ja/ai-in-your-existing-product.html" lang="ja" hreflang="ja">日本語</a></li>
+            <li><a href="ai-in-your-existing-product.html" lang="ar" hreflang="ar" aria-current="true">العربية</a></li>
+          </ul>
+        </nav>
+        <span dir="ltr">vynatix.com</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

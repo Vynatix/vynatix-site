@@ -24,6 +24,9 @@ const PAGES = [
   // Swedish posts written for the buyer questions AI assistants are asked (November 2026)
   'testautomatisering.html', 'systemutveckling.html', 'systemintegration-och-forvaltning.html',
   'ai-i-befintlig-produkt.html', 'fordonsmjukvara.html',
+  // their English twins
+  'test-automation.html', 'custom-software-development.html', 'system-integration-and-maintenance.html',
+  'ai-in-your-existing-product.html', 'automotive-software.html',
 ];
 
 // The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):

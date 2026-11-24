@@ -565,14 +565,16 @@ h1 em, h2 em {
   --hero-h: 201.6;  --hero-hw: 16.8vw;
   --hero-wf: 277px; --hero-wk: 620;
 }
-/* From 1100px one of the four backgrounds may be drawn to the right of the message (hero-bg.css),
-   from under the headline's first line down to the clients' rule. The art is taller than this
-   message, so the rule stands off by the art's height instead of the 96 of the plain hero: 336,
-   which is the room the art was fitted to. It is part of every line's slope (566, 490 and 620, each
-   + 240). The art is drawn in em and this message has few lines to grow, so when the text alone is
-   enlarged the art gains on the rule: the room grows by ten pixels for each pixel of the hero's em
-   over 16 (nothing at the default size, so the lines are untouched; fitted at 150 percent, where the
-   A-frame's feet would otherwise pass the rule). */
+/* From 1100px the drafting sheet's A-frame is drawn to the right of the message (hero-bg.css). It was
+   drawn for a taller message and hung below this one's buttons, so the rule stands off by the room it
+   hung into instead of the 96 of the plain hero: 336. Since 24 November 2026 the art is lifted to stand
+   beside the message (its feet level with the foot of the buttons) and no longer reaches into the room,
+   which is kept as open space under the buttons (the owner's choice of 20 November 2026); giving it
+   back means refitting these slopes and the 1060px below. It is part of every line's slope (566, 490
+   and 620, each + 240). The art is drawn in em and this message has few lines to grow, so when the
+   text alone is enlarged the art gains on the rule: the room grows by ten pixels for each pixel of the
+   hero's em over 16 (nothing at the default size, so the lines are untouched; fitted at 150 percent,
+   where the A-frame's feet passed the rule before the art was lifted). */
 @media (min-width: 1100px) {
   .hero.hero--clients { --hero-gap: calc(336 * var(--hero-u) + 10 * (var(--hero-em0) - 16px)); --hero-k1: 806; --hero-k2: 730; --hero-wk: 860; }
 }

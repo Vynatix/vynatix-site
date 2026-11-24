@@ -1,22 +1,28 @@
-// Writes the two alpha masks of the home hero's "sheet" background: assets/bg-sheet-art.svg (neutral ink) and
-// assets/bg-sheet-edge.svg (bronze ink), and the five stage figures of the same drawing (assets/stage-*.svg, at the end). Plain Node, no dependencies:  node tools/sheet-art.js
-// Run with its defaults it reproduces the shipped pair byte for byte. Geometry lives here, colour in hero-bg.css (each file
-// is a CSS mask over a role-token colour). Coordinates are container units: x = 0 is the container's left edge, y = 0 the
-// hero's top. One SVG px is one CSS px at a 16px hero font size; the CSS sizes the mask in em so it follows text zoom.
-// To retune, override fields of P as JSON in ART (for example ART='{"A0y": 330}' node tools/sheet-art.js), change the
-// matching numbers in hero-bg.css (87.5em by 50em, calc(50% + 40em - 576px)) and tools/verify/bg-sheet.js,
+// Writes the two alpha masks of the home hero's "sheet" background: assets/bg-sheet-art-2.svg (neutral ink) and
+// assets/bg-sheet-edge-2.svg (bronze ink), and the five stage figures of the same drawing (assets/stage-*.svg, at the end). Plain Node, no dependencies:  node tools/sheet-art.js
+// Run with its defaults it reproduces the shipped files byte for byte. Geometry lives here, colour in hero-bg.css (each file
+// is a CSS mask over a role-token colour). Coordinates are the drawing's own frame, in container units: x = 0 is the
+// container's left edge, and the hero shows the frame from y = lift (its top edge), so a point drawn at y stands
+// y - lift below the hero's top. One SVG px is one CSS px at a 16px hero font size; the CSS sizes the mask in em so it
+// follows text zoom. To retune, override fields of P as JSON in ART (for example ART='{"lift": 160}' node tools/sheet-art.js),
+// change the matching numbers in hero-bg.css (87.5em by 50em, calc(50% + 40em - 576px)) and tools/verify/bg-sheet.js,
 // and WRITE THE FILES UNDER NEW NAMES: assets are cached under fixed URLs and are not version-stamped (see assets/AGENTS.md).
 const fs = require('fs');
 const path = require('path');
 const f = (n) => +n.toFixed(1);
 const P = Object.assign({
   X0: 60, W: 1400, H: 800,
+  // The A-frame was drawn for a taller headline, with its apex on the second baseline at 325. The headline is now one
+  // roman line over the italic one and two lines of lede, so the hero shows the drawing 168 higher: the apex at 157 of
+  // the hero, on the first line's cap line, and the datum at 540, the foot of the buttons (AGENTS.md, Hero background).
+  // The stage figures crop the drawing in its own frame and do not use this.
+  lift: 168,
   A0x: 1005, A0y: 325, D: 708, fl: 850, fr: 1160, thin: 18, thick: 70,
   legW: 2.5, arcW: 1.6, arcA: 0.9, hatchA: 0.6, fillThick: 0.14, fillThin: 0.07, fillWedge: 0.035,
   gridPitch: 24, gridA: 0.22, gridMajorA: 0.34,
   gx0: 870, gx1: 1010, gx2: 1250, gx3: 1340,   // grid below the headline: horizontal fade (in, full, full, out)
   gy0: 300, gy1: 390, gy2: 650, gy3: 735,      // and vertical fade
-  nx0: 1040, nx1: 1140, ny0: 60, ny1: 140,     // the notch right of the first headline line: x and y fade-in
+  nx0: 1040, nx1: 1140, ny0: 228, ny1: 308,   // the notch right of the first headline line: x and y fade-in (y 60 and 140 of the hero, under its ruler)
   notch: 1,
   arcs: [[118, 838], [215, 838], [312, 838]],
   edgeOff: 34, edgeT0: 115, edgeExtra: 20,
@@ -61,7 +67,7 @@ for (let y = D - 24 * 27; y <= P.gy3; y += P.gridPitch) {
 const gridGroups = (lines, gradPrefix) => Object.entries(lines).map(([key, ds]) => { const major = key[0] === 'M'; const cls = key[key.length - 1]; const a = +key.slice(1, -1); const op = f((major ? P.gridMajorA : P.gridA) * a); return `<path d='${ds.join('')}' stroke='url(#${gradPrefix}${cls})' stroke-opacity='${op}'/>`; }).join('\n ');
 const stops = (o) => o.map(([off, op]) => `<stop offset='${f(off)}'${op === 0 ? " stop-opacity='0'" : ''}/>`).join('');
 const grad = (id, axis, a, b, s) => `<linearGradient id='${id}' gradientUnits='userSpaceOnUse' ${axis === 'x' ? `x1='${a}' x2='${b}' y1='0' y2='0'` : `x1='0' x2='0' y1='${a}' y2='${b}'`}>${stops(s.map(([v, o]) => [(v - a) / (b - a), o]))}</linearGradient>`;
-const ink = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} 0 ${W} ${H}' width='${W}' height='${H}' fill='none' stroke='currentColor' stroke-width='1.5'>
+const ink = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} ${P.lift} ${W} ${H}' width='${W}' height='${H}' fill='none' stroke='currentColor' stroke-width='1.5'>
 <defs>
  ${grad('fxB', 'x', P.gx0, P.gx3, [[P.gx0, 0], [P.gx1, 1], [P.gx2, 1], [P.gx3, 0]])}
  ${grad('fxA', 'x', P.nx0, P.gx3, [[P.nx0, 0], [P.nx1, 1], [P.gx2, 1], [P.gx3, 0]])}
@@ -95,15 +101,15 @@ const pt = (t) => ({ x: fr + nx * off + dx * t, y: D + ny * off + dy * t });
 const a = pt(P.edgeT0), b = pt(len + P.edgeExtra);
 let ticks = '';
 for (let t = P.edgeT0, i = 0; t <= len + P.edgeExtra; t += 30, i++) { const major = i % 5 === 0; const l = major ? 22 : 11; const p = pt(t); ticks += `M${f(p.x)} ${f(p.y)}L${f(p.x - nx * l)} ${f(p.y - ny * l)}`; }
-const accent = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} 0 ${W} ${H}' width='${W}' height='${H}' fill='none' stroke='currentColor' stroke-width='2'>
+const accent = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} ${P.lift} ${W} ${H}' width='${W}' height='${H}' fill='none' stroke='currentColor' stroke-width='2'>
 <path d='M${f(a.x)} ${f(a.y)}L${f(b.x)} ${f(b.y)}' stroke-width='2.5'/>
 <path d='${ticks}' stroke-width='1.8'/>
 <path d='${cross(A0x, A0y, 30, 12)}' stroke-width='2.2'/>
 </svg>
 `;
 fs.mkdirSync(P.outDir, { recursive: true });
-fs.writeFileSync(path.join(P.outDir, 'bg-sheet-art.svg'), ink);
-fs.writeFileSync(path.join(P.outDir, 'bg-sheet-edge.svg'), accent);
+fs.writeFileSync(path.join(P.outDir, 'bg-sheet-art-2.svg'), ink);
+fs.writeFileSync(path.join(P.outDir, 'bg-sheet-edge-2.svg'), accent);
 
 // ---- The stage figures: the same A-frame at four build stages, for the home page's Partnership band
 // (styles.css, "The drawing grows"). They share every constant above, so the hero and the stages cannot drift

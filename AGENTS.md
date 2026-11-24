@@ -377,38 +377,45 @@ that can wrap needs a second set at `+1lh` again (the headline before this one h
 Monochrome the roman and italic faces have different cap heights, so two sets that land on
 one line draw it twice, and `bg-sheet.js` fails on the weight). Art: `.hero::before` (neutral: the tick scale under the
 header, the right-edge scale limited to the gutter, and from 75rem the A-frame, arcs
-and grid from `assets/bg-sheet-art.svg`) and `.hero::after` (the bronze edge and apex
-mark, `assets/bg-sheet-edge.svg`, not generated below 75rem) are alpha masks of
+and grid from `assets/bg-sheet-art-2.svg`) and `.hero::after` (the bronze edge and apex
+mark, `assets/bg-sheet-edge-2.svg`, not generated below 75rem) are alpha masks of
 87.5em by 50em anchored at `calc(50% + 40em - 576px)`, so they follow text zoom.
 Phones (under 600px) drop the dashed guides and shorten the ruler. Off under forced
 colours, more contrast and print; it is never removed by width (only the A-frame is
 left out below 75rem) and it has no reduced-transparency rule. Hand-fitted:
 `--sheet-hold` 11em (roman) and 6.9em (italic), kept 0.25em clear of the real text
 ends, `--sheet-lo` 30%, `--sheet-up` 0.04em, `--sheet-down` 0.21em, `--sheet-rise`
-1.4em, the apex at (1005, 325) in container units (on the headline's second
-baseline, 24px clear of line 1), the feet at 850 and 1160 and the datum at 708, the
-arcs' radii 118, 215 and 312, the grid's origin. The generator is `tools/sheet-art.js`
-(it reproduces the shipped pair); its numbers also live in `hero-bg.css` and in the
-sheet's guard, `bg-sheet.js`.
+1.4em, the A-frame drawn with its apex at (1005, 325), its feet at 850 and 1160 and its
+datum at 708 in container units of its own frame, and shown 168 units higher (`lift`), so
+that in the hero the apex is at 157, on the first headline line's cap line, and the datum
+at 540, level with the foot of the buttons; the arcs' radii 118, 215 and 312, the grid's
+origin. The generator is `tools/sheet-art.js` (it reproduces the shipped files); its
+numbers also live in `hero-bg.css`, and the sheet's guard, `bg-sheet.js`, reads the
+apex and datum from the shipped art file.
 
 **The headline copy drives the geometry, and the guard says when it moves.** The art is
 not placed with pixels from the page's corner: it hangs on the layout of the hero as it
-is (the headline's baselines, the end of its first line, the container's edges). The
+is (the headline's lines, the end of its first line, the container's edges). The
 headline is "Engineering" with the italic "that compounds." on its own line, 96px from
-about 1200px up: two lines, with two lines of lede under them. The constants listed above
-were fitted to the headline before this one ("Your in-house software team." / "Without the
-hiring.", three lines over six of lede), which made a taller message. They were not
-refitted: the art keeps the room it was drawn for, because from 1100px the clients' rule
-stands 336 units under the buttons instead of 96 (`--hero-gap`, see *Hero fit*), which puts
-the rule where the longer message put it. So the art is still 24px or more from the text,
-the contrast behind the text equals the plain page's and the sheet's rules register to the
-glyphs; the cost is open space under the buttons. Refitting the art to the short message
-(and taking the 336 back to 96) was the alternative; the owner chose to keep the art as it
-is (20 November 2026).
+about 1200px up: two lines, with two lines of lede under them. The A-frame was drawn for
+the headline before this one ("Your in-house software team." / "Without the hiring.",
+three lines over six of lede), with its apex on that message's second baseline. When the
+headline changed it kept that place, and from 20 November 2026 it hung about 170 units
+below the shorter message's buttons, which the owner saw on 24 November as the art having
+slipped down. It is now lifted 168 units (`lift` in `tools/sheet-art.js`; the art files
+took the names `-2`): the drawing itself is unchanged, its apex mark sits on the first
+line's cap line, its datum is level with the foot of the buttons, and the italic line's
+bronze baseline crosses it like the bar of an A. From 1100px the clients' rule still
+stands 336 units under the buttons instead of 96 (`--hero-gap`, see *Hero fit*): that is
+the room the art used to hang into, which the owner kept on 20 November 2026 when the art
+was left where it was. It is now open space under the message. Taking it back to 96 means
+refitting the fit's slopes and its 1060px threshold.
 **A change to the headline, the lede (its words or its measure), the hero's spacing, the
-clients row or a typeface can move the art into the text.** Run `npm run check:bg` after
-any such change: the guard fails and names the rule (clearance, contrast or
-registration), and the sheet's constants are the ones to refit. The constants are
+clients row or a typeface can move the art into the text, or leave it hanging away from
+it.** Run `npm run check:bg` after any such change: the guard fails and names the rule
+(clearance, contrast or registration, which includes the A-frame's apex on the first cap
+line and its datum no more than 24 units below the buttons), and the sheet's constants
+(`lift` first) are the ones to refit. The constants are
 written in the hero's unit (`calc(N * var(--hero-u))`, see *Hero fit*): the numbers in
 this section are their values at the design size, which a window 1248px high or taller
 shows.
@@ -417,7 +424,10 @@ shows.
 more from any text line box, button, header link or the clients row, with text-only zoom
 emulated), contrast (the pixels behind every hero text box with the text hidden: 4.5:1,
 3:1 for the headline, no lower than the plain page's own by more than 0.1 except where
-the art is meant to sit under text), registration (the guides on the glyphs), removal
+the art is meant to sit under text), registration (the guides on the glyphs, and from
+1200px the A-frame beside the message: its apex, read from the art file, on the first
+line's cap line within 1.25px, its datum no more than 24 units below the foot of the
+buttons), removal
 under forced colours and more contrast, and assets (the two masks requested from 1200px
 up only and by the home page only, the hero pixel-identical with and without
 JavaScript, no `data-bg`). It runs in a 1248px-high window, the design size; `bg-fit.js`
@@ -454,7 +464,8 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   `--hero-wf`/`--hero-wk`, for the whole hero with its client row. The numbers are measured facts
   about the current copy: two headline lines and two lede lines in English, two and five in
   Swedish. From 1100px, where a background's art may be drawn, the English hero's `--hero-gap`
-  is 336 units instead of 96 (the art's room, see *The headline copy drives the geometry*), and
+  is 336 units instead of 96 (the room the art used to hang into, now open space under the
+  message; see *The headline copy drives the geometry*), and
   the three slopes carry the extra 240. The gap also grows by ten pixels for each pixel of the
   hero's em over 16 (`--hero-em0`): the art is drawn in em and this message has few lines to
   grow, so with the text alone enlarged the sheet's A-frame would otherwise pass the clients'
@@ -1474,7 +1485,7 @@ the home-page list is an inline SVG `<symbol>` in `index.html`, referenced with
 `<use>` and filled with `currentColor` (provenance in `assets/CREDITS.md`).
 
 The hero's drafting sheet draws from two alpha-only SVG masks,
-`assets/bg-sheet-art.svg` and `bg-sheet-edge.svg` (generator in `tools/`, see
+`assets/bg-sheet-art-2.svg` and `bg-sheet-edge-2.svg` (generator in `tools/`, see
 `assets/AGENTS.md`); they are requested only from 1200px up, on the home page. The same
 generator writes the five `assets/stage-*.svg` masks of the Partnership band from the same
 constants, so the hero's drawing and its four stages cannot drift apart.

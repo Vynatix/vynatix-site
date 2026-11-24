@@ -19,7 +19,10 @@
 //                  height, the second roman line is exactly one line height below the first, the italic line is one
 //                  line, and the rule is not drawn twice where the two sets coincide (Forest). Measured with the
 //                  silk background hidden (see hideSilk). Also that the hold
-//                  distances in hero-bg.css clear the real text ends by 24px.
+//                  distances in hero-bg.css clear the real text ends by 24px. And, from 1200px where the A-frame is
+//                  drawn, that it stands beside the message: its apex on the first headline line's cap line (within
+//                  TOL) and its datum no more than CLEAR units below the foot of the buttons, so the drawing cannot
+//                  slip under the message again when the copy changes (it did, with the headline of November 2026).
 //   Q  removal     Forced colours and more contrast remove the sheet and do not request its art.
 //   A  assets      The art files are requested from 1200px up only, by the home page only, with and without
 //                  JavaScript, and the hero is pixel-identical in the two; <html> has no data-bg.
@@ -324,7 +327,34 @@ async function open(browser, theme, width, zoom) {
         if (baseBand.rows > 3) fail(`${tag}: ${l.name} baseline rule is ${baseBand.rows} rows thick (drawn twice?)`);
       }
       if (masses['italic'] && masses['roman 1'] && (masses['italic'] / masses['roman 1'] > 1.2 || masses['italic'] / masses['roman 1'] < 0.8)) fail(`${tag}: italic baseline rule weighs ${(masses['italic'] / masses['roman 1']).toFixed(2)}x the first roman one`);
-      console.log(`${tag}: ${L.roman.length} roman line(s) + italic; guides registered to the glyphs within ${TOL}px`);
+      // The A-frame against the message (from 75rem, where it is drawn). The art file is read as shipped: its viewBox
+      // (the hero's top edge in the drawing's frame) and its dashed axis, which tools/sheet-art.js draws from 30 above the
+      // apex to 24 below the datum. The mask is placed by the bronze layer's position (--sheet-drop) and scaled by its size.
+      let artNote = '';
+      if (width >= 1200) {
+        const A = await page.evaluate(async () => {
+          const hero = document.querySelector('.hero'); const cs = getComputedStyle(hero, '::after');
+          const pos = (cs.maskPosition || cs.webkitMaskPosition).trim().split(/\s+/).pop();
+          const size = parseFloat(cs.maskSize || cs.webkitMaskSize);
+          const img = getComputedStyle(hero, '::before'); const url = /url\("?([^")]+)"?\)/.exec(img.maskImage || img.webkitMaskImage);
+          const svg = url ? await (await fetch(url[1])).text() : '';
+          const vb = /viewBox='([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)'/.exec(svg);
+          const axis = /<path d='M[\d.]+ ([\d.]+)V([\d.]+)' stroke-dasharray=/.exec(svg);
+          const btn = Math.max(...[...document.querySelectorAll('.hero__ctas .btn')].map((b) => b.getBoundingClientRect().bottom + scrollY));
+          return { top: hero.getBoundingClientRect().top + scrollY, drop: parseFloat(pos), size, vb: vb && vb.slice(1).map(Number), axis: axis && axis.slice(1).map(Number), btn };
+        });
+        const u = await heroUnit(page);
+        if (!A.vb || !A.axis) fail(`${tag}: cannot read the A-frame's viewBox and axis from the art file`);
+        else {
+          const scale = A.size / A.vb[2];
+          const apex = A.top + A.drop + (A.axis[0] + 30 - A.vb[1]) * scale, datum = A.top + A.drop + (A.axis[1] - 24 - A.vb[1]) * scale;
+          const cap = L.roman[0].base - L.capR;
+          if (!(Math.abs(apex - cap) <= TOL)) fail(`${tag}: the A-frame's apex is at ${apex.toFixed(2)}, the first line's cap line at ${cap.toFixed(2)} (refit lift in tools/sheet-art.js)`);
+          if (!(datum - A.btn <= CLEAR * u)) fail(`${tag}: the A-frame's datum is ${(datum - A.btn).toFixed(1)}px below the foot of the buttons (more than ${(CLEAR * u).toFixed(1)}): the art hangs under the message`);
+          artNote = `; apex ${(apex - cap).toFixed(2)}px from the cap line, datum ${(datum - A.btn).toFixed(1)}px from the buttons' foot`;
+        }
+      }
+      console.log(`${tag}: ${L.roman.length} roman line(s) + italic; guides registered to the glyphs within ${TOL}px${artNote}`);
       await ctx.close();
     }
   }
@@ -333,7 +363,7 @@ async function open(browser, theme, width, zoom) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: HEIGHT }, ...o });
     const page = await ctx.newPage();
     const asked = [];
-    page.on('request', (r) => { if (/bg-sheet-(art|edge)\.svg/.test(r.url())) asked.push(r.url()); });
+    page.on('request', (r) => { if (/bg-sheet-(art|edge)[-a-z0-9]*\.svg/.test(r.url())) asked.push(r.url()); });
     await page.addInitScript(pinTheme, THEMES[0]);
     await page.goto(BASE + 'index.html', { waitUntil: 'load' });
     await page.evaluate(() => document.fonts && document.fonts.ready);
@@ -348,7 +378,7 @@ async function open(browser, theme, width, zoom) {
   // it. Its two art files are asked for from 75rem (1200px) up and never below, by the home page and by no other.
   // (Once per run, not per theme: none of this depends on the theme. bg-fit.js narrows WIDTHS, and skips it.)
   if (!process.env.WIDTHS) {
-    const ART = ['bg-sheet-art.svg', 'bg-sheet-edge.svg'];
+    const ART = ['bg-sheet-art-2.svg', 'bg-sheet-edge-2.svg'];
     const visit = async (file, width, js) => {
       const ctx = await browser.newContext({ viewport: { width, height: 900 }, javaScriptEnabled: js });
       const page = await ctx.newPage();

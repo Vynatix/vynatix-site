@@ -33,7 +33,7 @@ approved catalogue.
 
 ## Hero background masks
 
-`bg-sheet-art.svg` and `bg-sheet-edge.svg` are alpha-only masks for the home hero's
+`bg-sheet-art-2.svg` and `bg-sheet-edge-2.svg` are alpha-only masks for the home hero's
 background, the drafting sheet (its A-frame, arcs and grid, and its bronze edge).
 `hero-bg.css` uses each as a CSS `mask-image` over a role-token colour, so one file
 recolours itself in every theme; they use `currentColor` and gradients, because only

@@ -329,20 +329,26 @@ async function open(browser, theme, width, zoom) {
       if (masses['italic'] && masses['roman 1'] && (masses['italic'] / masses['roman 1'] > 1.2 || masses['italic'] / masses['roman 1'] < 0.8)) fail(`${tag}: italic baseline rule weighs ${(masses['italic'] / masses['roman 1']).toFixed(2)}x the first roman one`);
       // The A-frame against the message (from 75rem, where it is drawn). The art file is read as shipped: its viewBox
       // (the hero's top edge in the drawing's frame) and its dashed axis, which tools/sheet-art.js draws from 30 above the
-      // apex to 24 below the datum. The mask is placed by the bronze layer's position (--sheet-drop) and scaled by its size.
+      // apex to 24 below the datum. The mask is placed by its own layer's position (the first of the neutral layer's
+      // list, --sheet-drop) and scaled by its size; the bronze layer has to be placed and sized the same.
       let artNote = '';
       if (width >= 1200) {
         const A = await page.evaluate(async () => {
-          const hero = document.querySelector('.hero'); const cs = getComputedStyle(hero, '::after');
-          const pos = (cs.maskPosition || cs.webkitMaskPosition).trim().split(/\s+/).pop();
-          const size = parseFloat(cs.maskSize || cs.webkitMaskSize);
+          const hero = document.querySelector('.hero');
+          const first = (v) => v.split(/,(?![^(]*\))/)[0].trim();
+          const layer = (cs) => ({ pos: first(cs.maskPosition || cs.webkitMaskPosition), size: first(cs.maskSize || cs.webkitMaskSize) });
+          const ink = layer(getComputedStyle(hero, '::before')), edge = layer(getComputedStyle(hero, '::after'));
+          const pos = ink.pos.split(/\s+/).pop();
+          const size = parseFloat(ink.size);
+          const same = ink.pos === edge.pos && ink.size === edge.size;
           const img = getComputedStyle(hero, '::before'); const url = /url\("?([^")]+)"?\)/.exec(img.maskImage || img.webkitMaskImage);
           const svg = url ? await (await fetch(url[1])).text() : '';
           const vb = /viewBox='([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)'/.exec(svg);
           const axis = /<path d='M[\d.]+ ([\d.]+)V([\d.]+)' stroke-dasharray=/.exec(svg);
           const btn = Math.max(...[...document.querySelectorAll('.hero__ctas .btn')].map((b) => b.getBoundingClientRect().bottom + scrollY));
-          return { top: hero.getBoundingClientRect().top + scrollY, drop: parseFloat(pos), size, vb: vb && vb.slice(1).map(Number), axis: axis && axis.slice(1).map(Number), btn };
+          return { top: hero.getBoundingClientRect().top + scrollY, drop: parseFloat(pos), size, same, ink, edge, vb: vb && vb.slice(1).map(Number), axis: axis && axis.slice(1).map(Number), btn };
         });
+        if (!A.same) fail(`${tag}: the bronze layer is placed at ${A.edge.pos} / ${A.edge.size}, the A-frame's ink at ${A.ink.pos} / ${A.ink.size}`);
         const u = await heroUnit(page);
         if (!A.vb || !A.axis) fail(`${tag}: cannot read the A-frame's viewBox and axis from the art file`);
         else {

@@ -9,7 +9,8 @@
 //   M  Model. With the unit forced, the hero's height is the straight line styles.css solves:
 //      --hero-f1 + --hero-k1 * u while the lede scales, --hero-f2 + --hero-k2 * u once it has stopped at
 //      its floor, and --hero-wf + --hero-wk * u for the whole hero (to its bottom edge), the state with the
-//      client row. At 1440px these are the lines with the art's room in them (styles.css, from 1100px). Also what
+//      client row. At 1440px these are the English hero's own lines, with the 96 of the plain hero under its
+//      buttons (the art's room of 336 is gone since 24 November 2026). Also what
 //      the line assumes: the headline's and the lede's line counts, and what stands above the hero.
 //   F  Fold. At a table of real windows (laptops with the browser's own bars taken off, monitors, tablets,
 //      phones at their small viewport height) the page is in the state the table expects and:
@@ -45,7 +46,8 @@ const W = (w, h, state, o) => Object.assign({ w, h, state, exact: true, fit: tru
 const WINDOWS = {
   'index.html': [
     W(2560, 1440, 'whole'), W(1920, 1200, 'whole'), W(1440, 1300, 'whole'), W(1440, 1092, 'whole'), W(1024, 1290, 'whole'),
-    W(1920, 1080, 'whole'), W(1440, 1060, 'whole'), W(1024, 864, 'whole'), W(1440, 1059, 'message'), W(1920, 950, 'message'), W(1680, 1000, 'message'), W(1440, 900, 'message'), W(1440, 790, 'message'),
+    W(1920, 1080, 'whole'), W(1440, 1060, 'whole'), W(1024, 864, 'whole'), W(1920, 950, 'whole'), W(1680, 1000, 'whole'), W(1440, 900, 'whole'),
+    W(1440, 864, 'whole'), W(1440, 863, 'message'), W(1440, 790, 'message'), W(1440, 700, 'message'),
     W(1536, 730, 'message'), W(1366, 768, 'message'), W(1366, 657, 'message'), W(1280, 720, 'message'), W(1200, 800, 'message'),
     W(1100, 760, 'message'), W(1099, 760, 'message'), W(1024, 700, 'message'), W(1024, 863, 'message'), W(834, 1120, 'whole'), W(768, 1000, 'whole'), W(768, 950, 'message'),
     W(700, 800, 'message', { exact: false }), W(640, 700, 'message', { exact: false }),
@@ -238,11 +240,12 @@ function measure() {
       await ctx.close();
     }
   }
-  // With JavaScript off and a wide window the header is the sticky one, so the fit holds without script.
+  // With JavaScript off and a wide window the header is the sticky one, so the fit holds without script. (At 1440 wide
+  // the English hero is at the design size from 710px of height, so the window is one where the unit is solved below 1.)
   {
-    const { ctx, page } = await open('index.html', 1440, 790, { javaScriptEnabled: false });
+    const { ctx, page } = await open('index.html', 1440, 700, { javaScriptEnabled: false });
     const m = await page.evaluate(measure);
-    say(m.u < 1 && Math.abs(m.rule - m.fold) <= TOL && m.cta <= m.fold - 8, 'S  index.html without JavaScript at 1440x790: fitted, the clients\' rule on the fold', `unit ${m.u}px, rule ${(m.rule - m.fold).toFixed(1)}px from the fold`);
+    say(m.u < 1 && Math.abs(m.rule - m.fold) <= TOL && m.cta <= m.fold - 8, 'S  index.html without JavaScript at 1440x700: fitted, the clients\' rule on the fold', `unit ${m.u}px, rule ${(m.rule - m.fold).toFixed(1)}px from the fold`);
     await ctx.close();
   }
 

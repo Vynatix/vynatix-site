@@ -405,11 +405,15 @@ below the shorter message's buttons, which the owner saw on 24 November as the a
 slipped down. It is now lifted 168 units (`lift` in `tools/sheet-art.js`; the art files
 took the names `-2`): the drawing itself is unchanged, its apex mark sits on the first
 line's cap line, its datum is level with the foot of the buttons, and the italic line's
-bronze baseline crosses it like the bar of an A. From 1100px the clients' rule still
-stands 336 units under the buttons instead of 96 (`--hero-gap`, see *Hero fit*): that is
-the room the art used to hang into, which the owner kept on 20 November 2026 when the art
-was left where it was. It is now open space under the message. Taking it back to 96 means
-refitting the fit's slopes and its 1060px threshold.
+bronze baseline crosses it like the bar of an A. The room the art used to hang into (from
+1100px the clients' rule stood 336 units under the buttons instead of 96, kept by the owner
+on 20 November 2026 when the art was left where it was) went with it, on the owner's word of
+24 November 2026: the English hero has the plain hero's 96 under its buttons at every width
+(`--hero-gap`, see *Hero fit*), so the message is larger in a short window and the client row
+joins the first screen from 864px of height. Only enlarged text still needs room: the art is
+drawn in em and grows from the text column's left edge, so from 75rem the room under the
+buttons grows by 14px for each pixel of the hero's em over 16 (nothing at the default size);
+without it the A-frame's feet reach the clients' rule at 125 percent in a 790px window.
 **A change to the headline, the lede (its words or its measure), the hero's spacing, the
 clients row or a typeface can move the art into the text, or leave it hanging away from
 it.** Run `npm run check:bg` after any such change: the guard fails and names the rule
@@ -463,13 +467,14 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   the window allows (`--hero-h`, `--hero-hw`; `max()` picks). The English hero has a third line,
   `--hero-wf`/`--hero-wk`, for the whole hero with its client row. The numbers are measured facts
   about the current copy: two headline lines and two lede lines in English, two and five in
-  Swedish. From 1100px, where a background's art may be drawn, the English hero's `--hero-gap`
-  is 336 units instead of 96 (the room the art used to hang into, now open space under the
-  message; see *The headline copy drives the geometry*), and
-  the three slopes carry the extra 240. The gap also grows by ten pixels for each pixel of the
-  hero's em over 16 (`--hero-em0`): the art is drawn in em and this message has few lines to
-  grow, so with the text alone enlarged the sheet's A-frame would otherwise pass the clients'
-  rule at 150 percent. At the default text size the term is zero and the lines are untouched. **A change to the headline, the lede, a typeface, the header's height or the hero's
+  Swedish. The English hero's `--hero-gap` is the plain hero's 96 at every width: until 24
+  November 2026 it was 336 from 1100px, the room the sheet's A-frame hung into, and the slopes
+  carried the extra 240; the art now stands beside the message and the room is gone (see *The
+  headline copy drives the geometry*). From 75rem the gap still grows by 14px for each pixel of
+  the hero's em over 16 (`--hero-em0`): the art is drawn in em and this message has few lines to
+  grow, so with the text alone enlarged the A-frame's feet would otherwise reach the clients' rule
+  (at 125 percent in a 790px window). At the default text size the term is zero and the lines are
+  untouched. **A change to the headline, the lede, a typeface, the header's height or the hero's
   spacing moves them**: `tools/verify/hero-fit.js` (check M) fails, prints the measured height
   and names the pair to refit.
 - **Three states, by the window's height.** *Message*: the message is fitted and the clients'
@@ -477,13 +482,12 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   (`.hero__msg`, the wrapper round the message in `index.html`, takes the first screen's
   height; the Swedish hub has no client row, so its hero ends on the fold with the message
   centred). The English message is short, so where the window is taller than it needs the
-  spare room is under the buttons. With the art's room (1100px and wider): 96px headline from
-  about 950px of window height, 90px at 1440 by 900, 77px at 790, 58px at the envelope's lower
-  edge. *Whole*: from 1060px of height at 1100px and wider (864px between 1024 and 1099px, where
-  no art is drawn, and 1000px on a tablet held upright, at the design size)
-  the unit is solved for the whole hero (never under 0.82) and the client row is pinned to the
-  bottom of the window, the spare room above its rule; from 1215px that is the design size with
-  more air. *Natural*: outside the envelope the hero is the plain scrolling hero at the design
+  spare room is under the buttons. At 1440px wide: 96px headline from about 710px of window
+  height (at 790 that leaves 80px spare above the plain 96), 86px at the envelope's lower edge.
+  *Whole*: from 864px of height at 1024px and wider (1000px on a tablet held upright, at the
+  design size) the unit is solved for the whole hero (never under 0.82: 79px headline at 864,
+  84px at 1440 by 900) and the client row is pinned to the bottom of the window, the spare room
+  above its rule; from 975px that is the design size with more air. *Natural*: outside the envelope the hero is the plain scrolling hero at the design
   size.
 - **The envelope.** The fit applies from 650px of window height at 600px and wider and from
   520px on a phone, inside `@supports (height: 100svh) and (transition-behavior:
@@ -499,16 +503,17 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   message than fits: the hero is as compact as its floors allow (headline 31px) and the buttons
   can sit under the fold. Between 600 and 799px the English lede wraps by the window (767px on
   the Swedish hub), so the unit comes out a little small and the message fits with room to spare.
-  From 1100px the English hero keeps open space under its buttons at every height (the art's
-  room). Inside the envelope the
+  Between about 710 and 863px of height (1024px and wider) the English message is at the design
+  size and shorter than the window, so up to about 150px spare stands under its buttons, above the
+  plain 96, until the client row joins the first screen at 864px. Inside the envelope the
   headline is sized by the window, so browser zoom between 100 percent and the envelope's edge
   enlarges the lede but not the headline (a 2560 by 1440 window leaves the envelope at about
   220 percent).
 - **Checks.** `hero-fit.js` proves the lines against measurement (M), the fold at a table of
   real windows on both home pages (F), the envelope's edges and browser zoom (E) and the
   `@supports` gate (S). The sheet's guard runs its full sweep in a 1248px-high
-  window (the design size, client row included) and `bg-fit.js` runs each again at 900, 790,
-  660 and 1100px, where they multiply their own distances by the unit they read from the page
+  window (the design size, client row included) and `bg-fit.js` runs each again at 650, 790,
+  864 and 900px, where they multiply their own distances by the unit they read from the page
   (`heroUnit` in `_common.js`). Both are in `npm run check`.
 
 **Audience switch (retired, November 2026).** The English home page used to open with a bar of two

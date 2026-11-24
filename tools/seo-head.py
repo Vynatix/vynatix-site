@@ -25,9 +25,10 @@ What it rewrites, on every page it is given:
 
 What it never touches: anything inside <main>, the <title> and the meta description (the page
 is the source of truth for both; the block repeats them), and the ?v= stamps on the stylesheets
-and app.js. The one exception is a page whose registry status is 'withdrawn': the whole page
+and app.js. Two exceptions. A page whose registry status is 'withdrawn': the whole page
 body, title and description are replaced by the short stub below (see TAKEDOWN.md), because on
-GitHub Pages a withdrawn URL has to keep answering and must stop serving its old text.
+GitHub Pages a withdrawn URL has to keep answering and must stop serving its old text. And a
+link to a home page, anywhere in the page, is written as its folder (folder_links below).
 
     python3 tools/seo-head.py --check     reports (and exits 1 on) any generated part that differs
                                           from what a run would write, without writing anything
@@ -491,8 +492,9 @@ def relative(target, f):
 # address bar shows vynatix.com/ and vynatix.com/es/ (the canonical URLs, url_of) and not .../index.html.
 # GitHub Pages serves the folder's index.html. Everything above reasons in file names (the header and footer
 # templates, the language list, the stub, the generated pages' links all say index.html); this runs on every
-# page as it is written, so a hand-written href="index.html" in a page is folded the same way.
-HOME_HREF = re.compile(r'(\shref=")((?:\.\./)*(?:[a-z]{2}/)?)index\.html(?=["#?])')
+# page as it is written, <main> included, so a hand-written href="index.html" (or "./index.html",
+# "/index.html", "../es/index.html", with a #fragment or not) in a page is folded the same way.
+HOME_HREF = re.compile(r'(\shref=")((?:\./|/|(?:\.\./)+)?(?:[a-z]{2}/)?)index\.html(?=["#?])')
 
 def folder_links(s):
     return HOME_HREF.sub(lambda m: m.group(1) + (m.group(2) or './'), s)
@@ -689,7 +691,9 @@ def render_gen(gf, missing):
             # The language rides along in the subject, so an enquiry says which page it came from.
             return re.sub(r'(subject=[^&]*)', lambda m: m.group(1) + f'%20%5B{k}%5D', value, count=1)
         if not value or value[0] in '#/' or re.match(r'[a-zA-Z][\w+.-]*:', value): return value
-        return value if re.split(r'[?#]', value, maxsplit=1)[0] in local else '../' + value
+        # './about.html' is about.html, and './' alone is the home page in its folder form (folder_links): this language's own.
+        page = re.sub(r'^\./', '', re.split(r'[?#]', value, maxsplit=1)[0]) or 'index.html'
+        return value if page in local else '../' + value
 
     def start_tag(raw, node):
         if node.tag == 'html':

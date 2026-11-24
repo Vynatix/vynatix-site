@@ -22,8 +22,11 @@
       the grid from two small SVG files) filled with role colours, so every
       theme recolours them. Ink is neutral; bronze (tertiary) is kept for the
       second baseline, the measured edge and the apex mark. From 75rem up the
-      art sits in the right column below the first headline line, in em units
-      anchored to the container, so it follows text zoom.
+      A-frame stands in the right column beside the message, its apex on the
+      first headline line's cap line and its feet level with the foot of the
+      buttons (the bronze baseline crosses it like the bar of an A). It is drawn
+      in em units anchored to the container, so it follows text zoom: with the
+      text alone enlarged it grows from the hero's top and stands lower.
    =============================================================== */
 
 .hero__h1 {
@@ -120,7 +123,7 @@
        72 of the hero's own em (--hero-em0, 1152px) less 32 of the art's is 40em at the design size. The
        eyebrow's line (21px) keeps its size when the hero is scaled, so the headline sits lower than
        a scaled drawing has it: --sheet-drop moves the art down by that much (0 at the design size),
-       which keeps the apex on the headline's second baseline. */
+       which keeps the apex on the first headline line's cap line. */
     font-size: var(--hero-em);
     --sheet-drop: calc(21px + var(--hero-tag) - 45 * var(--hero-u));
     content: "";
@@ -141,8 +144,8 @@
   @media (min-width: 75rem) {
     .hero:lang(en)::before,
     .hero:lang(en)::after { --sheet-art: 87.5em 50em; }
-    .hero:lang(en)::before { --sheet-art-img: url("assets/bg-sheet-art.svg"); }
-    .hero:lang(en)::after { --sheet-art-img: url("assets/bg-sheet-edge.svg"); }
+    .hero:lang(en)::before { --sheet-art-img: url("assets/bg-sheet-art-2.svg"); }
+    .hero:lang(en)::after { --sheet-art-img: url("assets/bg-sheet-edge-2.svg"); }
   }
 
   /* Neutral ink: a tick scale under the header across the container, a vertical one on the

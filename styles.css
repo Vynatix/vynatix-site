@@ -524,12 +524,12 @@ h1 em, h2 em {
    - Message. The message is fitted and the clients' rule lies on the fold, so the row
      below starts the scroll and nothing is cut half way. Where the message is shorter than
      the window (it is short: two headline lines, two of lede) the spare room is under the
-     buttons. With the art's room (1100px and wider) the headline is 96px from about 950px
-     of window height and 58px at the envelope's lower edge.
-   - Whole. From 1060px of height (1100px and wider; 864px between 1024 and 1099px, where no
-     art is drawn) the client row fits as well: the unit is solved for the whole hero, never
-     under 0.82, and the row is pinned to the bottom of the window with the spare room above
-     its rule. From 1215px that is the design size with more air.
+     buttons. At 1440px wide the headline is 96px from about 710px of window height and 86px
+     at the envelope's lower edge.
+   - Whole. From 864px of height (1024px and wider) the client row fits as well: the unit is
+     solved for the whole hero, never under 0.82, and the row is pinned to the bottom of the
+     window with the spare room above its rule. From 975px that is the design size with more
+     air.
    - Natural. Outside the envelope the hero is the plain scrolling hero at the design
      size: a window under 650px high (520px on a phone), which is also where browser zoom
      lands, so zooming in always ends at full-size text, and any browser without svh or
@@ -565,16 +565,13 @@ h1 em, h2 em {
   --hero-h: 201.6;  --hero-hw: 16.8vw;
   --hero-wf: 277px; --hero-wk: 620;
 }
-/* From 1100px one of the four backgrounds may be drawn to the right of the message (hero-bg.css),
-   from under the headline's first line down to the clients' rule. The art is taller than this
-   message, so the rule stands off by the art's height instead of the 96 of the plain hero: 336,
-   which is the room the art was fitted to. It is part of every line's slope (566, 490 and 620, each
-   + 240). The art is drawn in em and this message has few lines to grow, so when the text alone is
-   enlarged the art gains on the rule: the room grows by ten pixels for each pixel of the hero's em
-   over 16 (nothing at the default size, so the lines are untouched; fitted at 150 percent, where the
-   A-frame's feet would otherwise pass the rule). */
-@media (min-width: 1100px) {
-  .hero.hero--clients { --hero-gap: calc(336 * var(--hero-u) + 10 * (var(--hero-em0) - 16px)); --hero-k1: 806; --hero-k2: 730; --hero-wk: 860; }
+/* From 75rem, where the drafting sheet's A-frame is drawn beside the message (hero-bg.css), the room
+   under the buttons grows when the text alone is enlarged: the art is drawn in em and this message has
+   few lines to grow, so the A-frame would otherwise reach the clients' rule (its feet do at 125 percent
+   in a 790px window). Fourteen pixels for each pixel of the hero's em over 16: nothing at the default
+   size, so the lines below are untouched; fitted at 125, 150 and 200 percent (bg-sheet.js). */
+@media (min-width: 75rem) {
+  .hero.hero--clients { --hero-gap: calc(96 * var(--hero-u) + 14 * (var(--hero-em0) - 16px)); }
 }
 @media (max-width: 767px) {
   /* The lede wraps by the window here, not by its measure, so the headline's share is left in the
@@ -602,12 +599,14 @@ h1 em, h2 em {
     .hero.hero--clients { min-height: 0; display: block; }
     .hero__msg { min-height: calc(var(--hero-room) - var(--hero-pad) - var(--hero-gap)); }
   }
-  /* Whole: the client row is on the first screen, pinned to its bottom edge. The heights are where
-     the whole hero fits at a unit of 0.82: 1060px with the art's room, 864px without it. */
-  @media screen and (min-width: 1100px) and (min-height: 1060px), screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 864px) {
+  /* Whole: the client row is on the first screen, pinned to its bottom edge. The height is where the
+     whole hero fits at a unit of 0.82: 864px. (Until 24 November 2026 the English hero kept 336 units
+     under its buttons from 1100px, the room the drafting sheet's A-frame hung into, and this was
+     1060px there; the art now stands beside the message and the room is gone.) */
+  @media screen and (min-width: 1024px) and (min-height: 864px) {
     .hero.hero--clients { --hero-fit: clamp(0.82px, max((var(--hero-room) - var(--hero-wf)) / var(--hero-wk), (var(--hero-room) - var(--hero-wf) - var(--hero-hw)) / (var(--hero-wk) - var(--hero-h))), 1px); }
   }
-  @media screen and (min-width: 1100px) and (min-height: 1060px), screen and (min-width: 1024px) and (max-width: 1099px) and (min-height: 864px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1000px) {
+  @media screen and (min-width: 1024px) and (min-height: 864px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1000px) {
     .hero.hero--clients { min-height: var(--hero-room); display: flex; flex-direction: column; }
     .hero.hero--clients > .container { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     .hero.hero--clients .hero__msg { min-height: 0; }

@@ -92,18 +92,20 @@ highlights the things most worth keeping front-of-mind.
   It was one of four drawn at random until 20 November 2026; the owner kept the sheet,
   and the weave, the dial, the iris, the draw (`data-bg`, the `vynatix-bg*` keys in
   `sessionStorage`) and `hero-bg.js` are gone. `publish.js` fails if `hero-bg.js`,
-  `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout and was fitted by hand
-  to a three-line headline over six lines of lede; the current headline ("Engineering" / "that compounds.")
-  is two lines over two, and the hero keeps the art's room instead (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
-  can move art into text, and `npm run check:bg` (`tools/verify/bg-sheet.js`, at the
+  `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout. Its A-frame was drawn
+  for a three-line headline over six lines of lede and hung below the current, shorter one ("Engineering" /
+  "that compounds.", two lines over two) until 24 November 2026, when it was lifted (`lift` in
+  `tools/sheet-art.js`): at the default text size its apex sits on the first headline line's cap line and its
+  feet are level with the foot of the buttons, and the room it used to hang into is gone (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
+  can move art into text or leave it hanging below the message, and `npm run check:bg` (`tools/verify/bg-sheet.js`, at the
   design size and, through `bg-fit.js`, on a scaled hero) fails and says which rule.**
   Constants, the bronze budget and how to change it are in AGENTS.md, *Hero background*.
 - **The home hero is fitted to the window, and its numbers are measured.** On both home pages the first
   screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
   size), and solves it from the window's height (`100svh`) so that the header and the
-  message end on the fold, with the clients' rule lying on it; from 1060px of height (at 1100px and wider) the client row is on the
-  first screen too, pinned to its bottom edge. From 1100px the English hero keeps 336 units, not 96, between its buttons and that
-  rule: the room the art was fitted to under the longer headline it replaced. Every vertical size in the hero is `calc(N * var(--hero-u))`
+  message end on the fold, with the clients' rule lying on it; from 864px of height (at 1024px and wider) the client row is on the
+  first screen too, pinned to its bottom edge. The English hero has the plain 96 units between its buttons and that rule at every
+  width: the 336 it kept from 1100px, the room the art hung into, went on the owner's word of 24 November 2026, once the art was lifted. Every vertical size in the hero is `calc(N * var(--hero-u))`
   (N is the token the comment names), `hero-bg.css` multiplies the art's constants by the same unit, the
   eyebrow and buttons keep their size and the lede stops at 18px (16px on a phone). Outside the envelope (a
   window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the

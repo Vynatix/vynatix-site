@@ -33,7 +33,7 @@ approved catalogue.
 
 ## Hero background masks
 
-`bg-sheet-art.svg` and `bg-sheet-edge.svg` are alpha-only masks for the home hero's
+`bg-sheet-art-2.svg` and `bg-sheet-edge-2.svg` are alpha-only masks for the home hero's
 background, the drafting sheet (its A-frame, arcs and grid, and its bronze edge).
 `hero-bg.css` uses each as a CSS `mask-image` over a role-token colour, so one file
 recolours itself in every theme; they use `currentColor` and gradients, because only
@@ -47,9 +47,10 @@ would reach a visitor beside a stylesheet written for the old one, or the revers
 change the `url()` in `hero-bg.css` and delete the old file.
 
 `node tools/sheet-art.js` writes both files (plain Node; with its defaults it
-reproduces the shipped pair byte for byte). Override fields as JSON in `ART` to retune,
-and change the numbers the script's header names in `hero-bg.css` and
-`tools/verify/bg-sheet.js`.
+reproduces the shipped files byte for byte). Override fields as JSON in `ART` to retune,
+and change the numbers the script's header names in `hero-bg.css`. `ART` does not rename
+the files: change the two names in the script, the `url()` in `hero-bg.css` and the `ART`
+list in `tools/verify/bg-sheet.js` (the guard reads the apex and datum from the art file).
 
 Then run `npm run check:bg` in `tools/`: the guard measures the art against the text and
 fails if it has moved into it. The art is fitted to the current headline copy; see the

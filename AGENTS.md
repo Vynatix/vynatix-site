@@ -1615,6 +1615,11 @@ add third-party font/CDN requests for fonts.
   must be added to that exclude list**, and `publish.js` fails when it is not. (The
   font and icon licence texts are published on purpose: they have to travel with the
   files.)
+- **A change that must move nothing on the site** (a tool, a document, a refactoring) is
+  proven with `node tools/verify/shipped.js`: it lists every published file, and `_config.yml` or
+  `_data/` change, against the merge base with `origin/main`. Put the line `Byte-neutral: yes` alone
+  in such a pull request's description, and run it with `--neutral` before pushing; an empty list
+  is the proof.
 
 ### Repository hardening (set once, in GitHub settings)
 

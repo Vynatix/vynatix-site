@@ -181,7 +181,7 @@ highlights the things most worth keeping front-of-mind.
   nothing about how Vynatix runs inside; every number real and every client named only with its approval. The
   home page is eight blocks under the brand line "Engineering that compounds." (the Swedish hub has the same
   blocks in Swedish), and, on the owner's word of 23 November 2026 after that day's Geoptie report, a ninth,
-  "Common questions" (`#faq`: six of the questions on `contact.html`, word for word, with FAQPage data), a line
+  "Common questions" (`#faq`: six of the questions on `contact.html`, word for word, with FAQPage data), the list
   of deliverables under each service (the lists of `services.html`) and a hero sentence that says what the
   engineers build (the hero's alone: the company sentence is unchanged everywhere else). A visible "Last
   updated" line was offered then and not chosen. The brand line is English on every page but two: on the owner's word of 23 November

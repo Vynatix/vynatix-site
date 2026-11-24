@@ -36,7 +36,7 @@
 <meta property="og:locale:alternate" content="ja_JP">
 <meta property="og:locale:alternate" content="ar_AR">
 <meta property="article:published_time" content="2026-11-20">
-<meta property="article:modified_time" content="2026-11-23">
+<meta property="article:modified_time" content="2026-11-24">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -149,7 +149,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-11-20",
-   "dateModified": "2026-11-23",
+   "dateModified": "2026-11-24",
    "about": {
     "@id": "https://vynatix.com/#organization"
    },
@@ -174,7 +174,7 @@
      "name": "¿Qué hace Vynatix?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces. Ingeniería de IA: asistentes, agentes y automatización que dan resultados en producción. Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en GCP, AWS y on-prem. Desarrollo de aplicaciones: aplicaciones para móvil, web, escritorio y dispositivos embebidos."
+      "text": "Vynatix es la consultora de software de perfil sénior para scale-ups. Sus ingenieros se incorporan a tu equipo y desarrollan sistemas de IA, plataformas en la nube y aplicaciones. Ingeniería de IA: asistentes, agentes y automatización que dan resultados en producción. Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en Google Cloud (GCP), Amazon Web Services (AWS) y en tus propios servidores (on-prem). Desarrollo de aplicaciones: aplicaciones para móvil, web, escritorio y dispositivos embebidos."
      }
     },
     {
@@ -182,7 +182,7 @@
      "name": "¿Cómo empieza el trabajo con Vynatix?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Empieza con una conversación sobre tu hoja de ruta y consta de tres pasos. 1. Una primera conversación sobre tu hoja de ruta, 30 minutos. 2. Conoces a los ingenieros que se incorporarían a tu equipo. 3. Acordamos el primer objetivo y empezamos. A partir de ahí, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo."
+      "text": "Empieza con una conversación de 30 minutos sobre tu hoja de ruta y consta de tres pasos. 1. Una primera conversación sobre tu hoja de ruta, 30 minutos. 2. Conoces a los ingenieros que se incorporarían a tu equipo. 3. Acordamos el primer objetivo y empezamos. Una vez iniciado el trabajo, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo."
      }
     },
     {
@@ -206,7 +206,7 @@
      "name": "¿Puede Vynatix ejecutar sistemas de IA en nuestro propio entorno, incluso on-prem?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem o en una nube soberana. Basamos cada sistema en tus fuentes, lo probamos con preguntas de respuesta conocida y lo monitorizamos tras el lanzamiento."
+      "text": "Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem, en tus propios servidores, o en una nube soberana, una nube que mantiene tus datos bajo tu propia jurisdicción. Cada sistema responde a partir de tus fuentes, se prueba con preguntas de respuesta conocida y se monitoriza tras el lanzamiento."
      }
     },
     {
@@ -262,7 +262,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="../tokens.css?v=c92545cd">
 <link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="../styles.css?v=47397355">
+<link rel="stylesheet" href="../styles.css?v=a31b9853">
 <!-- The hero background, the drafting sheet, has its own stylesheet, linked by this page only, so the
      other pages never download it (AGENTS.md, Hero background). -->
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
@@ -471,7 +471,16 @@
             <span class="cap__num" aria-hidden="true">01</span>
             <h3>Ingeniería de IA</h3>
             <p>Lleva la IA a tu producto, con asistentes, agentes y automatización que dan resultados en producción.</p>
-            <p class="cap__scope">Lo que hacemos: chatbots y asistentes; recuperación y respuestas fundamentadas (RAG); agentes; automatización de flujos de trabajo; servidores MCP e integraciones; SDK y herramientas para desarrolladores; evaluación y monitorización.</p>
+            <p class="cap__scope">Lo que hacemos</p>
+            <ul class="cap__list">
+              <li>Chatbots y asistentes</li>
+              <li>Generación aumentada por recuperación (RAG) y respuestas fundamentadas</li>
+              <li>Agentes</li>
+              <li>Automatización de flujos de trabajo</li>
+              <li>Servidores de Model Context Protocol (MCP) e integraciones</li>
+              <li>SDK y herramientas para desarrolladores</li>
+              <li>Evaluación y monitorización</li>
+            </ul>
             <a class="more" href="services.html#ai-engineering"><span>Más sobre ingeniería de IA</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -479,7 +488,13 @@
             <span class="cap__num" aria-hidden="true">02</span>
             <h3>Plataformas en la nube</h3>
             <p>Dale a tu equipo en crecimiento una plataforma que siga el ritmo de tus usuarios: rápida, fiable y lista para sectores regulados.</p>
-            <p class="cap__scope">Lo que hacemos: ingeniería de plataformas; Kubernetes y GitOps; FinOps y control de costes; migración desde sistemas heredados.</p>
+            <p class="cap__scope">Lo que hacemos</p>
+            <ul class="cap__list">
+              <li>Ingeniería de plataformas</li>
+              <li>Kubernetes y GitOps</li>
+              <li>FinOps y control de costes</li>
+              <li>Migración desde sistemas heredados</li>
+            </ul>
             <a class="more" href="services.html#cloud-platforms"><span>Más sobre plataformas en la nube</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
           <div class="cap">
@@ -487,7 +502,14 @@
             <span class="cap__num" aria-hidden="true">03</span>
             <h3>Desarrollo de aplicaciones</h3>
             <p>Lanza aplicaciones a las que tus usuarios vuelvan, en móvil, web y dispositivos embebidos.</p>
-            <p class="cap__scope">Lo que hacemos: desarrollo móvil nativo para iOS y Android; web, escritorio y SaaS; Android embebido; wearables y realidad virtual; plataformas empresariales e integraciones.</p>
+            <p class="cap__scope">Lo que hacemos</p>
+            <ul class="cap__list">
+              <li>Desarrollo móvil nativo para iOS y Android</li>
+              <li>Web, escritorio y SaaS</li>
+              <li>Android embebido</li>
+              <li>Wearables y realidad virtual</li>
+              <li>Plataformas empresariales e integraciones</li>
+            </ul>
             <a class="more" href="services.html#application-development"><span>Más sobre desarrollo de aplicaciones</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a>
           </div>
         </div>
@@ -511,9 +533,10 @@
           <article class="case">
             <div class="case__img case__img--documents"></div>
             <div class="case__body">
-              <p class="case__meta"><span>Un cliente de un sector regulado · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Cliente y año:</span> <span>Un cliente de un sector regulado · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#regulated-client">Un asistente de IA en el que se puede confiar</a></h3>
               <p>Un asistente de dominio cerrado que responde solo a partir de documentos aprobados. Las preguntas que quedan fuera de los documentos se derivan a una persona.</p>
+              <p class="sr-only">Resultado:</p>
               <p class="case__metric case__metric--text">Cada respuesta cita su fuente</p>
               <p class="case__more"><a class="more" href="work.html#regulated-client" tabindex="-1" aria-hidden="true"><span>Leer el caso</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -521,9 +544,10 @@
           <article class="case">
             <div class="case__img case__img--stopwatch"></div>
             <div class="case__body">
-              <p class="case__meta"><span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Cliente y año:</span> <span>Volvo Cars · 2025</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-cars">Compilaciones en 6 minutos en lugar de 47</a></h3>
               <p>Los ingenieros esperaban 47 minutos en cada compilación. Junto con Volvo Cars, rehicimos el pipeline: 6 minutos en cada commit, para todo el equipo, con las mismas pruebas y la misma cobertura.</p>
+              <p class="sr-only">Resultado:</p>
               <p class="case__metric">Un 87 % menos de tiempo de compilación</p>
               <p class="case__more"><a class="more" href="work.html#volvo-cars" tabindex="-1" aria-hidden="true"><span>Leer el caso</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -531,9 +555,10 @@
           <article class="case">
             <div class="case__img case__img--dial"></div>
             <div class="case__body">
-              <p class="case__meta"><span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
+              <p class="case__meta"><span class="sr-only">Cliente y año:</span> <span>Volvo Trucks · 2024</span><svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></p>
               <h3><a href="work.html#volvo-trucks">Una nueva aplicación multimedia, en funcionamiento en toda una flota</a></h3>
               <p>Junto con Volvo Trucks, rehicimos la radio de la cabina como un reproductor multimedia completo sobre Android Automotive.</p>
+              <p class="sr-only">Resultado:</p>
               <p class="case__metric case__metric--text">En producción en toda la flota</p>
               <p class="case__more"><a class="more" href="work.html#volvo-trucks" tabindex="-1" aria-hidden="true"><span>Leer el caso</span><svg class="icon icon--sm" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m212-180-32-32 482.62-482.61H362.85V-740H740v377.15h-45.39v-299.77L212-180Z"/></svg></a></p>
             </div>
@@ -682,22 +707,22 @@
         <div class="caps caps--2" data-faq>
           <div class="cap" data-faq-item>
             <h3>¿Qué hace Vynatix?</h3>
-            <p>Vynatix es la consultora de software de perfil sénior para scale-ups. Nuestros ingenieros se incorporan a tu equipo, aceleran el ritmo y hacen tu software más sólido a medida que creces.</p>
+            <p>Vynatix es la consultora de software de perfil sénior para scale-ups. Sus ingenieros se incorporan a tu equipo y desarrollan sistemas de IA, plataformas en la nube y aplicaciones.</p>
             <ul>
               <li>Ingeniería de IA: asistentes, agentes y automatización que dan resultados en producción.</li>
-              <li>Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en GCP, AWS y on-prem.</li>
+              <li>Plataformas en la nube: rápidas, fiables y listas para sectores regulados, en Google Cloud (GCP), Amazon Web Services (AWS) y en tus propios servidores (on-prem).</li>
               <li>Desarrollo de aplicaciones: aplicaciones para móvil, web, escritorio y dispositivos embebidos.</li>
             </ul>
           </div>
           <div class="cap" data-faq-item>
             <h3>¿Cómo empieza el trabajo con Vynatix?</h3>
-            <p>Empieza con una conversación sobre tu hoja de ruta y consta de tres pasos.</p>
+            <p>Empieza con una conversación de 30 minutos sobre tu hoja de ruta y consta de tres pasos.</p>
             <ol>
               <li>Una primera conversación sobre tu hoja de ruta, 30 minutos.</li>
               <li>Conoces a los ingenieros que se incorporarían a tu equipo.</li>
               <li>Acordamos el primer objetivo y empezamos.</li>
             </ol>
-            <p>A partir de ahí, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo.</p>
+            <p>Una vez iniciado el trabajo, nuestros ingenieros sénior trabajan integrados en tu equipo. Tú sigues al mando de tu producto y trabajas directamente con quienes hacen el trabajo.</p>
           </div>
           <div class="cap" data-faq-item>
             <h3>¿Cómo se factura el trabajo?</h3>
@@ -709,7 +734,7 @@
           </div>
           <div class="cap" data-faq-item>
             <h3>¿Puede Vynatix ejecutar sistemas de IA en nuestro propio entorno, incluso on-prem?</h3>
-            <p>Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem o en una nube soberana. Basamos cada sistema en tus fuentes, lo probamos con preguntas de respuesta conocida y lo monitorizamos tras el lanzamiento.</p>
+            <p>Sí. Ejecutamos los sistemas de IA donde está permitido que estén tus datos: on-prem, en tus propios servidores, o en una nube soberana, una nube que mantiene tus datos bajo tu propia jurisdicción. Cada sistema responde a partir de tus fuentes, se prueba con preguntas de respuesta conocida y se monitoriza tras el lanzamiento.</p>
           </div>
           <div class="cap" data-faq-item>
             <h3>¿Qué relación tiene Vynatix con Ultra Group?</h3>

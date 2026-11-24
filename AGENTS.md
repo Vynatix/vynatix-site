@@ -738,10 +738,10 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
 `styles.css`.) Then, in this order:
 
 - `#services`, "Where we make the difference": three `.cap` columns, AI engineering first, then
-  cloud platforms and application development, each one promise, one line of what is delivered
-  (`cap__scope`: the items of that service's "What we deliver" list on `services.html`, in its
-  order; change the list there and the line here together) and one link to its section of
-  `services.html`. One generated still life lies across the three columns, a third over each
+  cloud platforms and application development, each one promise, the list of what is delivered
+  (the label `cap__scope` and the list `cap__list`: the items of that service's "What we
+  deliver" list on `services.html`, word for word and in its order; change the list there and
+  here together) and one link to its section of `services.html`. One generated still life lies across the three columns, a third over each
   (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
   up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
   The slices are one file, positioned left, centre and right, so the line carries across.
@@ -761,7 +761,10 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   rows beside it from 905px, each one link to its section of `work.html`: the heading is the
   link and covers the card, and the "Read the case" line under the figure repeats it for the
   eye and for a reader of plain text (`tabindex="-1"` and `aria-hidden`, so a keyboard and a
-  screen reader meet one link per card, the heading). Each card says what the system is or what
+  screen reader meet one link per card, the heading). Two `sr-only` labels name the card's
+  fields, "Client and year:" before the meta line and "Result:" before the figure; the second
+  is a paragraph of its own, because inside the figure it would be set in the accent face, which
+  in Japanese holds only the characters the visible accents use. Each card says what the system is or what
   was measured, in sentences taken from `work.html`: change a case there first. Their pictures are
   generated still lifes from the same set as the Services picture (bound documents with brass
   page markers, a stopwatch over a long and a short pencil line, a radio tuning dial), set as
@@ -817,6 +820,19 @@ what the engineers build instead of "raise the pace and make your software stron
 build AI systems, cloud platforms and applications."). That sentence is the hero's alone: the
 company sentence below is unchanged everywhere else. A visible "Last updated" line on the
 home page was offered and not chosen: do not add one.
+
+**The second report of 23 November 2026** (85 of 100, read after that merge) changed form and
+wording, no decision: the deliverables became lists, with "Retrieval-augmented generation
+(RAG)" and "Model Context Protocol (MCP)" spelled out on `services.html` and here; the case
+cards got their two labels; and four answers of the questions, on `contact.html` and here
+together, say more plainly what they said (the hero's sentence as the answer to "What does
+Vynatix do?", Google Cloud, Amazon Web Services and "your own servers" for GCP, AWS and
+on-prem, the 30 minutes in the first sentence of how the work starts, and what a sovereign
+cloud is). Left alone, each for a reason: a review date on anything (the owner declined visible
+update dates), "In English" on the English insights (the generated languages link their own
+version of those pages, so the label would be false there), and everything on the owner's list
+above, to which the report added: which changes cut the build time, how hours are estimated
+and whether an engagement can change, and any certification.
 
 **The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
 the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no

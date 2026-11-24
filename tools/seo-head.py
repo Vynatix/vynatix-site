@@ -68,14 +68,14 @@ WEBSITE_ID = SITE + '#website'
 # One entry per line, as written here: tools/verify/_common.js reads this table as text.
 # The order here is the order of sitemap.xml.
 PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-23', alt={'sv': 'sv.html'}),
+  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-24', alt={'sv': 'sv.html'}),
   'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-11-20'),
   'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-23'),
   'industries.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-11-20', mod='2026-11-20'),
   'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
   'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-20'),
   'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-23'),
-  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-23'),
+  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-24'),
   'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20', alt={'sv': 'integritet.html'}),
   'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
   'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20'),
@@ -92,11 +92,16 @@ PAGES = {
   'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, status='withdrawn'),
   'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-20', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
   'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-20', alt={'en': 'privacy.html'}),
-  'testautomatisering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
-  'systemutveckling.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
-  'systemintegration-och-forvaltning.html':   dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
-  'ai-i-befintlig-produkt.html':              dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
-  'fordonsmjukvara.html':                     dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-23', article=True, kind='post'),
+  'testautomatisering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'test-automation.html'}),
+  'systemutveckling.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'custom-software-development.html'}),
+  'systemintegration-och-forvaltning.html':   dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'system-integration-and-maintenance.html'}),
+  'ai-i-befintlig-produkt.html':              dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'ai-in-your-existing-product.html'}),
+  'fordonsmjukvara.html':                     dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'automotive-software.html'}),
+  'test-automation.html':                     dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'testautomatisering.html'}),
+  'custom-software-development.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'systemutveckling.html'}),
+  'system-integration-and-maintenance.html':  dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'systemintegration-och-forvaltning.html'}),
+  'ai-in-your-existing-product.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'ai-i-befintlig-produkt.html'}),
+  'automotive-software.html':                 dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'fordonsmjukvara.html'}),
 }
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
@@ -142,11 +147,11 @@ for f, p in PAGES.items():
 LANGS = {
   'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
   'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
-  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-21', checked='', by='', waived='2026-11-20'),
-  'fr': dict(name='Français', tag='fr', locale='fr_FR', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
-  'de': dict(name='Deutsch', tag='de', locale='de_DE', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
-  'ja': dict(name='日本語', tag='ja', locale='ja_JP', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-21', checked='', by='', waived='2026-11-21'),
-  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-21', checked='', by='', waived='2026-11-20'),
+  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-24', checked='', by='', waived='2026-11-20'),
+  'fr': dict(name='Français', tag='fr', locale='fr_FR', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
+  'de': dict(name='Deutsch', tag='de', locale='de_DE', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
+  'ja': dict(name='日本語', tag='ja', locale='ja_JP', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
+  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-24', checked='', by='', waived='2026-11-20'),
 }
 # The notices are legal text and are not translated: the English text governs, and a generated page
 # links to it and says so (hreflang="en").

@@ -17,6 +17,11 @@
 - [Insights](https://vynatix.com/blog.html): practical ideas from Vynatix on AI engineering, cloud platforms and software delivery, with guides in English and Swedish
 - [AI engineering in Gothenburg](https://vynatix.com/ai-engineering.html): retrieval, evaluation and deployment in your environment, and the closed-domain assistant
 - [How to choose a software consultancy](https://vynatix.com/choose-a-software-consultancy.html): the questions to ask, the warning signs and how to judge whether the developers are really senior; also available in Swedish
+- [How to introduce automated software testing](https://vynatix.com/test-automation.html): Vynatix on introducing automated software testing: where to start, which tests come first, the CI pipeline, flaky tests and what to measure.
+- [Custom software development with a consultancy: from tailored business applications to BankID login](https://vynatix.com/custom-software-development.html): Vynatix on custom software development: business applications, senior teams, architects, frontend developers and web apps with BankID login.
+- [System integration and maintenance: keeping custom-built systems healthy](https://vynatix.com/system-integration-and-maintenance.html): Vynatix on integrations between business systems, maintaining custom-built systems, independent code review and Kubernetes: what to require and agree in writing.
+- [How to add AI to your existing product and run the models in your own environment](https://vynatix.com/ai-in-your-existing-product.html): Vynatix guide: how to add AI to an existing product, run the models in your own environment and automate administrative workflows.
+- [Automotive software: HIL testing, ISO 26262, embedded Linux and C++](https://vynatix.com/automotive-software.html): Vynatix's guide to automotive software: HIL testing in CI, development to ISO 26262, embedded Linux for vehicles and senior C++ consultants.
 - [Android Automotive development in Gothenburg](https://vynatix.com/android-automotive-development.html): what we build on Android Automotive and the Volvo Trucks in-cab radio
 - [Career](https://vynatix.com/membership.html): for senior engineers and designers: problems worth your time, peers who have shipped, and how joining works
 - [About](https://vynatix.com/about.html): built by engineers, here for the long run, and what we stand for
@@ -52,6 +57,11 @@
 - [Desarrollo para Android Automotive en Gotemburgo](https://vynatix.com/es/android-automotive-development.html): Vynatix desarrolla para Android Automotive (AAOS) en Gotemburgo, integrada en tu equipo, y llevó a producción la radio y el reproductor multimedia de la cabina de Volvo Trucks.
 - [Ingeniería de IA en Gotemburgo: recuperación, evaluación y despliegue en tu entorno](https://vynatix.com/es/ai-engineering.html): Vynatix, en Gotemburgo, desarrolla IA para producción sobre modelos fundacionales: RAG, pipelines de evaluación, servidores MCP y despliegue on-prem o en una nube soberana.
 - [Cómo elegir una consultora de software](https://vynatix.com/es/choose-a-software-consultancy.html): Vynatix explica cómo elegir una consultora de software: qué preguntar, qué señales de alerta vigilar y cómo saber si los desarrolladores son realmente sénior.
+- [Cómo introducir pruebas de software automatizadas](https://vynatix.com/es/test-automation.html): Vynatix explica cómo introducir pruebas de software automatizadas: por dónde empezar, qué pruebas van primero, el pipeline de CI, las pruebas inestables y qué medir.
+- [Desarrollo de software a medida con una consultora: desde aplicaciones empresariales personalizadas hasta el inicio de sesión con BankID](https://vynatix.com/es/custom-software-development.html): Vynatix explica el desarrollo de software a medida: aplicaciones empresariales, equipos sénior, arquitectos, desarrolladores frontend y aplicaciones web con inicio de sesión mediante BankID.
+- [Integración de sistemas y mantenimiento: cómo mantener sanos los sistemas a medida](https://vynatix.com/es/system-integration-and-maintenance.html): Vynatix explica las integraciones entre sistemas de negocio, el mantenimiento de sistemas a medida, la revisión independiente de código y Kubernetes: qué exigir y qué acordar por escrito.
+- [Cómo añadir IA a tu producto existente y ejecutar los modelos en tu propio entorno](https://vynatix.com/es/ai-in-your-existing-product.html): Guía de Vynatix: cómo añadir IA a un producto existente, ejecutar los modelos en tu propio entorno y automatizar flujos de trabajo administrativos.
+- [Software de automoción: pruebas HIL, ISO 26262, Linux embebido y C++](https://vynatix.com/es/automotive-software.html): Guía de Vynatix sobre software de automoción: pruebas HIL en CI, desarrollo conforme a ISO 26262, Linux embebido para vehículos y consultores sénior de C++.
 
 ## Français (fr)
 
@@ -66,6 +76,11 @@
 - [Développement Android Automotive à Göteborg](https://vynatix.com/fr/android-automotive-development.html): Android Automotive (AAOS) à Göteborg : Vynatix développe dans votre équipe et a mis en production la radio et le lecteur multimédia de cabine de Volvo Trucks.
 - [Ingénierie IA à Göteborg : recherche documentaire, évaluation et déploiement dans votre environnement](https://vynatix.com/fr/ai-engineering.html): À Göteborg, Vynatix met l'IA en production sur modèles de fondation : RAG, pipelines d'évaluation, serveurs MCP, déploiement sur site ou en cloud souverain.
 - [Comment choisir un cabinet de conseil logiciel](https://vynatix.com/fr/choose-a-software-consultancy.html): Choisir un cabinet de conseil logiciel, par Vynatix : questions à poser, signaux d'alerte et comment vérifier le niveau d'expérience des développeurs.
+- [Comment mettre en place des tests logiciels automatisés](https://vynatix.com/fr/test-automation.html): Mettre en place des tests logiciels automatisés, par Vynatix : par où commencer, quels tests d'abord, le pipeline CI, les tests instables et ce qu'il faut mesurer.
+- [Développement logiciel sur mesure avec un cabinet de conseil : de l'application métier personnalisée à la connexion BankID](https://vynatix.com/fr/custom-software-development.html): Le développement logiciel sur mesure, par Vynatix : applications métier, équipes seniors, architectes, développeurs frontend et applications web avec connexion BankID.
+- [Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure](https://vynatix.com/fr/system-integration-and-maintenance.html): Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu'il faut exiger et ce dont il faut convenir par écrit.
+- [Comment intégrer l'IA à votre produit existant et exécuter les modèles dans votre propre environnement](https://vynatix.com/fr/ai-in-your-existing-product.html): Guide Vynatix : comment intégrer l'IA à un produit existant, exécuter les modèles dans votre propre environnement et automatiser les processus administratifs.
+- [Logiciel automobile : tests HIL, ISO 26262, Linux embarqué et C++](https://vynatix.com/fr/automotive-software.html): Le guide Vynatix du logiciel automobile : tests HIL en CI, développement selon l'ISO 26262, Linux embarqué pour véhicules et consultants C++ seniors.
 
 ## Deutsch (de)
 
@@ -80,6 +95,11 @@
 - [Android-Automotive-Entwicklung in Göteborg](https://vynatix.com/de/android-automotive-development.html): Vynatix entwickelt in Göteborg für Android Automotive (AAOS), fest in Ihrem Team, und brachte Radio und Mediaplayer im Fahrerhaus von Volvo Trucks in Produktion.
 - [KI-Engineering in Göteborg: Retrieval, Evaluierung und Deployment in Ihrer Umgebung](https://vynatix.com/de/ai-engineering.html): Vynatix in Göteborg bringt KI auf Basis von Foundation Models in Produktion: RAG, Evaluierungs-Pipelines, MCP-Server und Deployment on-prem oder in einer souveränen Cloud.
 - [So wählen Sie eine Softwareberatung aus](https://vynatix.com/de/choose-a-software-consultancy.html): Vynatix zur Wahl einer Softwareberatung: die richtigen Fragen, die Warnsignale und wie Sie beurteilen, ob die Entwickler wirklich senior sind.
+- [So führen Sie automatisierte Softwaretests ein](https://vynatix.com/de/test-automation.html): Vynatix zur Einführung automatisierter Softwaretests: wo Sie anfangen, welche Tests zuerst kommen, die CI-Pipeline, Flaky Tests und was Sie messen sollten.
+- [Individuelle Softwareentwicklung mit einer Softwareberatung: von maßgeschneiderten Geschäftsanwendungen bis zum BankID-Login](https://vynatix.com/de/custom-software-development.html): Vynatix zur individuellen Softwareentwicklung: Geschäftsanwendungen, Senior-Teams, Architekten, Frontend-Entwickler und Web-Apps mit BankID-Login.
+- [Systemintegration und Wartung: So bleiben individuell entwickelte Systeme in gutem Zustand](https://vynatix.com/de/system-integration-and-maintenance.html): Vynatix zu Integrationen zwischen Geschäftssystemen, zur Wartung individuell entwickelter Systeme, zu unabhängigen Code-Reviews und zu Kubernetes: was Sie verlangen und schriftlich vereinbaren sollten.
+- [So bringen Sie KI in Ihr bestehendes Produkt und betreiben die Modelle in Ihrer eigenen Umgebung](https://vynatix.com/de/ai-in-your-existing-product.html): Leitfaden von Vynatix: wie Sie KI in ein bestehendes Produkt bringen, die Modelle in Ihrer eigenen Umgebung betreiben und administrative Abläufe automatisieren.
+- [Automotive-Software: HIL-Tests, ISO 26262, Embedded Linux und C++](https://vynatix.com/de/automotive-software.html): Der Leitfaden von Vynatix zu Automotive-Software: HIL-Tests in der CI, Entwicklung nach ISO 26262, Embedded Linux für Fahrzeuge und Senior-C++-Consultants.
 
 ## 日本語 (ja)
 
@@ -94,6 +114,11 @@
 - [ヨーテボリでのAndroid Automotive開発｜Vynatix](https://vynatix.com/ja/android-automotive-development.html): Vynatixはヨーテボリで、貴社のチームの一員としてAndroid Automotive（AAOS）の開発を担います。Volvo Trucksの車載ラジオとメディアプレーヤーを本番稼働させました。
 - [ヨーテボリのAIエンジニアリング：検索、評価、自社環境へのデプロイ｜Vynatix](https://vynatix.com/ja/ai-engineering.html): ヨーテボリのVynatixは、基盤モデルの上に本番運用のAIを構築します。RAG、評価パイプライン、MCPサーバーを開発し、オンプレミスまたはソブリンクラウドにデプロイします。
 - [ソフトウェアコンサルティング会社の選び方｜Vynatix](https://vynatix.com/ja/choose-a-software-consultancy.html): ソフトウェアコンサルティング会社の選び方について、Vynatixがまとめました。相手に聞くべき質問、注意すべき兆候、そして開発者が本当にシニアかどうかを見極める方法を紹介します。
+- [ソフトウェアテスト自動化の導入方法｜Vynatix](https://vynatix.com/ja/test-automation.html): ソフトウェアテスト自動化の導入について、Vynatixがまとめました。どこから始めるか、どのテストを先に用意するか、CIパイプライン、フレーキーテスト、そして何を測定するかを紹介します。
+- [コンサルティング会社によるカスタムソフトウェア開発：オーダーメイドの業務アプリケーションからBankIDログインまで｜Vynatix](https://vynatix.com/ja/custom-software-development.html): カスタムソフトウェア開発について、Vynatixがまとめました。業務アプリケーション、シニアエンジニアのチーム、アーキテクト、フロントエンド開発者、BankIDログイン付きのWebアプリを取り上げます。
+- [システム連携と保守：独自開発システムを健全に保つには｜Vynatix](https://vynatix.com/ja/system-integration-and-maintenance.html): 業務システム間の連携、独自開発システムの保守、独立したコードレビュー、Kubernetesについて、Vynatixがまとめました。何を求め、何を書面で合意すべきかを紹介します。
+- [既存のプロダクトにAIを追加し、モデルを自社の環境で運用する方法｜Vynatix](https://vynatix.com/ja/ai-in-your-existing-product.html): 既存のプロダクトにAIを追加する方法、モデルを自社の環境で運用する方法、事務処理のワークフローを自動化する方法を解説する、Vynatixのガイドです。
+- [車載ソフトウェア：HILテスト、ISO 26262、組み込みLinux、C++｜Vynatix](https://vynatix.com/ja/automotive-software.html): 車載ソフトウェアについて、Vynatixがまとめたガイドです。CIでのHILテスト、ISO 26262に準拠した開発、車両向けの組み込みLinux、シニアC++コンサルタントを紹介します。
 
 ## العربية (ar)
 
@@ -108,6 +133,11 @@
 - [تطوير برمجيات Android Automotive في غوتنبرغ](https://vynatix.com/ar/android-automotive-development.html): تبني Vynatix برمجيات Android Automotive (AAOS) في غوتنبرغ ضمن فريقكم، وأطلقت في بيئة الإنتاج تطبيق الراديو ومشغل الوسائط في مقصورة قيادة Volvo Trucks.
 - [هندسة الذكاء الاصطناعي في غوتنبرغ: الاسترجاع والتقييم والنشر في بيئتكم](https://vynatix.com/ar/ai-engineering.html): تبني Vynatix في غوتنبرغ أنظمة ذكاء اصطناعي إنتاجية على النماذج التأسيسية: RAG ومسارات التقييم وخوادم MCP والنشر على خوادمكم الخاصة أو في سحابة سيادية.
 - [كيف تختارون شركة استشارات برمجية](https://vynatix.com/ar/choose-a-software-consultancy.html): تتناول Vynatix اختيار شركة استشارات برمجية: الأسئلة التي ينبغي طرحها، وعلامات التحذير، وكيف تحكمون على ما إذا كان المطورون متمرسين حقا.
+- [كيف تعتمدون اختبار البرمجيات المؤتمت](https://vynatix.com/ar/test-automation.html): تتناول Vynatix اعتماد اختبار البرمجيات المؤتمت: من أين تبدؤون، وأي الاختبارات تأتي أولا، ومسار CI، والاختبارات المتقلبة، وما ينبغي قياسه.
+- [تطوير البرمجيات حسب الطلب مع شركة استشارات: من تطبيقات الأعمال المصممة لاحتياجاتكم إلى تسجيل الدخول عبر BankID](https://vynatix.com/ar/custom-software-development.html): تتناول Vynatix تطوير البرمجيات حسب الطلب: تطبيقات الأعمال، والفرق المتمرسة، والمعماريون، ومطورو الواجهات الأمامية، وتطبيقات الويب مع تسجيل الدخول عبر BankID.
+- [تكامل الأنظمة وصيانتها: كيف تحافظون على سلامة الأنظمة المطورة خصيصا](https://vynatix.com/ar/system-integration-and-maintenance.html): تتناول Vynatix التكاملات بين أنظمة الأعمال، وصيانة الأنظمة المطورة خصيصا، والمراجعة المستقلة للكود، وKubernetes: ما الذي ينبغي أن تشترطوه وتتفقوا عليه كتابة.
+- [كيف تضيفون الذكاء الاصطناعي إلى منتجكم الحالي وتشغّلون النماذج في بيئتكم الخاصة](https://vynatix.com/ar/ai-in-your-existing-product.html): دليل من Vynatix: كيف تضيفون الذكاء الاصطناعي إلى منتج قائم، وتشغّلون النماذج في بيئتكم الخاصة، وتؤتمتون سير العمل الإداري.
+- [برمجيات السيارات: اختبار HIL وISO 26262 وLinux للأنظمة المدمجة وC++](https://vynatix.com/ar/automotive-software.html): دليل Vynatix عن برمجيات السيارات: اختبار HIL ضمن CI، والتطوير وفق ISO 26262، وLinux للأنظمة المدمجة في المركبات، واستشاريو C++ متمرسون.
 
 <!-- end of the generated languages -->
 

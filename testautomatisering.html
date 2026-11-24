@@ -13,6 +13,14 @@
 <!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
      structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
 <link rel="canonical" href="https://vynatix.com/testautomatisering.html">
+<link rel="alternate" hreflang="en" href="https://vynatix.com/test-automation.html">
+<link rel="alternate" hreflang="sv" href="https://vynatix.com/testautomatisering.html">
+<link rel="alternate" hreflang="es" href="https://vynatix.com/es/test-automation.html">
+<link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/test-automation.html">
+<link rel="alternate" hreflang="de" href="https://vynatix.com/de/test-automation.html">
+<link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/test-automation.html">
+<link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/test-automation.html">
+<link rel="alternate" hreflang="x-default" href="https://vynatix.com/test-automation.html">
 <meta name="author" content="Vynatix AB">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="article">
@@ -21,8 +29,14 @@
 <meta property="og:description" content="Vynatix om att införa automatiserade mjukvarutester: var ni börjar, vilka tester som kommer först, CI-pipelinen, instabila tester och vad ni ska mäta.">
 <meta property="og:url" content="https://vynatix.com/testautomatisering.html">
 <meta property="og:locale" content="sv_SE">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ar_AR">
 <meta property="article:published_time" content="2026-11-23">
-<meta property="article:modified_time" content="2026-11-23">
+<meta property="article:modified_time" content="2026-11-24">
 <meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -135,7 +149,27 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-11-23",
-   "dateModified": "2026-11-23",
+   "dateModified": "2026-11-24",
+   "workTranslation": [
+    {
+     "@id": "https://vynatix.com/test-automation.html"
+    },
+    {
+     "@id": "https://vynatix.com/es/test-automation.html"
+    },
+    {
+     "@id": "https://vynatix.com/fr/test-automation.html"
+    },
+    {
+     "@id": "https://vynatix.com/de/test-automation.html"
+    },
+    {
+     "@id": "https://vynatix.com/ja/test-automation.html"
+    },
+    {
+     "@id": "https://vynatix.com/ar/test-automation.html"
+    }
+   ],
    "hasPart": {
     "@id": "https://vynatix.com/testautomatisering.html#vanliga-fragor"
    }
@@ -199,7 +233,7 @@
     "@id": "https://vynatix.com/#organization"
    },
    "datePublished": "2026-11-23",
-   "dateModified": "2026-11-23"
+   "dateModified": "2026-11-24"
   }
  ]
 }
@@ -211,7 +245,7 @@
      switches it to Monochrome dark when the visitor or their system asks (see its header). -->
 <link rel="stylesheet" href="tokens.css?v=c92545cd">
 <link rel="stylesheet" href="colors_and_type.css?v=cf9edbca">
-<link rel="stylesheet" href="styles.css?v=5b0cacef">
+<link rel="stylesheet" href="styles.css?v=4cc1e4c6">
 <!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
      favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -286,7 +320,7 @@
     <section class="section" id="intro">
       <div class="container">
         <div class="prose">
-          <p class="prose__meta">Publicerad <time datetime="2026-11-23">23 november 2026</time> · Senast uppdaterad <time datetime="2026-11-23">23 november 2026</time> · Vynatix</p>
+          <p class="prose__meta">Publicerad <time datetime="2026-11-23">23 november 2026</time> · Senast uppdaterad <time datetime="2026-11-24">24 november 2026</time> · Vynatix</p>
           <p>Kanske känner ni igen läget: varje release kräver flera dagars manuell testning, ett rättat fel dyker upp igen och ingen vågar ändra i den äldsta koden. Automatiserade tester ändrar det, men bara om ni inför dem i en ordning där teamet tidigt börjar lita på dem. I korthet:</p>
           <ol>
             <li>Sätt upp en pipeline som bygger koden och kör befintliga tester vid varje ändring.</li>
@@ -432,6 +466,7 @@
           <h2>Om Vynatix</h2>
           <p>Vynatix är mjukvarukonsultbolaget för scaleups. Våra seniora utvecklare blir en del av ert team, höjer tempot och gör er mjukvara starkare i takt med att ni växer. Vi finns i Göteborg och är en del av Ultra Group.</p>
           <p>Fler guider på svenska finns på <a href="sv.html#guider">vår svenska startsida</a>.</p>
+          <p>Guiden finns också på engelska: <a href="test-automation.html" hreflang="en" lang="en">How to introduce automated software testing</a>.</p>
         </div>
       </div>
     </section>
@@ -513,13 +548,13 @@
         <span>© 2026 Vynatix AB</span>
         <nav class="site-footer__langs" aria-label="Language">
           <ul class="site-footer__langlist list-reset">
-            <li><a href="index.html" lang="en" hreflang="en">English</a></li>
+            <li><a href="test-automation.html" lang="en" hreflang="en">English</a></li>
             <li><a href="testautomatisering.html" lang="sv" hreflang="sv" aria-current="true">Svenska</a></li>
-            <li><a href="es/index.html" lang="es" hreflang="es">Español</a></li>
-            <li><a href="fr/index.html" lang="fr" hreflang="fr">Français</a></li>
-            <li><a href="de/index.html" lang="de" hreflang="de">Deutsch</a></li>
-            <li><a href="ja/index.html" lang="ja" hreflang="ja">日本語</a></li>
-            <li><a href="ar/index.html" lang="ar" hreflang="ar">العربية</a></li>
+            <li><a href="es/test-automation.html" lang="es" hreflang="es">Español</a></li>
+            <li><a href="fr/test-automation.html" lang="fr" hreflang="fr">Français</a></li>
+            <li><a href="de/test-automation.html" lang="de" hreflang="de">Deutsch</a></li>
+            <li><a href="ja/test-automation.html" lang="ja" hreflang="ja">日本語</a></li>
+            <li><a href="ar/test-automation.html" lang="ar" hreflang="ar">العربية</a></li>
           </ul>
         </nav>
         <span>vynatix.com</span>

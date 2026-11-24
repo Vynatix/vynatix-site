@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="fr" dir="ltr" data-theme="mono-light">
+<head>
+<meta charset="utf-8">
+<!-- Defence-in-depth: allow-list exactly the origins this site uses. Fonts and images are self-hosted, nothing is inline, and
+     the only third-party hosts are Google Analytics ones, requested only after a visitor accepts analytics (app.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com/gtag/js; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure, Vynatix</title>
+<meta name="description" content="Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu'il faut exiger et ce dont il faut convenir par écrit.">
+<!-- seo -->
+<!-- Search and sharing: the canonical address, the other-language version, Open Graph, and
+     structured data (a JSON-LD data block: never executed, so script-src does not apply). -->
+<link rel="canonical" href="https://vynatix.com/fr/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="en" href="https://vynatix.com/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="sv" href="https://vynatix.com/systemintegration-och-forvaltning.html">
+<link rel="alternate" hreflang="es" href="https://vynatix.com/es/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="fr" href="https://vynatix.com/fr/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="de" href="https://vynatix.com/de/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="ja" href="https://vynatix.com/ja/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="ar" href="https://vynatix.com/ar/system-integration-and-maintenance.html">
+<link rel="alternate" hreflang="x-default" href="https://vynatix.com/system-integration-and-maintenance.html">
+<meta name="author" content="Vynatix AB">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vynatix">
+<meta property="og:title" content="Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure, Vynatix">
+<meta property="og:description" content="Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu&#x27;il faut exiger et ce dont il faut convenir par écrit.">
+<meta property="og:url" content="https://vynatix.com/fr/system-integration-and-maintenance.html">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="sv_SE">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ar_AR">
+<meta property="article:published_time" content="2026-11-24">
+<meta property="article:modified_time" content="2026-11-24">
+<meta property="og:image" content="https://vynatix.com/assets/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="The Vynatix mark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure, Vynatix">
+<meta name="twitter:description" content="Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu&#x27;il faut exiger et ce dont il faut convenir par écrit.">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://vynatix.com/#organization",
+   "name": "Vynatix",
+   "legalName": "Vynatix AB",
+   "alternateName": "Vynatix AB",
+   "url": "https://vynatix.com/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://vynatix.com/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "description": "Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.",
+   "slogan": "Engineering that compounds",
+   "foundingDate": "2023",
+   "foundingLocation": {
+    "@type": "Place",
+    "name": "Gothenburg, Sweden"
+   },
+   "memberOf": {
+    "@type": "Organization",
+    "name": "Ultra Group",
+    "url": "https://ultragroup.se/"
+   },
+   "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "Swedish organisationsnummer",
+    "value": "559445-6542"
+   },
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mailbox 1611",
+    "postalCode": "411 42",
+    "addressLocality": "Gothenburg",
+    "addressCountry": "SE"
+   },
+   "email": "front.disk@vynatix.com",
+   "telephone": "+46720710676",
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Projects and careers",
+    "email": "front.disk@vynatix.com",
+    "telephone": "+46720710676"
+   },
+   "knowsAbout": [
+    "AI engineering",
+    "Retrieval-augmented generation",
+    "LLM evaluation pipelines",
+    "MCP servers and integrations",
+    "Agent and harness engineering",
+    "On-prem and sovereign cloud deployment",
+    "Cloud platforms on GCP and AWS",
+    "Kubernetes and GitOps",
+    "Platform engineering",
+    "Build pipelines",
+    "FinOps and cost control",
+    "Migration off legacy systems",
+    "Native mobile development for iOS and Android",
+    "Web and desktop applications",
+    "Enterprise integration and SaaS",
+    "Embedded Android",
+    "Android Automotive (AAOS)"
+   ],
+   "sameAs": [
+    "https://www.linkedin.com/company/vynatix",
+    "https://github.com/Vynatix"
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://vynatix.com/#website",
+   "url": "https://vynatix.com/",
+   "name": "Vynatix",
+   "inLanguage": [
+    "en",
+    "sv",
+    "es",
+    "fr",
+    "de",
+    "ja",
+    "ar"
+   ],
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html",
+   "url": "https://vynatix.com/fr/system-integration-and-maintenance.html",
+   "name": "Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure, Vynatix",
+   "description": "Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu'il faut exiger et ce dont il faut convenir par écrit.",
+   "inLanguage": "fr",
+   "isPartOf": {
+    "@id": "https://vynatix.com/#website"
+   },
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "datePublished": "2026-11-24",
+   "dateModified": "2026-11-24",
+   "translationOfWork": {
+    "@id": "https://vynatix.com/systemintegration-och-forvaltning.html"
+   },
+   "hasPart": {
+    "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html#vanliga-fragor"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html#vanliga-fragor",
+   "url": "https://vynatix.com/fr/system-integration-and-maintenance.html#vanliga-fragor",
+   "inLanguage": "fr",
+   "isPartOf": {
+    "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html"
+   },
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Quelle est la différence entre maintenance et nouveaux développements ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "La maintenance garde un système existant sécurisé, à jour et opérationnel, tandis que les nouveaux développements ajoutent de nouvelles fonctionnalités. Inscrivez la frontière entre les deux dans le contrat, pour que l'on sache clairement ce qui relève de la correction de bug et ce qui relève d'un nouveau développement."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "À quoi la personne qui réalise la revue de notre base de code doit-elle avoir accès ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "La personne chargée de la revue a besoin d'un accès en lecture au code et à son historique, aux pipelines de build et, idéalement, à l'historique des tickets, ainsi que d'échanges avec votre équipe. Un accès en écriture n'est pas nécessaire."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment reprendre la maintenance d'un système auprès d'un autre prestataire ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Commencez par une revue de la base de code et une passation au cours de laquelle vous recevez le code, la documentation, l'accès à chaque environnement et une liste des bugs connus. Transférez ensuite la responsabilité par étapes, pendant que le prestataire précédent est encore disponible pour répondre aux questions."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Devons-nous utiliser Kubernetes pour exploiter nos propres systèmes ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Non, vos systèmes n'ont pas besoin de tourner sur Kubernetes. Si vous avez une poignée de services, les services managés d'un fournisseur cloud ou des machines virtuelles suffisent souvent, et vous évitez d'avoir à mettre à niveau et à superviser un cluster. Choisissez ce que votre équipe est capable d'exploiter."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "Article",
+   "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html#article",
+   "headline": "Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure",
+   "description": "Intégrations entre systèmes métier, maintenance de systèmes développés sur mesure, revue de code indépendante et Kubernetes, par Vynatix : ce qu'il faut exiger et ce dont il faut convenir par écrit.",
+   "inLanguage": "fr",
+   "mainEntityOfPage": {
+    "@id": "https://vynatix.com/fr/system-integration-and-maintenance.html"
+   },
+   "author": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "publisher": {
+    "@id": "https://vynatix.com/#organization"
+   },
+   "datePublished": "2026-11-24",
+   "dateModified": "2026-11-24"
+  }
+ ]
+}
+</script>
+<!-- /seo -->
+<!-- The Vynatix Design System: tokens.css (roles, scale, self-hosted fonts) then
+     colors_and_type.css (reset, helpers, components); styles.css is the site's own layer.
+     The markup names the Monochrome light theme, the site's one colour scheme; app.js
+     switches it to Monochrome dark when the visitor or their system asks (see its header). -->
+<link rel="stylesheet" href="../tokens.css?v=c92545cd">
+<link rel="stylesheet" href="../colors_and_type.css?v=cf9edbca">
+<link rel="stylesheet" href="../styles.css?v=4cc1e4c6">
+<!-- Icons. favicon.svg is theme-aware (Forest on light chrome, Cream on dark);
+     favicon.ico carries 16/32/48 for browsers that ignore SVG icons. -->
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<!-- Kept in sync with data-theme by app.js: the theme follows the visit's drawn
+     scheme and the light/dark choice, not the OS preference alone, so a media-gated
+     value would contradict the rendered page. -->
+<meta name="theme-color" content="#F5F1EA">
+<!-- app.js runs here, before the body is parsed and without defer, so the visit's colour
+     scheme is set before first paint and the page never flashes the wrong theme. It is
+     first-party and small; the CSP rules out the inline alternative. -->
+<script src="../app.js?v=78af7a5c"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+<div id="app">
+
+  <!-- Inline SVG definitions, rendered nowhere and placed with <use>: the wordmark from the
+       design system's logo artwork (assets/vynatix-wordmark-*.svg hold the same geometry), which
+       fills with currentColor so it follows the theme. -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="vx-lens" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../assets/glass-lens-wide.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.06" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="vx-lens-narrow" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feImage href="../assets/glass-lens-narrow.svg" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="0.12" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <symbol id="vx-wordmark" viewBox="90.1052 381.871 2654.79 653.758"><g fill="currentColor"><path d="M397.299 823.784L240.915 453.728L240.917 453.735C234.456 438.447 227.143 421.141 203.518 421.141L107.415 421.141L107.415 421.141C103.717 421.141 95.655 421.141 92.4292 421.141L92.4292 421.141C91.1417 421.143 90.1052 422.293 90.1052 423.723L90.1052 431.978C90.1052 433.409 91.1425 434.561 92.4309 434.561C115.726 434.729 120.384 451.83 126.802 467.017L367.638 1035.63L608.073 466.623C614.452 451.536 619.183 434.728 642.277 434.561C643.565 434.561 644.603 433.409 644.603 431.978L644.603 423.723C644.603 422.293 643.566 421.143 642.279 421.141L645.259 421.141L645.259 421.141L590.748 421.142C567.433 421.323 560.129 438.475 553.705 453.676L397.299 823.784Z" fill-rule="evenodd"/><path d="M452.438 551.62L411.074 453.738C411.073 453.735 411.072 453.733 411.071 453.731C404.61 438.444 397.296 421.144 373.674 421.144L373.674 421.142L311.764 421.141L311.764 421.141C308.066 421.141 300.004 421.141 296.778 421.141L296.778 421.141C295.49 421.141 294.454 422.293 294.454 423.723L294.454 431.978C294.454 433.409 295.491 434.56 296.78 434.56C296.665 434.56 296.896 434.56 296.78 434.56C320.373 434.56 324.95 452.343 331.404 467.616L409.671 652.821L452.438 551.62Z" fill-rule="evenodd"/><path d="M542.24 764.12L499.473 865.322C457.163 965.442 537.25 1035.63 571.444 1035.63L656.978 1035.63L656.978 1035.63L672.758 1035.63C674.012 1035.58 675.013 1034.46 675.013 1033.06L675.013 1024.81C675.013 1023.38 673.976 1022.22 672.688 1022.22L674.554 1022.22C601.559 990.791 549.605 782.803 557.153 760.668L557.082 760.84C557.623 759.54 557.104 758.009 555.919 757.408L549.078 753.941C547.893 753.34 546.504 753.902 545.962 755.2L542.24 764.12Z" fill-rule="evenodd"/><path d="M899.812 593.257L899.812 649.72C922.211 625.455 943.676 607.801 964.208 596.757C984.74 585.713 1006.83 580.191 1030.47 580.191C1058.78 580.191 1082.27 588.047 1100.93 603.757C1119.6 619.467 1132.04 638.988 1138.26 662.32C1143.24 680.052 1145.73 714.116 1145.73 764.513L1145.73 934.369C1145.73 967.967 1148.76 988.888 1154.83 997.132C1160.9 1005.38 1173.57 1010.59 1192.86 1012.76L1192.86 1029.56L972.141 1029.56L972.141 1012.76C988.629 1010.59 1000.45 1003.74 1007.61 992.232C1012.58 984.455 1015.07 965.167 1015.07 934.369L1015.07 740.248C1015.07 704.472 1013.67 681.918 1010.87 672.586C1008.07 663.253 1003.33 656.02 996.639 650.887C989.951 645.754 982.562 643.187 974.474 643.187C947.72 643.187 922.833 662.32 899.812 700.584L899.812 934.369C899.812 967.034 902.845 987.721 908.911 996.432C914.978 1005.14 926.255 1010.59 942.743 1012.76L942.743 1029.56L722.023 1029.56L722.023 1012.76C740.378 1010.9 753.443 1004.99 761.221 995.032C766.509 988.188 769.154 967.967 769.154 934.369L769.154 687.985C769.154 655.009 766.12 634.477 760.054 626.389C753.988 618.3 741.311 613.012 722.023 610.523L722.023 593.257L899.812 593.257Z" fill-rule="nonzero"/><path d="M1493.84 965.167C1440.64 1012.14 1392.89 1035.63 1350.58 1035.63C1325.7 1035.63 1305.01 1027.46 1288.52 1011.13C1272.03 994.799 1263.79 974.344 1263.79 949.768C1263.79 916.481 1278.1 886.539 1306.72 859.94C1335.34 833.342 1397.71 797.955 1493.84 753.78L1493.84 709.917C1493.84 676.941 1492.05 656.176 1488.47 647.621C1484.9 639.066 1478.13 631.599 1468.18 625.222C1458.22 618.845 1447.02 615.656 1434.58 615.656C1414.36 615.656 1397.71 620.167 1384.65 629.188C1376.56 634.788 1372.52 641.321 1372.52 648.787C1372.52 655.32 1376.87 663.408 1385.58 673.052C1397.4 686.429 1403.31 699.339 1403.31 711.783C1403.31 727.027 1397.64 740.015 1386.28 750.747C1374.93 761.48 1360.07 766.846 1341.72 766.846C1322.12 766.846 1305.71 760.936 1292.49 749.114C1279.27 737.293 1272.65 723.449 1272.65 707.583C1272.65 685.185 1281.52 663.797 1299.25 643.421C1316.99 623.044 1341.72 607.412 1373.45 596.524C1405.18 585.636 1438.16 580.191 1472.38 580.191C1513.75 580.191 1546.49 588.98 1570.6 606.556C1594.71 624.133 1610.34 643.187 1617.5 663.72C1621.86 676.785 1624.03 706.806 1624.03 753.78L1624.03 923.17C1624.03 943.08 1624.81 955.601 1626.37 960.734C1627.92 965.867 1630.25 969.678 1633.37 972.167C1636.48 974.655 1640.05 975.9 1644.1 975.9C1652.19 975.9 1660.43 970.145 1668.83 958.634L1682.83 969.833C1667.27 992.854 1651.18 1009.58 1634.53 1020C1617.89 1030.42 1598.99 1035.63 1577.84 1035.63C1552.95 1035.63 1533.51 1029.8 1519.51 1018.13C1505.51 1006.46 1496.95 988.81 1493.84 965.167ZM1493.84 931.103L1493.84 785.045C1456.2 807.133 1428.2 830.776 1409.85 855.974C1397.71 872.773 1391.65 889.727 1391.65 906.837C1391.65 921.148 1396.78 933.747 1407.05 944.635C1414.82 953.034 1425.71 957.234 1439.71 957.234C1455.27 957.234 1473.31 948.524 1493.84 931.103Z" fill-rule="nonzero"/><path d="M1904.01 433.667L1904.01 593.257L2007.61 593.257L2007.61 639.454L1904.01 639.454L1904.01 908.704C1904.01 933.902 1905.18 950.157 1907.51 957.468C1909.85 964.778 1913.97 970.689 1919.88 975.2C1925.79 979.711 1931.24 981.966 1936.21 981.966C1956.43 981.966 1975.57 966.567 1993.61 935.769L2007.61 946.035C1982.41 1005.76 1941.5 1035.63 1884.88 1035.63C1857.2 1035.63 1833.79 1027.93 1814.65 1012.53C1795.52 997.132 1783.31 979.944 1778.02 960.967C1774.91 950.39 1773.36 921.77 1773.36 875.106L1773.36 639.454L1716.43 639.454L1716.43 623.122C1755.62 595.435 1788.99 566.348 1816.52 535.861C1844.05 505.374 1868.08 471.31 1888.62 433.667L1904.01 433.667Z" fill-rule="nonzero"/><path d="M2154.13 381.871C2174.35 381.871 2191.46 388.948 2205.46 403.103C2219.46 417.257 2226.46 434.29 2226.46 454.199C2226.46 474.109 2219.38 491.064 2205.23 505.063C2191.07 519.062 2174.04 526.062 2154.13 526.062C2134.22 526.062 2117.27 519.062 2103.27 505.063C2089.27 491.064 2082.27 474.109 2082.27 454.199C2082.27 434.29 2089.27 417.257 2103.27 403.103C2117.27 388.948 2134.22 381.871 2154.13 381.871ZM2219.46 593.257L2219.46 939.035C2219.46 969.833 2223.04 989.51 2230.19 998.065C2237.35 1006.62 2251.35 1011.52 2272.19 1012.76L2272.19 1029.56L2036.54 1029.56L2036.54 1012.76C2055.83 1012.14 2070.14 1006.54 2079.47 995.965C2085.69 988.81 2088.8 969.833 2088.8 939.035L2088.8 684.252C2088.8 653.454 2085.23 633.777 2078.07 625.222C2070.92 616.667 2057.07 611.767 2036.54 610.523L2036.54 593.257L2219.46 593.257Z" fill-rule="nonzero"/><path d="M2572.71 762.18L2648.3 905.904C2674.43 955.99 2695.12 987.721 2710.36 1001.1C2718.76 1008.25 2730.27 1012.14 2744.89 1012.76L2744.89 1029.56L2501.78 1029.56L2501.78 1012.76C2520.75 1011.21 2532.5 1008.72 2537.01 1005.3C2541.52 1001.88 2543.77 997.209 2543.77 991.299C2543.77 982.588 2538.8 968.9 2528.84 950.235L2491.04 879.306L2458.85 926.436C2444.23 947.901 2435.98 960.656 2434.11 964.7C2431.63 970.611 2430.38 975.9 2430.38 980.566C2430.38 987.721 2431.86 993.71 2434.81 998.532C2437.77 1003.35 2441.81 1006.93 2446.95 1009.26C2452.08 1011.6 2461.49 1012.76 2475.18 1012.76L2475.18 1029.56L2304.39 1029.56L2304.39 1012.76C2325.54 1012.76 2344.91 1006.93 2362.49 995.265C2380.06 983.599 2405.65 953.034 2439.25 903.571L2475.18 850.374L2400.05 711.317C2375.47 665.897 2357.12 638.054 2344.99 627.788C2332.85 617.522 2319.32 611.767 2304.39 610.523L2304.39 593.257L2546.11 593.257L2546.11 610.523L2533.51 610.99L2509.24 619.389C2506.75 621.567 2505.51 625.144 2505.51 630.122C2505.51 634.788 2506.29 639.61 2507.84 644.587C2508.78 646.765 2513.13 655.165 2520.91 669.786L2554.97 733.248L2572.71 708.05C2597.59 673.83 2610.04 649.876 2610.04 636.188C2610.04 629.655 2607.31 624.133 2601.87 619.622C2596.43 615.111 2586.7 612.078 2572.71 610.523L2572.71 593.257L2727.16 593.257L2727.16 610.523C2708.19 611.145 2690.45 616.978 2673.97 628.022C2657.48 639.066 2638.97 660.453 2618.44 692.184L2572.71 762.18Z" fill-rule="nonzero"/></g></symbol>
+  </svg>
+
+  <!-- ============================================================ Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a href="index.html" class="site-header__logo" aria-label="Accueil Vynatix">
+        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+      </a>
+      <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+        <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
+        <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
+      </button>
+      <nav class="site-header__nav" id="primary-nav" aria-label="Menu principal">
+        <ul class="site-header__list list-reset">
+          <li><a href="services.html" class="site-header__link">Services</a></li>
+          <li><a href="industries.html" class="site-header__link">Secteurs</a></li>
+          <li><a href="work.html" class="site-header__link">Cas clients</a></li>
+          <li><a href="blog.html" class="site-header__link">Ressources</a></li>
+          <li><a href="membership.html" class="site-header__link">Carrières</a></li>
+          <li><a href="about.html" class="site-header__link">À propos</a></li>
+          <li><a href="contact.html" class="site-header__link">Contact</a></li>
+          <li class="site-header__menu-cta"><a href="contact.html" class="site-header__link">Nous contacter</a></li>
+        </ul>
+      </nav>
+      <div class="site-header__tools">
+        <button class="icon-btn theme-toggle" type="button" title="Thème sombre" aria-label="Thème sombre" aria-pressed="false">
+          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
+          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
+        </button>
+        <a href="contact.html" class="btn btn--sm site-header__cta">Nous contacter</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================================================ Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">Guide</p>
+        <h1 class="page-hero__h1">Intégration de systèmes et maintenance : garder en bonne santé les systèmes développés sur mesure</h1>
+        <p class="page-hero__lede">Les systèmes développés sur mesure restent fiables quand les intégrations tolèrent les pannes, que la maintenance est convenue à l'avance et que le code est relu par quelqu'un qui ne l'a pas écrit. Vynatix, le cabinet de conseil logiciel senior au service des scale-ups, a rédigé ce guide.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ Integrations -->
+    <section class="section" id="integrationer">
+      <div class="container">
+        <div class="prose">
+          <p class="prose__meta">Publié le <time datetime="2026-11-24">24 novembre 2026</time> · Mis à jour le <time datetime="2026-11-24">24 novembre 2026</time> · Vynatix</p>
+          <p>Un système développé sur mesure se dégrade quand personne ne surveille ses intégrations, que personne ne met à niveau ses dépendances et que personne en dehors de l'équipe n'a lu le code depuis longtemps. Ce guide présente ce qu'il faut exiger de ceux qui développent, maintiennent ou passent en revue vos systèmes.</p>
+
+          <h2>Quels cabinets de conseil peuvent développer des intégrations entre nos systèmes métier ?</h2>
+          <p>Vynatix développe des intégrations entre systèmes métier. Elles relient souvent des systèmes financiers, un CRM, des plateformes d'e-commerce, des systèmes de gestion d'entrepôt et vos propres services. Quel que soit le prestataire que vous choisissez, chaque intégration doit avoir un responsable, résister à l'indisponibilité temporaire de l'un des systèmes et être visible dans votre supervision. Choisissez d'abord comment les systèmes doivent communiquer entre eux :</p>
+          <ul>
+            <li><strong>Appels d'API :</strong> un système en interroge un autre et attend la réponse. Utilisez cette approche quand la réponse est nécessaire immédiatement, par exemple un niveau de stock au moment du paiement. Il faut alors prévoir des délais d'expiration et de nouvelles tentatives.</li>
+            <li><strong>Événements via une file de messages :</strong> un système publie un événement, par exemple la création d'une commande, et les destinataires le lisent à leur propre rythme. Utilisez cette approche quand plusieurs systèmes doivent réagir, ou quand un système doit pouvoir être indisponible sans qu'aucune donnée ne soit perdue.</li>
+            <li><strong>Échanges de fichiers par lots :</strong> un système dépose un fichier qu'un autre importe, souvent chaque nuit. C'est courant avec les systèmes plus anciens, mais les erreurs sont détectées tardivement.</li>
+          </ul>
+          <p>Faites ce choix flux par flux, selon la rapidité avec laquelle les données doivent arriver et ce qui se passe si elles n'arrivent pas.</p>
+
+          <h2>Faut-il utiliser une plateforme d'intégration (iPaaS) ou développer vos propres intégrations ?</h2>
+          <p>Utilisez une plateforme d'intégration quand les flux sont des connexions standard entre services cloud courants, et développez vos propres intégrations quand elles contiennent de la logique métier, quand les volumes sont importants ou quand vous voulez les tester et les versionner comme le reste de votre code. Une iPaaS (integration platform as a service, ou plateforme d'intégration en tant que service) propose des connecteurs prêts à l'emploi et un outil graphique.</p>
+          <table>
+            <thead>
+              <tr><th scope="col">Option</th><th scope="col">Convient quand</th><th scope="col">À garder en tête</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Plateforme d'intégration</strong></td><td>Les flux relient des services cloud courants et la logique est simple.</td><td>La tarification se fait souvent par flux ou par appel. Demandez comment les flux sont testés et comment vous les migreriez si vous changiez de plateforme.</td></tr>
+              <tr><td><strong>Votre propre code</strong></td><td>L'intégration contient de la logique métier, les volumes sont importants ou les exigences de traçabilité sont strictes.</td><td>Le code doit être maintenu comme vos autres systèmes, avec des tests, une supervision et des mises à niveau.</td></tr>
+              <tr><td><strong>Une approche mixte</strong></td><td>La plupart des flux sont standard, mais quelques-uns sont critiques pour l'activité.</td><td>Décidez pour chaque flux où il a sa place, et documentez ce choix en un seul endroit.</td></tr>
+            </tbody>
+          </table>
+
+          <h2>Comment rendre une intégration robuste face aux pannes et aux doublons ?</h2>
+          <p>Une intégration est robuste quand le destinataire est idempotent, que chaque message porte un identifiant tout au long de la chaîne et que quelqu'un est alerté quand un flux se bloque ou que les erreurs s'accumulent. L'idempotence signifie qu'un même message produit le même résultat, qu'il soit traité une fois ou plusieurs fois. Un message peut être renvoyé lors d'une nouvelle tentative, par exemple quand le destinataire a déjà effectué le travail mais que sa réponse n'est jamais arrivée. Sans idempotence, cette nouvelle tentative se traduit par une commande ou une facture en double.</p>
+          <ul>
+            <li>une clé unique par message, que le destinataire vérifie avant toute autre action</li>
+            <li>de nouvelles tentatives avec backoff (une attente qui s'allonge d'une tentative à l'autre) et un nombre maximal de tentatives</li>
+            <li>une file pour les messages qui n'ont pas pu être traités (une dead letter queue), et un moyen de les renvoyer une fois le problème corrigé</li>
+            <li>un identifiant de corrélation qui suit une commande à travers tous les systèmes</li>
+            <li>des métriques par flux (messages, erreurs et délai) avec des alertes adressées à quelqu'un qui peut agir</li>
+            <li>un responsable désigné pour chaque intégration, et une documentation indiquant quels champs sont mappés et pourquoi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Maintenance -->
+    <section class="section section--surface" id="forvaltning">
+      <div class="container">
+        <div class="prose">
+          <h2>Quels cabinets de conseil logiciel proposent la maintenance continue de systèmes développés sur mesure ?</h2>
+          <p>Vynatix propose la maintenance continue de systèmes développés sur mesure. La maintenance, c'est le travail qui garde un système sécurisé et opérationnel pendant que votre équipe consacre son temps de développement à de nouveaux projets. Elle doit inclure :</p>
+          <ul>
+            <li><strong>Mises à jour de sécurité :</strong> le système d'exploitation, l'environnement d'exécution et les bibliothèques reçoivent des correctifs lorsque des vulnérabilités sont publiées, après que quelqu'un a évalué leur impact sur votre système.</li>
+            <li><strong>Mises à niveau des dépendances :</strong> les frameworks et les bibliothèques restent sur des versions encore prises en charge, par petites étapes plutôt qu'en un seul grand saut à la dernière minute.</li>
+            <li><strong>Supervision :</strong> des journaux, des alertes et un processus convenu pour passer de l'alerte à l'action.</li>
+            <li><strong>Petites modifications et corrections de bugs :</strong> dans les limites dont vous avez convenu.</li>
+            <li><strong>Certificats, secrets et sauvegardes :</strong> les certificats sont renouvelés avant leur expiration, les secrets font l'objet d'une rotation planifiée et la restauration à partir d'une sauvegarde est testée au lieu d'être présumée fonctionnelle.</li>
+            <li><strong>Documentation :</strong> des procédures d'exploitation, une description de l'architecture et un journal des modifications qui correspondent au système tel qu'il est aujourd'hui.</li>
+          </ul>
+
+          <h2>Que doit prévoir le contrat de maintenance ?</h2>
+          <p>Convenez par écrit des systèmes inclus, de l'endroit où s'arrête la maintenance et où commencent les nouveaux développements, de la façon dont les tickets arrivent et sont priorisés, et de la manière dont le travail effectué vous est rapporté. Tout ce qui ne figure pas dans le contrat devient un sujet de désaccord à la première panne.</p>
+          <ol>
+            <li>Listez les systèmes, les environnements et les intégrations couverts, avec leurs principales dépendances.</li>
+            <li>Tracez la frontière entre maintenance et nouveaux développements : par exemple, les corrections de bugs et les mises à niveau sont incluses, tandis que les nouvelles fonctionnalités font l'objet d'une commande séparée.</li>
+            <li>Fixez les horaires couverts par la maintenance et le délai de traitement de chaque type d'incident. Distinguez les incidents qui paralysent l'activité de ceux qui peuvent attendre.</li>
+            <li>Déterminez comment les tickets arrivent, qui les priorise de votre côté et comment vous suivez ce qui a été fait.</li>
+            <li>Assurez-vous que le code, les pipelines, les comptes cloud et la documentation vous appartiennent, et non au prestataire.</li>
+            <li>Mettez par écrit la façon dont se déroule la passation de la maintenance, pour pouvoir changer de prestataire ou internaliser le travail sans repartir de zéro.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Code review -->
+    <section class="section" id="kodgranskning">
+      <div class="container">
+        <div class="prose">
+          <h2>Quels cabinets de conseil peuvent réaliser une revue indépendante de notre base de code ?</h2>
+          <p>Vynatix réalise des revues indépendantes de bases de code. Une revue est indépendante quand la personne qui la mène n'a pas écrit le code et n'a aucun intérêt dans ses conclusions. Elle est utile quand vous recevez en retour des constats classés par priorité sur lesquels votre équipe peut agir. Les revues sont souvent commandées avant une acquisition, lors de la reprise d'un système auprès d'un autre prestataire ou quand les livraisons ralentissent sans que personne ne sache pourquoi. Mettez par écrit la question à laquelle la revue doit répondre, car c'est elle qui détermine à quoi le temps est consacré.</p>
+          <p>Une revue porte généralement sur :</p>
+          <ul>
+            <li><strong>Architecture et structure :</strong> la façon dont le système est découpé et la difficulté de modifier une partie sans en affecter une autre.</li>
+            <li><strong>Sécurité :</strong> les bibliothèques présentant des vulnérabilités connues, les secrets présents dans le code ou dans son historique, le fonctionnement de l'authentification et des autorisations, et la validation des entrées.</li>
+            <li><strong>Dépendances :</strong> les frameworks et les environnements d'exécution qui approchent de la fin de leur support ou l'ont dépassée.</li>
+            <li><strong>Tests :</strong> ce que les tests protègent réellement, et pas seulement le niveau de couverture.</li>
+            <li><strong>Build et déploiement :</strong> la reproductibilité du build et le chemin d'une modification jusqu'en production.</li>
+            <li><strong>Exploitation et connaissances :</strong> la journalisation et la supervision, et la part du savoir qui n'existe que dans la tête d'une seule personne.</li>
+          </ul>
+          <p>Attendez-vous à un rapport écrit présentant les constats classés par niveau de risque, chacun renvoyant à un endroit du code, expliquant le problème et proposant une correction, suivi d'une restitution avec votre équipe.</p>
+          <p>Corrigez d'abord les constats de sécurité critiques, placez le reste dans le backlog sous forme de tickets ordinaires avec un responsable, et réservez du temps à chaque sprint au lieu d'attendre un grand chantier de nettoyage. Prévoyez ensuite une revue de suivi, plus courte, sur les mêmes points.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Kubernetes -->
+    <section class="section section--surface" id="kubernetes">
+      <div class="container">
+        <div class="prose">
+          <h2>Quels cabinets de conseil peuvent nous aider à mettre en place et à exploiter Kubernetes ?</h2>
+          <p>Vynatix met en place et exploite Kubernetes. Nous le faisons dans le cadre des plateformes cloud que nous construisons et exploitons sur GCP, sur AWS et sur site, et nous utilisons GitOps : chaque modification de la configuration du cluster est donc un commit qui peut être relu. Demandez-vous d'abord si vous avez besoin de Kubernetes. Kubernetes est courant dans les plateformes qui comptent de nombreux services, mais une plateforme peut tout aussi bien fonctionner sur les services managés d'un fournisseur cloud ou sur des machines virtuelles, comme l'explique notre <a href="../platform-engineering.html#vanliga-fragor" hreflang="sv">guide sur l'ingénierie de plateforme</a> (en suédois).</p>
+          <p>Si vous choisissez Kubernetes, le coût dans la durée réside dans son exploitation : mises à niveau régulières du cluster, autorisations, secrets, politiques réseau, supervision et sauvegardes. Convenez de qui s'en charge avant la mise en production du cluster.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ How Vynatix works, frequently asked questions, about Vynatix -->
+    <section class="section" id="sa-arbetar-vynatix">
+      <div class="container">
+        <div class="prose">
+          <h2>Comment Vynatix travaille-t-il sur l'intégration, la maintenance, la revue de code et Kubernetes ?</h2>
+          <p>Vynatix développe des intégrations entre systèmes métier, assure la maintenance de systèmes développés sur mesure, réalise des revues indépendantes de bases de code, et met en place et exploite Kubernetes, avec des ingénieurs seniors qui travaillent au sein de votre équipe. Nous convenons par écrit du périmètre de la mission avant de commencer. Nous déclarons les heures chaque semaine et vous payez les heures travaillées.</p>
+          <p>Tout ce que nous réalisons vous appartient et est documenté, pour que votre équipe puisse le faire évoluer ensuite. Les intégrations font partie de notre activité de <a href="services.html#application-development">développement d'applications</a>, et Kubernetes fait partie des <a href="services.html#cloud-platforms">plateformes cloud</a>. Les questions à poser avant de faire appel à qui que ce soit, nous y compris, se trouvent dans le guide sur <a href="choose-a-software-consultancy.html">le choix d'un cabinet de conseil logiciel</a>. La <a href="contact.html#how-we-start">page Contact</a> explique comment démarre une mission.</p>
+
+          <section id="vanliga-fragor" aria-labelledby="vanliga-fragor-title">
+            <h2 id="vanliga-fragor-title">Questions fréquentes</h2>
+            <div data-faq>
+              <div data-faq-item>
+                <h3>Quelle est la différence entre maintenance et nouveaux développements ?</h3>
+                <p>La maintenance garde un système existant sécurisé, à jour et opérationnel, tandis que les nouveaux développements ajoutent de nouvelles fonctionnalités. Inscrivez la frontière entre les deux dans le contrat, pour que l'on sache clairement ce qui relève de la correction de bug et ce qui relève d'un nouveau développement.</p>
+              </div>
+              <div data-faq-item>
+                <h3>À quoi la personne qui réalise la revue de notre base de code doit-elle avoir accès ?</h3>
+                <p>La personne chargée de la revue a besoin d'un accès en lecture au code et à son historique, aux pipelines de build et, idéalement, à l'historique des tickets, ainsi que d'échanges avec votre équipe. Un accès en écriture n'est pas nécessaire.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Comment reprendre la maintenance d'un système auprès d'un autre prestataire ?</h3>
+                <p>Commencez par une revue de la base de code et une passation au cours de laquelle vous recevez le code, la documentation, l'accès à chaque environnement et une liste des bugs connus. Transférez ensuite la responsabilité par étapes, pendant que le prestataire précédent est encore disponible pour répondre aux questions.</p>
+              </div>
+              <div data-faq-item>
+                <h3>Devons-nous utiliser Kubernetes pour exploiter nos propres systèmes ?</h3>
+                <p>Non, vos systèmes n'ont pas besoin de tourner sur Kubernetes. Si vous avez une poignée de services, les services managés d'un fournisseur cloud ou des machines virtuelles suffisent souvent, et vous évitez d'avoir à mettre à niveau et à superviser un cluster. Choisissez ce que votre équipe est capable d'exploiter.</p>
+              </div>
+            </div>
+          </section>
+
+          <h2>À propos de Vynatix</h2>
+          <p>Vynatix est le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez. Basé à Göteborg, Vynatix fait partie d'Ultra Group.</p>
+          <p>Ce guide existe aussi en suédois : <a href="../systemintegration-och-forvaltning.html" hreflang="sv" lang="sv">Systemintegration och förvaltning: så håller ni egenutvecklade system friska</a>. Pour découvrir notre façon de travailler, commencez par la <a href="about.html">page À propos</a> et les <a href="work.html">cas clients</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ CTA band -->
+    <section class="cta-band band--inset inverse" aria-labelledby="cta-title">
+      <div class="cta-band__inner">
+        <div>
+          <p class="eyebrow">Étape suivante</p>
+          <h2 class="cta-band__h2" id="cta-title">Gardez vos propres systèmes en bonne santé. <em>Vous recevrez une réponse sous un jour ouvré.</em></h2>
+        </div>
+        <div class="cta-band__actions">
+          <p class="cta-band__lede">Parlez-nous de votre feuille de route.</p>
+          <a class="btn btn--lg btn--tertiary" href="mailto:front.disk@vynatix.com?subject=Project:%20system-integration-and-maintenance%20%5Bfr%5D">Nous écrire au sujet d'un projet <svg class="icon icon--md" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M693.69-457.31H180v-45.38h513.69L448.39-748 480-780l300 300-300 300-31.61-32 245.3-245.31Z"/></svg></a>
+          <p class="cta-band__contact">L'objet du message mentionne ce guide pour que nous sachions quelle page vous avez lue (voir la <a href="../privacy.html#email" hreflang="en">politique de confidentialité</a>). Modifiez-le si vous le souhaitez.</p>
+          <p class="cta-band__contact"><a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer inverse">
+    <div class="container">
+      <div class="site-footer__grid site-footer__grid--four">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo" aria-label="Accueil Vynatix">
+            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+          </a>
+          <p class="site-footer__about">Le cabinet de conseil logiciel senior au service des scale-ups. Nos ingénieurs rejoignent votre équipe, accélèrent le rythme et rendent votre logiciel plus solide à mesure que vous grandissez.</p>
+          <address class="site-footer__addr">
+            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br> <a href="tel:+46720710676">+46 72 071 06 76</a><br> Mailbox 1611, 411 42 Gothenburg<br> Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Membre d'Ultra Group</a>
+          </address>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Services</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="services.html#ai-engineering">Ingénierie IA</a></li>
+            <li><a href="services.html#cloud-platforms">Plateformes cloud</a></li>
+            <li><a href="services.html#application-development">Développement d'applications</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Entreprise</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="about.html">À propos</a></li>
+            <li><a href="industries.html">Secteurs</a></li>
+            <li><a href="work.html">Cas clients</a></li>
+            <li><a href="blog.html">Ressources</a></li>
+            <li><a href="membership.html">Carrières</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Informations légales</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="../privacy.html" hreflang="en">Confidentialité</a></li>
+            <li><a href="../privacy.html#cookies" data-consent-open hreflang="en">Paramètres des cookies</a></li>
+            <li><a href="../terms.html" hreflang="en">Conditions d'utilisation</a></li>
+            <li><a href="../accessibility.html" hreflang="en">Accessibilité</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Lancer l'animation de l'arrière-plan">Mettre en pause l'animation de l'arrière-plan</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <span>© 2026 Vynatix AB</span>
+        <nav class="site-footer__langs" aria-label="Langue">
+          <ul class="site-footer__langlist list-reset">
+            <li><a href="../system-integration-and-maintenance.html" lang="en" hreflang="en">English</a></li>
+            <li><a href="../systemintegration-och-forvaltning.html" lang="sv" hreflang="sv">Svenska</a></li>
+            <li><a href="../es/system-integration-and-maintenance.html" lang="es" hreflang="es">Español</a></li>
+            <li><a href="system-integration-and-maintenance.html" lang="fr" hreflang="fr" aria-current="true">Français</a></li>
+            <li><a href="../de/system-integration-and-maintenance.html" lang="de" hreflang="de">Deutsch</a></li>
+            <li><a href="../ja/system-integration-and-maintenance.html" lang="ja" hreflang="ja">日本語</a></li>
+            <li><a href="../ar/system-integration-and-maintenance.html" lang="ar" hreflang="ar">العربية</a></li>
+          </ul>
+        </nav>
+        <span>vynatix.com</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

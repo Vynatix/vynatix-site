@@ -49,13 +49,16 @@ sv.html             Swedish home and hub for the Swedish pages (twin of index.ht
 android-automotive-utveckling.html, ai-utveckling.html   Swedish twins of the two deep pages
 valja-konsultbolag.html, platform-engineering.html, ai-assistent-interna-dokument.html   Swedish guides
 testautomatisering.html, systemutveckling.html, systemintegration-och-forvaltning.html,
-ai-i-befintlig-produkt.html, fordonsmjukvara.html   Swedish posts (kind='post', no English twin),
+ai-i-befintlig-produkt.html, fordonsmjukvara.html   Swedish posts (kind='post', original=True),
                     23 November 2026, each answering buyer questions AI assistants are asked
+test-automation.html, custom-software-development.html, system-integration-and-maintenance.html,
+ai-in-your-existing-product.html, automotive-software.html   Their English twins (kind='post'),
+                    and through them the five generated languages
 konsultbolag-android-automotive-goteborg.html, ai-konsultbolag-sverige.html   Withdrawn on
                     20 November 2026 (stubs)
 integritet.html     Swedish privacy notice, the twin of privacy.html (one of five
                     English/Swedish pairs); the Swedish consent bar links to it.
-                    Twenty-nine pages in total, three of them withdrawn stubs
+                    Thirty-four pages in total, three of them withdrawn stubs
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
 sitemap.xml         Every page, its lastmod and its hreflang pair (written by
                     tools/seo-head.py from PAGES)
@@ -228,7 +231,7 @@ replaced). One fenced block at the end of `styles.css`. The rules it follows:
   layer and still get the blurred, tinted capsule from the other, which is why the
   two are separate layers rather than one declaration.
 - **The two `<filter>` elements are in the `.svg-defs` block of every page**, beside
-  the wordmark `<symbol>` (copy-pasted, like it: change all 29 together). A
+  the wordmark `<symbol>` (copy-pasted, like it: change all 34 together). A
   fragment-only `url(#id)` in an external stylesheet resolves against the page, and
   the CSP allows the map as a same-origin image.
 - **The header is not a backdrop root.** A stacking context alone is not one; only
@@ -614,7 +617,7 @@ a measurement work. A violation names the one host that is missing; add that hos
 by name, never `https://*.google.com`, `'unsafe-inline'` or `'unsafe-eval'`.
 
 **The policy lives in three places that change together:** the `<meta>` tag on
-all 29 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
+all 34 pages, the string in `EDGE-SETUP.md`, and the Transform Rule in the
 Cloudflare dashboard if the edge is live. If it is live, widen the dashboard rule
 **first**: the browser enforces the meta and the header independently, so a
 narrower header silently blocks Google Analytics, while a wider one is bounded
@@ -1446,7 +1449,7 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 29 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 34 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every

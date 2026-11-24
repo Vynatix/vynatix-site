@@ -388,7 +388,8 @@ ends, `--sheet-lo` 30%, `--sheet-up` 0.04em, `--sheet-down` 0.21em, `--sheet-ris
 1.4em, the A-frame drawn with its apex at (1005, 325), its feet at 850 and 1160 and its
 datum at 708 in container units of its own frame, and shown 168 units higher (`lift`), so
 that in the hero the apex is at 157, on the first headline line's cap line, and the datum
-at 540, level with the foot of the buttons; the arcs' radii 118, 215 and 312, the grid's
+at 540, level with the foot of the buttons (the buttons keep their size, so on a scaled hero
+the feet stand up to 5px higher); the arcs' radii 118, 215 and 312, the grid's
 origin. The generator is `tools/sheet-art.js` (it reproduces the shipped files); its
 numbers also live in `hero-bg.css`, and the sheet's guard, `bg-sheet.js`, reads the
 apex and datum from the shipped art file.
@@ -403,7 +404,7 @@ three lines over six of lede), with its apex on that message's second baseline. 
 headline changed it kept that place, and from 20 November 2026 it hung about 170 units
 below the shorter message's buttons, which the owner saw on 24 November as the art having
 slipped down. It is now lifted 168 units (`lift` in `tools/sheet-art.js`; the art files
-took the names `-2`): the drawing itself is unchanged, its apex mark sits on the first
+were renamed `bg-sheet-art-2.svg` and `bg-sheet-edge-2.svg`): the drawing itself is unchanged, its apex mark sits on the first
 line's cap line, its datum is level with the foot of the buttons, and the italic line's
 bronze baseline crosses it like the bar of an A. The room the art used to hang into (from
 1100px the clients' rule stood 336 units under the buttons instead of 96, kept by the owner
@@ -418,7 +419,7 @@ without it the A-frame's feet reach the clients' rule at 125 percent in a 790px 
 clients row or a typeface can move the art into the text, or leave it hanging away from
 it.** Run `npm run check:bg` after any such change: the guard fails and names the rule
 (clearance, contrast or registration, which includes the A-frame's apex on the first cap
-line and its datum no more than 24 units below the buttons), and the sheet's constants
+line and its datum within 24 units of the foot of the buttons), and the sheet's constants
 (`lift` first) are the ones to refit. The constants are
 written in the hero's unit (`calc(N * var(--hero-u))`, see *Hero fit*): the numbers in
 this section are their values at the design size, which a window 1248px high or taller
@@ -430,8 +431,9 @@ emulated), contrast (the pixels behind every hero text box with the text hidden:
 3:1 for the headline, no lower than the plain page's own by more than 0.1 except where
 the art is meant to sit under text), registration (the guides on the glyphs, and from
 1200px the A-frame beside the message: its apex, read from the art file, on the first
-line's cap line within 1.25px, its datum no more than 24 units below the foot of the
-buttons), removal
+line's cap line within 1.25px, its datum within 24 units of the foot of the buttons; at the
+default text size, because with the text alone enlarged the art grows from the hero's top
+and stands lower, where clearance is what is required), removal
 under forced colours and more contrast, and assets (the two masks requested from 1200px
 up only and by the home page only, the hero pixel-identical with and without
 JavaScript, no `data-bg`). It runs in a 1248px-high window, the design size; `bg-fit.js`
@@ -457,8 +459,8 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   on a phone). `hero-bg.css` multiplies the sheet's constants by the same unit (the
   24px gaps, its rulers and its em through `--hero-em`), so the art keeps its place against the text as the hero scales.
   The sheet's art hangs from the content's right edge and grows from its left when the text
-  alone is enlarged (`--hero-em0`), and `--sheet-drop` keeps its apex on the headline's second
-  baseline, because the eyebrow's line does not scale.
+  alone is enlarged (`--hero-em0`), and `--sheet-drop` keeps its apex on the first headline line's cap
+  line, because the eyebrow's line does not scale.
 - **The solve.** With every vertical size a multiple of the unit, the hero's height is a
   straight line in it, so `u = (100svh - what stands above the hero - fixed) / slope`.
   `--hero-above` is the header's bottom edge (78px). There are
@@ -545,7 +547,8 @@ home page 50 to 95 ms on a desktop at 4x CPU. The sheet's headline guides come w
 30px of the lede at the nearest row guide, and its art within 41.5px of any text.
 
 **Changing it.** New art for the sheet comes from `tools/sheet-art.js` (new file names,
-never reused; the numbers change in `hero-bg.css` and `bg-sheet.js` with it), then
+never reused: the two names in the script, the `url()` in `hero-bg.css` and the `ART` list in
+`bg-sheet.js` change with it; the guard reads the apex and datum from the art file), then
 `npm run stamp` and `npm run check:bg`. A second background, a draw between several or
 anything that moves is a new owner decision, not a refactor: the draw stored keys the
 notices had to list, and the site's one ambient motion is the silk (see *JavaScript*).

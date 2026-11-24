@@ -4,9 +4,12 @@
 // is a CSS mask over a role-token colour). Coordinates are the drawing's own frame, in container units: x = 0 is the
 // container's left edge, and the hero shows the frame from y = lift (its top edge), so a point drawn at y stands
 // y - lift below the hero's top. One SVG px is one CSS px at a 16px hero font size; the CSS sizes the mask in em so it
-// follows text zoom. To retune, override fields of P as JSON in ART (for example ART='{"lift": 160}' node tools/sheet-art.js),
-// change the matching numbers in hero-bg.css (87.5em by 50em, calc(50% + 40em - 576px)) and tools/verify/bg-sheet.js,
-// and WRITE THE FILES UNDER NEW NAMES: assets are cached under fixed URLs and are not version-stamped (see assets/AGENTS.md).
+// follows text zoom. To retune, override fields of P as JSON in ART (for example ART='{"lift": 160}' node tools/sheet-art.js)
+// and change the matching numbers in hero-bg.css (87.5em by 50em, calc(50% + 40em - 576px)). ART does not rename the
+// files, and they must be WRITTEN UNDER NEW NAMES: assets are cached under fixed URLs and are not version-stamped (see
+// assets/AGENTS.md). Change the two names at the end of the hero part below, the url() in hero-bg.css and the ART list in
+// tools/verify/bg-sheet.js, which reads the apex and datum from the art file itself (from the axis, drawn 30 above the
+// apex to 24 below the datum: change the guard with it if that changes).
 const fs = require('fs');
 const path = require('path');
 const f = (n) => +n.toFixed(1);
@@ -20,9 +23,9 @@ const P = Object.assign({
   A0x: 1005, A0y: 325, D: 708, fl: 850, fr: 1160, thin: 18, thick: 70,
   legW: 2.5, arcW: 1.6, arcA: 0.9, hatchA: 0.6, fillThick: 0.14, fillThin: 0.07, fillWedge: 0.035,
   gridPitch: 24, gridA: 0.22, gridMajorA: 0.34,
-  gx0: 870, gx1: 1010, gx2: 1250, gx3: 1340,   // grid below the headline: horizontal fade (in, full, full, out)
+  gx0: 870, gx1: 1010, gx2: 1250, gx3: 1340,   // grid beside the message: horizontal fade (in, full, full, out)
   gy0: 300, gy1: 390, gy2: 650, gy3: 735,      // and vertical fade
-  nx0: 1040, nx1: 1140, ny0: 228, ny1: 308,   // the notch right of the first headline line: x and y fade-in (y 60 and 140 of the hero, under its ruler)
+  nx0: 1040, nx1: 1140, ny0: 60, ny1: 140,     // the notch under the ruler, right of the eyebrow: x and y fade-in (y in the hero's units, 0 its top)
   notch: 1,
   arcs: [[118, 838], [215, 838], [312, 838]],
   edgeOff: 34, edgeT0: 115, edgeExtra: 20,
@@ -46,18 +49,19 @@ const cross = (x, y, s, r) => `M${x - s} ${y}H${x + s}M${x} ${y - s}V${y + s}` +
 const feet = [[fl, D], [fr, D]].map(([x, y]) => cross(x, y, 16, 7)).join('');
 const axis = `M${A0x} ${A0y - 30}V${D + 24}`;
 // grid: per-line alpha (quantised) with a gradient along the line for the other axis. Two regions: the
-// vignette below the headline (B) and, when `notch` is on, the pocket right of the first headline line (A).
+// vignette beside the message (B) and, when `notch` is on, the pocket under the ruler, right of the eyebrow (A).
+const ny0 = P.ny0 + P.lift, ny1 = P.ny1 + P.lift;   // the notch's edges in the drawing's frame
 const ramp = (v, a, b) => Math.max(0, Math.min(1, (v - a) / (b - a)));
 const axB = (x) => Math.min(ramp(x, P.gx0, P.gx1), 1 - ramp(x, P.gx2, P.gx3));
 const axA = (x) => P.notch ? Math.min(ramp(x, P.nx0, P.nx1), 1 - ramp(x, P.gx2, P.gx3)) : 0;
 const ayB = (y) => Math.min(ramp(y, P.gy0, P.gy1), 1 - ramp(y, P.gy2, P.gy3));
-const ayA = (y) => P.notch ? Math.min(ramp(y, P.ny0, P.ny1), 1 - ramp(y, P.gy2, P.gy3)) : 0;
+const ayA = (y) => P.notch ? Math.min(ramp(y, ny0, ny1), 1 - ramp(y, P.gy2, P.gy3)) : 0;
 const q = (a) => Math.round(a * 12) / 12;
 const vlines = {}, hlines = {};
 for (let x = 0; x <= W - X0; x += P.gridPitch) {
   const major = x % 120 === 0; const classA = P.notch && x >= P.nx0;
   const a = q(classA ? Math.max(axA(x), axB(x)) : axB(x)); if (a <= 0) continue;
-  const key = (major ? 'M' : 'm') + a + (classA ? 'A' : 'B'); (vlines[key] = vlines[key] || []).push(`M${x + .5} ${classA ? P.ny0 : P.gy0}V${P.gy3}`);
+  const key = (major ? 'M' : 'm') + a + (classA ? 'A' : 'B'); (vlines[key] = vlines[key] || []).push(`M${x + .5} ${classA ? ny0 : P.gy0}V${P.gy3}`);
 }
 for (let y = D - 24 * 27; y <= P.gy3; y += P.gridPitch) {
   const major = ((D - y) % 120) === 0; const classA = P.notch && y < P.gy0;
@@ -72,7 +76,7 @@ const ink = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${-X0} ${P.lift} $
  ${grad('fxB', 'x', P.gx0, P.gx3, [[P.gx0, 0], [P.gx1, 1], [P.gx2, 1], [P.gx3, 0]])}
  ${grad('fxA', 'x', P.nx0, P.gx3, [[P.nx0, 0], [P.nx1, 1], [P.gx2, 1], [P.gx3, 0]])}
  ${grad('fyB', 'y', P.gy0, P.gy3, [[P.gy0, 0], [P.gy1, 1], [P.gy2, 1], [P.gy3, 0]])}
- ${grad('fyA', 'y', P.ny0, P.gy3, [[P.ny0, 0], [P.ny1, 1], [P.gy2, 1], [P.gy3, 0]])}
+ ${grad('fyA', 'y', ny0, P.gy3, [[ny0, 0], [ny1, 1], [P.gy2, 1], [P.gy3, 0]])}
  <linearGradient id='fd' gradientUnits='userSpaceOnUse' x1='${fl - 70}' x2='${W - X0}' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='.2'/><stop offset='.85'/><stop offset='1' stop-opacity='0'/></linearGradient>
  <linearGradient id='fa' gradientUnits='userSpaceOnUse' x1='${P.arcs[0][1]}' x2='${W - X0}' y1='0' y2='0'><stop offset='0' stop-opacity='0'/><stop offset='.1'/><stop offset='.7'/><stop offset='1' stop-opacity='0'/></linearGradient>
  <pattern id='hatch' width='8' height='8' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><path d='M0 .5H8' stroke-width='1' stroke-opacity='${P.hatchA}'/></pattern>

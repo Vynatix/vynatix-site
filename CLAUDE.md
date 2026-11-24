@@ -95,8 +95,8 @@ highlights the things most worth keeping front-of-mind.
   `data-bg` or a `vynatix-bg` key comes back. The art is placed from the layout. Its A-frame was drawn
   for a three-line headline over six lines of lede and hung below the current, shorter one ("Engineering" /
   "that compounds.", two lines over two) until 24 November 2026, when it was lifted (`lift` in
-  `tools/sheet-art.js`): its apex sits on the first headline line's cap line and its feet are level with the
-  foot of the buttons, and the room it used to hang into is gone (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
+  `tools/sheet-art.js`): at the default text size its apex sits on the first headline line's cap line and its
+  feet are level with the foot of the buttons, and the room it used to hang into is gone (next bullet): **a change to the headline, the lede, the hero spacing or the clients row
   can move art into text or leave it hanging below the message, and `npm run check:bg` (`tools/verify/bg-sheet.js`, at the
   design size and, through `bg-fit.js`, on a scaled hero) fails and says which rule.**
   Constants, the bronze budget and how to change it are in AGENTS.md, *Hero background*.

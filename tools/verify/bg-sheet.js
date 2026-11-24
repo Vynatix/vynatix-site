@@ -21,8 +21,10 @@
 //                  silk background hidden (see hideSilk). Also that the hold
 //                  distances in hero-bg.css clear the real text ends by 24px. And, from 1200px where the A-frame is
 //                  drawn, that it stands beside the message: its apex on the first headline line's cap line (within
-//                  TOL) and its datum no more than CLEAR units below the foot of the buttons, so the drawing cannot
-//                  slip under the message again when the copy changes (it did, with the headline of November 2026).
+//                  TOL) and its datum within CLEAR units of the foot of the buttons, so the drawing cannot slip under
+//                  the message again when the copy changes (it did, with the headline of November 2026). Like the
+//                  rest of R this is at the default text size: with the text alone enlarged the art, drawn in em,
+//                  grows from the hero's top and stands lower than the message, and only B (clearance) applies.
 //   Q  removal     Forced colours and more contrast remove the sheet and do not request its art.
 //   A  assets      The art files are requested from 1200px up only, by the home page only, with and without
 //                  JavaScript, and the hero is pixel-identical in the two; <html> has no data-bg.
@@ -338,8 +340,8 @@ async function open(browser, theme, width, zoom) {
           const first = (v) => v.split(/,(?![^(]*\))/)[0].trim();
           const layer = (cs) => ({ pos: first(cs.maskPosition || cs.webkitMaskPosition), size: first(cs.maskSize || cs.webkitMaskSize) });
           const ink = layer(getComputedStyle(hero, '::before')), edge = layer(getComputedStyle(hero, '::after'));
-          const pos = ink.pos.split(/\s+/).pop();
-          const size = parseFloat(ink.size);
+          const pos = ink.pos.split(/\s+/).pop();   // the layer's y: --sheet-drop, resolved to px
+          const size = /^[\d.]+px\b/.test(ink.size) ? parseFloat(ink.size) : NaN;
           const same = ink.pos === edge.pos && ink.size === edge.size;
           const img = getComputedStyle(hero, '::before'); const url = /url\("?([^")]+)"?\)/.exec(img.maskImage || img.webkitMaskImage);
           const svg = url ? await (await fetch(url[1])).text() : '';
@@ -350,13 +352,13 @@ async function open(browser, theme, width, zoom) {
         });
         if (!A.same) fail(`${tag}: the bronze layer is placed at ${A.edge.pos} / ${A.edge.size}, the A-frame's ink at ${A.ink.pos} / ${A.ink.size}`);
         const u = await heroUnit(page);
-        if (!A.vb || !A.axis) fail(`${tag}: cannot read the A-frame's viewBox and axis from the art file`);
+        if (!A.vb || !A.axis || !/^-?[\d.]+px$/.test(A.ink.pos.split(/\s+/).pop()) || !(A.size > 0)) fail(`${tag}: cannot read the A-frame's viewBox and axis from the art file, or its layer's place (${A.ink.pos}) and size (${A.ink.size}) in px`);
         else {
           const scale = A.size / A.vb[2];
           const apex = A.top + A.drop + (A.axis[0] + 30 - A.vb[1]) * scale, datum = A.top + A.drop + (A.axis[1] - 24 - A.vb[1]) * scale;
           const cap = L.roman[0].base - L.capR;
           if (!(Math.abs(apex - cap) <= TOL)) fail(`${tag}: the A-frame's apex is at ${apex.toFixed(2)}, the first line's cap line at ${cap.toFixed(2)} (refit lift in tools/sheet-art.js)`);
-          if (!(datum - A.btn <= CLEAR * u)) fail(`${tag}: the A-frame's datum is ${(datum - A.btn).toFixed(1)}px below the foot of the buttons (more than ${(CLEAR * u).toFixed(1)}): the art hangs under the message`);
+          if (!(Math.abs(datum - A.btn) <= CLEAR * u)) fail(`${tag}: the A-frame's datum is ${Math.abs(datum - A.btn).toFixed(1)}px ${datum > A.btn ? 'below' : 'above'} the foot of the buttons (more than ${(CLEAR * u).toFixed(1)}): ${datum > A.btn ? 'the art hangs under the message' : 'the art stands above the message'}`);
           artNote = `; apex ${(apex - cap).toFixed(2)}px from the cap line, datum ${(datum - A.btn).toFixed(1)}px from the buttons' foot`;
         }
       }

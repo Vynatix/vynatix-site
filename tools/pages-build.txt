@@ -1,0 +1,4 @@
+# The GitHub Pages carrier this site is built with. A local build with this gem matches what GitHub publishes,
+# byte for byte (node verify/shipped.js --built <dir>). The workflow compares the number with
+# https://pages.github.com/versions.json, so a new carrier version shows as a failed check.
+gem install github-pages -v 232 --no-document

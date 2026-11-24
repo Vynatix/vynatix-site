@@ -1,0 +1,9 @@
+# Files a tool writes whole: GitHub collapses them in a pull request's diff and leaves them out of the
+# language statistics. Review the English page and the catalogues instead. (Dot files are never published.)
+es/** linguist-generated
+fr/** linguist-generated
+de/** linguist-generated
+ja/** linguist-generated
+ar/** linguist-generated
+sitemap.xml linguist-generated
+tools/i18n/messages.json linguist-generated

@@ -42,7 +42,7 @@ highlights the things most worth keeping front-of-mind.
   its last block, "Languages". **Japanese and Arabic have their own faces, two each for the two roles of the
   Latin type** (M PLUS 2 and Noto Sans Arabic where Geist stands, Shippori Mincho and Amiri where Fraunces
   italic stands; Geist still draws the Latin and the digits on those pages). They are subsets cut from the
-  generated pages by `python3 tools/lang-fonts.py` (needs `pip install fonttools brotli`): when a translation
+  generated pages by `python3 tools/lang-fonts.py` (needs `pip install -r tools/requirements.txt`): when a translation
   adds a kanji the fonts lack, `tools/verify/i18n.js` fails and names it, and the fonts are cut again and
   committed with the catalogues. See AGENTS.md, *Languages*.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the

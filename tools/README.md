@@ -21,8 +21,16 @@ npm install
 
 `package.json` lists all four dependencies (playwright, axe-core, pixelmatch,
 pngjs); installing only playwright leaves `a11y.js` and the pixel diff broken.
+`package-lock.json` is committed, so `npm ci` gives every machine the same versions.
+Playwright is pinned exactly (`1.63.0`) because each Playwright release drives one
+Chromium build: the pinned one is the build preinstalled in agent containers
+(`/opt/pw-browsers/chromium-1243`); on a fresh machine `npx playwright install chromium`
+fetches it. Node 20 or later.
 
-`seo-head.py` needs Python 3 (standard library only, nothing to install).
+`seo-head.py` needs Python 3.12 or later (standard library only, nothing to install;
+3.11 stops with a syntax error on an f-string). `lang-fonts.py` needs the two packages
+pinned in `requirements.txt` (`pip install -r requirements.txt`). A local GitHub Pages
+build uses the gem version in `pages-build.txt`.
 
 Chromium is expected at `/opt/pw-browsers/chromium-*/chrome-linux/chrome`.
 Override with `CHROME=/path/to/chrome`. Firefox and WebKit are optional

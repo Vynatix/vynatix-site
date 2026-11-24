@@ -25,7 +25,7 @@ cases and names the characters; it asks the browser which font drew each run, so
 and this script's --check is the quick one. Arabic is cut to the whole Arabic-language repertoire and
 kana to the whole syllabaries, so ordinary edits need no new cut.
 
-Needs fontTools and brotli (pip install fonttools brotli). Neither is needed by `npm run check`.
+Needs fontTools and brotli, pinned in tools/requirements.txt (pip install -r tools/requirements.txt). Neither is needed by `npm run check`.
 AGENTS.md, "Languages" and "Assets", say why these four faces.
 """
 import glob, hashlib, io, os, sys, tempfile, urllib.parse, urllib.request

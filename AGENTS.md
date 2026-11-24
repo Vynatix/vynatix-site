@@ -91,13 +91,16 @@ _config.yml         Controls what GitHub Pages publishes (excludes dev docs)
 .well-known/        security.txt (RFC 9116 disclosure contact)
 SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
 CODEOWNERS          Review ownership — not published
+.gitattributes      Marks the files a tool writes whole as generated, so GitHub collapses them in review
 EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
 tools/              Local verification scripts (verify/, including the consent checks
                     and the hero background guard), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
                     block, header, footer, sitemap and URL lock, and builds the generated languages),
                     i18n.py (the translation engine) with the catalogues in tools/i18n/, and the sheet's
-                    mask generator, sheet-art.js; NOT published, not part of the site
+                    mask generator, sheet-art.js; package-lock.json, requirements.txt and pages-build.txt
+                    pin the Node packages, the font cutter's Python packages and the GitHub Pages gem;
+                    NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
                     registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement

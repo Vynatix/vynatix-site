@@ -64,17 +64,29 @@ them as masks over role colours in the home page's Partnership band, four frames
 one datum line. `node tools/sheet-art.js` writes them after the two hero masks, from the same
 constants. The same rules apply: never edit one by hand, and a retuned file takes a new name.
 
-## Generated pictures
+## Drawn pictures
 
-The English home page carries four generated still lifes, each in a daylight and a night
-version (`-dark`): `services-drafting-sheet` (one wide picture, sliced across the three service
-columns) and the case covers `case-ai-bound-documents`, `case-cars-stopwatch` and
-`case-trucks-radio-dial`. They are WebP only and are set as CSS backgrounds, because
-`light-dark()` in `styles.css` chooses the version from the page's colour scheme. **A picture
-always ships as a pair**: make the night version by editing the daylight one, so the objects and
-the framing match, and name both in the "Two sets of pictures" block. They illustrate the work
-and show no client system; the line under the case cards says they are generated. How they were
-made is in `CREDITS.md`. Replace one under a new name, as with every asset.
+The English home page's pictures are drawings, written by `node tools/case-art.js` (plain Node,
+no dependencies) as pairs of alpha-only masks, an ink file and an `-accent` file:
+
+- `cover-cite.svg`: the regulated client's cover, an answer tied to the lines of the page it rests on;
+- `cover-build.svg` and `cover-build-tall.svg`: Volvo Cars, 47 and 6 minutes as two lengths to one scale;
+- `cover-media.svg` and `cover-media-tall.svg`: Volvo Trucks, an FM scale whose needle is a playhead;
+- `services-line.svg`: one figure across the three services, with one line through all three.
+
+`styles.css` ("The drawn pictures") lays the ink file over one role colour and the accent file
+over another, so one pair serves both themes; the `-tall` pairs are for the strip beside a compact
+card from 905px. They use `currentColor` because only alpha counts in a mask. No file carries a
+word (the page exists in seven languages); digits are single strokes drawn by the script, and the
+four glyphs are Material Symbols paths, as in `icons/`.
+
+**Do not edit one by hand, and do not add a picture that is not drawn by the script**:
+`tools/verify/publish.js` compares every file with what the script writes, byte for byte, and
+compares the figures of the build-time cover with the Volvo Cars card. To change a drawing, change
+the script, run it, and give a changed file a new name (`NAMES` in the script and the `url()`s in
+`styles.css`), as with every asset. They illustrate the work and show no client system; the line
+under the case cards says so. The generated still lifes they replaced on 24 November 2026 are in
+the repository's history and in `CREDITS.md`.
 
 ## Photography
 

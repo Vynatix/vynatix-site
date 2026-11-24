@@ -1,20 +1,20 @@
 # Image credits
 
-## Generated pictures (English home page)
+## Drawn pictures (English home page)
 
-Made on 20 November 2026 with ElevenLabs' image tools (model `gpt-image-2.5-sunburst`; the two
-Services files upscaled twice with `topaz-image-upscale-v2`). No photograph, person, brand or
-client system is shown; the prompts described a drafting sheet with instruments and named no
-company. Each night version was made by editing its daylight version, so the two match.
+The Services figure and the three case covers on the English home page (and on its five generated
+language versions) are drawings made for the site on 24 November 2026: `cover-cite`, `cover-build`,
+`cover-media` and `services-line`, each an ink mask and an `-accent` mask, written by
+`tools/case-art.js`. No photograph, person, brand or client system is shown. The digits are drawn
+by the script. The four glyphs in them (play, skip next, skip previous, person) are Material
+Symbols Outlined, weight 300, from `@material-symbols/svg-300` 0.47.5, Apache License 2.0 (see
+*Icons*).
 
-| File (and its `-dark` twin) | Where on the home page | What it shows |
-|---|---|---|
-| `services-drafting-sheet.webp` | Services, one picture across the three columns | A card-index drawer, five brass weights stepping up in size, a compass and set square over a pencilled triangle |
-| `case-ai-bound-documents.webp` | Cases, the regulated client card | A stack of bound documents, the top one open with three brass page markers, and a magnifying glass |
-| `case-cars-stopwatch.webp` | Cases, the Volvo Cars card | A brass stopwatch over a long and a short pencilled dimension line |
-| `case-trucks-radio-dial.webp` | Cases, the Volvo Trucks card | A radio tuning dial, its knob and a length of cable |
-
-The Services files are 2400px wide (quality 80), the case files 1280px (quality 84).
+They replaced four pictures generated on 20 November 2026 with ElevenLabs' image tools (model
+`gpt-image-2.5-sunburst`): `services-drafting-sheet`, `case-ai-bound-documents`,
+`case-cars-stopwatch` and `case-trucks-radio-dial`, each with a `-dark` twin. The owner had them
+removed on 24 November 2026 because they looked AI-generated and out of context. The files are in
+the repository's history.
 
 ## Photographs (Swedish hub)
 

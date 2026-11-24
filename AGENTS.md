@@ -79,8 +79,9 @@ app.js              All client behaviour (vanilla JS, IIFEs, no modules): the th
                     calculator and analytics consent (see Analytics)
 hero-bg.css         The hero background, the drafting sheet (only index.html links it), in the hero's unit
 assets/             Logo files in Forest inks, inline-icon SVGs, self-hosted
-                    photographs (jpg + webp), generated pictures (webp, light and dark), app icons, the masks of the
-                    hero's drafting sheet (bg-sheet-*.svg) and of its four stages (stage-*.svg)
+                    photographs (jpg + webp), app icons, the masks of the hero's drafting sheet
+                    (bg-sheet-*.svg), of its four stages (stage-*.svg) and of the home page's drawn
+                    pictures (cover-*.svg, services-line*.svg)
 fonts/              Self-hosted woff2 subsets of the system's faces and of the four Japanese and Arabic
                     faces (*-ja.woff2, *-ar.woff2), plus licences
 favicon.svg/.ico    Theme-aware SVG icon (Forest / Cream) + 16/32/48 ICO fallback
@@ -96,8 +97,9 @@ tools/              Local verification scripts (verify/, including the consent c
                     and the hero background guard), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
                     block, header, footer, sitemap and URL lock, and builds the generated languages),
-                    i18n.py (the translation engine) with the catalogues in tools/i18n/, and the sheet's
-                    mask generator, sheet-art.js; NOT published, not part of the site
+                    i18n.py (the translation engine) with the catalogues in tools/i18n/, and the two
+                    mask generators, sheet-art.js (the hero's sheet) and case-art.js (the home page's
+                    pictures); NOT published, not part of the site
 tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not published)
 tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
                     registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement
@@ -760,10 +762,11 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   cloud platforms and application development, each one promise, the list of what is delivered
   (the label `cap__scope` and the list `cap__list`: the items of that service's "What we
   deliver" list on `services.html`, word for word and in its order; change the list there and
-  here together) and one link to its section of `services.html`. One generated still life lies across the three columns, a third over each
-  (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
-  up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
-  The slices are one file, positioned left, centre and right, so the line carries across.
+  here together) and one link to its section of `services.html`. One drawn figure lies across the three columns, a third over each
+  (the empty, `aria-hidden` `.cap__art` spans): a model among its tools and sources, a platform in
+  three layers, three screens on a ground line, on one sheet with one bronze line through all three
+  at one height. The slices are one pair of masks, positioned left, centre and right, so the line
+  carries across (*The page's pictures*, below).
 - There is no In numbers block. The plan had one after Services ("The numbers behind the
   promise": minutes per build, clients, reply time, the first drawn on a ruler), and the owner
   removed it from both home pages on 20 November 2026: do not bring it back, and do not move its
@@ -784,11 +787,12 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   fields, "Client and year:" before the meta line and "Result:" before the figure; the second
   is a paragraph of its own, because inside the figure it would be set in the accent face, which
   in Japanese holds only the characters the visible accents use. Each card says what the system is or what
-  was measured, in sentences taken from `work.html`: change a case there first. Their pictures are
-  generated still lifes from the same set as the Services picture (bound documents with brass
-  page markers, a stopwatch over a long and a short pencil line, a radio tuning dial), set as
-  decorative CSS backgrounds on `.case__img--*`. Under the cards: the link to all cases and the
-  line that says the images are generated and show no client system. A fourth published case
+  was measured, in sentences taken from `work.html`: change a case there first. Their covers are
+  drawings of what each card says (`.case__img--cite`, an answer tied to the lines of the page it
+  rests on, and a second question that finds nothing and goes to a person; `.case__img--build`, 47
+  and 6 minutes as two lengths to one scale; `.case__img--media`, an FM scale whose needle comes
+  down as a playhead), masks over role colours on the empty box. Under the cards: the link to all
+  cases and the line that says the drawings illustrate the work and show no client system. A fourth published case
   needs a decision first: the block holds three.
 - `#partnership` (`.section--band`), "A partner that grows with you", on the inverse band, and
   under the heading the hero's drawing at four stages on one datum line (`.grow`, four
@@ -853,17 +857,39 @@ version of those pages, so the label would be false there), and everything on th
 above, to which the report added: which changes cut the build time, how hours are estimated
 and whether an engagement can change, and any certification.
 
-**The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
-the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no
-tint and no rules, so the silk runs unbroken from the client row to the closing band; from
-1280px the hero drawing's dash-dot centre line runs down the left margin, 40px outside the text
-edge, with a tick at each block's label (pseudo-elements, decoration only). **The generated
-pictures come in two sets, daylight and night**: the night version of each was made by editing
-the daylight one, so the objects and the composition match. `light-dark()` chooses the file from
-the page's own `color-scheme` (which `colors_and_type.css` sets with the theme), so there is no
-`[data-theme]` selector and a browser fetches only the set it shows; the theme toggle swaps
-them in place. A browser without `light-dark()` for images keeps the daylight set in both
-themes. Add a picture and it needs both versions and both lines of that block. None of this
+**The page's pictures** (`styles.css`, "The English home page: its pictures", the last but one
+block of the file) began as the owner's decisions of 20 November 2026. On this page
+`.section--surface` has no tint and no rules, so the silk runs unbroken from the client row to the
+closing band; from 1280px the hero drawing's dash-dot centre line runs down the left margin, 40px
+outside the text edge, with a tick at each block's label (pseudo-elements, decoration only).
+
+**The Services figure and the three case covers are drawn, not photographed and not generated**
+(24 November 2026). The four generated still lifes that stood here from 20 to 24 November (brass
+weights, a stopwatch, bound books, a radio dial, each in a daylight and a night file) went on the
+owner's word that they looked AI-generated and out of context; the stock photographs before them
+had been analogies too. The rule that replaced both: **a picture on this page draws the thing its
+text states, in the hero's hand, and nothing else.** The Volvo Cars cover is the measurement (47
+ticks and 6 ticks from one datum, a tick a minute, the minutes that went as a dashed line); the
+regulated client's is the behaviour (the answer's mark tied to three bracketed lines of a page;
+the second question meets an empty bracket and runs on to a person); the Volvo Trucks cover is the
+change (the tuner's needle is the playhead). None shows a client screen, and none carries a word:
+digits are drawn as single strokes, so the five generated languages use the same files.
+
+`node tools/case-art.js` writes them into `assets/` as pairs of alpha-only masks, an ink file and
+an `-accent` file (`cover-cite`, `cover-build`, `cover-media`, `services-line`; the two compact
+covers also have a `-tall` pair, for the strip beside the card from 905px). `styles.css` ("The
+drawn pictures") lays the ink over `on-surface-variant` and the accent over `tertiary` on a ruled
+box, so **one pair serves both themes**: there is no night set, no `light-dark()` and no theme
+selector, and the old rule that a picture ships as a pair of files is gone with the files. One
+bronze mark per cover, and it is the result. In Arabic the cited-answer cover is mirrored (it
+reads from the question to the page); the other two are not (digits, and a scale has no reading
+direction). Forced colours remove the boxes. `tools/verify/publish.js` fails if a mask is not
+byte for byte what the generator writes, if `styles.css` and `assets/` disagree about the files,
+if the Volvo Cars card stops saying 47, 6 and 87% (`BUILD` in the generator: change the case on
+`work.html`, the card and `BUILD` together), or if a raster picture is put back on `.cap__art` or
+`.case__img`. A new case cover follows the same rule: draw what the card states, with a figure
+only if it is on the card. **Do not bring back a generated or a stock picture here**; if the
+owner supplies photographs of the firm's own people or rooms, that is a new decision. None of this
 moves: the rule that the silk is the site's one ambient motion is untouched. `sv.html` keeps the
 older layout and the three photographs.
 
@@ -1486,10 +1512,10 @@ places where inline SVG cannot go (email, documents) and for regenerating the
 icons. The system holds the other inks (teal, ink, cloud, champagne, charcoal,
 paper) for the other directions.
 
-The English home page's pictures are generated still lifes (`services-drafting-sheet*.webp` and
-three `case-*.webp`, each with a `-dark` twin; see `assets/CREDITS.md`), shown in full colour
-with no filter or overlay. They illustrate the work and show no client system, and the page
-says so in the line under the case cards. The Swedish hub still carries the three stock
+The English home page's pictures are drawings (`cover-*.svg` and `services-line*.svg`, masks
+written by `tools/case-art.js`; see *The English home page*, "The page's pictures"), in the
+page's own ink and bronze with no filter or overlay. They illustrate the work and show no client
+system, and the page says so in the line under the case cards. The Swedish hub still carries the three stock
 photographs (`case-*.jpg`, each with a `.webp` sibling), under the line naming their
 photographers. No text is set on a picture, and none is used as an uncaptioned band. The client mark in
 the home-page list is an inline SVG `<symbol>` in `index.html`, referenced with
@@ -1549,8 +1575,8 @@ add third-party font/CDN requests for fonts.
   the version stamps into the pages and which you run before committing a change
   to any of the five stamped files, `seo-head.py` (Python 3, standard library),
   which rewrites the search block in every head, the header, the footer, `sitemap.xml`
-  and `tools/urls.lock` from one registry, the mask generator of the hero's drafting sheet
-  (`sheet-art.js` in plain Node, no dependencies), and `indexnow.js`, which tells Bing and the
+  and `tools/urls.lock` from one registry, the mask generators of the hero's drafting sheet and of the home page's drawn pictures
+  (`sheet-art.js` and `case-art.js`, plain Node, no dependencies), and `indexnow.js`, which tells Bing and the
   other IndexNow engines which pages changed once a change is live. It is developer tooling only: excluded from
   the published output in `_config.yml`, with its `node_modules/` gitignored, and
   nothing in it runs at deploy time. The site itself stays hand-written.

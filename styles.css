@@ -2352,8 +2352,7 @@ body::after {
    - Partnership: the hero's drawing at four stages on one datum line.
    - One sheet: no tinted strips between blocks; the drawing's centre line runs down the left margin.
    - Insights: three ruled rows.
-   - Services and Cases: generated still lifes, a daylight set and a night set, chosen by the page's
-     colour scheme. */
+   - Services and Cases: drawings, written by tools/case-art.js as masks over role colours. */
 
 /* ---------------------------------------------------------------
    Cases: the first one leads
@@ -2500,53 +2499,88 @@ body::after {
 }
 
 /* ---------------------------------------------------------------
-   One picture across the services
+   The drawn pictures: one figure across the services, a cover on each case
    --------------------------------------------------------------- */
-/* One wide still life (a generated image, assets/CREDITS.md) sits across the three services: each
-   column shows its third, so the three pictures are one sheet with one pencil line through them. The size
-   adds the two column gaps to three slice widths, and the three positions (left, centre, right) then land
-   each slice where it would lie in the uncut picture. Decorative: the spans are aria-hidden and empty. */
+/* Every picture on this page is drawn, in the hero's hand, and each is the thing its text says: two lengths
+   to one scale for the build that went from 47 minutes to 6, an answer tied to the lines of the page it
+   rests on, a tuner's needle that comes down as a playhead. tools/case-art.js writes them as pairs of
+   alpha-only masks (assets/AGENTS.md, "Drawn pictures"): the ink layer lies over one role colour and the
+   accent layer over another, so one pair of files serves both themes with no theme selector and no second
+   set. The box under them is a ruled sheet, drawn here. Decorative: the boxes are empty and the service
+   spans are aria-hidden; no drawing carries a word, so the generated languages show the same files. */
+.cap__art,
+.case__img--cite,
+.case__img--build,
+.case__img--media {
+  --art-ink: var(--md-sys-color-on-surface-variant);
+  --art-accent: var(--md-sys-color-tertiary);
+  --art-rule: color-mix(in srgb, var(--md-sys-color-outline-variant) 32%, transparent);
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--art-rule) 1px, transparent 1px) 0 -1px / 100% var(--space-6),
+    linear-gradient(90deg, var(--art-rule) 1px, transparent 1px) -1px 0 / var(--space-6) 100%,
+    var(--md-sys-color-surface-container-highest);
+}
+.cap__art::before,
+.cap__art::after,
+.case__img--cite::before,
+.case__img--cite::after,
+.case__img--build::before,
+.case__img--build::after,
+.case__img--media::before,
+.case__img--media::after {
+  content: '';
+  position: absolute;
+  inset: var(--art-inset, var(--space-4));
+  background: var(--art-ink);
+  -webkit-mask: var(--art) var(--art-at, center) / var(--art-size, contain) no-repeat;
+  mask: var(--art) var(--art-at, center) / var(--art-size, contain) no-repeat;
+}
+.cap__art::after,
+.case__img--cite::after,
+.case__img--build::after,
+.case__img--media::after {
+  background: var(--art-accent);
+  -webkit-mask-image: var(--art-2);
+  mask-image: var(--art-2);
+}
+.case__img--cite { --art: url(assets/cover-cite.svg); --art-2: url(assets/cover-cite-accent.svg); }
+.case__img--build { --art: url(assets/cover-build.svg); --art-2: url(assets/cover-build-accent.svg); }
+.case__img--media { --art: url(assets/cover-media.svg); --art-2: url(assets/cover-media-accent.svg); }
+/* Beside a compact card the box is a tall strip, and the two covers have a drawing made for it. */
+@media (min-width: 905px) {
+  .case__img--build { --art: url(assets/cover-build-tall.svg); --art-2: url(assets/cover-build-tall-accent.svg); }
+  .case__img--media { --art: url(assets/cover-media-tall.svg); --art-2: url(assets/cover-media-tall-accent.svg); }
+}
+
+/* One figure lies across the three services: each column shows its third, so the three pictures are one
+   sheet with one line through them. The size adds the two column gaps to three slice widths, and the three
+   positions (left, centre, right) then land each slice where it would lie in the uncut figure. */
 .cap__art {
+  --art: url(assets/services-line.svg);
+  --art-2: url(assets/services-line-accent.svg);
+  --art-inset: 0;
+  --art-size: calc(300% + 2 * var(--space-6)) auto;
+  --art-at: 0 50%;
   display: block;
   aspect-ratio: 4 / 3;
   margin-bottom: var(--space-3);
   border-radius: var(--radius-lg);
-  background: var(--md-sys-color-surface-container-highest) url(assets/services-drafting-sheet.webp) 0 39% / calc(300% + 2 * var(--space-6)) auto no-repeat;
 }
-.cap__art--2 { background-position-x: 50%; }
-.cap__art--3 { background-position-x: 100%; }
+.cap__art--2 { --art-at: 50% 50%; }
+.cap__art--3 { --art-at: 100% 50%; }
 /* The picture is the column's top edge now, so the rule above it goes. */
 .home #services .cap {
   padding-top: 0;
   border-top: 0;
 }
+/* Forced colours drop the fills the masks cut, so the boxes would be empty: they go. */
 @media (forced-colors: active) {
-  .cap__art { display: none; }
-}
-
-/* ---------------------------------------------------------------
-   Two sets of pictures: one for the light theme, one for the dark
-   --------------------------------------------------------------- */
-/* Each generated picture exists twice: the daylight sheet, and its night version on dark paper with chalk
-   lines. The page's own colour scheme picks one: the design system sets `color-scheme` with the theme
-   (colors_and_type.css), and light-dark() reads it, so there is no theme selector here and a browser
-   fetches only the set it shows. A browser without light-dark() for images keeps the daylight set in both
-   themes, which is what the site's photographs do today. */
-.case__img--documents,
-.case__img--stopwatch,
-.case__img--dial {
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-.case__img--documents { background-image: url(assets/case-ai-bound-documents.webp); }
-.case__img--stopwatch { background-image: url(assets/case-cars-stopwatch.webp); }
-.case__img--dial { background-image: url(assets/case-trucks-radio-dial.webp); }
-@supports (background-image: light-dark(url(a.webp), url(b.webp))) {
-  .cap__art { background-image: light-dark(url(assets/services-drafting-sheet.webp), url(assets/services-drafting-sheet-dark.webp)); }
-  .case__img--documents { background-image: light-dark(url(assets/case-ai-bound-documents.webp), url(assets/case-ai-bound-documents-dark.webp)); }
-  .case__img--stopwatch { background-image: light-dark(url(assets/case-cars-stopwatch.webp), url(assets/case-cars-stopwatch-dark.webp)); }
-  .case__img--dial { background-image: light-dark(url(assets/case-trucks-radio-dial.webp), url(assets/case-trucks-radio-dial-dark.webp)); }
+  .cap__art,
+  .case__img--cite,
+  .case__img--build,
+  .case__img--media { display: none; }
 }
 
 /* ---------------------------------------------------------------
@@ -2700,6 +2734,10 @@ body::after {
 [dir="rtl"] .more > .icon,
 [dir="rtl"] .btn > .icon,
 [dir="rtl"] .case__meta > .icon { transform: scaleX(-1); }
+/* The cited-answer cover reads from the question to the page, so it turns with the text. The other two do not:
+   they carry digits, and a scale has no reading direction. */
+[dir="rtl"] .case__img--cite::before,
+[dir="rtl"] .case__img--cite::after { transform: scaleX(-1); }
 @media (min-width: 1280px) {
   [dir="rtl"] .home > .section::before { left: auto; right: calc(50% - 600px - var(--space-4)); }
   [dir="rtl"] .home > .section:not(.section--band) .section__head .eyebrow::before { left: auto; right: calc(-1 * var(--space-10)); }

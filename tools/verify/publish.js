@@ -16,6 +16,9 @@
 //  - the hero background is the drafting sheet alone: hero-bg.css is linked by index.html only, holds still, role-token
 //    rules and names both art files; the draw between backgrounds stays retired (no hero-bg.js, no data-bg, no
 //    vynatix-bg key in a script, a stylesheet or a notice);
+//  - the English home page's pictures are the drawn ones: assets/ holds exactly the masks tools/case-art.js writes,
+//    byte for byte, styles.css names each, the Volvo Cars cover is drawn to the figures its card states, and no
+//    raster picture is set on a service or case picture box;
 //  - the site rules of CLAUDE.md that nothing else reads: no raw hex colour in styles.css, no style="" attribute in
 //    any page, no .style, cssText or setAttribute('style' in app.js (comments excluded);
 //  - llms.txt links every URL in sitemap.xml (seo.js checks the other direction).
@@ -208,6 +211,33 @@ function run(root = ROOT, pages = PAGES) {
       if (named.join() !== onDisk.join()) bad.push(`hero-bg.css names [${named.join(', ')}] but assets/ holds [${onDisk.join(', ')}]`);
     }
     add(bad.length === 0, 'the hero background is the drafting sheet alone: hero-bg.css on index.html only, still, role tokens, its art files on disk; no hero-bg.js, data-bg or vynatix-bg anywhere', bad.join(' | '));
+  }
+
+  // --- the drawn pictures of the English home page
+  {
+    const art = require('../case-art');
+    const bad = [];
+    const files = art.render();
+    const sheet = (tryRead('styles.css') || '').replace(/\/\*[\s\S]*?\*\//g, '');
+    const prefix = new RegExp(`^(?:${Object.values(art.NAMES).join('|')})(?:-[a-z]+)*\\.svg$`);
+    const named = [...new Set([...sheet.matchAll(/url\(\s*["']?assets\/([a-z0-9-]+\.svg)["']?\s*\)/g)].map((m) => m[1]).filter((f) => prefix.test(f)))].sort();
+    let onDisk = [];
+    try { onDisk = fs.readdirSync(path.join(root, 'assets')).filter((f) => prefix.test(f)).sort(); } catch (e) { /* reported below */ }
+    const written = Object.keys(files).sort();
+    if (named.join() !== written.join()) bad.push(`styles.css names [${named.join(', ')}] but tools/case-art.js writes [${written.join(', ')}]`);
+    if (onDisk.join() !== written.join()) bad.push(`assets/ holds [${onDisk.join(', ')}] but tools/case-art.js writes [${written.join(', ')}]`);
+    const edited = written.filter((f) => { const d = tryRead(path.join('assets', f)); return d !== null && d !== files[f]; });
+    if (edited.length) bad.push(`not what tools/case-art.js writes (run it; never edit a mask by hand): ${edited.join(', ')}`);
+    const home = tryRead('index.html');
+    if (home !== null) {
+      const { before, after } = art.BUILD;
+      const pct = Math.round((before - after) / before * 100);
+      for (const text of [`Builds in ${after} minutes instead of ${before}`, `${pct}% shorter build time`]) {
+        if (!home.includes(text)) bad.push(`index.html does not say "${text}", which the Volvo Cars cover draws to scale (BUILD in tools/case-art.js)`);
+      }
+      if (/\.(?:webp|jpe?g|png)\b/.test([...sheet.matchAll(/\.(?:cap__art|case__img)[^{}]*\{[^}]*\}/g)].map((m) => m[0]).join(''))) bad.push('styles.css puts a raster picture on .cap__art or .case__img: the home page\'s pictures are drawn (tools/case-art.js)');
+    }
+    add(bad.length === 0, 'the home page\'s pictures are the drawn ones: the files tools/case-art.js writes, all named in styles.css, the build-time cover to the figures on its card', bad.join(' | '));
   }
 
   // --- the site rules

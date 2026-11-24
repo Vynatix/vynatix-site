@@ -1,0 +1,13 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360' width='640' height='360' fill='none' stroke='currentColor' stroke-width='3'>
+<path d='M58 110H582'/>
+<path d='M58 110v-22M84.2 110v-9M110.4 110v-9M136.6 110v-9M162.8 110v-9M189 110v-15M215.2 110v-9M241.4 110v-9M267.6 110v-9M293.8 110v-9M320 110v-22M346.2 110v-9M372.4 110v-9M398.6 110v-9M424.8 110v-9M451 110v-15M477.2 110v-9M503.4 110v-9M529.6 110v-9M555.8 110v-9M582 110v-22' stroke-width='1.8'/>
+<g stroke-width='1.08' stroke-linecap='round' stroke-linejoin='round'><path transform='translate(40.48 58) scale(2.4)' d='M3 4.7C1.6 4.7.7 3.7.7 2.4.7 1 1.7 0 3 0s2.3 1 2.3 2.4c0 1.3-.9 2.3-2.3 2.3C1.3 4.7 0 5.8 0 7.3 0 8.9 1.3 10 3 10s3-1.1 3-2.7c0-1.5-1.3-2.6-3-2.6Z'/><path transform='translate(61.12 58) scale(2.4)' d='M3 4.7C1.6 4.7.7 3.7.7 2.4.7 1 1.7 0 3 0s2.3 1 2.3 2.4c0 1.3-.9 2.3-2.3 2.3C1.3 4.7 0 5.8 0 7.3 0 8.9 1.3 10 3 10s3-1.1 3-2.7c0-1.5-1.3-2.6-3-2.6Z'/></g>
+<g stroke-width='1.08' stroke-linecap='round' stroke-linejoin='round'><path transform='translate(302.48 58) scale(2.4) rotate(180 3 5)' d='M5.3 1.1C4.8.4 4 0 3.1 0 1.2 0 0 2 0 5.4V6.9C0 8.7 1.3 10 3 10s3-1.3 3-3.1-1.3-3-3-3C1.6 3.9.4 4.8 0 6.2'/><path transform='translate(323.12 58) scale(2.4)' d='M3 4.7C1.6 4.7.7 3.7.7 2.4.7 1 1.7 0 3 0s2.3 1 2.3 2.4c0 1.3-.9 2.3-2.3 2.3C1.3 4.7 0 5.8 0 7.3 0 8.9 1.3 10 3 10s3-1.1 3-2.7c0-1.5-1.3-2.6-3-2.6Z'/></g>
+<g stroke-width='1.08' stroke-linecap='round' stroke-linejoin='round'><path transform='translate(554.16 58) scale(2.4)' d='M1.2 2.3 3.6 0V10'/><path transform='translate(574.8 58) scale(2.4)' d='M3 0C1.1 0 0 1.9 0 5s1.1 5 3 5 3-1.9 3-5S4.9 0 3 0Z'/><path transform='translate(595.44 58) scale(2.4)' d='M3 4.7C1.6 4.7.7 3.7.7 2.4.7 1 1.7 0 3 0s2.3 1 2.3 2.4c0 1.3-.9 2.3-2.3 2.3C1.3 4.7 0 5.8 0 7.3 0 8.9 1.3 10 3 10s3-1.1 3-2.7c0-1.5-1.3-2.6-3-2.6Z'/></g>
+<path d='M58 216H582' stroke-width='1.8'/>
+<path d='M58 216H199.48' stroke-width='6.5' stroke-linecap='round'/>
+<path d='M582 207v18'/>
+<path fill='currentColor' stroke='none' transform='translate(227 309) scale(0.04)' d='M244.62-267.69v-424.62H290v424.62h-45.38Zm470.76 0L407.08-480l308.3-212.31v424.62ZM670-480Zm0 125.38v-251.15L486.69-480 670-354.62Z'/>
+<path fill='currentColor' stroke='none' transform='translate(292 318) scale(0.06)' d='M340-238.39v-487.68l383.07 243.84L340-238.39Zm45.39-243.84Zm0 161 253.99-161-253.99-161v322Z'/>
+<path fill='currentColor' stroke='none' transform='translate(375 309) scale(0.04)' d='M670-267.69v-424.62h45.38v424.62H670Zm-425.38 0v-424.62L552.92-480l-308.3 212.31ZM290-480Zm0 125.38L473.69-480 290-605.77v251.15Z'/>
+</svg>

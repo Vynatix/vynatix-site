@@ -487,6 +487,16 @@ def relative(target, f):
         return there[-1]
     return '../' * len(here) + target
 
+# A link to a home page names its folder: href="./", "../", "es/" or "../ja/", never "index.html", so the
+# address bar shows vynatix.com/ and vynatix.com/es/ (the canonical URLs, url_of) and not .../index.html.
+# GitHub Pages serves the folder's index.html. Everything above reasons in file names (the header and footer
+# templates, the language list, the stub, the generated pages' links all say index.html); this runs on every
+# page as it is written, so a hand-written href="index.html" in a page is folded the same way.
+HOME_HREF = re.compile(r'(\shref=")((?:\.\./)*(?:[a-z]{2}/)?)index\.html(?=["#?])')
+
+def folder_links(s):
+    return HOME_HREF.sub(lambda m: m.group(1) + (m.group(2) or './'), s)
+
 def languages_for(f, label='Language'):
     """The language list in the footer: every language a visitor may see from this page, each in its own
     name, linked to this page in that language or, where it has none, to that language's home page.
@@ -834,11 +844,11 @@ if __name__ == '__main__':
     if unknown:
         raise SystemExit('not in PAGES: ' + ', '.join(unknown))
     chosen = [f for f in PAGES if not only or f in only]
-    rendered = {f: render(f) for f in chosen}      # every page first, so a failure writes nothing
+    rendered = {f: folder_links(render(f)) for f in chosen}      # every page first, so a failure writes nothing
     missing = {}
     for gf, p in GEN.items():
         if p['src'] in chosen:
-            rendered[gf] = render_gen(gf, missing)
+            rendered[gf] = folder_links(render_gen(gf, missing))
     for f, text in rendered.items():
         write(f, text)
         if not CHECK and f in PAGES: print('  updated', f)

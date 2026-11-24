@@ -124,7 +124,9 @@ highlights the things most worth keeping front-of-mind.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
   sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
   templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
-  which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
+  which writes it into every page. A home page is linked by its folder (`./`, `../`, `es/`), never `index.html`,
+  so the address bar shows `vynatix.com/`: the script folds such links as it writes (`folder_links`) and
+  `publish.js` fails on one that remains. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
   `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css`

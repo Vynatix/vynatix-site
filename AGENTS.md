@@ -543,7 +543,15 @@ current page's nav link is made there, once, and the script run, not by hand in 
 the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
 `<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files
 The
-header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+header's logo and contact-detail markup is part of the `HEADER` template. **A home page is linked by its folder,
+never by `index.html`:** the logos and the language list are written `href="./"`, `"../"`, `"es/"` or `"../ja/"`, so
+the address bar shows `vynatix.com/` and `vynatix.com/es/` (the canonical URLs) after a click on the logo, not
+`vynatix.com/index.html`. The templates and the rest of the script reason in file names; `folder_links` in
+`tools/seo-head.py` folds every relative `href` that ends in `index.html` as each page is written, a hand-written
+one included, and `publish.js` fails on any page, written or generated, that still links a home page as
+`index.html` (relative or `https://vynatix.com/...`). The Swedish home is a file of its own, `sv.html`, and keeps
+its name. A visitor who types or follows `/index.html` still sees it: GitHub Pages cannot redirect, and the
+canonical link already names `/`. The Legal list in the footer
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons. On a phone the links fold into

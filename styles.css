@@ -2586,6 +2586,14 @@ body::after {
   text-transform: uppercase;
 }
 
+/* German joins words into long compounds ("Geschäftsanwendungen") that a display heading on a
+   phone cannot hold on one line: its headings hyphenate (the page carries lang="de"), and break
+   inside a word only where no hyphenation point fits. */
+:lang(de) :is(h1, h2, h3) {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
 /* Japanese and Arabic: no capitals and no italics, letters that join or carry no spaces, and
    taller lines. Tracking goes to zero (spacing breaks joined letters and loosens kana) and the
    tight display leadings open up.
@@ -2598,7 +2606,7 @@ body::after {
    @font-face block; tools/lang-fonts.py cuts them from the generated pages) and hold no Latin:
    letters, digits and the brand name stay in Geist and Fraunces in every language. After them
    come the device's faces of the same genre, for the moment before the file arrives.
-   French and German need nothing here.
+   French needs nothing here, and German only the heading rule above.
    Only the family tokens change (--font-sans, --font-fraunces, --font-aptos), never the roles
    (--font-display, --font-body, --font-editorial): colors_and_type.css maps roles to families per
    direction, and Monochrome sets display and body in Geist. Setting a role here outranks that map

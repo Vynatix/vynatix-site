@@ -7,7 +7,7 @@
    "mainEntityOfPage": {
     "@id": "https://vynatix.com/blog.html"
    },
-   "numberOfItems": 9,
+   "numberOfItems": 14,
    "itemListElement": [
     {
      "@type": "ListItem",
@@ -106,6 +106,61 @@
       "url": "https://vynatix.com/fordonsmjukvara.html",
       "name": "Fordonsmjukvara: HIL-testning, ISO 26262, embedded Linux och C++",
       "inLanguage": "sv"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 10,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/test-automation.html#article",
+      "url": "https://vynatix.com/test-automation.html",
+      "name": "How to introduce automated software testing",
+      "inLanguage": "en"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 11,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/custom-software-development.html#article",
+      "url": "https://vynatix.com/custom-software-development.html",
+      "name": "Custom software development with a consultancy: from tailored business applications to BankID login",
+      "inLanguage": "en"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 12,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/system-integration-and-maintenance.html#article",
+      "url": "https://vynatix.com/system-integration-and-maintenance.html",
+      "name": "System integration and maintenance: keeping custom-built systems healthy",
+      "inLanguage": "en"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 13,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/ai-in-your-existing-product.html#article",
+      "url": "https://vynatix.com/ai-in-your-existing-product.html",
+      "name": "How to add AI to your existing product and run the models in your own environment",
+      "inLanguage": "en"
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 14,
+     "item": {
+      "@type": "Article",
+      "@id": "https://vynatix.com/automotive-software.html#article",
+      "url": "https://vynatix.com/automotive-software.html",
+      "name": "Automotive software: HIL testing, ISO 26262, embedded Linux and C++",
+      "inLanguage": "en"
      }
     }
    ]

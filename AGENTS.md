@@ -1067,7 +1067,11 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   and `tools/verify/i18n.js` fail until all five catalogues have it again. So **an edit to an English page
   is not finished until the five catalogues are**: run `python3 tools/seo-head.py`, then
   `python3 tools/i18n.py missing es` (and `fr`, `de`, `ja`, `ar`) for the list, add the translations, run the script
-  again and move the language's `mod` in `LANGS`. `python3 tools/i18n.py prune` drops entries no page uses.
+  again and move the language's `mod` in `LANGS`. Beside a message that replaces a sentence, `missing` prints the
+  previous wording on stderr: the old English and its translation, from the catalogue's closest stale entry
+  (difflib, an entry of the same page first), so a retranslation starts from the sentence before.
+  `python3 tools/i18n.py prune` drops entries no page uses, those stale entries among them, so it runs after
+  the retranslation.
 - *Links.* A link to a page the language has keeps its name; everything else gains `../` (stylesheets,
   images, the notices, the Swedish pages) and a link to a page in another language gets `hreflang`, which
   `styles.css` shows as "(EN)" or "(SV)" after the link. A mailto subject gains the language in brackets
@@ -1127,7 +1131,13 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   characters and says which face should have drawn them; run `python3 tools/lang-fonts.py` and commit the
   fonts with the catalogues.** That check asks the browser which font drew each run of text (the DevTools
   protocol's platform fonts), so it also fails on a wrong `unicode-range`, a family list that drops a face or
-  a file that does not load. The sources are fetched from google/fonts and pinned by SHA-256 in the script's
+  a file that does not load. **A cut is reproducible**: each face is written with the fixed `modified` timestamp
+  in `FACES` (the one its committed file carried), and fontTools and brotli are pinned in `tools/requirements.txt`,
+  so a cut that changes no character writes the committed files byte for byte and a font in a diff is a real
+  change. `python3 tools/lang-fonts.py --check` also cuts into a temporary folder and fails if the bytes differ
+  (that part needs the sources), so it fails as well when a translation drops the last use of a kanji, which the
+  browser check cannot see: cut again and commit the fonts. The sources are fetched from google/fonts and pinned
+  by SHA-256 in the script's
   `FACES` table, which is also where a face is swapped: change the source and the file name there, the family
   name in `tokens.css`, the list in the Languages block and `SCRIPT_FACES` in `verify/i18n.js`, and look at
   the pages in both themes. **No native reader has judged these faces**, as none has checked the translations:

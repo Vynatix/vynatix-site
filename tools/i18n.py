@@ -32,13 +32,21 @@ That is how the brand line is English in Spanish, French and German and has a re
 own in Japanese and Arabic. optional(text) lists these messages; messages.json keeps them apart.
 
     python3 tools/i18n.py                 per language: messages, missing, obsolete; exits 1 if any is missing
-    python3 tools/i18n.py missing <lang>  the missing messages of one language, as a JSON list
+    python3 tools/i18n.py missing <lang>  the missing messages of one language, as a JSON list, and on
+                                          stderr the previous wording of each one that replaces a sentence
     python3 tools/i18n.py prune           drop catalogue entries no page uses any more
+
+The previous wording: when an English sentence changes, its old entry stays in the catalogue as an
+obsolete (stale) entry until prune drops it. `missing` looks among them for the one closest to each
+missing message (difflib, a ratio of at least SIMILAR, an entry of the same page first) and prints its
+old English and its translation, so a retranslation starts from the sentence before, not from nothing.
+So run prune after the retranslation, not before. stdout stays the bare JSON list, which can be written
+to a file; the previous wording goes to stderr.
 
 tools/i18n/messages.json (written by tools/seo-head.py, never by hand) lists every message and
 the pages it is on. See AGENTS.md, "Languages".
 """
-import html, json, os, re, sys
+import difflib, html, json, os, re, sys
 from html.parser import HTMLParser
 
 EXEC = os.path.dirname(os.path.abspath(__file__))
@@ -413,6 +421,67 @@ def status(lang):
     return ids, missing, broken, obsolete
 
 
+# ---------------------------------------------------------------- the previous wording
+SIMILAR = 0.6      # the difflib ratio from which a stale entry is offered as the sentence a message replaced
+
+
+def stale(lang):
+    """The stale entries of one catalogue, those whose English is no longer a current message, as
+    [(English, translation, pages)] in catalogue order. A stale entry has left messages.json, so its pages
+    are inferred: those of the nearest current entry before it and after it in the catalogue. That holds
+    because prune writes a catalogue in the order of messages.json, which is page by page, and a sentence
+    that changes keeps its old entry where it was. The inference only ranks the candidates (previous()),
+    it never removes one, so a catalogue in another order costs the preference and nothing else."""
+    data = messages(); cat = load(lang)
+    pages = {m['id']: m['pages'] for m in data['messages']}
+    keep = set(pages) | set(data.get('optional', []))
+    keys = list(cat); out = []
+    for at, k in enumerate(keys):
+        if k in keep or not isinstance(cat[k], str) or not cat[k].strip():
+            continue
+        before = next((keys[i] for i in range(at - 1, -1, -1) if keys[i] in pages), None)
+        after = next((keys[i] for i in range(at + 1, len(keys)) if keys[i] in pages), None)
+        out.append((k, cat[k], list(dict.fromkeys(pages.get(before, []) + pages.get(after, [])))))
+    return out
+
+
+def previous(lang, missing):
+    """For each missing message that has one, the stale entry closest to it, as
+    [(message, old English, old translation, ratio, pages in common, pages of the stale entry)].
+    Closest: a stale entry on a page the message is on beats one that is not, then the higher ratio wins,
+    then the earlier entry. Below SIMILAR nothing is offered, so a sentence that is new is shown alone.
+    autojunk is off: with it on, a message of 200 characters or more treats its common letters as junk
+    and a rewritten paragraph can fall far under the threshold (0.06 instead of 0.40 for one pair)."""
+    old = stale(lang)
+    if not old:
+        return []
+    where = {m['id']: set(m['pages']) for m in messages()['messages']}
+    out = []
+    for msg in missing:
+        best = None; on = where.get(msg, set())
+        sm = difflib.SequenceMatcher(None, autojunk=False)
+        sm.set_seq2(msg)                                   # difflib caches what it learns of the second sequence
+        for english, t, near in old:
+            same = any(p in on for p in near)
+            sm.set_seq1(english)
+            # real_quick_ratio() and quick_ratio() are cheap upper bounds of ratio(): a candidate is dropped at
+            # the first of the three that is under SIMILAR or cannot beat the best so far (a tie keeps the earlier).
+            for bound in (sm.real_quick_ratio, sm.quick_ratio, sm.ratio):
+                r = bound()
+                if r < SIMILAR or (best and (same, r) <= best[0]):
+                    break
+            else:
+                best = ((same, r), english, t, near)
+        if best:
+            (_, r), english, t, near = best
+            out.append((msg, english, t, r, [p for p in near if p in on], near))
+    return out
+
+
+def _pages_note(pages):
+    return ', '.join(pages[:3]) + (f' and {len(pages) - 3} more' if len(pages) > 3 else '')
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     data = messages()
@@ -421,7 +490,21 @@ if __name__ == '__main__':
         if len(args) != 2 or args[1] not in langs:
             raise SystemExit('usage: python3 tools/i18n.py missing <' + '|'.join(langs) + '>')
         ids, missing, broken, _ = status(args[1])
-        print(json.dumps(missing + list(broken), ensure_ascii=False, indent=1)); sys.exit(0)
+        print(json.dumps(missing + list(broken), ensure_ascii=False, indent=1))
+        # The previous wording goes to stderr, so that stdout stays the JSON list above, byte for byte.
+        hints = previous(args[1], missing)
+        if hints:
+            sys.stdout.flush()
+            q = lambda s: json.dumps(s, ensure_ascii=False)
+            err = lambda s='': print(s, file=sys.stderr)
+            err(f'\nThe previous wording, for {len(hints)} of the {len(missing)} missing: the closest stale entry of '
+                f'tools/i18n/{args[1]}.json (difflib ratio {SIMILAR} or more, an entry of the same page first). '
+                'Start the new translation from the old one.')
+            for msg, english, t, r, common, near in hints:
+                err(); err(f' missing  {q(msg)}'); err(f' was      {q(english)}'); err(f' {args[1]} was   {q(t)}')
+                err(f'          ratio {r:.2f}, ' + (f'the same page ({_pages_note(common)})' if common else
+                    f'another page ({_pages_note(near)})' if near else 'its page unknown'))
+        sys.exit(0)
     if args[:1] == ['prune']:
         for lang in langs:
             ids, _, _, obsolete = status(lang)

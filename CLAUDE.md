@@ -4,8 +4,10 @@ This file orients Claude Code when working in this repository.
 
 **Read [AGENTS.md](./AGENTS.md) first** — it is the primary, comprehensive guide
 to this project (what it is, the layout, architecture, conventions, and how to
-run and ship it). Everything there applies to Claude too. This file only
-highlights the things most worth keeping front-of-mind.
+run and ship it). Everything there applies to Claude too. Its long sections live in `tools/docs/`, one
+file per topic, word for word, and its *Topics* index names each by the heading this file cites ("AGENTS.md,
+*Hero fit*"): open the topic a change touches. This file only highlights the things most worth keeping
+front-of-mind.
 
 ## The short version
 

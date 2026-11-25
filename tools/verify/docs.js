@@ -17,7 +17,7 @@
 //    The order matters because later blocks restyle earlier ones, and the docs name blocks, never positions: with
 //    the order held here, a sentence such as "the Liquid Glass block" stays true however many blocks are added.
 //
-// 2. The page counts in the docs (AGENTS.md, CLAUDE.md, tools/README.md). A number in front of "pages" is read
+// 2. The page counts in the docs (AGENTS.md, CLAUDE.md, tools/README.md and the topic files in tools/docs/). A number in front of "pages" is read
 //    only in the forms listed in RULES, each of which says what it counts ("all 34 pages", "fourteen Swedish
 //    pages", "the other 33 pages"), and that form fails when the number is not the one the tree holds. Wrapped
 //    lines are read as one line. A number in any other form (a sample, "axe on three pages of each", or a dated
@@ -36,6 +36,12 @@ const path = require('path');
 const { ROOT: REPO, readRegistry, readLangs, generatedPages, pagesIn, scopeLine, stripJsComments } = require('./_common');
 
 const DOCS = ['AGENTS.md', 'CLAUDE.md', 'tools/README.md'];
+// The docs the count guard reads: the three above and every topic file AGENTS.md indexes (tools/docs/*.md).
+function docFiles(root) {
+  let topics = [];
+  try { topics = fs.readdirSync(path.join(root, 'tools', 'docs')).filter((f) => f.endsWith('.md')).sort().map((f) => 'tools/docs/' + f); } catch (e) { /* no topic files yet */ }
+  return DOCS.concat(topics);
+}
 // How check.js --list reads a header: the same reader, so the scope this check asks for is the one the list shows.
 const { headerLines, firstParagraph } = require('../check');
 
@@ -404,7 +410,7 @@ function run(root) {
   if (facts) {
     add(facts.onDisk === facts.rootTotal, `the root holds the ${facts.rootTotal} pages of the registry`,
       facts.onDisk === facts.rootTotal ? '' : `${facts.onDisk} *.html files at the root; publish.js names the difference`);
-    for (const doc of DOCS) {
+    for (const doc of docFiles(root)) {
       const text = read(doc);
       if (text === null) { add(false, `${doc} can be read`, 'file missing'); continue; }
       const { checked } = readCounts(text, facts);
@@ -464,7 +470,7 @@ function printFacts(root) {
 
 function printLiterals(root) {
   const facts = pageFacts(root);
-  for (const doc of DOCS) {
+  for (const doc of docFiles(root)) {
     const text = fs.readFileSync(path.join(root, doc), 'utf8');
     const { checked, other } = readCounts(text, facts);
     const rows = [

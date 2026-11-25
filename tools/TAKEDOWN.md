@@ -46,7 +46,8 @@ not wait for it.
    `mod` to today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
    *If the page has a twin* (an hreflang pair), withdraw the twin as well only if it is also at fault. Otherwise
    the pair is undone on both sides: remove `alt` and `original` from the live twin's row **and from the
-   withdrawn page's own row**, remove the twin's in-body link to the withdrawn page, and move the twin's `mod`.
+   withdrawn page's own row**, remove the twin's in-body link to the withdrawn page, and move the twin's `mod` and, on a post, the "Last
+   updated" date of its visible byline with it (`permanence.js` fails while the two disagree).
    The generator refuses to run while either row still names the other: "remove the alt from ... first" (the
    twin still points at the withdrawn page) and "names ... as its twin, but ... does not name ... back" (the
    withdrawn row still points at the twin) are the expected prompts, not bugs. Rehearsed on 25 November 2026
@@ -66,7 +67,11 @@ not wait for it.
 5. **Check** (`tools/`). `node verify/permanence.js` (the withdrawn page is exactly the stub, noindex and
    unlisted; every locked URL still has a file), `python3 seo-head.py --check` (or `npm run check:gen`),
    then `csp.js`, `publish.js`, `mailto.js`, `copies.js`, `stamp.js --check`, `release-gate.js --self-test`, `links.js` and
-   `seo.js`.
+   `seo.js`; `node check.js --static` runs the static ones in one go. `docs.js` fails on a page count the docs
+   state that the withdrawal made false ("three of them withdrawn" in `AGENTS.md` and `CLAUDE.md`): correct the
+   number in the sentence it names. The whole runbook, steps 2 to 5, was rehearsed on 25 November 2026 on a
+   scratch copy with `test-automation.html` (a post with a Swedish twin, on three lists): with these steps the
+   static tier, `links.js`, `seo.js` and `requests.js` pass.
 6. **Merge.** The Pages deployment takes about 40 to 70 seconds (three runs measured on 21 to 24 October 2026:
    68, 41 and 40 seconds).
 7. **Verify live.** `curl -sI https://vynatix.com/<file>.html` and fetch the body: the stub, `noindex`. Compare

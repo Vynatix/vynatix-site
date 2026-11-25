@@ -115,6 +115,11 @@ tools/templates/    The header, the footer and the stub of a withdrawn page as H
                     stub.html), and tools/site/company.json the company's facts: seo-head.py writes them
                     into every page; tools/migrate/chrome.py moved them there from seo-head.py's literals and
                     converts a branch opened before the move; not published
+tools/docs/         The working rules, one file per topic, moved word for word from this file (the
+                    Topics index below names them); not published
+tools/migrate/      The scripts that moved text between files (registry.py, chrome.py, lists.py,
+                    agents-split.py): each one's --check is in npm run check, and its docstring gives the
+                    steps a branch opened before the move follows to carry its edits across
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.

@@ -30,13 +30,16 @@ Every item an agent could carry out without an owner decision is done, on the br
 `claude/epic-tesla-8ae0hj`, one commit per item, each declared and proven byte-neutral. The branch as a whole was
 built with the recorded GitHub Pages gem beside `origin/main`: the two sites, 246 files each, are identical
 byte for byte (`diff -r`), and `shipped.js --neutral` lists nothing. The whole chain passes through `check.js`
-(34 steps, 9 minutes 15 seconds of wall time on four cores) and through the old serial `npm run check` (17
-minutes 23 seconds).
+(34 jobs in 9 minutes 15 seconds of wall time on four cores, run before `agents-split.py --check` joined; the 17
+static steps with it pass in 38 seconds) and through the old serial `npm run check` (17 minutes 23 seconds).
+The real release gate gives the same 21 ok and 8 FAIL rows, word for word, as before the work (the placeholder
+ID and the open human items). A withdrawal was rehearsed end to end on the final tree, and `tools/TAKEDOWN.md`
+corrected where it fell short.
 
 | Item | State | Commit |
 | --- | --- | --- |
 | 0.1 `shipped.js` | Done; also `--built` against a Pages build | c3ec306, 79a77f1 |
-| 0.2 the workflow | Done (static, build, browser jobs, actions pinned by commit); runs from the first pull request | 635545b |
+| 0.2 the workflow | Done in part: static, build and browser jobs, actions pinned by commit, rehearsed in a bare clone but not yet run on GitHub (it starts with the first pull request). Not built: the comparison with GitHub's own Pages artifact after a push (the build job runs GitHub's own Pages action on every pull request and push, which covers it) and the `merge_group` trigger (needed only with a merge queue, 0.3) | 635545b |
 | 0.3 branch protection | Waits: an owner setting (section 5, item 2) | |
 | 0.4 pins, 0.5 `.gitattributes` | Done | 5784a9c |
 | 0.6 `tools/sync.js` | Done, self-test in the chain | 1ea94b0 |
@@ -54,14 +57,15 @@ minutes 23 seconds).
 | 2.6 catalogue key order | Measured and left as it is: neither order removes the conflict | 18c9d5b |
 | 2.7 the generator in modules | Not done: optional, and it saves nothing in files, commands or conflicts | |
 | 2.8 `appConst` | Done | aa870f2 |
-| 3.1, 3.4, 3.6 `check.js` | Done | f5d01f8 |
+| 3.1, 3.6 `check.js` | Done | f5d01f8 |
+| 3.4 one description of the chain | Done in part: `check.js --list` prints it from the scripts' headers and the README's order paragraph points there; the README's per-check table and the chain sentences of `AGENTS.md` and `CLAUDE.md` remain, because they hold more than the headers do | f5d01f8 |
 | 3.2 one page universe | Done; `a11y.js` on a declared sample to stay inside the budget | 21db050 |
 | 3.3 the visual net | Done (`screenshot.js against`) | f70ed03 |
 | 3.5 browser tier on GitHub | Done as a reporting job; making it required is the owner's | 635545b |
 | 3.7 `hero-fit.js --write` | Done for the ten numbers it can measure | 95b5b50 |
 | 4.0 the classification table | Done (`tools/DECISION-TABLE.md`); its gate passes as worded, not counted strictly | abf071d |
 | 4.1, 4.2, 4.5 the register | Waits: the owner's reading of the gate and of the first batch (section 5, item 7) | |
-| 4.3 the docs split | Done for the block bodies and the index; the `CLAUDE.md` cut waits (item 7) | 745489e |
+| 4.3 the docs split | Done in part: the block bodies and the index. Waits: the `CLAUDE.md` cut and the always-on list (item 7), and `decisions.js --for`, which needs the register | 745489e |
 | 4.4 `docs.js` | Done | 57a8a31 |
 | Step 5 | Waits: the owner's word, item by item | |
 

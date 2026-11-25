@@ -257,7 +257,8 @@ The generated languages have their own check in the chain, `i18n.js` (catalogues
 every generated page loaded at three widths, axe on three pages of each).
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
-(`python3 -m http.server 8000`). `THEMES` narrows the themes a run covers (see `tools/README.md`).
+(`python3 -m http.server 8000`), or run `node tools/check.js`, which serves the tree itself, runs the browser checks side by
+side and prints one summary (`--static`, `--only`, `--since <rev>`; `--list` prints what each step proves). `THEMES` narrows the themes a run covers (see `tools/README.md`).
 
 Also verify visually: render in light and dark, confirm header/footer match the
 other pages, and check it degrades gracefully with JS disabled and reduced

@@ -13,7 +13,11 @@
 //
 //   node verify/bg-fit.js                (serve the repo root first, as for the other checks)
 //   HEIGHTS=790 node verify/bg-fit.js    one height
-// THEMES narrows it as it narrows the guard.
+//   node verify/bg-fit.js --sweeps       print how many sweeps there are (one per height) and stop
+//   node verify/bg-fit.js --sweep <k>    run only the k-th sweep, counted from 1 in the order above
+// THEMES narrows it as it narrows the guard, and HEIGHTS narrows --sweeps and --sweep too. Without an option it
+// runs every sweep, one after the other; tools/check.js starts each sweep as a job of its own instead, so the
+// four run side by side.
 const { spawnSync } = require('child_process');
 const path = require('path');
 
@@ -22,8 +26,24 @@ const GUARDS = [
   ['bg-sheet.js', { WIDTHS: '1440', ZOOMS: '1,1.25,1.5,2' }],   // 125 percent too: in a 790px window it is where the A-frame's feet would first reach the clients' rule
 ];
 
+// The sweeps, in the order the plain run takes them. --sweep picks one of them by its place in this list.
+const SWEEPS = [];
+for (const h of HEIGHTS) for (const [guard, env] of GUARDS) SWEEPS.push([h, guard, env]);
+
+const args = process.argv.slice(2);
+if (args.includes('--sweeps')) { console.log(SWEEPS.length); process.exit(0); }
+let only = null;
+if (args.includes('--sweep')) {
+  only = Number(args[args.indexOf('--sweep') + 1]);
+  if (!Number.isInteger(only) || only < 1 || only > SWEEPS.length) {
+    console.error(`bg-fit: --sweep takes a number from 1 to ${SWEEPS.length}`);
+    process.exit(2);
+  }
+}
+
 let failed = 0;
-for (const h of HEIGHTS) for (const [guard, env] of GUARDS) {
+for (const [i, [h, guard, env]] of SWEEPS.entries()) {
+  if (only !== null && i + 1 !== only) continue;
   const r = spawnSync(process.execPath, [path.join(__dirname, guard)], { env: Object.assign({}, process.env, env, { HEIGHT: String(h) }), encoding: 'utf8' });
   const out = (r.stdout || '') + (r.stderr || '');
   const ok = r.status === 0;

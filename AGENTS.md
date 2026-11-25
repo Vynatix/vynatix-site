@@ -1584,6 +1584,10 @@ add third-party font/CDN requests for fonts.
   `npm run check`: the release gate (`release-gate.js`, which must fail
   until analytics is switched on for real; only its `--self-test` is in the chain)
   and the opt-in live test (`consent-live.js`); see *Analytics*.
+  `node tools/check.js` runs every step of `npm run check` with a server of its own and the browser checks side by
+  side, and prints one summary: every step with its verdict and its time, and the tail of each failure. `--list`
+  prints what each step proves, from its script's own header; `--static`, `--only` and `--since <rev>` are in
+  `tools/README.md`.
   The generated languages have their own check, `i18n.js` (catalogues complete, every generated page
   well-formed and linked right, the draft gate, a load of every page at three widths, axe on three pages of
   each language), and `seo.js` takes in a generated language once it is live; see *Languages*.

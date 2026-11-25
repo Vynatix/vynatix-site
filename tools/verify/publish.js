@@ -10,6 +10,12 @@
 //    is assets, fonts, .well-known, tools (excluded), .git or the folder of a live generated language, or is
 //    excluded, and the folder of a draft language is always excluded; no .md document sits in assets,
 //    fonts or .well-known unless it is excluded (otherwise GitHub Pages serves it);
+//  - Jekyll copies every published file through unchanged: there is no .nojekyll in the published tree (one at the
+//    root turns Jekyll off, and `exclude` with it, so every file would be served), and no published file begins with
+//    --- (front matter: Jekyll renders the file and strips the block);
+//  - every url() in every published stylesheet (tokens.css, colors_and_type.css, styles.css, hero-bg.css) names a
+//    published file, resolved against the stylesheet; data: URIs, fragment-only references and @supports conditions
+//    are not fetched and are not compared;
 //  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
 //  - both notice pages name every storage key the site's script uses (app.js), each in <code>;
@@ -19,7 +25,7 @@
 //  - the site rules of CLAUDE.md that nothing else reads: no raw hex colour in styles.css, no style="" attribute in
 //    any page, no .style, cssText or setAttribute('style' in app.js (comments excluded);
 //  - llms.txt links every URL in sitemap.xml (seo.js checks the other direction).
-// Exports run() and the helpers release-gate.js shares.
+// Exports run(), the helpers release-gate.js shares, and publishedOnDisk() and cssUrlProblems() for other checks.
 const fs = require('fs');
 const path = require('path');
 const {
@@ -70,6 +76,78 @@ function walk(dir, rel = '') {
     if (e.isDirectory()) out.push(...walk(dir, r)); else out.push(r);
   }
   return out;
+}
+
+// The files GitHub Pages' Jekyll would publish from the tree on disk, by the rules shipped.js applies to a git
+// listing: not _config.yml, no path named in `exclude` or under one, and no path with a part that begins with . _ #
+// or ~ or ends with ~ unless `include` names it (.well-known). It also returns every .nojekyll it meets in a
+// directory it walks, looked at before the dot rule and `exclude` would pass over it: GitHub reads that file before
+// Jekyll runs, and with one at the root it skips Jekyll and serves every file of the branch, tools/ and the
+// developer documents included. Excluded directories are not walked, so tools/node_modules is never read.
+function publishedOnDisk(root, exclude, include) {
+  const files = [];
+  const nojekyll = [];
+  const under = (list, r) => [...list].some((e) => r === e || r.startsWith(e + '/'));
+  const special = (name) => /^[._#~]/.test(name) || /~$/.test(name);
+  const visit = (rel) => {
+    let list;
+    try { list = fs.readdirSync(path.join(root, rel), { withFileTypes: true }); } catch (e) { return; }
+    for (const e of list) {
+      const r = rel ? rel + '/' + e.name : e.name;
+      if (r === '.git') continue;
+      if (e.name === '.nojekyll') { nojekyll.push(r); continue; }
+      if (under(exclude, r) || (special(e.name) && !under(include, r))) continue;
+      if (e.isDirectory()) visit(r);
+      else if (r !== '_config.yml') files.push(r);
+    }
+  };
+  visit('');
+  return { files: files.sort(), nojekyll: nojekyll.sort() };
+}
+
+// The first three bytes of a file, or null when it cannot be read.
+function firstBytes(file) {
+  let fd;
+  try {
+    fd = fs.openSync(file, 'r');
+    const b = Buffer.alloc(3);
+    return b.subarray(0, fs.readSync(fd, b, 0, 3, 0)).toString('latin1');
+  } catch (e) { return null; } finally { if (fd !== undefined) fs.closeSync(fd); }
+}
+
+// The url() references of one stylesheet (its path from the root, as served) that do not name a published file:
+// { refs, problems }. Each target is resolved against the stylesheet's own URL, as a browser does, and its query
+// and fragment are dropped. Not fetched, so not compared: a data: URI, a reference to a fragment alone (the glass
+// filters' url(#vx-lens)), and anything in the condition of an @supports rule, which only asks whether the browser
+// understands the syntax (light-dark(url(a.webp), url(b.webp)) in styles.css). Comments are read as blank. A url(
+// that the pattern cannot read is a problem too, so that an unusual spelling is reported and not skipped.
+const SITE = 'https://vynatix.com/';
+function cssUrlProblems(text, sheet, isPublished, onDisk) {
+  const blank = (s) => s.replace(/[^\n]/g, ' ');
+  const code = String(text).replace(/\/\*[\s\S]*?\*\//g, blank).replace(/@supports\b[^{]*/g, blank);
+  const lineOf = (i) => code.slice(0, i).split('\n').length;
+  const problems = [];
+  let refs = 0;
+  const targets = [];
+  const opened = [...code.matchAll(/\burl\(/gi)].length;
+  for (const m of code.matchAll(/\burl\(\s*(?:"([^"]*)"|'([^']*)'|([^)"'\s]*))\s*\)/gi)) targets.push([m[1] ?? m[2] ?? m[3], m.index]);
+  if (targets.length !== opened) problems.push(`${sheet}: ${opened} url( but only ${targets.length} that this check can read; write each as url("path")`);
+  for (const m of code.matchAll(/@import\s+(?:"([^"]*)"|'([^']*)')/gi)) targets.push([m[1] ?? m[2], m.index]);
+  for (const [raw, at] of targets) {
+    const t = raw.trim();
+    const where = `${sheet} line ${lineOf(at)}`;
+    if (/^data:/i.test(t) || t.startsWith('#')) continue;
+    refs++;
+    if (!t) { problems.push(`${where}: an empty url()`); continue; }
+    let u;
+    try { u = new URL(t, SITE + sheet); } catch (e) { problems.push(`${where}: ${t} is not a URL`); continue; }
+    if (u.origin !== new URL(SITE).origin) { problems.push(`${where}: ${t} is off the site (not a file this repository publishes)`); continue; }
+    let rel;
+    try { rel = decodeURIComponent(u.pathname.slice(1)); } catch (e) { rel = u.pathname.slice(1); }
+    if (isPublished(rel)) continue;
+    problems.push(`${where}: ${t} names ${rel || '/'}, ${onDisk(rel) ? 'which is on disk but not published (excluded, or a dot path)' : 'which is not on disk'}`);
+  }
+  return { refs, problems };
 }
 
 function run(root = ROOT, pages = PAGES) {
@@ -129,6 +207,40 @@ function run(root = ROOT, pages = PAGES) {
   }
   if (!exclude.has('tools')) stray.push('tools/ is not named in _config.yml exclude (the verification scripts would be published)');
   add(stray.length === 0, 'every root file and directory is a page, a site asset or named in _config.yml exclude', stray.join(' | '));
+
+  // --- Jekyll copies every published file through unchanged: no .nojekyll, no front matter
+  const pub = publishedOnDisk(root, exclude, include);
+  const published = new Set(pub.files);
+  add(pub.nojekyll.length === 0, 'no .nojekyll in the published tree (with one at the root GitHub skips Jekyll, and _config.yml exclude with it: every file would be served)',
+    pub.nojekyll.length ? `found: ${pub.nojekyll.join(', ')}` : '');
+  // Every published file and not only the text ones: Jekyll reads the first line of each file it meets, binary or
+  // not, to decide whether it is a page. No image or font format begins with these bytes.
+  const matter = [];
+  for (const f of pub.files) {
+    const b = firstBytes(path.join(root, f));
+    if (b === null) matter.push(`${f} cannot be read`);
+    else if (b === '---') matter.push(`${f} begins with --- (front matter: Jekyll would render it and strip the block instead of copying the file)`);
+  }
+  add(pub.files.length > 0 && matter.length === 0, `none of the ${pub.files.length} published files begins with --- (front matter, which Jekyll renders instead of copying)`,
+    pub.files.length ? matter.slice(0, 8).join(' | ') + (matter.length > 8 ? ` | and ${matter.length - 8} more` : '') : 'no published file found');
+
+  // --- every url() of every published stylesheet names a published file
+  {
+    const sheets = pub.files.filter((f) => /\.css$/i.test(f));
+    const bad = [];
+    let refs = 0;
+    for (const want of ['tokens.css', 'colors_and_type.css', 'styles.css']) if (!published.has(want)) bad.push(`${want} is not published`);
+    for (const s of sheets) {
+      const text = tryRead(s);
+      if (text === null) { bad.push(`${s} cannot be read`); continue; }
+      const r = cssUrlProblems(text, s, (f) => published.has(f), (f) => fs.existsSync(path.join(root, f)));
+      refs += r.refs;
+      bad.push(...r.problems);
+    }
+    if (!refs) bad.push('no url() reference found in any published stylesheet (tokens.css alone names every font of the site)');
+    add(bad.length === 0, `every url() in the ${sheets.length} published stylesheets (${sheets.join(', ')}) names a published file (${refs} references; data: URIs, fragment-only references and @supports conditions are not fetched)`,
+      bad.slice(0, 8).join(' | ') + (bad.length > 8 ? ` | and ${bad.length - 8} more` : ''));
+  }
 
   // --- the footer link on every page
   const noFooter = [];
@@ -252,7 +364,7 @@ function run(root = ROOT, pages = PAGES) {
   return results;
 }
 
-module.exports = { run, yamlList, footerLinkProblems, storageKeyProblems, ALLOWED_HEX };
+module.exports = { run, yamlList, footerLinkProblems, storageKeyProblems, publishedOnDisk, cssUrlProblems, ALLOWED_HEX };
 
 if (require.main === module) {
   const results = run();

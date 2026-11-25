@@ -12,10 +12,12 @@
 //     named by no robots.txt Disallow, and linked by no other page (any href, src or link element that resolves
 //     to it, however it is written), so nothing of the old text is served and nothing points at the stub
 //  L  tools/urls.lock lists every URL ever registered, one row per URL as "<url> <YYYY-MM-DD>": each locked URL
-//     still has a file (the live page or the stub), every registered URL is locked, no pub date moved, and,
-//     when git can show origin/main's lock, no row that is on main has been changed or removed. The one
+//     still has a file (the live page or the stub), every registered URL is locked and no pub date moved. The one
 //     exception to "still has a file" is a URL in tools/urls.retired (removed on the owner's decision): it must be
 //     locked, have no file, and be in no sitemap.xml or llms.txt and linked by no page
+//  M  no row of the lock on origin/main has been changed or removed. The commit compared with is printed, short
+//     id and commit date, so a stale origin/main shows; fetch it first (git fetch origin main). A checkout with no
+//     origin/main, or whose origin/main has no readable lock, fails: with nothing to compare there is no proof
 //  C  no [[CONFIRM: ...]] marker on any page that is not one of the two notices, nor in llms.txt, robots.txt,
 //     sitemap.xml, the manifest or a feed (release-gate.js reads only the notices, and only at the analytics
 //     flip, so a marker in a post would ship)
@@ -27,7 +29,7 @@
 //  H  the hub: every live kind 'post' page is listed on blog.html, in the ItemList of tools/seo/blog.json and on
 //     the home page of its language; the ItemList and the visible list on blog.html name the same pages, with
 //     numberOfItems and positions that add up
-// Exports run() for the self-test. See AGENTS.md, "Posts, permanence and withdrawal".
+// Exports run() and mainLock() for the self-test. See AGENTS.md, "Posts, permanence and withdrawal".
 const fs = require('fs');
 const os = require('os');
 const { execFileSync } = require('child_process');
@@ -56,7 +58,27 @@ const STUB = {
         lede: (iso) => `Vynatix tog bort sidan den ${day(iso, 'sv')}. Gå till startsidan.`, home: 'sv.html' },
 };
 
-function run(root = ROOT, pages = PAGES) {
+// The lock on origin/main, read through git, to compare the tree's lock with: { label, text }, or { error } (with a
+// label when the commit itself was found) when there is nothing to compare with. A missing origin/main is an error
+// and not a pass: a comparison that compares nothing proves nothing, and a checkout made without the remote (a
+// tarball, a scratch copy, a clone of a clone) cannot tell a removed row from one that was never on main. The label
+// names the commit and its date, so a stale origin/main is visible in the output.
+function mainLock(root = ROOT) {
+  const git = (args) => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  let sha = '';
+  try { sha = git(['rev-parse', '--verify', '--quiet', 'origin/main^{commit}']).trim(); } catch (e) { sha = ''; }
+  if (!sha) return { error: 'this checkout has no origin/main to compare the lock with (run git fetch origin main, then this check again; a copy that is not a git checkout cannot be compared)' };
+  let when = '';
+  try { when = git(['log', '-1', '--format=%cs', sha]).trim(); } catch (e) { when = ''; }
+  const label = `origin/main ${sha.slice(0, 7)}${when ? ` (committed ${when})` : ''}`;
+  try { return { label, text: git(['show', `${sha}:tools/urls.lock`]) }; } catch (e) {
+    return { label, error: `${label} has no tools/urls.lock that git can show (${String(e.stderr || e.message).trim().split('\n')[0]}); fetch origin/main again` };
+  }
+}
+
+// `main` is the lock to compare with (mainLock above). The self-test passes its own, because its scratch copies are
+// not git checkouts.
+function run(root = ROOT, pages = PAGES, main = mainLock(root)) {
   const out = [];
   const add = (ok, name, detail) => out.push({ ok, name, detail: ok ? '' : detail });
   const tryRead = (rel) => { try { return fs.readFileSync(path.join(root, rel), 'utf8'); } catch (e) { return null; } };
@@ -191,18 +213,26 @@ function run(root = ROOT, pages = PAGES) {
       if (!(urlOf(f) in locked)) problems.push(`not locked: ${urlOf(f)} (run python3 tools/seo-head.py)`);
       else if (locked[urlOf(f)] !== reg[f].pub) problems.push(`pub moved: ${urlOf(f)} locked ${locked[urlOf(f)]}, registry ${reg[f].pub} (pub never moves once the URL has been on main; for a page never on main, run python3 tools/redate.py: AGENTS.md, "Dates when a branch sits")`);
     }
-    // Rows that are on main are immutable. Read origin/main's lock through git when this is a checkout that has one.
-    let mainLock = null;
-    try { mainLock = execFileSync('git', ['-C', root, 'show', 'origin/main:tools/urls.lock'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch (e) { mainLock = null; }
-    if (mainLock) {
-      for (const raw of mainLock.split(/\r?\n/)) {
+    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file or is retired (${Object.keys(retired).length} in tools/urls.retired, none linked), none unregistered, no pub date moved`, problems.join('; '));
+
+    // M. Rows that are on main are immutable. With no lock to compare with, or one without a single row, this fails:
+    // a green line here has to mean that rows were compared.
+    const mProblems = [];
+    let mainRows = 0;
+    if (main.error) mProblems.push(main.error);
+    else {
+      for (const raw of String(main.text).split(/\r?\n/)) {
         const m = /^(https:\/\/vynatix\.com\/\S*) (\d{4}-\d{2}-\d{2})$/.exec(raw.trim());
         if (!m) continue;
-        if (!(m[1] in locked)) problems.push(`lock row removed: ${m[1]} is in origin/main's lock (a row is never removed once its URL has been on main)`);
-        else if (locked[m[1]] !== m[2]) problems.push(`lock row changed: ${m[1]} is ${locked[m[1]]}, main has ${m[2]} (a row is never edited once its URL has been on main)`);
+        mainRows++;
+        if (!(m[1] in locked)) mProblems.push(`lock row removed: ${m[1]} is in the lock on ${main.label} (a row is never removed once its URL has been on main)`);
+        else if (locked[m[1]] !== m[2]) mProblems.push(`lock row changed: ${m[1]} is ${locked[m[1]]}, ${main.label} has ${m[2]} (a row is never edited once its URL has been on main)`);
       }
+      if (!mainRows) mProblems.push(`the lock on ${main.label} has no row to compare with (an emptied or unreadable lock compares nothing)`);
     }
-    add(!problems.length, `tools/urls.lock: ${n} URLs, each still has a file or is retired (${Object.keys(retired).length} in tools/urls.retired, none linked), none unregistered, no pub date moved${mainLock ? ', rows on main unchanged' : ' (origin/main has no lock yet)'}`, problems.join('; '));
+    add(!mProblems.length, main.label && !main.error
+      ? `tools/urls.lock: none of the ${mainRows} rows of the lock on ${main.label} has been changed or removed`
+      : `tools/urls.lock: no row of the lock on ${main.label || 'origin/main'} has been changed or removed`, mProblems.join('; '));
   }
 
   // C. unresolved owner-fact markers
@@ -346,12 +376,20 @@ function selfTest() {
     ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); return PAGES; }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
     ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); return PAGES; }, /privacy\.html: Last updated shows/],
     ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); return PAGES; }, /numberOfItems/],
+    // M. The comparison with main. The scratch copies are not git checkouts, so every case above compares with
+    // MAIN, the tree's own lock as it stands; these cases give their own (the fourth element).
+    ['a lock row that is on main, removed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^https:\/\/vynatix\.com\/about\.html \S+\n/m, '')); return PAGES; }, /lock row removed: https:\/\/vynatix\.com\/about\.html/],
+    ['a lock row that is on main, changed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^(https:\/\/vynatix\.com\/about\.html) \S+$/m, '$1 2001-01-01')); return PAGES; }, /lock row changed: https:\/\/vynatix\.com\/about\.html is 2001-01-01/],
+    ['a checkout with no origin/main (a git checkout without the remote)', (d) => PAGES, /no origin\/main to compare the lock with/,
+      (d) => { execFileSync('git', ['init', '-q', d], { stdio: 'ignore' }); return mainLock(d); }],
+    ['a lock on main with no rows', (d) => PAGES, /has no row to compare with/, () => ({ label: 'origin/main 0000000 (self-test)', text: '# comments only\n' })],
   ];
+  const MAIN = { label: 'the lock of this tree (self-test)', text: fs.readFileSync(path.join(ROOT, 'tools', 'urls.lock'), 'utf8') };
   let bad = 0;
-  for (const [name, setup, expectPass] of cases) {
+  for (const [name, setup, expectPass, mainOf] of cases) {
     const dir = copy();
     let results;
-    try { results = run(dir, setup(dir)); } catch (e) { results = [{ ok: false, name: 'threw', detail: e.message }]; }
+    try { results = run(dir, setup(dir), mainOf ? mainOf(dir) : MAIN); } catch (e) { results = [{ ok: false, name: 'threw', detail: e.message }]; }
     fs.rmSync(dir, { recursive: true, force: true });
     const failed = results.filter((r) => !r.ok);
     const text = failed.map((f) => f.name + ' ' + f.detail).join(' / ');
@@ -376,4 +414,4 @@ if (require.main === module) {
   console.log(bad ? `\nFAIL — ${bad} problem(s)` : '\nPASS — permanence checks');
   process.exit(bad ? 1 : 0);
 }
-module.exports = { run, selfTest };
+module.exports = { run, mainLock, selfTest };

@@ -250,7 +250,7 @@ There is no lint step, but there *is* a check suite: see `tools/README.md`
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
-style rules, the hero background's rules and the retired draws), the hero background's guard, the rate
+style rules, the hero background's rules and the retired draws, no `.nojekyll` or front matter, every `url()` target published), the hero background's guard, the rate
 calculator's arithmetic and no-JavaScript state (`calc.js`), accessibility
 including a contrast sweep, and a screenshot diff.
 The generated languages have their own check in the chain, `i18n.js` (catalogues complete, the draft gate,

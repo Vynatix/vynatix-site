@@ -90,10 +90,22 @@ function reader(rev) {
   return (f) => { try { return git(['show', `${rev}:${f}`], { encoding: 'buffer' }); } catch (e) { return null; } };
 }
 
+// A .nojekyll turns Jekyll off for the whole site, `exclude` with it, so every tracked file would be served. Pages
+// reads the one at the root; one in a published folder is refused too. It is looked for in the listing itself,
+// because the published-set rules drop every dot file, this one included.
+function nojekyllProblems(listing, configText) {
+  const out = [];
+  for (const f of Object.keys(listing)) {
+    if (!/(^|\/)\.nojekyll$/.test(f)) continue;
+    const dir = f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '';
+    if (dir === '' || Object.keys(published({ [dir + '/probe.html']: 'x' }, configText)).length) out.push(`${f} is in the tree (Pages would then serve every tracked file, tools/ and the docs included)`);
+  }
+  return out;
+}
+
 // --- the rules on one published set. read(f) gives a file's bytes (or null).
 function shapeProblems(pub, read) {
   const out = [];
-  if (Object.prototype.hasOwnProperty.call(pub, '.nojekyll') || Object.keys(pub).some((f) => /(^|\/)\.nojekyll$/.test(f))) out.push('.nojekyll is published (Pages would then serve every tracked file, tools/ and the docs included)');
   for (const f of Object.keys(pub)) {
     if (String(pub[f]).startsWith('symlink:')) { out.push(`${f} is a symbolic link (the Pages branch build refuses them)`); continue; }
     if (RENDERED_EXT.test(f)) { out.push(`${f} is published Markdown (github-pages renders it, so its bytes are not what ships)`); continue; }
@@ -156,7 +168,7 @@ function main(argv) {
   const headPub = published(headList, headConfig);
   const headName = headRev ? `${headRev} (${git(['rev-parse', '--short', headRev]).trim()})` : 'the working tree';
 
-  const shape = shapeProblems(headPub, headRead);
+  const shape = nojekyllProblems(headList, headConfig).concat(shapeProblems(headPub, headRead));
   lines.push([shape.length === 0, `${headName} publishes ${Object.keys(headPub).length} files, every one copied through unchanged by Jekyll`, shape.join(' | ')]);
 
   const built = opt('--built');
@@ -209,7 +221,8 @@ function selfTest() {
   const bytes = { 'index.html': Buffer.from('<!doctype html>'), 'styles.css': Buffer.from('a{}') };
   const rd = (f) => bytes[f] || Buffer.from('x');
   t(shapeProblems(pub, rd).length === 0, 'a plain tree has no shape problem');
-  t(shapeProblems(published(Object.assign({}, list, { '.nojekyll': 'z' }), cfg + 'include:\n  - .nojekyll\n'), rd).some((p) => /nojekyll/.test(p)), 'a published .nojekyll fails');
+  t(nojekyllProblems(Object.assign({}, list, { '.nojekyll': 'z' }), cfg).some((p) => /^\.nojekyll/.test(p)), 'a .nojekyll at the root fails, although the dot-file rule leaves it out of the published set');
+  t(nojekyllProblems(Object.assign({}, list, { 'assets/.nojekyll': 'z' }), cfg).length === 1 && nojekyllProblems(Object.assign({}, list, { 'tools/.nojekyll': 'z' }), cfg).length === 0, 'one in a published folder fails, one in an excluded folder does not');
   t(shapeProblems(pub, (f) => (f === 'styles.css' ? Buffer.from('---\n---\na{}') : rd(f))).some((p) => /styles\.css begins with ---/.test(p)), 'a published file that begins with --- fails');
   t(shapeProblems(published(Object.assign({}, list, { 'NOTES.md': 'm' }), cfg), rd).some((p) => /NOTES\.md is published Markdown/.test(p)), 'a published Markdown file fails');
   t(shapeProblems(published(Object.assign({}, list, { 'AGENTS.md': 'changed' }), cfg), rd).length === 0, 'an excluded Markdown file does not');
@@ -237,4 +250,4 @@ function selfTest() {
 }
 
 if (require.main === module) process.exit(main(process.argv.slice(2)));
-module.exports = { published, inputs, shapeProblems, diff, builtProblems, listRev, listWorktree, DECLARATION };
+module.exports = { published, inputs, nojekyllProblems, shapeProblems, diff, builtProblems, listRev, listWorktree, DECLARATION };

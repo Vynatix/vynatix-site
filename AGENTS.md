@@ -1256,9 +1256,11 @@ Senast uppdaterad `<time>` and the `legal__meta` line that repeat them, and the 
 new pages, then runs `seo-head.py`. It never touches a lock row whose URL is on `main` (a row is never edited
 once its URL has been on the live site), event dates (the list pages' Checked / Kontrollerad lines, the
 `sv.html` guider lead, `tools/TAKEDOWN.md`, `tools/CITATION-LOG.md`), a date in the future or one earlier than
-the date it replaces, and it refuses a page whose visible date already disagrees with the registry.
-`permanence.js` checks the visible dates of every page (D for posts, V for the rest) and, once `main` has a
-lock, that no row on `main` changed. Then run `npm run check`.
+the date it replaces, and it refuses a page whose visible date already disagrees with the registry and a
+`--base` whose registry it cannot read (read as empty, every page would look unchanged).
+`permanence.js` checks the visible dates of every page (D for posts, V for the rest) and that no row of
+the lock on `origin/main` changed: it prints the commit it compared with and fails in a checkout without
+`origin/main`, so fetch it first. Then run `npm run check`.
 
 **Owner-approved wordings.** A post reuses these or leaves them alone; it does not restate them in new words.
 Cited by file and phrase, not by line (lines move). The owner must confirm this list is complete.
@@ -1465,7 +1467,9 @@ type, and every directory other than the known ones, is named in `_config.yml`'s
 points at the right notice page; both notices name the three storage keys in
 `<code>`; the site's style rules are linted (role tokens only: no colour literal in
 `styles.css` outside the token files, and no inline style in a page or from
-`app.js`); and `llms.txt` links every URL in `sitemap.xml`), `consent.js`
+`app.js`); no `.nojekyll` in the published tree and no published file that begins with `---`; every
+`url()` of every published stylesheet names a published file; and `llms.txt` links every URL in `sitemap.xml`),
+`consent.js`
 (behaviour: nothing before consent, accept, decline, withdrawal, poisoned and
 blocked storage, no-JS, Swedish, and the `PURGE_ONLY` build), `consent-layout.js`
 (bar size, the open menu over the bar, focus never hidden behind the bar, six

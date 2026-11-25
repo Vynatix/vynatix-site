@@ -19,9 +19,11 @@ left alone: event dates such as the list pages' Checked / Kontrollerad lines, th
 rehearsal date in tools/TAKEDOWN.md, the dates in tools/CITATION-LOG.md.
 
 It refuses, changing nothing: a tree with uncommitted changes to tracked files (so the re-date is its own
-reviewable commit); a date in the future, or earlier than a date it would replace; a page whose visible date
-does not equal the registry before the change; and any lock row whose URL is on --base (a row is never edited
-once its URL has been on main). --dry-run prints the plan and exits 1 if anything would change, 0 if the branch
+reviewable commit); a date in the future, or earlier than a date it would replace; a --base whose registry it
+cannot read (no tools/seo-head.py there, no PAGES entry in it, or a page on --base that its registry does not
+list), because an unread registry would make every page look unchanged; a page whose visible date does not equal
+the registry before the change; and any lock row whose URL is on --base (a row is never edited once its URL has
+been on main). --dry-run prints the plan and exits 1 if anything would change, 0 if the branch
 is already dated today, so it can stand in a merge checklist.
 """
 import argparse, datetime, os, re, subprocess, sys
@@ -82,15 +84,29 @@ def main():
     py_path = os.path.join(TOOLS, 'seo-head.py')
     py = open(py_path, encoding='utf-8').read()
     now = registry(py)
+    # The registry of --base decides which pages count as changed. One that cannot be read must stop the run: read as
+    # an empty registry, every page on --base would count as unchanged, nothing would be re-dated, and the run would
+    # end with "nothing to re-date" (exit 0), a green result that proves nothing.
     base_py = git('show', f'{a.base}:tools/seo-head.py', check=False)
-    was = registry(base_py.stdout) if base_py.returncode == 0 else {}
+    if base_py.returncode != 0:
+        raise SystemExit(f'refusing: cannot read tools/seo-head.py on {a.base} ({base_py.stderr.strip() or "git show failed"}); '
+                         'without the registry of the base no changed page can be told from an unchanged one. Pass the branch '
+                         'the merge goes into as --base (fetch it first).')
+    was = registry(base_py.stdout)
+    if not was:
+        raise SystemExit(f'refusing: tools/seo-head.py on {a.base} has no PAGES entry that redate.py can read (one line per page, '
+                         "'name.html': dict(...)); without the registry of the base no changed page can be told from an unchanged one.")
     on_base = lambda f: git('cat-file', '-e', f'{a.base}:{f}', check=False).returncode == 0
 
     plan = []   # (file, kind, {'pub': (old, new)?, 'mod': (old, new)})
     for f, e in now.items():
         if not on_base(f):
             kind = 'new'
-        elif f in was and was[f]['mod'] != e['mod']:
+        elif f not in was:
+            # On the base as a file but not in the base's registry: the base cannot say whether its mod moved.
+            raise SystemExit(f'refusing: {f} is on {a.base} but not in the PAGES registry read from it, so its date cannot be '
+                             'compared; check the registry line of the base by hand.')
+        elif was[f]['mod'] != e['mod']:
             kind = 'changed'
         else:
             continue

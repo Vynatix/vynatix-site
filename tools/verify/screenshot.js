@@ -1,4 +1,5 @@
-// Visual-regression gate. Capture a baseline before a refactor, then compare after.
+// Visual-regression gate. Capture a baseline before a refactor, then compare after. Scope: all for `against`, root
+// for baseline and current, as below.
 //   node verify/screenshot.js baseline | current | compare
 //   node verify/screenshot.js bar
 //   node verify/screenshot.js against [rev]
@@ -8,13 +9,17 @@
 // the consent bar never enters the baseline, so a diff is a change to the page, not to whether a bar happens to
 // be up. The footer's Cookie settings link is part of the page and does show.
 //
-// Every page is captured once per theme, as <page>-<theme>.png. The home hero's drafting
+// Every root page is captured once per theme, as <page>-<theme>.png. The home hero's drafting
 // sheet is still and always drawn, so the same tree gives the same pixels.
+//
+// The scope: for `against`, the root pages and the generated pages of either tree; for baseline and current, the
+// root pages, the stored baseline that `against` replaces; and for `bar`, the home page of each written language.
 //
 // `bar` is a separate mode for looking at the bar itself, viewport only (not full page), in each theme under
 // test: first visit, the bar reopened from the footer, and a first visit scrolled to the end of the page (the
-// footer against the bar). Pages index.html and sv.html at 390x844 and 1440x900, or VW x VH. It writes to
-// current-bar/ for review by eye and is not part of `compare`.
+// footer against the bar). The home page of each written language (writtenHomes() in _common.js: index.html and
+// sv.html) at 390x844 and 1440x900, or VW x VH. It writes to current-bar/ for review by eye and is not part of
+// `compare`.
 //
 // `against` is the visual net on demand, for a refactoring pull request, and keeps no stored baseline. It checks
 // rev out into a temporary git worktree (git worktree add --detach; default rev: the merge base of HEAD and
@@ -22,7 +27,7 @@
 // own (python3 -m http.server; BASE is not used), and captures every page in both exactly as the modes above
 // capture: armed, the answer pinned to denied, the pause stored, images decoded, every section shown, the same
 // settling. Each page is captured full page at 390x844 and at 1440x900 (or at VW x VH alone). The pages are the
-// root pages (PAGES in _common.js) and the generated pages of either tree (generatedPages()), 114 today, and
+// root pages (pagesIn('root') in _common.js) and the generated pages of either tree (generatedPages()), 114 today, and
 // PAGES=index.html,es/about.html narrows them. The themes are those of THEMES, but with THEMES unset it runs the
 // first theme only, mono-light (THEMES=mono-light,mono-dark runs both). Each pair is compared with pixelmatch at
 // the threshold `compare` uses, and the run prints every page, width and theme that differs, and any page that
@@ -41,7 +46,9 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const { spawn, execFileSync } = require('child_process');
-const { ROOT, PAGES, BASE, THEMES, ALL_THEMES, pinTheme, pinConsent, armGa, launch, generatedPages, edgeCsp, pool } = require('./_common');
+const { ROOT, BASE, THEMES, ALL_THEMES, pinTheme, pinConsent, armGa, launch, generatedPages, pagesIn, writtenHomes, scopeLine, edgeCsp, pool } = require('./_common');
+
+const PAGES = pagesIn('root');
 
 const MODE = process.argv[2] || 'current';
 const SUFFIX = process.env.SUFFIX || '';
@@ -101,6 +108,7 @@ async function shoot(browser, p, theme, viewport, o = {}) {
 }
 
 async function capture() {
+  console.log(scopeLine('root', PAGES));
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await launch();
   let shots = 0;
@@ -122,7 +130,9 @@ async function captureBar() {
   const browser = await launch();
   const viewports = process.env.VW || process.env.VH ? [[VIEWPORT.width, VIEWPORT.height]] : [[390, 844], [1440, 900]];
   let n = 0;
-  for (const p of ['index.html', 'sv.html']) for (const theme of THEMES) for (const [w, h] of viewports) {
+  const homes = writtenHomes();
+  console.log(scopeLine('root', homes, { feature: 'the home page of each written language, with the bar up' }));
+  for (const p of homes) for (const theme of THEMES) for (const [w, h] of viewports) {
     for (const state of ['first', 'reopened', 'first-end']) {
       const ctx = await browser.newContext({ viewport: { width: w, height: h } });
       await armGa(ctx);
@@ -353,6 +363,7 @@ async function against() {
     const unknown = pages.filter((p) => !universe.includes(p));
     if (unknown.length) usage(`PAGES names ${unknown.join(', ')}, which is neither a root page nor a generated page of either tree`);
   }
+  console.log(scopeLine('all', pages, process.env.PAGES ? { note: 'narrowed by PAGES' } : { note: 'the generated pages of either tree' }));
 
   for (const t of trees) {
     t.base = await serve(t.root);

@@ -56,11 +56,11 @@ function readRegistry(root = ROOT) {
   return out;
 }
 
-// PAGES: the root pages, written by hand. They are the files of the registry, in its order; every check that walks
-// the pages walks this list, and publish.js holds it equal to the *.html files at the root. It is read when a script
-// first asks for it (module.exports.PAGES, at the end of this file), so a registry that cannot be read stops that
-// script with the reader's error instead of giving an empty list that every check would pass over, and a script
-// that never asks, such as check.js, still starts.
+// PAGES: the root pages, written by hand. They are the files of the registry, in its order, the list pagesIn('root')
+// below gives too, and publish.js holds it equal to the *.html files at the root. It is read when a script first asks
+// for it (module.exports.PAGES, at the end of this file), so a registry that cannot be read stops that script with
+// the reader's error instead of giving an empty list that every check would pass over, and a script that never
+// asks, such as check.js, still starts.
 let rootPagesRead = null;
 const rootPages = () => (rootPagesRead = rootPagesRead || Object.keys(readRegistry(ROOT)));
 
@@ -105,6 +105,79 @@ function generatedPages(root = ROOT) {
     for (const f of files) out.push(code + '/' + f);
   }
   return out;
+}
+
+// The page universe (tools/REFACTORING-PLAN.md, step 3.2). Every check takes its pages from here, never from a list of
+// file names of its own, and says which part of the universe it walks: in the first paragraph of its header comment,
+// in a sentence that opens "Scope:", and in the one line scopeLine() makes for it, which it prints when it starts
+// checking (not in a self-test). The scopes:
+//   root       the pages written by hand at the root: the files of the registry, in its order (PAGES)
+//   generated  the pages tools/seo-head.py builds for the generated languages, in the order of LANGS
+//   all        both, the root pages first
+// A check that walks fewer pages than its scope on purpose, to keep the run inside its time, says "a sample of" and
+// takes the sample from samplePages(), which derives it from the registry and the language table, so a new kind of
+// page or a new language joins it with no edit. A check of one feature (the rate calculator, the home hero, the
+// behaviour of the consent module) names the pages the feature lives on and says so: those pages are its fixtures,
+// not a sample of the site. Everything here reads the tree when it is called, never when this file is required.
+const SCOPES = ['root', 'generated', 'all'];
+function checkScope(scope) {
+  if (!SCOPES.includes(scope)) throw new Error(`the scope of a check is root, generated or all, not "${scope}"`);
+}
+// The pages of a scope. A generated language with no page on disk throws, because a check of the generated or of all
+// pages would otherwise pass over that whole language without a word (python3 tools/seo-head.py builds them).
+function pagesIn(scope, root = ROOT) {
+  checkScope(scope);
+  const written = scope === 'generated' ? [] : Object.keys(readRegistry(root));
+  if (scope === 'root') return written;
+  const gen = generatedPages(root);
+  const empty = generatedLanguages(root).filter((code) => !gen.some((p) => p.startsWith(code + '/')));
+  if (empty.length) throw new Error(`no page of the generated language${empty.length === 1 ? '' : 's'} ${empty.join(', ')} on disk, so a check of ${scope === 'all' ? 'every page' : 'the generated pages'} would pass over ${empty.length === 1 ? 'it' : 'them'} (python3 tools/seo-head.py builds them)`);
+  return written.concat(gen);
+}
+// The sample of a scope, for a check that cannot walk all of it in its time. From the root: the first page, in the
+// registry's order, of each kind of row the registry holds, a kind being the row's lang, type, og, kind and status
+// together (so each language's home page, the About, Contact and collection pages, a guide in each language, an
+// article and each withdrawn stub are in it). From the generated languages: the home page of each.
+function samplePages(scope = 'all', root = ROOT) {
+  checkScope(scope);
+  const out = [];
+  if (scope !== 'generated') {
+    const seen = new Set();
+    for (const [file, r] of Object.entries(readRegistry(root))) {
+      const kind = [r.lang, r.type, r.og, r.kind, r.status].join(' ');
+      if (!seen.has(kind)) { seen.add(kind); out.push(file); }
+    }
+  }
+  if (scope !== 'root') {
+    const gen = pagesIn('generated', root);
+    for (const code of generatedLanguages(root)) if (gen.includes(code + '/index.html')) out.push(code + '/index.html');
+  }
+  return out;
+}
+// The home page of each written language (`home` in tools/site/langs.json: index.html, sv.html), in the table's order.
+// A written language whose home is not a page of the registry throws.
+function writtenHomes(root = ROOT) {
+  const reg = readRegistry(root);
+  return Object.entries(readLangs(root)).filter(([, l]) => l.kind === 'written').map(([code, l]) => {
+    if (!l.home || !reg[l.home]) throw new Error(`tools/site/langs.json: the written language ${code} names no home page of the registry`);
+    return l.home;
+  });
+}
+// The line a check prints when it starts checking: its scope and how many pages it walks, split into root and
+// generated for the scope all. For a sample, opts.sample says how it is chosen; for the pages of one feature,
+// opts.feature says which feature. Both name the pages. A check whose units are not pages (the published files of
+// two revisions) says what they are in opts.what instead. opts.note adds a clause (a part of the check that walks
+// another set), opts.root the tree the totals are read from.
+function scopeLine(scope, pages, opts = {}) {
+  checkScope(scope);
+  if (opts.what) return `scope: ${scope}, ${opts.what}${opts.note ? `; ${opts.note}` : ''}`;
+  const count = (n) => `${n} page${n === 1 ? '' : 's'}`;
+  const gen = pages.filter((p) => p.includes('/')).length;
+  const split = scope === 'all' ? ` (${pages.length - gen} root, ${gen} generated)` : '';
+  const note = opts.note ? `; ${opts.note}` : '';
+  if (opts.sample) return `scope: ${scope}, a sample of ${count(pages.length)}${split} of the ${pagesIn(scope, opts.root).length}, ${opts.sample}: ${pages.join(', ')}${note}`;
+  if (opts.feature) return `scope: ${scope}, ${opts.feature}: ${pages.join(', ')}${note}`;
+  return `scope: ${scope}, ${count(pages.length)}${split}${note}`;
 }
 
 // The page that carries the privacy notice (and the in-page consent panel) in each language.
@@ -953,7 +1026,7 @@ async function heroUnit(page) {
 }
 
 module.exports = {
-  ROOT, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
+  ROOT, readRegistry, readLangs, generatedPages, SCOPES, pagesIn, samplePages, writtenHomes, scopeLine, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, appConst, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,

@@ -1,4 +1,4 @@
-// The hero background on a scaled hero.
+// The hero background on a scaled hero. Scope: root, the English home page, through bg-sheet.js.
 //
 // The hero fit (styles.css, "Hero fit") scales the hero to the window's height, and hero-bg.css
 // multiplies the drafting sheet's constants by the same unit. bg-sheet.js runs its full sweep at
@@ -20,6 +20,7 @@
 // four run side by side.
 const { spawnSync } = require('child_process');
 const path = require('path');
+const { scopeLine } = require('./_common');
 
 const HEIGHTS = (process.env.HEIGHTS || '650,790,864,900').split(',').map(Number);
 const GUARDS = [
@@ -41,6 +42,7 @@ if (args.includes('--sweep')) {
   }
 }
 
+console.log(scopeLine('root', ['index.html'], { feature: 'the English home page, its hero scaled to the window' }));
 let failed = 0;
 for (const [i, [h, guard, env]] of SWEEPS.entries()) {
   if (only !== null && i + 1 !== only) continue;

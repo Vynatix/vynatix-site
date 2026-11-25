@@ -1,6 +1,7 @@
 // What a change ships: the published files, compared between two revisions by their git blob ids. Static, no
 // browser, no server, no npm install. The acceptance test of tools/REFACTORING-PLAN.md: a pull request that says it
-// changes nothing on the site has to list nothing here.
+// changes nothing on the site has to list nothing here. Scope: all, every published file of the two revisions, the
+// pages among them.
 //
 //   node verify/shipped.js                     fetch origin/main, compare the working tree with the merge base
 //   node verify/shipped.js --base A --head B   compare two revisions (the workflow: HEAD^1 and HEAD of the merge)
@@ -26,6 +27,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { execFileSync } = require('child_process');
 const { yamlList } = require('./publish');
+const { scopeLine } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const DECLARATION = /^\s*Byte-neutral:\s*yes\s*$/m;
@@ -158,6 +160,7 @@ function report(lines, title) {
 function main(argv) {
   const opt = (name) => { const i = argv.indexOf(name); return i === -1 ? undefined : argv[i + 1]; };
   if (argv.includes('--self-test')) return selfTest();
+  console.log(scopeLine('all', [], { what: 'every published file of the two revisions, the pages among them' }));
   const lines = [];
   const neutral = argv.includes('--neutral') || DECLARATION.test(process.env.PR_BODY || '');
 

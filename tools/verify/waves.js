@@ -2,23 +2,33 @@
 // body::after). With JavaScript, WebGL and no prefers-reduced-motion, app.js lays a <canvas class="silk-canvas"> over
 // it and draws the folds live in a shader, so they form and dissolve, until the visitor presses the footer's "Pause
 // background motion" button. That button is what makes the site's one ambient loop meet WCAG 2.2.2 (pause, stop,
-// hide), so this check holds the two together.
+// hide), so this check holds the two together. Scope: all, a sample of the pages for the first visit and the
+// reduced-motion visit, and the pages named where they are for the other tests.
 //
 // Every other check opens its pages with the pause stored (_common.js, stillSilk). This one asks for the live silk,
 // so it is the only check that sees the site as a first-time visitor does, moving.
 //
+// The sample is samplePages() in _common.js, the first page of each kind of row in the registry and the home page of
+// each generated language, because the live silk costs about a second a page. On a page of a generated language the
+// button reads as that page is written (data-i18n-play gives the other name).
+//
 //   cd tools && BASE=http://localhost:8000/ node verify/waves.js
 const { PNG } = require('pngjs');
-const { BASE, launch } = require('./_common');
+const { BASE, launch, samplePages, scopeLine } = require('./_common');
 
-const PAGES = ['index', 'services', 'work', 'contact', 'privacy', 'accessibility', 'sv', 'integritet', 'ai-engineering'];
+const PAGES = samplePages('all');
 const KEY = 'vynatix-motion';
+const LABEL = 'Pause background motion';
+// The name the button is written with on the page as served: the English one at the root, the language's own on a
+// generated page (app.js keeps it while the silk moves).
+const writtenLabel = (html) => ((/<button class="motion-toggle"[^>]*>([^<]*)<\/button>/.exec(html) || [])[1] || '').trim();
 
 (async () => {
+  console.log(scopeLine('all', PAGES, { sample: 'the first page of each kind of row in the registry and the home page of each generated language' }));
   const browser = await launch({ liveSilk: true });
   let problems = 0;
   const check = (ok, name, detail) => { if (!ok) problems++; console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? ' — ' + detail : ''}`); };
-  const url = (p) => `${BASE}${p}.html`;
+  const url = (p) => BASE + p;
   // Counts the frames the page asks for, so "nothing is drawing" can be told from "drawing the same thing".
   const countFrames = () => { window.__frames = 0; const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = (cb) => { window.__frames++; return raf(cb); }; };
   const open = async (opts = {}, init) => {
@@ -61,11 +71,13 @@ const KEY = 'vynatix-motion';
     const { ctx, page, errors } = await open();
     const bad = [];
     for (const p of PAGES) {
+      const written = writtenLabel(await (await page.request.get(url(p))).text());
+      const want = p.includes('/') ? written : LABEL;
       await go(page, p);
       const s = await state(page), d = await drawing(page);
-      if (!(moving(s) && d > 0 && s.buttons === 1 && s.shown && s.label === 'Pause background motion' && s.tag === 'BUTTON:button' && s.stored === null && !/rgba\(0, 0, 0, 0\)|transparent/.test(s.bodyBg))) bad.push(`${p}: frames ${d}, ${JSON.stringify(s)}`);
+      if (!(moving(s) && d > 0 && s.buttons === 1 && s.shown && want && s.label === want && s.tag === 'BUTTON:button' && s.stored === null && !/rgba\(0, 0, 0, 0\)|transparent/.test(s.bodyBg))) bad.push(`${p}: frames ${d}, label wanted "${want}", ${JSON.stringify(s)}`);
     }
-    check(bad.length === 0 && errors.length === 0, `first visit, ${PAGES.length} pages: one live canvas behind the content (aria-hidden, no pointer events), frames being drawn, one visible "Pause background motion" button, nothing stored, the canvas colour still on <body>`, bad.concat(errors).join(' | '));
+    check(bad.length === 0 && errors.length === 0, `first visit, ${PAGES.length} pages of the sample: one live canvas behind the content (aria-hidden, no pointer events), frames being drawn, one visible "${LABEL}" button (in the page's language on a generated page), nothing stored, the canvas colour still on <body>`, bad.concat(errors).join(' | '));
     await ctx.close();
   }
 
@@ -73,7 +85,7 @@ const KEY = 'vynatix-motion';
   //    colours are the page's own in both themes, and they follow a theme toggle made while it runs.
   for (const scheme of ['light', 'dark']) {
     const { ctx, page } = await open({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
-    await go(page, 'terms');
+    await go(page, 'terms.html');
     const shot = async () => PNG.sync.read(await page.screenshot());
     const A = await shot(); await page.waitForTimeout(2000); const B = await shot();
     let changed = 0;
@@ -114,7 +126,7 @@ const KEY = 'vynatix-motion';
   //     picture holds; moving the pointer changes it around the pointer and not far away; scrolling changes it too.
   {
     const { ctx, page, errors } = await open({ viewport: { width: 1280, height: 800 }, colorScheme: 'light' }, { fn: () => { Date.now = () => 1700000000000; } });
-    await go(page, 'terms');
+    await go(page, 'terms.html');
     await page.waitForTimeout(400);
     const shot = async () => PNG.sync.read(await page.screenshot());
     const share = (A, B, x0, x1, y0, y1) => { let n = 0, c = 0; for (let y = y0; y < y1; y += 2) for (let x = x0; x < x1; x += 2) { const i = (y * A.width + x) * 4; n++; if (Math.abs(A.data[i] - B.data[i]) >= 3) c++; } return c / n; };
@@ -143,12 +155,12 @@ const KEY = 'vynatix-motion';
   //    from the keyboard; the choice is stored and holds on the next page and after a reload; pressing again resumes.
   {
     const { ctx, page } = await open();
-    await go(page, 'about');
+    await go(page, 'about.html');
     await page.focus('.motion-toggle');
     await page.keyboard.press('Enter');
     const a = await state(page), da = await drawing(page);
     check(still(a) && da === 0 && !a.wanted && a.label === 'Play background motion' && a.stored === 'off' && a.shown, 'pressing the button (keyboard) stops the drawing, removes the canvas, shows the still silk, relabels it "Play background motion" and stores off', `frames ${da}, ${JSON.stringify(a)}`);
-    await go(page, 'work');
+    await go(page, 'work.html');
     const b = await state(page), db = await drawing(page);
     await page.reload({ waitUntil: 'load' }); await page.waitForTimeout(350);
     const c = await state(page), dc = await drawing(page);
@@ -156,7 +168,7 @@ const KEY = 'vynatix-motion';
     await page.click('.motion-toggle');
     await page.waitForTimeout(200);
     const d = await state(page), dd = await drawing(page);
-    await go(page, 'contact');
+    await go(page, 'contact.html');
     const e = await state(page);
     check(moving(d) && dd > 0 && d.label === 'Pause background motion' && d.stored === 'on' && moving(e), 'pressing again starts the live silk, stores on, and the next page draws it', JSON.stringify(d));
     await ctx.close();
@@ -171,7 +183,7 @@ const KEY = 'vynatix-motion';
       const s = await state(page);
       if (!(still(s) && s.frames === 0 && !s.shown)) bad.push(`${p}: ${JSON.stringify(s)}`);
     }
-    check(bad.length === 0, `reduced motion, no stored choice, ${PAGES.length} pages: the still silk, no canvas, no frame asked for, and the button is not shown`, bad.join(' | '));
+    check(bad.length === 0, `reduced motion, no stored choice, ${PAGES.length} pages of the sample: the still silk, no canvas, no frame asked for, and the button is not shown`, bad.join(' | '));
     await ctx.close();
   }
 
@@ -179,7 +191,7 @@ const KEY = 'vynatix-motion';
   {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto(url('services'), { waitUntil: 'load' });
+    await page.goto(url('services.html'), { waitUntil: 'load' });
     const shown = await page.$eval('.motion-item', (el) => getComputedStyle(el).display !== 'none');
     const r = await page.$eval('body', (el) => [document.querySelectorAll('canvas').length, getComputedStyle(el, '::before').content !== 'none', getComputedStyle(el, '::after').content !== 'none']);
     check(!shown && r[0] === 0 && r[1] && r[2], 'no JavaScript: the still silk is drawn, there is no canvas, the button is hidden', `${r}`);
@@ -193,7 +205,7 @@ const KEY = 'vynatix-motion';
       const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: 'light', ...opts });
       const page = await ctx.newPage();
       if (how === 'stored') await page.addInitScript((KEY) => { try { localStorage.setItem(KEY, 'off'); } catch (e) {} }, KEY);
-      await page.goto(url('terms'), { waitUntil: 'load' });
+      await page.goto(url('terms.html'), { waitUntil: 'load' });
       await page.waitForTimeout(350);
       if (how === 'pressed') { await page.evaluate(() => document.querySelector('.motion-toggle').click()); await page.waitForTimeout(150); }
       const buf = await page.screenshot({ clip: { x: 0, y: 120, width: 1280, height: 600 } });
@@ -209,7 +221,7 @@ const KEY = 'vynatix-motion';
     const bad = [];
     for (const poison of ['"><img src=x onerror=window.__xss=1>', '__proto__', '', 'OFF', 'paused']) {
       const { ctx, page } = await open({}, { fn: ([KEY, v]) => { try { localStorage.setItem(KEY, v); } catch (e) {} }, arg: [KEY, poison] });
-      await go(page, 'index');
+      await go(page, 'index.html');
       const s = await state(page);
       const xss = await page.evaluate(() => !!window.__xss || !!document.querySelector('img[src="x"]'));
       if (!moving(s) || xss) bad.push(JSON.stringify(poison));
@@ -221,7 +233,7 @@ const KEY = 'vynatix-motion';
       Object.defineProperty(window, 'sessionStorage', block);
       Object.defineProperty(window, 'localStorage', block);
     } });
-    await go(page, 'about');
+    await go(page, 'about.html');
     const a = await state(page);
     await page.click('.motion-toggle');
     const b = await state(page);
@@ -232,7 +244,7 @@ const KEY = 'vynatix-motion';
   // 8. No WebGL: the still silk, nothing thrown, and no button that could do nothing.
   {
     const { ctx, page, errors } = await open({}, { fn: () => { const get = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (type) { return /webgl/.test(type) ? null : get.apply(this, arguments); }; } });
-    await go(page, 'services');
+    await go(page, 'services.html');
     const s = await state(page);
     check(still(s) && !s.shown && errors.length === 0, 'a browser that refuses WebGL: the still silk, no canvas left behind, the button hidden, nothing thrown', `${JSON.stringify(s)} ${errors.join(' | ')}`);
     await ctx.close();
@@ -241,7 +253,7 @@ const KEY = 'vynatix-motion';
   // 9. A lost WebGL context (phones drop them freely): back to the still silk, and the button offers to start again.
   {
     const { ctx, page, errors } = await open({}, { fn: () => { const get = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function () { const g = get.apply(this, arguments); if (g && this.className === 'silk-canvas') window.__gl = g; return g; }; } });
-    await go(page, 'work');
+    await go(page, 'work.html');
     const before = await state(page);
     await page.evaluate(() => window.__gl.getExtension('WEBGL_lose_context').loseContext());
     await page.waitForTimeout(300);
@@ -259,7 +271,7 @@ const KEY = 'vynatix-motion';
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
     const page = await ctx.newPage();
     await page.addInitScript((KEY) => { try { localStorage.setItem(KEY, 'off'); } catch (e) {} }, KEY);
-    await page.goto(url('terms'), { waitUntil: 'load' });
+    await page.goto(url('terms.html'), { waitUntil: 'load' });
     const g = PNG.sync.read(await page.screenshot());
     let px = 0, flat = 0;
     for (let x = 4; x < 36; x += 3) {

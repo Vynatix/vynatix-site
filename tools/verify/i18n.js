@@ -1,6 +1,9 @@
-// The generated languages (es/, fr/, de/, ja/, ar/: LANGS in tools/seo-head.py). The other checks iterate PAGES, the
-// pages written by hand at the root; this one is for the pages tools/seo-head.py builds from them and from the
-// catalogues in tools/i18n/. Serve the repo root first, as for the others.
+// The generated languages (es/, fr/, de/, ja/, ar/: LANGS in tools/seo-head.py): what only they have, the catalogues
+// in tools/i18n/, the pages tools/seo-head.py builds from the root pages and from them, the language gate and the
+// faces of their scripts. The checks of every page (links, requests, theme, csp, mailto and publish among them)
+// take the generated pages as well. Scope: generated, every generated page (pagesIn('generated') in _common.js),
+// a sample of them for axe, and the root pages where the gate looks for a link to a draft language. Serve the repo
+// root first, as for the others.
 //   node verify/i18n.js            every check below
 //   node verify/i18n.js --static   the checks that need no browser
 //
@@ -20,14 +23,16 @@
 //    words); the home hero's headline stays on its two lines;
 //  - the page's direction is the language's; the strings app.js writes come from the page (the background motion
 //    button, the rate calculator's announcement);
-//  - axe finds nothing on each language's home page, Career page and one long page;
+//  - axe finds nothing on a sample of each language: the copies of the English pages of the root sample
+//    (samplePages('root') in _common.js, the first page of each kind of row), so each kind of page is scanned in
+//    every language (a11y.js scans each generated home page with the consent bar up and after a decline);
 //  - on the pages of a script Geist does not draw (Japanese, Arabic), the browser is asked which font drew each
 //    run of text (the DevTools protocol's platform fonts): the script's text face where Geist stands, its accent
 //    face where Fraunces italic stands, and never a device font, which is what a character missing from the
 //    subsets in fonts/ falls back to. `python3 tools/lang-fonts.py` cuts them again.
 const fs = require('fs');
 const path = require('path');
-const { ROOT, PAGES, BASE, THEMES, readLangs, readRegistry, generatedPages, pinTheme, launch, pool } = require('./_common');
+const { ROOT, BASE, THEMES, readLangs, readRegistry, pagesIn, samplePages, scopeLine, pinTheme, launch, pool } = require('./_common');
 
 const SITE = 'https://vynatix.com/';
 const results = [];
@@ -37,8 +42,13 @@ const few = (list, n = 4) => list.slice(0, n).join(' | ') + (list.length > n ? `
 
 const langs = readLangs();
 const generated = Object.entries(langs).filter(([, l]) => l.kind === 'generated');
-const pages = generatedPages();
+const pages = pagesIn('generated');
 const registry = readRegistry();
+// The axe sample: in each generated language, its copies of the English pages of the root sample.
+const AXE_PAGES = samplePages('root').filter((f) => registry[f].lang === 'en');
+const axeJobs = [];
+for (const [code] of generated) for (const f of AXE_PAGES) if (pages.includes(code + '/' + f)) axeJobs.push(code + '/' + f);
+console.log(scopeLine('generated', pages, { note: `axe on a sample of ${axeJobs.length}, the copies of ${AXE_PAGES.filter((f) => axeJobs.some((j) => j.endsWith('/' + f))).join(', ')}; the root pages where the gate looks for a link to a draft language` }));
 const urlOf = (f) => (f === 'index.html' ? SITE : SITE + f.replace(/(^|\/)index\.html$/, '$1'));
 
 // ---------------------------------------------------------------- catalogues
@@ -135,7 +145,7 @@ for (const [code, l] of generated) {
     for (const [name, text] of [['sitemap.xml', sitemap], ['tools/urls.lock', lock], ['llms.txt', llms]]) {
       if (text.includes(prefix)) gate.push(`${name} names the draft language ${code}`);
     }
-    for (const p of PAGES) {
+    for (const p of pagesIn('root')) {
       if (new RegExp(`(?:href|src)="${code}/`).test(read(p)) || read(p).includes(prefix)) gate.push(`${p} links to the draft language ${code}`);
     }
   } else {
@@ -155,7 +165,6 @@ add(!gate.length, 'a draft language is linked from nowhere and listed nowhere; a
 
 // ---------------------------------------------------------------- in the browser
 const WIDTHS = [360, 768, 1280];
-const AXE_PAGES = ['index.html', 'membership.html', 'ai-engineering.html'];
 
 async function sweep(browser) {
   const theme = THEMES[0];
@@ -237,9 +246,8 @@ async function axe(browser) {
   const src = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
   const problems = [];
   const jobs = [];
-  for (const [code] of generated) for (const f of AXE_PAGES) for (const theme of THEMES) jobs.push([code + '/' + f, theme]);
+  for (const p of axeJobs) for (const theme of THEMES) jobs.push([p, theme]);
   await pool(jobs, 4, async ([p, theme]) => {
-    if (!pages.includes(p)) { problems.push(`${p} is not generated`); return; }
     // bypassCSP for the scan only, as in a11y.js: script-src 'self' refuses the injected axe source.
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, bypassCSP: true });
     await ctx.addInitScript(pinTheme, theme);
@@ -252,7 +260,7 @@ async function axe(browser) {
     for (const v of res.violations) problems.push(`${p} (${theme}): ${v.id} on ${v.nodes.length} node${v.nodes.length === 1 ? '' : 's'}, first ${v.nodes[0].target.join(' ')}`);
     await ctx.close();
   });
-  add(!problems.length, `axe finds nothing on ${AXE_PAGES.join(', ')} of each language (${jobs.length} scans)`, few(problems, 6));
+  add(axeJobs.length > 0 && !problems.length, `axe finds nothing on the sample of each language, ${axeJobs.length} pages (${jobs.length} scans)`, few(problems, 6));
 }
 
 // The faces of the scripts Geist does not draw: tokens.css declares them (the end of its @font-face block),

@@ -1,4 +1,5 @@
-// Copies that are meant to be exact and that no other check compares. Static: no browser, no server.
+// Copies that are meant to be exact and that no other check compares. Static: no browser, no server. Scope: root,
+// the root pages that hold the copies (the generated languages are written from them by tools/seo-head.py).
 //   node verify/copies.js               the self-test, then the check of the tree
 //   node verify/copies.js --self-test   only the self-test: each part must fail on a changed copy
 //   node verify/copies.js --root DIR    the same on another tree, a scratch copy for instance
@@ -47,7 +48,7 @@
 // failure, never a skip. Every problem line starts with FAIL and names its part.
 const fs = require('fs');
 const path = require('path');
-const { ROOT, readRegistry, parseTags, htmlToText, decodeEntities, appConst } = require('./_common');
+const { ROOT, readRegistry, scopeLine, parseTags, htmlToText, decodeEntities, appConst } = require('./_common');
 
 const SUFFIX = ', Vynatix';
 const SITE = 'https://vynatix.com/';
@@ -779,6 +780,7 @@ if (require.main === module) {
   const only = process.argv.includes('--self-test');
   let bad = selfTest(root, process.argv.includes('--verbose'));
   if (!only) {
+    console.log(scopeLine('root', [], { what: 'the root pages that hold the copies (each part names its own), with llms.txt, tools/seo/blog.json and app.js' }));
     const { problems, notes } = check((f) => fs.readFileSync(path.join(root, f), 'utf8'), { registry: readRegistry(root) });
     for (const n of notes) console.log(`ok   ${n.part}: ${n.msg}`);
     for (const p of problems) console.log(`FAIL ${p.part}: ${p.msg}`);

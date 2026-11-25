@@ -1,4 +1,6 @@
-// The hero fit (styles.css, "Hero fit"): when the page loads, the first screen is the hero.
+// The hero fit (styles.css, "Hero fit"): when the page loads, the first screen is the hero. Scope: root, the home
+// page of each written language, the two pages the Hero fit block solves for (a generated home page's headline is
+// held to its two lines by i18n.js).
 //
 // The hero is drawn in its own unit, --hero-u, which styles.css solves from the window's height, so that
 // the header and the hero's message end exactly on the fold. Nothing is measured by
@@ -54,7 +56,7 @@
 // THEMES only: the two themes share every size.
 const fs = require('fs');
 const path = require('path');
-const { ROOT, BASE, THEMES, launch, pinTheme } = require('./_common.js');
+const { ROOT, BASE, THEMES, launch, pinTheme, scopeLine } = require('./_common.js');
 
 const REPORT = !!process.env.REPORT;
 const WRITE = process.argv.includes('--write');
@@ -138,6 +140,7 @@ function measure() {
 }
 
 (async () => {
+  console.log(scopeLine('root', Object.keys(RULES), { feature: 'the home page of each written language, the pages the Hero fit block solves for' }));
   const browser = await launch();
   let problems = 0, rows = 0;
   const check = (ok, name, detail) => {

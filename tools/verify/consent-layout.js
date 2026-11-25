@@ -1,5 +1,7 @@
 // Layout and accessibility of the consent bar, measured in a real browser with the module armed
-// (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted).
+// (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted). Scope: root, a sample
+// of the root pages: the home page of each written language (writtenHomes() in _common.js), and with FULL=1 the
+// first withdrawn page of the registry too; the two notices for the bar beside their in-page panel.
 //   node verify/consent-layout.js                 about two minutes, both themes: mono-light,mono-dark
 //   THEMES=mono-dark node verify/consent-layout.js    only the themes named
 //   FULL=1 node verify/consent-layout.js          more viewports, pages and Tab sweeps
@@ -18,7 +20,7 @@
 const fs = require('fs');
 const { PNG } = require('pngjs');
 const {
-  PLACEHOLDER_ID, THEMES: ENV_THEMES, ALL_THEMES, launch, pool,
+  PLACEHOLDER_ID, THEMES: ENV_THEMES, ALL_THEMES, NOTICE_PAGES, launch, pool, readRegistry, writtenHomes, scopeLine,
 } = require('./_common');
 const C = require('./_consent');
 
@@ -26,12 +28,15 @@ const { sleep, snap, armedContext, open, barButton: btn } = C;
 const FULL = !!process.env.FULL;
 const THEMES = process.env.THEMES ? ENV_THEMES : ALL_THEMES;           // both of the site's themes; THEMES= narrows it
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
-const PAGES_L = FULL ? ['index.html', 'sv.html', 'android-automotive-consultancies-gothenburg.html'] : ['index.html', 'sv.html'];
+// The pages the bar is measured on: the home page of each written language, the two languages the bar is written in,
+// and with FULL=1 also the first withdrawn page of the registry, a stub that is barely taller than the bar.
+const REGISTRY = readRegistry();
+const PAGES_L = writtenHomes().concat(FULL ? Object.keys(REGISTRY).filter((f) => REGISTRY[f].status === 'withdrawn').slice(0, 1) : []);
 const VIEWPORTS = [[320, 568], [360, 640], [390, 844], [768, 1024], [1440, 900], [320, 256]];
 const PHONES = [[320, 568], [360, 640], [390, 844]];
 const rep = C.reporter();
 const ck = rep.check;
-const langOf = (p) => (p === 'sv.html' ? 'sv' : 'en');
+const langOf = (p) => (REGISTRY[p] && REGISTRY[p].lang === 'sv' ? 'sv' : 'en');
 const copy = require('./_common').readApp().copy;
 
 // --- measuring helpers (serialised into the page) --------------------------------------------------
@@ -116,6 +121,7 @@ async function reopen(page) {
 }
 
 (async () => {
+  console.log(scopeLine('root', PAGES_L, { sample: `the home page of each written language${FULL ? ' and the first withdrawn page' : ''}`, note: `the bar beside the in-page panel on ${Object.values(NOTICE_PAGES).join(', ')}` }));
   const t0 = Date.now();
   const browser = await launch();
   const timings = [];
@@ -287,7 +293,7 @@ async function reopen(page) {
 
   // -------------------------------------------------------------------------------------------------
   await scenario('NAME AND LANDMARK: label in name', async () => {
-    for (const [p, lang] of [['index.html', 'en'], ['sv.html', 'sv']]) {
+    for (const [p, lang] of writtenHomes().map((h) => [h, langOf(h)])) {
       const L = copy[lang];
       const env = await armedContext(browser, { viewport: { width: 390, height: 844 }, theme: THEMES[0] });
       const page = await open(env.ctx, p);
@@ -438,7 +444,7 @@ async function reopen(page) {
     const jobs = [];
     const vps = [[320, 568], [390, 844], [1440, 900]];
     for (const theme of THEMES) for (const [w, h] of vps) for (const p of PAGES_L) jobs.push({ theme, w, h, p, state: 'first' });
-    for (const p of ['privacy.html', 'integritet.html']) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'first' });
+    for (const p of Object.values(NOTICE_PAGES)) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'first' });
     for (const p of PAGES_L) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'reopen' });
     const rows = await pool(jobs, 3, async (j) => {
       // bypassCSP only to inject axe, as a11y.js does; the policy itself is proven by csp.js and consent.js

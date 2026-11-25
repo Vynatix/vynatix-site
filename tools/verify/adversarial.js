@@ -1,5 +1,7 @@
 // Proves the CSP BLOCKS attacks, rather than merely permitting legitimate traffic.
-// Every check here is an attack that must fail.
+// Every check here is an attack that must fail. Scope: root, the English home page
+// and the English notice, the pages the attacks are tried on (csp.js holds that
+// every page carries the same policy).
 //
 // Each blocked-origin check is made real: the attacker's host is routed to a 200 with a working payload, so
 // nothing but the Content-Security-Policy can stop it, and the check asserts the securitypolicyviolation the
@@ -12,7 +14,7 @@
 // asserted by headers.js instead. Two of the checks below (storage
 // poisoning and URL reflection) pass because app.js has no reflective sink,
 // not because the CSP blocks them — they guard against a future regression.
-const { BASE, ALL_THEMES, NOTICE_PAGES, TEST_ID, GTAG_SCRIPT, armGa, launch } = require('./_common');
+const { BASE, ALL_THEMES, NOTICE_PAGES, TEST_ID, GTAG_SCRIPT, armGa, launch, scopeLine } = require('./_common');
 
 // A 1x1 transparent PNG, so an image from the attacker's host is a real image if it is ever allowed through.
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
@@ -37,6 +39,7 @@ async function routeAttacker(ctx) {
 }
 
 (async () => {
+  console.log(scopeLine('root', ['index.html', NOTICE_PAGES.en], { feature: 'the pages the attacks are tried on' }));
   const browser = await launch();
   const results = [];
   const record = (name, passed, detail) =>

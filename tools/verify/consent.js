@@ -1,4 +1,6 @@
-// Behaviour of the consent module in app.js, in a real browser, with every Google request stubbed.
+// Behaviour of the consent module in app.js, in a real browser, with every Google request stubbed. Scope: root,
+// every root page (pagesIn('root') in _common.js) for the undecided visit and the bar's language, and the pages
+// named where they are for the other scenarios.
 //   node verify/consent.js            about two minutes
 //   FULL=1 node verify/consent.js     the whole table of damaged stored answers
 //   node verify/consent.js --update   re-take the consent-text snapshot (see the last check) and stop. It refuses
@@ -15,8 +17,15 @@
 //
 // What this proves, and what it cannot: the stand-in behaves as Google documents gtag, nothing more. Real
 // gtag cookie and network behaviour is covered only by consent-live.js and the pre-flip checklist.
+//
+// Why root: the bar's wording is English and Swedish only (COPY in app.js), and its language rules here are those
+// of the two written languages. A generated page shows the English bar beside a footer link in its own language,
+// so "the bar names the footer link" does not hold there (AGENTS.md, Languages: counsel decides before the flip
+// whether the bar needs the language). requests.js loads every generated page with the module armed, so nothing
+// leaves before an answer there either, and a11y.js scans the bar with axe and the contrast sweep on the home page
+// of each generated language.
 const {
-  PAGES, BASE, TEST_ID, PLACEHOLDER_ID, CONSENT_KEY, POLICY_VERSION, NOTICE_PAGES, launch, pool, pinConsent,
+  pagesIn, scopeLine, BASE, TEST_ID, PLACEHOLDER_ID, CONSENT_KEY, POLICY_VERSION, NOTICE_PAGES, launch, pool, pinConsent,
   readApp, appConst, rewriteGaIdSource, normalisePurgeOnly, PURGE_DECL, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
   stripComments, stripElements, decodeEntities, htmlToText, escapeRegExp,
 } = require('./_common');
@@ -25,6 +34,7 @@ const { googleHostMentions } = require('./csp');
 
 const { sleep, until, snap, barButton: btn, gaCookies, allCookies, armedContext, open } = C;
 const FULL = !!process.env.FULL;
+const PAGES = pagesIn('root');
 const app = readApp();
 const copy = app.copy;
 const today = todayUtc();
@@ -76,6 +86,7 @@ function clean(env, name) {
 }
 
 (async () => {
+  console.log(scopeLine('root', PAGES, { note: 'the other scenarios on the pages named in them' }));
   const t0 = Date.now();
   const browser = await launch();
   const timings = [];
@@ -203,7 +214,7 @@ function clean(env, name) {
   });
 
   // ---------------------------------------------------------------------------------------------
-  await scenario('UNDECIDED and LANGUAGE: every page, nothing from Google, the bar in the page\'s language', async () => {
+  await scenario('UNDECIDED and LANGUAGE: every root page, nothing from Google, the bar in the page\'s language', async () => {
     const rows = await pool(PAGES, 4, async (p) => {
       const env = await armedContext(browser, { init: [[(re) => {
         const hosts = new RegExp(re, 'i');
@@ -281,7 +292,7 @@ function clean(env, name) {
     const kept = armNotes.csp.kept || 0, rewritten = armNotes.csp.rewritten || 0, present = armNotes.footer.present || 0, inserted = armNotes.footer.inserted || 0;
     console.log(`note  armed pages: policy already widened on ${kept}, rewritten on ${rewritten}; footer link already present on ${present}, inserted on ${inserted}`);
     ck(inserted === 0 && rewritten === 0 && present === PAGES.length && kept === PAGES.length,
-      'the armed run did not have to repair any page: every page already carries the widened policy and the Cookie settings link (the harness inserts them only into a tree that lacks them)',
+      'the armed run did not have to repair any page: every root page already carries the widened policy and the Cookie settings link (the harness inserts them only into a tree that lacks them)',
       `policy kept on ${kept} of ${PAGES.length}, rewritten on ${rewritten}; footer link present on ${present}, inserted on ${inserted}`);
     // Three navigations without choosing: still nothing.
     const env = await armedContext(browser);

@@ -1,6 +1,7 @@
 // Permanence and editorial-safety checks. Static, no browser, no server: reads the tree as GitHub Pages
 // will publish it. GitHub Pages cannot redirect and a push to main is live, so a page that has been public
-// has to keep answering for good, and a page that must come down has to actually stop serving its text.
+// has to keep answering for good, and a page that must come down has to actually stop serving its text. Scope: all,
+// the root pages of the registry and every URL of tools/urls.lock, the generated pages among them.
 //   node verify/permanence.js
 //   node verify/permanence.js --self-test     proves the checks fail for the right reasons (in `npm run check`)
 //
@@ -36,7 +37,7 @@ const fs = require('fs');
 const os = require('os');
 const { execFileSync } = require('child_process');
 const path = require('path');
-const { ROOT, NOTICE_PAGES, readRegistry, parseTags, htmlToText, stripComments, decodeEntities } = require('./_common');
+const { ROOT, NOTICE_PAGES, readRegistry, pagesIn, scopeLine, parseTags, htmlToText, stripComments, decodeEntities } = require('./_common');
 
 const SITE = 'https://vynatix.com/';
 const urlOf = (f) => (f === 'index.html' ? SITE : SITE + f);
@@ -452,6 +453,7 @@ if (require.main === module) {
     process.exit(bad ? 1 : 0);
   }
   let bad = 0;
+  console.log(scopeLine('all', pagesIn('all'), { note: 'and every URL of tools/urls.lock' }));
   for (const r of run()) {
     if (r.ok) console.log('ok   ' + r.name);
     else { bad++; console.log('FAIL ' + r.name + (r.detail ? '\n       ' + r.detail : '')); }

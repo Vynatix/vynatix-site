@@ -1,6 +1,7 @@
-// The docs' facts and the blocks of styles.css. Static, no browser, no server, no npm install.
+// The docs' facts and the blocks of styles.css. Static, no browser, no server, no npm install. Scope: all, the pages
+// counted from the registry, the language table and the folders on disk, none of them read.
 //
-//   node verify/docs.js               the blocks of styles.css, and the page counts the docs state
+//   node verify/docs.js               the blocks of styles.css, the page counts the docs state and the checks' scopes
 //   node verify/docs.js --facts       print the facts the docs keep typing: the page counts, the storage keys of
 //                                     app.js, the steps of the check chain and the names of the styles.css blocks
 //   node verify/docs.js --literals    print every number the docs put before "pages", and how each is read
@@ -22,13 +23,21 @@
 //    lines are read as one line. A number in any other form (a sample, "axe on three pages of each", or a dated
 //    measurement) is not read: --literals lists those too, so a person can see what the check leaves alone.
 //
+// 3. The scopes of the checks. Every check in tools/verify/ (a .js file whose name does not start with _) says which
+//    part of the page universe it walks (pagesIn() in _common.js): the first paragraph of its header, the one
+//    `node check.js --list` prints (firstParagraph in check.js), holds a sentence that opens "Scope: root",
+//    "Scope: generated" or "Scope: all", and its code, comments left out, calls scopeLine(), so that a run prints
+//    the scope too. A check that lacks either fails, by name.
+//
 // The facts come from the registry and the language table, tools/site/pages and tools/site/langs.json (read by
 // _common.js, as every check reads them), and from the files on disk; nothing here parses seo-head.py.
 const fs = require('fs');
 const path = require('path');
-const { ROOT: REPO, readRegistry, readLangs, generatedPages, stripJsComments } = require('./_common');
+const { ROOT: REPO, readRegistry, readLangs, generatedPages, pagesIn, scopeLine, stripJsComments } = require('./_common');
 
 const DOCS = ['AGENTS.md', 'CLAUDE.md', 'tools/README.md'];
+// How check.js --list reads a header: the same reader, so the scope this check asks for is the one the list shows.
+const { headerLines, firstParagraph } = require('../check');
 
 // The blocks of styles.css in source order, by the names the docs use. A group is [name, [its blocks]].
 const BLOCKS = [
@@ -356,6 +365,26 @@ function readCounts(text, facts) {
   return { checked, other };
 }
 
+// --- 3. the scopes of the checks -----------------------------------------------------------------------------------
+
+const SCOPE_SENTENCE = /\bScope: (?:root|generated|all)\b/;
+// The problems of one check, given its file: [] when its header's first paragraph states a scope and its code
+// prints one.
+function scopeProblemsOf(file) {
+  const name = path.basename(file);
+  const out = [];
+  if (!SCOPE_SENTENCE.test(firstParagraph(headerLines(file)))) out.push(`${name}: the first paragraph of its header (what check.js --list prints) has no "Scope: root", "Scope: generated" or "Scope: all"`);
+  let code = '';
+  try { code = stripJsComments(fs.readFileSync(file, 'utf8')); } catch (e) { out.push(`${name} cannot be read (${e.code || e.message})`); }
+  if (!/\bscopeLine\s*\(/.test(code)) out.push(`${name}: its code never calls scopeLine(), so a run does not print its scope`);
+  return out;
+}
+// The checks of a tree: tools/verify/*.js but the helpers (_common.js, _consent.js).
+function checkFiles(root) {
+  const dir = path.join(root, 'tools', 'verify');
+  return fs.readdirSync(dir).filter((f) => f.endsWith('.js') && !f.startsWith('_')).sort().map((f) => path.join(dir, f));
+}
+
 // --- running -------------------------------------------------------------------------------------------------------
 
 function run(root) {
@@ -385,6 +414,11 @@ function run(root) {
       }
     }
   }
+
+  let files = [];
+  try { files = checkFiles(root); } catch (e) { add(false, 'tools/verify can be read', e.message); }
+  const scopes = files.flatMap(scopeProblemsOf);
+  add(files.length > 0 && scopes.length === 0, `every check of tools/verify (${files.length}) states its scope in its header and prints it (scopeLine)`, scopes.join(' | '));
   return results;
 }
 
@@ -544,6 +578,26 @@ function selfTest(root) {
   const listed = readCounts('down five pages, both themes', F).other;
   t(listed.length === 1 && listed[0].phrase === 'five pages', '--literals: a number that is not read is still listed', JSON.stringify(listed));
 
+  // Scopes: a check written to the rule passes, and each way of missing it fails, read as check.js --list reads it.
+  const scratch = fs.mkdtempSync(path.join(require('os').tmpdir(), 'docs-scope-'));
+  const scoped = (name, text) => { const f = path.join(scratch, name); fs.writeFileSync(f, text); return scopeProblemsOf(f); };
+  const good = '// A check of the pages. Static. Scope: all, every page.\n//   node verify/x.js\nconst { scopeLine } = require(\'./_common\');\nconsole.log(scopeLine(\'all\', pages));\n';
+  t(scoped('good.js', good).length === 0, 'scopes: a header that states its scope and code that prints it pass', scoped('good.js', good).join(' | '));
+  const scopeFails = (name, text, reason) => {
+    const p = scoped(name, text);
+    t(p.length > 0 && p.every((x) => x.startsWith(name)) && p.some((x) => reason.test(x)), `scopes: ${name} fails`, p.length ? p.join(' | ') : 'it passed');
+  };
+  scopeFails('no-scope.js', good.replace(' Scope: all, every page.', ''), /has no "Scope: root"/);
+  scopeFails('unknown-scope.js', good.replace('Scope: all', 'Scope: every'), /has no "Scope: root"/);
+  scopeFails('later-paragraph.js', good.replace(' Scope: all, every page.', '\n//\n// Scope: all, every page.'), /has no "Scope: root"/);
+  scopeFails('after-usage.js', good.replace(' Scope: all, every page.\n//   node verify/x.js', '\n//   node verify/x.js\n// Scope: all.'), /has no "Scope: root"/);
+  scopeFails('not-printed.js', good.replace("console.log(scopeLine('all', pages));", "// console.log(scopeLine('all', pages));"), /never calls scopeLine/);
+  let realLinks = null;
+  try { realLinks = fs.readFileSync(path.join(root, 'tools', 'verify', 'links.js'), 'utf8'); } catch (e) { /* reported below */ }
+  t(realLinks !== null && scoped('links.js', realLinks).length === 0, 'scopes: the real links.js passes');
+  if (realLinks !== null) scopeFails('links.js', realLinks.replace(/Scope: all/g, 'Covers all'), /has no "Scope: root"/);
+  fs.rmSync(scratch, { recursive: true, force: true });
+
   // The printers: storage keys by storage, and the chain with its npm scripts opened up.
   const keys = storageKeys("var K = 'vynatix-a'; // localStorage.getItem('vynatix-c')\nlocalStorage.setItem(K, 1); sessionStorage.getItem('vynatix-b'); var L = 'vynatix-d';");
   t(JSON.stringify(keys) === JSON.stringify({ 'vynatix-a': ['localStorage'], 'vynatix-b': ['sessionStorage'], 'vynatix-d': [] }),
@@ -567,7 +621,7 @@ function report(results, passText, failText) {
   return bad === 0 ? 0 : 1;
 }
 
-module.exports = { BLOCKS, readBanners, blockProblems, pageFacts, storageKeys, chainSteps, readCounts, numberOf, run, selfTest };
+module.exports = { BLOCKS, readBanners, blockProblems, pageFacts, storageKeys, chainSteps, readCounts, numberOf, scopeProblemsOf, checkFiles, run, selfTest };
 
 if (require.main === module) {
   const argv = process.argv.slice(2);
@@ -583,7 +637,8 @@ if (require.main === module) {
   if (argv.includes('--facts')) { printFacts(root); process.exit(0); }
   if (argv.includes('--literals')) { printLiterals(root); process.exit(0); }
   if (argv.includes('--self-test')) {
-    process.exit(report(selfTest(root), 'the block check and the count check fail for the right reasons', 'in the self-test'));
+    process.exit(report(selfTest(root), 'the block check, the count check and the scope check fail for the right reasons', 'in the self-test'));
   }
-  process.exit(report(run(root), 'the blocks of styles.css are in order and every page count the docs state is true', 'in the docs or in styles.css'));
+  console.log(scopeLine('all', pagesIn('all', root), { note: 'counted, not read' }));
+  process.exit(report(run(root), 'the blocks of styles.css are in order, every page count the docs state is true and every check states its scope', 'in the docs, in styles.css or in the checks'));
 }

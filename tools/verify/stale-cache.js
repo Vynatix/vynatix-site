@@ -1,7 +1,12 @@
 // Proves a browser holding an OLD copy of the site's shared files cannot be paired
 // with the NEW page: the failure iOS Chrome showed after the design-system
 // migration (new html, old styles.css: icons at full width in black, default
-// list bullets, an unstyled header).
+// list bullets, an unstyled header). Scope: root, every root page (pagesIn('root')
+// in _common.js).
+//
+// Why root: a generated page links the same files under the same stamped addresses (../styles.css?v=<hash> is
+// styles.css?v=<hash>), which stamp.js --check holds on every page, and the old build this harness primes is
+// written with links relative to the root.
 //
 // It runs its own server, so it needs no `python3 -m http.server`. The server
 // lets assets live in the browser cache for a year (an exaggeration of
@@ -60,7 +65,8 @@ const OLD_HTML = '<!doctype html><html lang="en"><head><meta charset="utf-8"><ti
   ALL.map((a) => (a.endsWith('.css') ? `<link rel="stylesheet" href="${a}">` : `<script src="${a}"></script>`)).join('') +
   '</head><body><main><p>old build</p></main></body></html>';
 
-const PAGES_TO_TRY = ['index.html', 'services.html', 'about.html'];
+const { pagesIn, scopeLine } = require('./_common');
+const PAGES_TO_TRY = pagesIn('root');
 const STRIP_UPGRADE = ENGINE !== 'chromium';
 // Every regular-expression metacharacter, backslash included, so a file name can never change the pattern.
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -98,6 +104,7 @@ const hashOf = (f) => crypto.createHash('sha256')
   .update(fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\r\n/g, '\n')).digest('hex').slice(0, 8);
 
 (async () => {
+  console.log(scopeLine('root', PAGES_TO_TRY));
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}/`;
   const browser = await launch();

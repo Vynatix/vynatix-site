@@ -1,4 +1,5 @@
 // The release gate: what must be true before GA_ID in app.js is set to a real Measurement ID and the branch is merged.
+// Scope: all for the footer link and the policy, root for the rest (the last paragraph says why).
 //   node verify/release-gate.js              npm run release-gate
 //   node verify/release-gate.js --self-test  proves the gate fails for the right reason (no browser, no server)
 //
@@ -14,11 +15,15 @@
 // It exits 0 only when every scripted gate holds, and then it does NOT print a bare PASS: it prints
 // `scripted gates pass, N human gates open`, because the gates a script cannot see (counsel, Google's terms, the
 // real-ID run, the keyboard and screen reader passes) are printed above it and are still the owner's.
+//
+// The scope: every root page and every generated page (pagesIn('all') in _common.js) for the footer link and the
+// Content-Security-Policy; the root pages for the stale "no analytics" sentences (a generated page's text is its
+// English page's, translated); and the notices for what only they carry.
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const {
-  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, readApp, appConst, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
+  ROOT, NOTICE_PAGES, TEST_ID, THEME_KEY, pagesIn, scopeLine, readApp, appConst, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
   todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
 } = require('./_common');
 const csp = require('./csp');
@@ -308,7 +313,7 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   const stale = staleSentences(root);
   const staleNorm = stale.sentences;
   const hay = [];
-  for (const rel of PAGES) {
+  for (const rel of pagesIn('root', root)) {
     const html = rel in pages ? pages[rel] : tryRead(rel);
     if (html === null) continue;
     const blocks = htmlTexts(html);
@@ -344,18 +349,19 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   if (fresh.length > MAX_WARN_LINES) warns.push(`${fresh.length - MAX_WARN_LINES} more read-by-eye sentence(s) not shown (the list stops at ${MAX_WARN_LINES}); fix the first ones and run the gate again`);
   if (suppressed) notes.push(`${suppressed} read-by-eye sentence(s) matched READ_BY_EYE_OK in tools/verify/release-gate.js (read once, true today) and are not printed`);
 
-  // 7. The footer link on every page (the same test as verify/publish.js)
+  // 7. The footer link on every page, root and generated (the same test as verify/publish.js)
   const noLink = [];
-  for (const rel of PAGES) {
+  const every = pagesIn('all', root);
+  for (const rel of every) {
     const html = rel in pages ? pages[rel] : tryRead(rel);
     if (html === null) { noLink.push(rel + ' (missing)'); continue; }
-    if (pub.footerLinkProblems(html).length) noLink.push(rel);
+    if (pub.footerLinkProblems(html, rel).length) noLink.push(rel);
   }
-  add('footer', 'every page in PAGES', noLink.length === 0, 'the footer carries the Cookie settings link (data-consent-open, href privacy.html#cookies)', noLink.length ? `missing on ${noLink.length}: ${noLink.slice(0, 5).join(', ')}` : '');
+  add('footer', `every page (${every.length})`, noLink.length === 0, 'the footer carries the Cookie settings link (data-consent-open, href privacy.html#cookies)', noLink.length ? `missing on ${noLink.length}: ${noLink.slice(0, 5).join(', ')}` : '');
 
   // 8. The CSP, identical everywhere and equal to EDGE-SETUP.md
   let cspResults = [];
-  try { cspResults = csp.run(root, PAGES); } catch (e) { cspResults = [{ ok: false, name: 'csp.js ran', detail: e.message }]; }
+  try { cspResults = csp.run(root, pagesIn('all', root)); } catch (e) { cspResults = [{ ok: false, name: 'csp.js ran', detail: e.message }]; }
   const cspBad = cspResults.filter((r) => !r.ok);
   add('csp', 'every page, EDGE-SETUP.md', cspBad.length === 0, 'the Content-Security-Policy is identical on every page and equals EDGE-SETUP.md minus frame-ancestors (verify/csp.js)',
     cspBad.length ? cspBad.map((r) => r.name).slice(0, 3).join(' | ') + (cspBad.length > 3 ? ` (+${cspBad.length - 3}; run node verify/csp.js)` : '') : '');
@@ -627,8 +633,10 @@ function selfTest() {
   t(staleOf(add('There are <strong>no cookies</strong>. We set none, so there is no consent banner to click.')) > sbase, 'the old "no cookies ... no consent banner" sentences add a hit');
   t(staleOf(add('Before then the site used no analytics and set no cookies.')) === sbase, 'an honest history sentence ("Before then the site used no analytics") adds none');
 
-  // The footer link row shares publish.js's test.
+  // The footer link row shares publish.js's test, on the root pages and the generated ones.
   t(ok({ 'about.html': fs.readFileSync(path.join(ROOT, 'about.html'), 'utf8').replace(/data-consent-open/g, '') }, 'footer') === false, 'a page whose footer link lost data-consent-open fails the footer gate');
+  const generatedOne = pagesIn('generated')[0];
+  t(ok({ [generatedOne]: fs.readFileSync(path.join(ROOT, generatedOne), 'utf8').replace(/data-consent-open/g, '') }, 'footer') === false, `a generated page (${generatedOne}) whose footer link lost data-consent-open fails the footer gate`);
   console.log(bad === 0 ? '\nPASS — the release gate fails for the right reasons' : `\nFAIL — ${bad} self-test(s) wrong`);
   return bad;
 }
@@ -637,6 +645,7 @@ module.exports = { htmlTexts, runChecks, staleSentences, selfTest, readyFiles, H
 
 if (require.main === module) {
   if (process.argv.includes('--self-test')) process.exit(selfTest() === 0 ? 0 : 1);
+  console.log(scopeLine('all', pagesIn('all'), { note: 'the stale sentences on the root pages, the notices for what only they carry' }));
   const report = runChecks();
   process.exit(printReport(report) === 0 ? 0 : 1);
 }

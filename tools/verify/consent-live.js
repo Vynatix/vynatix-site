@@ -1,5 +1,6 @@
 // The one check that talks to Google for real. Everything else stubs Google; this proves what the stubs only
-// imitate, with the dummy Measurement ID G-TEST000000 and nothing else.
+// imitate, with the dummy Measurement ID G-TEST000000 and nothing else. Scope: root, the English home page, About
+// page and notice, the pages the visit goes through.
 //   node verify/consent-live.js --live            (npm run consent-live; LIVE=1 does the same where the shell allows it)
 //   ENGINES=chromium,firefox,webkit               which browsers (default all three; one that is not installed or
 //                                                 cannot start in this environment is reported and skipped)
@@ -23,6 +24,7 @@
 // checklist for the run on vynatix.com with the real ID.
 const {
   BASE, ROOT, TEST_ID, GOOGLE_HOSTS, GTAG_SCRIPT, isAllowedGoogleHost, readApp, rewriteGaIdSource, redact, launch, todayUtc,
+  scopeLine,
 } = require('./_common');
 const C = require('./_consent');
 
@@ -200,6 +202,7 @@ async function runBfcache(name) {
   if (readApp(ROOT, rewritten).gaId !== TEST_ID) { console.error('refusing to run: the rewritten ID is not exactly the dummy ID'); process.exit(2); }
 
   const proxy = proxyOption();
+  console.log(scopeLine('root', ['index.html', 'about.html', 'privacy.html'], { feature: 'the pages the visit goes through' }));
   console.log(`consent-live: dummy ID ${TEST_ID}, pages from ${BASE}, ${proxy ? 'browsers via the proxy at ' + proxy.server : 'no proxy configured'}, ${todayUtc()}`);
   let ran = 0;
   for (const name of ENGINES) {

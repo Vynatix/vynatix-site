@@ -16,8 +16,8 @@
 // run itself.
 //
 // A step is a browser step when its script calls launch( (the one in _common.js), directly or through a local
-// helper it requires other than _common.js, or through a sibling script it runs as a child process (bg-fit.js runs
-// bg-sheet.js that way). Every other step is static: the Python generator's --check, stamp.js --check and the
+// helper it requires other than _common.js and this runner (docs.js reads headers with the reader below), or through
+// a sibling script it runs as a child process (bg-fit.js runs bg-sheet.js that way). Every other step is static: the Python generator's --check, stamp.js --check and the
 // self-tests among them. The static steps run first, one after the other, as in the chain. Then the runner starts
 // its own server over the repository root on a free port, sets BASE to it for every child, and runs the browser
 // steps as child processes, N at a time. The two hero guards start first: bg-sheet.js is the longest check by far,
@@ -150,9 +150,11 @@ function readChain() {
   return steps;
 }
 
-// Why a script is a browser step ('calls launch()', 'through x.js', 'runs x.js'), or null for a static one.
+// Why a script is a browser step ('calls launch()', 'through x.js', 'runs x.js'), or null for a static one. The
+// runner itself is not a reason: it starts browsers only as the steps it runs, so a script that requires it for its
+// helpers stays what its own code makes it.
 function browserReason(file, seen = new Set()) {
-  if (!file || seen.has(file) || file === COMMON || !/\.js$/.test(file)) return null;
+  if (!file || seen.has(file) || file === COMMON || file === SELF || !/\.js$/.test(file)) return null;
   seen.add(file);
   let code;
   try { code = stripJsComments(fs.readFileSync(file, 'utf8')); } catch (e) { return null; }

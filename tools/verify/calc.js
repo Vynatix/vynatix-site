@@ -1,4 +1,5 @@
-// The rate calculator on the Career page (membership.html, #rate-calculator; the fourth block of app.js).
+// The rate calculator on the Career page (membership.html, #rate-calculator; the fourth block of app.js). Scope:
+// root, the page the calculator is on (i18n.js reads its announcement on the Career page of each generated language).
 //   node verify/calc.js
 //
 // The page works out, in the browser, what an hourly rate pays as a monthly salary. This check types figures into
@@ -12,7 +13,7 @@
 //
 // The constants are the ones the page prints; a change to a term is made in app.js, in the labels of
 // membership.html and here, together.
-const { BASE, launch } = require('./_common');
+const { BASE, launch, scopeLine } = require('./_common');
 
 const EMPLOYER_FEE = 0.3142;
 const HOLIDAY = 5 / 52;
@@ -73,6 +74,7 @@ const read = (page) => page.evaluate(() => {
 });
 
 (async () => {
+  console.log(scopeLine('root', ['membership.html'], { feature: 'the page the rate calculator is on' }));
   const browser = await launch();
   let problems = 0;
   const check = (ok, name, detail) => {

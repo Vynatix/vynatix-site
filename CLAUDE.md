@@ -259,7 +259,9 @@ calculator's arithmetic and no-JavaScript state (`calc.js`), the page counts the
 order of the `styles.css` blocks (`docs.js`), accessibility
 including a contrast sweep, and a screenshot diff.
 The generated languages have their own check in the chain, `i18n.js` (catalogues complete, the draft gate,
-every generated page loaded at three widths, axe on three pages of each).
+every generated page loaded at three widths, axe on a sample of each), and the checks of every page take the
+generated pages too (links, requests, theme, csp, mailto; a11y a sample of them). Each check states its scope, root,
+generated or all, in its header and in the first line it prints (`docs.js` holds them to it).
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
 (`python3 -m http.server 8000`), or run `node tools/check.js`, which serves the tree itself, runs the browser checks side by

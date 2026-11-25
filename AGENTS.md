@@ -1272,8 +1272,8 @@ section is the working rules.
 **Where a post lives.** At the flat root, as `<slug>.html`, with a slug that is undated, descriptive and
 permanent (a-z, 0-9, hyphens; it must not contain the words `project` or `membership`). Never in a directory:
 a `blog/` directory breaks `stamp.js` (non-recursive, and its regex needs `href="styles.css`), the exact-match
-footer checks, the font preloads in `app.js` (any path ending `/` is treated as the home page), `links.js`
-(it resolves against the base URL, not the page) and `publish.js`. Never `_posts/*.md`: Jekyll publishes a
+footer checks, the font preloads in `app.js` (any path ending `/` is treated as the home page)
+and `publish.js`. Never `_posts/*.md`: Jekyll publishes a
 markdown file without front matter at `/YYYY/MM/DD/name.html` and `publish.js` lets it pass. A slug is never
 reused and a URL never removed.
 
@@ -1550,14 +1550,14 @@ memory or from this file. Resolve it from evidence; the release gate refuses to
 pass while any remains. The legal text is a draft for counsel and says so on the
 page; the banner stays until counsel's written sign-off.
 
-**Checks.** `csp.js` (the CSP is identical on all 34 pages, matches
+**Checks.** `csp.js` (the CSP is identical on all 114 pages, root and generated, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
 order), `publish.js` ("what ships": every root `*.html` has its registry row in
 `tools/site/pages` and every row its page; every other root file that is not a page or a listed asset
 type, and every directory other than the known ones, is named in `_config.yml`'s
 `exclude` or flagged; every footer carries the Cookie settings link with
-`data-consent-open` and `href="privacy.html#cookies"`; the notice link in `COPY`
+`data-consent-open` and `href="privacy.html#cookies"` (`../privacy.html#cookies` on a generated page); the notice link in `COPY`
 points at the right notice page; both notices name the three storage keys in
 `<code>`; the site's style rules are linted (role tokens only: no colour literal in
 `styles.css` outside the token files, and no inline style in a page or from
@@ -1681,11 +1681,18 @@ add third-party font/CDN requests for fonts.
   prints what each step proves, from its script's own header; `--static`, `--only` and `--since <rev>` are in
   `tools/README.md`.
   The generated languages have their own check, `i18n.js` (catalogues complete, every generated page
-  well-formed and linked right, the draft gate, a load of every page at three widths, axe on three pages of
-  each language), and `seo.js` takes in a generated language once it is live; see *Languages*.
+  well-formed and linked right, the draft gate, a load of every page at three widths, axe on a sample of
+  each language), and `seo.js` takes in a generated language once it is live; see *Languages*. The other checks of
+  every page take the generated pages too (`links.js`, `requests.js`, `theme.js`, `csp.js`, `mailto.js` and the page
+  rules of `publish.js`); `a11y.js` scans every root page and the home page of each generated language, a sample
+  that keeps the run inside its time.
   A new page also needs its registry row, `tools/site/pages/<slug>.json`, which puts
   it in `PAGES` for every check and in `sitemap.xml` once `seo-head.py` runs;
-  `publish.js` fails if a root `*.html` has no row.
+  `publish.js` fails if a root `*.html` has no row. No check keeps a list of its own: each takes its
+  pages from the registry and the generated folders (`pagesIn()` in `tools/verify/_common.js`) and states
+  its scope, root, generated or all, in the first paragraph of its header and in the first line it prints;
+  one that walks fewer pages to stay inside its time takes `samplePages()` and says it is a sample, and
+  `docs.js` fails on a check that states no scope.
   Because light or dark follows the system, the checks that need a particular theme pin
   it first (`pinTheme` in `tools/verify/_common.js` sets the storage key for the theme;
   `pinConsent` pins the analytics choice, and `armGa` arms

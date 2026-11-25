@@ -1,6 +1,7 @@
 // Asserts the site makes ZERO off-origin requests, that the self-hosted fonts
 // actually resolve, and that no CSP violation fires — on every page, in every
-// theme under test (THEMES, default light,dark).
+// theme under test (THEMES, default light,dark). Scope: all, every root page
+// and every generated page (pagesIn('all') in _common.js).
 //
 // This is the "nothing leaves before a choice" proof for Google Analytics. It runs three ways:
 //   - as shipped, a plain browser, no routes: whatever app.js does on a first visit (nothing, while GA_ID is the
@@ -19,9 +20,11 @@
 //       off-origin requests allowed are to the CSP's own Google hosts (GOOGLE_HOSTS). A collect hit the page
 //       aborts while it unloads (ERR_ABORTED) is tolerated; any other failure is not.
 const {
-  PAGES, BASE, THEMES, GOOGLE_HOSTS, GTAG_SCRIPT, pinTheme, pinConsent, armGa, abortGoogle, launch, pool, redact,
-  isAllowedGoogleHost,
+  BASE, THEMES, GOOGLE_HOSTS, GTAG_SCRIPT, pinTheme, pinConsent, armGa, abortGoogle, launch, pool, redact,
+  isAllowedGoogleHost, pagesIn, scopeLine,
 } = require('./_common');
+
+const PAGES = pagesIn('all');
 
 const LIVE = process.env.CONSENT === 'granted';
 const ONLY = ['undecided', 'denied'].includes(process.env.CONSENT) ? process.env.CONSENT : null;
@@ -112,6 +115,7 @@ async function visit(browser, p, theme, state) {
 }
 
 (async () => {
+  console.log(scopeLine('all', PAGES));
   const browser = await launch();
   let failures = 0;
   const jobs = [];

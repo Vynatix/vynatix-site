@@ -1,9 +1,10 @@
 // Asserts the security response headers described in EDGE-SETUP.md are present
-// and correct. Run against the live origin once the edge is in place:
+// and correct. Scope: root, the home page, whose response carries the headers.
+// Run against the live origin once the edge is in place:
 //   BASE=https://vynatix.com/ node verify/headers.js
 // Against a plain GitHub Pages origin (or the local server) every header-only
 // control is expected to be MISSING — that is the gap the edge closes.
-const { BASE, launch } = require('./_common');
+const { BASE, launch, scopeLine } = require('./_common');
 
 // These are the literal values EDGE-SETUP.md tells you to set. Keep the two in
 // sync: if the runbook changes, this must change with it.
@@ -21,6 +22,7 @@ const PERMISSIONS = ['accelerometer', 'camera', 'geolocation', 'gyroscope',
   'magnetometer', 'microphone', 'payment', 'usb'];
 
 (async () => {
+  console.log(scopeLine('root', ['index.html'], { feature: 'the home page, whose response carries the headers' }));
   const browser = await launch();
   const page = await browser.newPage();
   const resp = await page.goto(BASE, { waitUntil: 'domcontentloaded' });

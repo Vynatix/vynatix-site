@@ -148,7 +148,7 @@ CLAUDE.md:55-59:
 - Decided: 17 November 2026.
 - First recorded: 7b4a849, 17 November 2026.
 - Governs: `app.js` (the theme block), the `<html data-theme>` of every page, `tokens.css`, the two notices.
-- Class 1, holds all. `tools/verify/theme.js:56` (every visit to every page shows a Monochrome theme and writes no `vynatix-look`), `:72` and `:96` (the toggle and the older stored ids stay within Monochrome); `tools/verify/publish.js:170-171` (`vynatix-look` in `app.js` or a notice fails). Bringing back the draw fails both.
+- Class 1, holds all. `tools/verify/theme.js:70` (a first visit to every page shows a Monochrome theme and writes no `vynatix-look`), `:87` and `:111` (the toggle and the older stored ids stay within Monochrome); `tools/verify/publish.js:170-171` (`vynatix-look` in `app.js` or a notice fails). Bringing back the draw fails both.
 
 #### A02 `liquid-glass`
 
@@ -181,7 +181,7 @@ CLAUDE.md:73-74:
 - Decided: 18 November 2026.
 - First recorded: 186c9d5, 18 November 2026.
 - Governs: `app.js` (the silk block), `styles.css` (the still silk), `assets/silk-*.png`, `tools/silk-masks.js`.
-- Class 1, holds all. `tools/verify/waves.js:68` (on a first visit every page has one live canvas drawing frames) and `:82` (two frames 2 s apart differ in at least 15% of the pixels). A still or slid silk fails them. P02 is a side guard: it fails on the keyframe drift the owner rejected, which `waves.js` would not see while a canvas also draws.
+- Class 1, holds all. `tools/verify/waves.js:80` (on a first visit each page of the sample has one live canvas drawing frames) and `:94` (two frames 2 s apart differ in at least 15% of the pixels). A still or slid silk fails them. P02 is a side guard: it fails on the keyframe drift the owner rejected, which `waves.js` would not see while a canvas also draws.
 - Patterns: P02.
 
 #### A04 `silk-fluent`
@@ -192,7 +192,7 @@ AGENTS.md:284-286:
 - Decided: unrecorded (the sentence gives no day; the commit that wrote it is of 18 November).
 - First recorded: d645180, 18 November 2026.
 - Governs: `app.js` (the silk block).
-- Class 2, holds part. No check holds it: `waves.js:82` passes at thirty frames a second too. P03 fails on the frame cap that was removed. Not held: any other way of dropping frames, and "fluent" itself, which is a judgement.
+- Class 2, holds part. No check holds it: `waves.js:94` passes at thirty frames a second too. P03 fails on the frame cap that was removed. Not held: any other way of dropping frames, and "fluent" itself, which is a judgement.
 - Patterns: P03.
 
 #### A05 `silk-answers-visitor`
@@ -203,7 +203,7 @@ AGENTS.md:295-299:
 - Decided: unrecorded.
 - First recorded: 92f1b84, 18 November 2026.
 - Governs: `app.js` (the silk block).
-- Class 1, holds all. `tools/verify/waves.js:128` (with the clock frozen the picture changes near the pointer and not at the far edge) and `:133` (it changes after a scroll).
+- Class 1, holds all. `tools/verify/waves.js:140` (with the clock frozen the picture changes near the pointer and not at the far edge) and `:145` (it changes after a scroll).
 
 #### A06 `one-ambient-motion`
 
@@ -219,7 +219,7 @@ CLAUDE.md:146-148:
 - Decided: unrecorded.
 - First recorded: 07372bc, 20 November 2026 (as worded today; the words "an owner decision whose limits must not be loosened" were first written in CLAUDE.md by 052d75e (20 October 2026) about the iris background, since removed).
 - Governs: `styles.css`, `hero-bg.css`, `app.js`, `index.html` (the client list), every page (the pause button).
-- Class 1, holds part. `tools/verify/a11y.js:123` (the client list is one still list: no hidden copy, no animation, no marquee pause control), `a11y.js:190` (with reduced motion nothing animates, by CSS or by the Web Animations API), `publish.js:201-202` (no keyframes, animation or transition in `hero-bg.css`), `waves.js:150-161` (the pause button stops and resumes the loop). Not held: a second moving thing for a visitor without reduced motion. P02 holds that for `styles.css`, `hero-bg.css` and the Web Animations call in `app.js`; a loop written with `requestAnimationFrame` is not held.
+- Class 1, holds part. `tools/verify/a11y.js:136` (the client list is one still list: no hidden copy, no animation, no marquee pause control), `a11y.js:203` (with reduced motion nothing animates, by CSS or by the Web Animations API), `publish.js:201-202` (no keyframes, animation or transition in `hero-bg.css`), `waves.js:162-173` (the pause button stops and resumes the loop). Not held: a second moving thing for a visitor without reduced motion. P02 holds that for `styles.css`, `hero-bg.css` and the Web Animations call in `app.js`; a loop written with `requestAnimationFrame` is not held.
 - Patterns: P02.
 
 #### A07 `silk-behind-hero`
@@ -230,7 +230,7 @@ AGENTS.md:334-335:
 - Decided: unrecorded.
 - First recorded: e25e466, 18 November 2026 (then "behind the English home hero and its four backgrounds"; worded as today since 07372bc (20 November 2026)).
 - Governs: `app.js` (the silk block), `styles.css` (the hero), `index.html`.
-- Class 1, holds part. `tools/verify/waves.js:68` (a live canvas on every page, `index.html` included). Not held: a hero painted opaque over the canvas.
+- Class 1, holds part. `tools/verify/waves.js:80` (a live canvas on each page of the sample, `index.html` included). Not held: a hero painted opaque over the canvas.
 
 #### A08 `one-hero-background`
 
@@ -253,7 +253,7 @@ AGENTS.md:411-415:
 - Decided: 24 November 2026.
 - First recorded: c36ead7, 24 November 2026.
 - Governs: `tools/sheet-art.js` (`lift`), `assets/bg-sheet-art-2.svg`, `assets/bg-sheet-edge-2.svg`, `hero-bg.css`.
-- Class 1, holds all. `tools/verify/bg-sheet.js:360-361` (the A-frame's apex within 1.25px of the first headline line's cap line, its datum within 24 units of the foot of the buttons), run again on a scaled hero by `bg-fit.js`.
+- Class 1, holds all. `tools/verify/bg-sheet.js:363-364` (the A-frame's apex within 1.25px of the first headline line's cap line, its datum within 24 units of the foot of the buttons), run again on a scaled hero by `bg-fit.js`.
 
 #### A10 `hero-gap-96`
 
@@ -280,7 +280,7 @@ CLAUDE.md:112:
 - Decided: unrecorded.
 - First recorded: b0175e1, 18 November 2026.
 - Governs: `styles.css` (Hero fit), `hero-bg.css`, `index.html`, `sv.html`.
-- Class 1, holds all. `tools/verify/hero-fit.js:199` (F: at a table of real windows on both home pages the buttons end above the fold and the clients' rule lies on it) and `:202` (E: the envelope's edges and browser zoom).
+- Class 1, holds all. `tools/verify/hero-fit.js:202` (F: at a table of real windows on both home pages the buttons end above the fold and the clients' rule lies on it) and `:205` (E: the envelope's edges and browser zoom).
 
 #### A12 `bronze-budget`
 
@@ -477,7 +477,7 @@ AGENTS.md:1105-1106:
 - Decided: 22 November 2026.
 - First recorded: 2354573, 22 November 2026.
 - Governs: `tokens.css` (the `@font-face` block), `styles.css` (Languages), `fonts/*-ja.woff2`, `fonts/*-ar.woff2`, `tools/lang-fonts.py`.
-- Class 1, holds all. `tools/verify/i18n.js:325` (on the Japanese and Arabic pages every run of text is drawn by the script's own text or accent face and never a device font).
+- Class 1, holds all. `tools/verify/i18n.js:333` (on the Japanese and Arabic pages every run of text is drawn by the script's own text or accent face and never a device font).
 
 #### A26 `languages-live-waived`
 
@@ -622,7 +622,7 @@ CLAUDE.md:201-202:
 - Decided: 20 November 2026 (asked for; the record does not name who asked).
 - First recorded: 1f7e539, 20 November 2026.
 - Governs: `membership.html` (`[data-calc-share]`, `[data-calc-reveal]`), `app.js`.
-- Class 1, holds part. `tools/verify/calc.js:115-116` (on arrival the slider is hidden and the share is 70 per cent), `:120` (held at 70 while hidden), `:127` (the title has no attribute but its class and hook, no pointer cursor, no tab stop, and the section's text has none of click, clicks, tap, press, times, hidden, secret, unlock), `:136` (five quick clicks show it). Not held: a hint outside the calculator's section or in other words.
+- Class 1, holds part. `tools/verify/calc.js:117-118` (on arrival the slider is hidden and the share is 70 per cent), `:122` (held at 70 while hidden), `:129` (the title has no attribute but its class and hook, no pointer cursor, no tab stop, and the section's text has none of click, clicks, tap, press, times, hidden, secret, unlock), `:138` (five quick clicks show it). Not held: a hint outside the calculator's section or in other words.
 
 #### A37 `calc-terms-are-the-owners`
 
@@ -635,7 +635,7 @@ CLAUDE.md:203-205:
 - Decided: unrecorded.
 - First recorded: 47c8957, 20 November 2026.
 - Governs: `app.js` (the calculator's constants), `membership.html` (the labels), `tools/verify/calc.js`.
-- Class 1, holds part. `tools/verify/calc.js:19-21` with its model: a term changed in `app.js` alone fails. Not held: a term changed in all three places together, which the record still leaves to the owner.
+- Class 1, holds part. `tools/verify/calc.js:20-22` with its model: a term changed in `app.js` alone fails. Not held: a term changed in all three places together, which the record still leaves to the owner.
 
 #### A38 `calc-no-terms-sentence`
 
@@ -837,7 +837,7 @@ CLAUDE.md:173-177:
 - Decided: unrecorded.
 - First recorded: a835c3a, 19 October 2026.
 - Governs: the CSP meta of every page, `EDGE-SETUP.md` (section 3), `GOOGLE_HOSTS` in `tools/verify/_common.js`.
-- Class 1, holds all. `tools/verify/csp.js:150` (`script-src` is exactly `'self'` and the pinned gtag path), `:154` (`connect-src` is exactly `'self'` and `GOOGLE_HOSTS`), `:158` (no `'unsafe-*'`, bare `*` or scheme), `:171` (every Google source is on the list), `:117` and `:137` (one policy on every page, equal to `EDGE-SETUP.md`). Widening it, and taking the accepted hosts out of one copy, both fail.
+- Class 1, holds all. `tools/verify/csp.js:153` (`script-src` is exactly `'self'` and the pinned gtag path), `:157` (`connect-src` is exactly `'self'` and `GOOGLE_HOSTS`), `:161` (no `'unsafe-*'`, bare `*` or scheme), `:174` (every Google source is on the list), `:120` and `:140` (one policy on every page, equal to `EDGE-SETUP.md`). Widening it, and taking the accepted hosts out of one copy, both fail.
 
 #### A52 `home-pictures`
 
@@ -1977,7 +1977,7 @@ Lines of the two files that hold a search term and are not cited above, with the
 | CLAUDE.md:32, 33, 34 | repeats A26 |
 | CLAUDE.md:36 | repeats A27 |
 | CLAUDE.md:64, 68 | repeats A02 |
-| CLAUDE.md:77 | a WCAG requirement (AGENTS.md:310-312), held by `waves.js:150-161` |
+| CLAUDE.md:77 | a WCAG requirement (AGENTS.md:310-312), held by `waves.js:162-173` |
 | CLAUDE.md:97 | repeats A09 |
 | CLAUDE.md:158 | a visitor's choice, not the owner's |
 | CLAUDE.md:179, 222 | a fact for a person or counsel to supply (a `[[CONFIRM]]` marker), not recorded as the owner's decision |

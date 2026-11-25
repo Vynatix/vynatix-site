@@ -1,10 +1,13 @@
 // What ships: the checks on the repository as GitHub Pages will publish it. Static, no browser, no server; second in
-// `npm run check`, after csp.js, because every other script takes its list of pages from PAGES in _common.js (the
-// files of the registry, tools/site/pages/) and trusts that nothing else is published.
+// `npm run check`, after csp.js, because every other script takes its pages from the registry (the files of
+// tools/site/pages/, through pagesIn() in _common.js) and trusts that nothing else is published. Scope: root for the
+// registry and the files at the root; all, every root page and every generated page, for the footer link, the hero
+// background and the inline styles.
 //   node verify/publish.js
 //
 //  - every *.html at the root has a registry file, tools/site/pages/<slug>.json, and every registry file a page (a
-//    page without a row is not in PAGES, so it escapes the CSP, link, SEO and consent checks, which all iterate it);
+//    page without a row is in no check's pages, so it escapes the CSP, link, SEO and consent checks, which all walk
+//    the registry);
 //  - every other file at the root is a page, an asset the site uses (css, js, xml, ico, png, svg, webmanifest,
 //    CNAME, robots.txt, llms.txt or the IndexNow <32 hex>.txt key) or is named in _config.yml `exclude`; a directory
 //    is assets, fonts, .well-known, tools (excluded), .git or the folder of a live generated language, or is
@@ -16,7 +19,8 @@
 //  - every url() in every published stylesheet (tokens.css, colors_and_type.css, styles.css, hero-bg.css) names a
 //    published file, resolved against the stylesheet; data: URIs, fragment-only references and @supports conditions
 //    are not fetched and are not compared;
-//  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
+//  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies
+//    (../privacy.html#cookies on a generated page, whose notice is the English one at the root);
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
 //  - both notice pages name every storage key the site's script uses (app.js), each in <code>;
 //  - the hero background is the drafting sheet alone: hero-bg.css is linked by index.html only, holds still, role-token
@@ -29,7 +33,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, NOTICE_PAGES, readRegistry, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, NOTICE_PAGES, readRegistry, readLangs, pagesIn, scopeLine, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -53,12 +57,17 @@ function yamlList(text, key) {
   return out;
 }
 
-// The footer's Cookie settings link problems of one page, or [] when it is there.
-function footerLinkProblems(html) {
+// The way up from a page to the root: '' for a root page, '../' for 'es/services.html'.
+const upFrom = (page) => '../'.repeat(page.split('/').length - 1);
+
+// The footer's Cookie settings link problems of one page, or [] when it is there. `page` is the page's path from the
+// root, so that a generated page's link is read as pointing up to the notice.
+function footerLinkProblems(html, page = '') {
+  const want = upFrom(page) + 'privacy.html#cookies';
   const footer = (/<footer\b[\s\S]*<\/footer>/i.exec(html) || [''])[0];
   const links = parseTags(footer, 'a').filter((t) => 'data-consent-open' in t.attrs);
   if (!links.length) return ['no link with data-consent-open in the footer'];
-  if (!links.some((t) => t.attrs.href === 'privacy.html#cookies')) return ['the data-consent-open link does not point at privacy.html#cookies'];
+  if (!links.some((t) => t.attrs.href === want)) return [`the data-consent-open link does not point at ${want}`];
   return [];
 }
 
@@ -150,7 +159,8 @@ function cssUrlProblems(text, sheet, isPublished, onDisk) {
   return { refs, problems };
 }
 
-// pages: the root pages to check, by default the registry of `root` (PAGES in _common.js is the same list for ROOT).
+// pages: the root pages to check, by default the registry of `root` (pagesIn('root') in _common.js). The checks of
+// every page add the generated pages of `root` to them.
 function run(root = ROOT, pages) {
   const results = [];
   const add = (ok, name, detail) => results.push({ ok, name, detail: detail || '' });
@@ -158,15 +168,18 @@ function run(root = ROOT, pages) {
 
   // --- the pages on disk and the registry
   if (!pages) {
-    try { pages = Object.keys(readRegistry(root)); } catch (e) { add(false, 'the registry, tools/site/pages, can be read', e.message); pages = []; }
+    try { pages = pagesIn('root', root); } catch (e) { add(false, 'the registry, tools/site/pages, can be read', e.message); pages = []; }
   }
+  let generatedPages = [];
+  try { generatedPages = pagesIn('generated', root); } catch (e) { add(false, 'the generated pages can be listed', e.message); }
+  const everyPage = pages.concat(generatedPages);
   let entries = [];
   try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch (e) { add(false, 'the repository root can be read', e.message); }
   const htmlOnDisk = entries.filter((e) => e.isFile() && /\.html?$/i.test(e.name)).map((e) => e.name);
   const notListed = htmlOnDisk.filter((f) => !pages.includes(f));
   const missing = pages.filter((f) => !htmlOnDisk.includes(f));
   add(!notListed.length && !missing.length, `the *.html files at the root are exactly the ${pages.length} pages of the registry: each has its file in tools/site/pages, and each file there its page`,
-    [notListed.length ? `no registry file: ${notListed.join(', ')} (it is not in PAGES, so csp, links, seo and consent skip it; give it its row, tools/site/pages/<slug>.json, or it should not be a page)` : '',
+    [notListed.length ? `no registry file: ${notListed.join(', ')} (it is in no check's pages, so csp, links, seo and consent skip it; give it its row, tools/site/pages/<slug>.json, or it should not be a page)` : '',
       missing.length ? `a registry file but no page: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
 
   // --- what Pages would publish
@@ -248,13 +261,13 @@ function run(root = ROOT, pages) {
 
   // --- the footer link on every page
   const noFooter = [];
-  for (const p of pages) {
+  for (const p of everyPage) {
     const html = tryRead(p);
     if (html === null) { noFooter.push(`${p} (missing)`); continue; }
-    const pr = footerLinkProblems(html);
+    const pr = footerLinkProblems(html, p);
     if (pr.length) noFooter.push(`${p} (${pr[0]})`);
   }
-  add(noFooter.length === 0, 'the footer of every page carries the Cookie settings link (data-consent-open, href privacy.html#cookies)',
+  add(noFooter.length === 0, `the footer of every page (${everyPage.length}) carries the Cookie settings link (data-consent-open, href privacy.html#cookies, from a generated page ../privacy.html#cookies)`,
     noFooter.length ? `${noFooter.length}: ${noFooter.slice(0, 4).join(', ')}${noFooter.length > 4 ? ' ...' : ''}` : '');
 
   // --- the notice links in COPY
@@ -300,10 +313,10 @@ function run(root = ROOT, pages) {
     const hero = tryRead('hero-bg.css');
     if (hero === null) bad.push('hero-bg.css is missing');
     if (tryRead('hero-bg.js') !== null) bad.push('hero-bg.js is back (the sheet has no script; the other backgrounds were removed)');
-    for (const pg of pages) {
+    for (const pg of everyPage) {
       const html = tryRead(pg);
       if (html === null) continue;
-      const linksCss = /href="hero-bg\.css(\?v=[0-9a-f]*)?"/.test(html);
+      const linksCss = /href="(?:\.\.\/)*hero-bg\.css(\?v=[0-9a-f]*)?"/.test(html);
       if (pg === 'index.html' && !linksCss) bad.push('index.html does not link hero-bg.css');
       if (pg !== 'index.html' && linksCss) bad.push(`${pg} links hero-bg.css, which only index.html may`);
       if (/hero-bg\.js/.test(html)) bad.push(`${pg} links hero-bg.js`);
@@ -343,13 +356,13 @@ function run(root = ROOT, pages) {
       found.length ? `${found.slice(0, 5).join(', ')}${found.length > 5 ? ' ...' : ''}. Use a role token; if a hex is truly needed, add it to ALLOWED_HEX in verify/publish.js with the reason` : '');
   }
   const inline = [];
-  for (const p of pages) {
+  for (const p of everyPage) {
     const html = tryRead(p);
     if (html === null) continue;
     const markup = stripElements(stripComments(html), ['script', 'style']);
     if (/<[a-zA-Z][^<>]*\sstyle\s*=/.test(markup)) inline.push(p);
   }
-  add(inline.length === 0, 'no page has a style="" attribute (the CSP pins style-src \'self\')', inline.join(', '));
+  add(inline.length === 0, `no page (${everyPage.length}) has a style="" attribute (the CSP pins style-src 'self')`, inline.join(', '));
   if (app) {
     const code = stripJsComments(app.src);
     const hits = [];
@@ -377,6 +390,7 @@ function run(root = ROOT, pages) {
 module.exports = { run, yamlList, footerLinkProblems, storageKeyProblems, publishedOnDisk, cssUrlProblems, ALLOWED_HEX };
 
 if (require.main === module) {
+  console.log(scopeLine('root', pagesIn('root'), { note: `the footer link, the hero background and the inline styles on all ${pagesIn('all').length} pages` }));
   const results = run();
   let bad = 0;
   for (const r of results) {

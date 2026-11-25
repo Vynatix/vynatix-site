@@ -160,6 +160,26 @@ fails if it does not. One more file carries a stamp and is not shared: `hero-bg.
 the hero background, which only `index.html` loads (`stamp.js` and
 `stale-cache.js` handle it, and the stamp check fails if any other page links it).
 
+**Bringing `main` into a branch.** Two branches that both touch a stamped file
+conflict in every page. Run `cd tools && npm run sync` (`node tools/sync.js`)
+instead of settling them by hand. It fetches `origin/main`, starts
+`git merge --no-commit --no-ff origin/main` if no merge is in progress, and
+settles what needs no judgement. The files a tool writes whole (the generated
+language folders, `sitemap.xml`, `tools/i18n/messages.json`) come from the
+branch. Each root page is merged again from its three stages with every `?v=`
+value masked, so a stamp cannot conflict. `tools/urls.lock` keeps every row of
+`main` as it stands, and the generator appends the branch's own.
+`tools/urls.retired` keeps every line of `main`, with the branch's own after
+them. Every other conflict, `llms.txt` and `_config.yml` included, and any real
+conflict in a page is named for a person, and nothing is regenerated: settle
+each, `git add` it and run the command again. When nothing is left it runs
+`seo-head.py`, `stamp.js`, both `--check`s and `permanence.js` and stages the
+merge; the commit is yours. **Never settle a root page by taking one side of the
+whole file:** the other side's hand-written edits are lost and every check still
+passes. Run the command before you edit a conflicted page. A page you settled by
+hand is never overwritten, but one that still holds git's own markers is merged
+again.
+
 What the stamps do not cover: GitHub's CDN ignores the query string, so it can
 answer a new stamp with the previous bytes until a deploy replaces its copy (the
 stamps protect the visitor's browser, not the CDN); and an old HTML page cached

@@ -136,7 +136,9 @@ highlights the things most worth keeping front-of-mind.
   protect the visitor's browser cache; GitHub's CDN ignores the query string. After
   editing any of the five, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
-  (rename one if a stale copy would show).
+  (rename one if a stale copy would show). To bring `main` into a branch,
+  run `cd tools && npm run sync` and never take one side of a root page: it settles
+  the stamp conflicts and stops for the real ones (AGENTS.md, *Bringing `main` into a branch*).
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
   (theme toggle, mobile nav, the silk background's `js-waves` and pause
   button, the Career page's rate calculator, and last, where `consent.js`

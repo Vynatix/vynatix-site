@@ -24,6 +24,16 @@ module does:
 What is never translated: scripts, styles, inline SVG, <code>, anything with translate="no"
 or with a lang attribute of its own, and messages without a letter in them (figures).
 
+Dates are not part of a message's wording. A date that is the whole text of an inline element (on the
+site a <time>, as in the bylines) stands in the message as {date}, so the byline of a guide is
+      Published <1>{date}</1>
+and the catalogue maps that pattern to its translation once (Publicado el <1>{date}</1>). The date is
+then written in the language's own form, from two kinds of message every catalogue carries anyway for
+the withdrawn stub: the date pattern ('{d} {month} {y}') and the twelve month names. So a guide that is
+re-dated, or a new guide with the byline of the others, needs no new translation in any catalogue. The
+rule is exact: a day, an English month name and a year, alone between <N> and </N>; a date anywhere
+else stays part of the wording. A translation keeps each {date} in its own pair, wherever it puts the pair.
+
 One way out of translate="no", and it is the catalogue's to take: an element held that way which
 has words of its own (the brand line in the home hero) is an optional message. No language owes
 it a translation and none is reported as missing; a catalogue that does carry one releases the
@@ -32,13 +42,42 @@ That is how the brand line is English in Spanish, French and German and has a re
 own in Japanese and Arabic. optional(text) lists these messages; messages.json keeps them apart.
 
     python3 tools/i18n.py                 per language: messages, missing, obsolete; exits 1 if any is missing
-    python3 tools/i18n.py missing <lang>  the missing messages of one language, as a JSON list
-    python3 tools/i18n.py prune           drop catalogue entries no page uses any more
+    python3 tools/i18n.py missing <lang>  the missing messages of one language, as a JSON list, and on
+                                          stderr the previous wording of each one that replaces a sentence
+    python3 tools/i18n.py prune           do what `dates` does, then drop catalogue entries no page uses any more
+    python3 tools/i18n.py dates           carry each entry whose English still holds a date into its pattern
+
+Dates as patterns arrived in step 2.5 of tools/REFACTORING-PLAN.md. Before it, a catalogue held one entry per
+date (Published <1>6 November 2026</1>), and a branch opened before the change may still hold some. `dates`
+carries them across: an entry whose English holds a date in a pair gives way to the entry of its pattern, whose
+translation is the old one with the date, as that catalogue writes a date, taken out (the pattern takes the place
+of the first of its entries, where messages.json lists it too). It drops nothing else and needs no current
+messages.json, so it can run first, before tools/seo-head.py, and on a branch between an English edit and its
+retranslation. It leaves an entry as it is, and names it, when its translation writes the date in another way or
+when the entries of one pattern disagree about the rest of the wording; prune then stops, so that no translation
+is lost, until that pattern is translated by hand. prune runs the same step first. A branch opened before the
+change runs this before it merges the commit that made the change. Where the branch's catalogues are in the order
+prune writes, each pattern then stands on the same line on both sides and the merge is clean (rehearsed with a
+branch that had re-dated a guide by hand in five catalogues; merging first instead conflicts in all five there):
+
+    move=$(git log origin/main --format=%H --reverse -S"def patterned" -- tools/i18n.py | head -1)
+    git merge "$move^"                        # main up to the commit before the change
+    git checkout "$move" -- tools/i18n.py
+    python3 tools/i18n.py dates && python3 tools/seo-head.py
+    git add -A && git commit                  # the branch's own catalogues in the new shape
+    git merge "$move" && git merge origin/main
+
+The previous wording: when an English sentence changes, its old entry stays in the catalogue as an
+obsolete (stale) entry until prune drops it. `missing` looks among them for the one closest to each
+missing message (difflib, a ratio of at least SIMILAR, an entry of the same page first) and prints its
+old English and its translation, so a retranslation starts from the sentence before, not from nothing.
+So run prune after the retranslation, not before. stdout stays the bare JSON list, which can be written
+to a file; the previous wording goes to stderr.
 
 tools/i18n/messages.json (written by tools/seo-head.py, never by hand) lists every message and
 the pages it is on. See AGENTS.md, "Languages".
 """
-import html, json, os, re, sys
+import difflib, html, json, os, re, sys
 from html.parser import HTMLParser
 
 EXEC = os.path.dirname(os.path.abspath(__file__))
@@ -223,7 +262,7 @@ def extract(text):
                             for a, v in _attr_messages(d):
                                 seen.setdefault(_norm(v), None)
             if not _wordless(msg):
-                seen.setdefault(msg, None)
+                seen.setdefault(frame(msg)[0], None)       # a date in its own element is not part of the wording
     return [m for m in seen if not _wordless(m)], warn
 
 
@@ -243,7 +282,7 @@ def optional(text):
             if _releasable(k):
                 msg, _ = _message(text, k)
                 if not _wordless(msg):
-                    seen.setdefault(msg, None)
+                    seen.setdefault(frame(msg)[0], None)
                 continue
             if not _held(k):
                 walk(k)
@@ -259,6 +298,67 @@ def placeholders(msg):
     return sorted(m.group(0) for m in PLACEHOLDER.finditer(msg))
 
 
+# ---------------------------------------------------------------- dates
+# The English month names and the English form of a date, as tools/seo-head.py has them (MONTHS['en'] and
+# DATE_PATTERN), which puts them in messages.json for translation. This module reads a date with them and finds the
+# language's own form under them in the catalogue; seo-head.py stops if its copies and these differ.
+MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+          'November', 'December']
+DATE_PATTERN = '{d} {month} {y}'      # a translation may use {m}, the month as a number, instead of {month}
+DATE_IN_PAIR = re.compile(r'<(\d+)>(\d{1,2}) (' + '|'.join(MONTHS) + r') (\d{4})</\1>')
+SLOT = re.compile(r'<(\d+)>\{date\}</\1>')
+
+
+def frame(msg):
+    """A message as the catalogues key it, and its dates: (the message with each date that is the whole text of a
+    numbered pair replaced by {date}, {pair number: (year, month, day)}). A message without one is its own key."""
+    dates = {}
+
+    def cut(m):
+        dates[m.group(1)] = (int(m.group(4)), MONTHS.index(m.group(3)) + 1, int(m.group(2)))
+        return f'<{m.group(1)}>{{date}}</{m.group(1)}>'
+    return DATE_IN_PAIR.sub(cut, msg), dates
+
+
+def slots(msg):
+    """The numbers of the pairs that hold a {date}, sorted: a translation keeps each one in its own pair."""
+    return sorted(m.group(1) for m in SLOT.finditer(msg))
+
+
+def _dates_kept(key, t):
+    return slots(t) == slots(key) and t.count('{date}') == key.count('{date}')
+
+
+def write_date(cat, y, m, d):
+    """One date in the catalogue's language, from its date pattern and month names: (text, None), or (None, the
+    message the catalogue lacks for it). No English stands in for a missing part: the message is then missing."""
+    pattern = cat.get(DATE_PATTERN)
+    if not isinstance(pattern, str) or not pattern.strip():
+        return None, DATE_PATTERN
+    month = cat.get(MONTHS[m - 1])
+    if '{month}' in pattern and (not isinstance(month, str) or not month.strip()):
+        return None, MONTHS[m - 1]
+    try:
+        return pattern.format(d=d, m=m, month=month, y=y), None
+    except (KeyError, IndexError, ValueError):
+        return None, DATE_PATTERN
+
+
+def translation(cat, msg):
+    """The catalogue's translation of one message, with its dates written in the language: (text, None), or
+    (None, what is missing or unusable: the message's key, or the date pattern or month name a date of it needs)."""
+    key, dates = frame(msg)
+    t = cat.get(key)
+    if not isinstance(t, str) or not t.strip() or placeholders(t) != placeholders(key) or not _dates_kept(key, t):
+        return None, key
+    for n, (y, m, d) in dates.items():
+        w, lack = write_date(cat, y, m, d)
+        if w is None:
+            return None, lack
+        t = t.replace(f'<{n}>{{date}}</{n}>', f'<{n}>{w}</{n}>', 1)
+    return t, None
+
+
 class Page:
     """One translation of one page."""
 
@@ -271,9 +371,9 @@ class Page:
     def lookup(self, msg):
         if _wordless(msg):
             return msg
-        t = self.cat.get(msg)
-        if t is None or not t.strip() or placeholders(t) != placeholders(msg):
-            self.missing.append(msg); return None
+        t, lack = translation(self.cat, msg)
+        if t is None:
+            self.missing.append(lack)
         return t
 
     def tag(self, n, mark_source=False, translate_attrs=True, ltr=False):
@@ -311,8 +411,7 @@ class Page:
         if not _releasable(n):
             return None
         msg, _ = _message(self.src, n)
-        t = self.cat.get(msg)
-        return t if t and t.strip() and placeholders(t) == placeholders(msg) else None
+        return translation(self.cat, msg)[0]
 
     def unit(self, n, release=False):
         msg, pieces = _message(self.src, n)
@@ -367,8 +466,7 @@ def translate_message(msg, catalogue):
     """One message outside a page (structured data, the withdrawn stub); None when missing."""
     if _wordless(msg):
         return msg
-    t = catalogue.get(msg)
-    return t if t and placeholders(t) == placeholders(msg) else None
+    return translation(catalogue, msg)[0]
 
 
 # ---------------------------------------------------------------- catalogues
@@ -389,12 +487,57 @@ def messages():
     return json.load(open(MESSAGES, encoding='utf-8'))
 
 
+def patterned(cat):
+    """The catalogue with its entries of the shape before dates were patterns carried into their patterns (see
+    `dates` at the head of this file): (the new catalogue, the number of entries carried, [(pattern, note)] on the
+    entries left as they are). An entry Published <1>6 November 2026</1> gives way to Published <1>{date}</1>, whose
+    translation is the old one with the date, written as this catalogue writes a date, taken out; the pattern stands
+    where the first of its entries stood. A pattern the catalogue already holds is left alone, and its old entries
+    for prune. An entry is carried only if the pattern, filled with its date, gives back its translation exactly."""
+    found = {}
+    for k, t in cat.items():
+        key, dates = frame(k)
+        if key == k or key in cat or not isinstance(t, str):
+            continue
+        out = t
+        for n, (y, m, d) in dates.items():
+            w, _ = write_date(cat, y, m, d)
+            whole = f'<{n}>{w}</{n}>'
+            if w is None or out.count(whole) != 1:
+                out = None; break
+            out = out.replace(whole, f'<{n}>{{date}}</{n}>')
+        if out is not None and translation({**cat, key: out}, k)[0] != t:
+            out = None
+        found.setdefault(key, []).append((k, out))
+    take, notes = {}, []
+    for key, entries in found.items():
+        derived = list(dict.fromkeys(o for _, o in entries))
+        if None in derived:
+            bad = [k for k, o in entries if o is None]
+            notes.append((key, f'{json.dumps(bad[0], ensure_ascii=False)}: its translation does not write the date the way '
+                               'the date pattern and month names of this catalogue do'))
+        elif len(derived) > 1:
+            notes.append((key, f'{json.dumps(key, ensure_ascii=False)}: its {len(entries)} entries differ in more than the date'))
+        else:
+            take[key] = derived[0]
+    out = {}
+    for k, t in cat.items():
+        key = frame(k)[0]
+        if key in take:
+            out.setdefault(key, take[key])
+        else:
+            out[k] = t
+    return out, sum(len(found[key]) for key in take), notes
+
+
 def problems(msg, t):
     """Why a translation cannot be used, or None."""
     if not isinstance(t, str) or not t.strip():
         return 'empty'
     if placeholders(t) != placeholders(msg):
         return f'placeholders differ: {" ".join(placeholders(msg)) or "none"} expected'
+    if not _dates_kept(msg, t):
+        return 'a {date} has left its pair: ' + (' '.join(f'<{n}>{{date}}</{n}>' for n in slots(msg)) or 'none') + ' expected'
     rest = PLACEHOLDER.sub('', t)
     if '<' in rest or '>' in rest:
         return 'markup other than the numbered placeholders'
@@ -413,6 +556,67 @@ def status(lang):
     return ids, missing, broken, obsolete
 
 
+# ---------------------------------------------------------------- the previous wording
+SIMILAR = 0.6      # the difflib ratio from which a stale entry is offered as the sentence a message replaced
+
+
+def stale(lang):
+    """The stale entries of one catalogue, those whose English is no longer a current message, as
+    [(English, translation, pages)] in catalogue order. A stale entry has left messages.json, so its pages
+    are inferred: those of the nearest current entry before it and after it in the catalogue. That holds
+    because prune writes a catalogue in the order of messages.json, which is page by page, and a sentence
+    that changes keeps its old entry where it was. The inference only ranks the candidates (previous()),
+    it never removes one, so a catalogue in another order costs the preference and nothing else."""
+    data = messages(); cat = load(lang)
+    pages = {m['id']: m['pages'] for m in data['messages']}
+    keep = set(pages) | set(data.get('optional', []))
+    keys = list(cat); out = []
+    for at, k in enumerate(keys):
+        if k in keep or not isinstance(cat[k], str) or not cat[k].strip():
+            continue
+        before = next((keys[i] for i in range(at - 1, -1, -1) if keys[i] in pages), None)
+        after = next((keys[i] for i in range(at + 1, len(keys)) if keys[i] in pages), None)
+        out.append((k, cat[k], list(dict.fromkeys(pages.get(before, []) + pages.get(after, [])))))
+    return out
+
+
+def previous(lang, missing):
+    """For each missing message that has one, the stale entry closest to it, as
+    [(message, old English, old translation, ratio, pages in common, pages of the stale entry)].
+    Closest: a stale entry on a page the message is on beats one that is not, then the higher ratio wins,
+    then the earlier entry. Below SIMILAR nothing is offered, so a sentence that is new is shown alone.
+    autojunk is off: with it on, a message of 200 characters or more treats its common letters as junk
+    and a rewritten paragraph can fall far under the threshold (0.06 instead of 0.40 for one pair)."""
+    old = stale(lang)
+    if not old:
+        return []
+    where = {m['id']: set(m['pages']) for m in messages()['messages']}
+    out = []
+    for msg in missing:
+        best = None; on = where.get(msg, set())
+        sm = difflib.SequenceMatcher(None, autojunk=False)
+        sm.set_seq2(msg)                                   # difflib caches what it learns of the second sequence
+        for english, t, near in old:
+            same = any(p in on for p in near)
+            sm.set_seq1(english)
+            # real_quick_ratio() and quick_ratio() are cheap upper bounds of ratio(): a candidate is dropped at
+            # the first of the three that is under SIMILAR or cannot beat the best so far (a tie keeps the earlier).
+            for bound in (sm.real_quick_ratio, sm.quick_ratio, sm.ratio):
+                r = bound()
+                if r < SIMILAR or (best and (same, r) <= best[0]):
+                    break
+            else:
+                best = ((same, r), english, t, near)
+        if best:
+            (_, r), english, t, near = best
+            out.append((msg, english, t, r, [p for p in near if p in on], near))
+    return out
+
+
+def _pages_note(pages):
+    return ', '.join(pages[:3]) + (f' and {len(pages) - 3} more' if len(pages) > 3 else '')
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     data = messages()
@@ -421,7 +625,47 @@ if __name__ == '__main__':
         if len(args) != 2 or args[1] not in langs:
             raise SystemExit('usage: python3 tools/i18n.py missing <' + '|'.join(langs) + '>')
         ids, missing, broken, _ = status(args[1])
-        print(json.dumps(missing + list(broken), ensure_ascii=False, indent=1)); sys.exit(0)
+        print(json.dumps(missing + list(broken), ensure_ascii=False, indent=1))
+        # The previous wording goes to stderr, so that stdout stays the JSON list above, byte for byte.
+        hints = previous(args[1], missing)
+        if hints:
+            sys.stdout.flush()
+            q = lambda s: json.dumps(s, ensure_ascii=False)
+            err = lambda s='': print(s, file=sys.stderr)
+            err(f'\nThe previous wording, for {len(hints)} of the {len(missing)} missing: the closest stale entry of '
+                f'tools/i18n/{args[1]}.json (difflib ratio {SIMILAR} or more, an entry of the same page first). '
+                'Start the new translation from the old one.')
+            for msg, english, t, r, common, near in hints:
+                err(); err(f' missing  {q(msg)}'); err(f' was      {q(english)}'); err(f' {args[1]} was   {q(t)}')
+                err(f'          ratio {r:.2f}, ' + (f'the same page ({_pages_note(common)})' if common else
+                    f'another page ({_pages_note(near)})' if near else 'its page unknown'))
+        sys.exit(0)
+    if args[:1] in (['dates'], ['prune']):
+        if len(args) != 1:
+            raise SystemExit('usage: python3 tools/i18n.py [missing <lang> | prune | dates]')
+        current = {m['id'] for m in data['messages']} | set(data.get('optional', []))
+        left = []
+        for lang in langs:
+            cat = load(lang)
+            new, carried, notes = patterned(cat)
+            if carried:
+                save(lang, new)
+            if carried or notes or args[0] == 'dates':
+                print(f'  {lang}: {carried} entries with a date carried into {len(new) - len(cat) + carried} patterns')
+            for key, note in notes:
+                print(f'    left as it is: {note}')
+                left += [key] if key in current else []
+        if args[0] == 'dates':
+            sys.exit(0)
+        # A messages.json written before dates were patterns lists the old messages, and prune would drop the patterns.
+        old = [m['id'] for m in data['messages'] if frame(m['id'])[0] != m['id']]
+        if old:
+            raise SystemExit(f'prune stopped, nothing dropped: tools/i18n/messages.json still lists {old[0]!r} with its date; '
+                             'run python3 tools/seo-head.py first')
+        # prune drops what no page uses, and an entry left above may be the only translation a current pattern has.
+        if left:
+            raise SystemExit('prune stopped, nothing dropped: translate ' + ', '.join(repr(k) for k in dict.fromkeys(left)) +
+                             ' by hand from the entries named above, then run it again')
     if args[:1] == ['prune']:
         for lang in langs:
             ids, _, _, obsolete = status(lang)
@@ -432,7 +676,7 @@ if __name__ == '__main__':
             print(f'  {lang}: {len(obsolete)} obsolete entries removed')
         sys.exit(0)
     if args:
-        raise SystemExit('usage: python3 tools/i18n.py [missing <lang> | prune]')
+        raise SystemExit('usage: python3 tools/i18n.py [missing <lang> | prune | dates]')
     bad = 0
     for lang in langs:
         ids, missing, broken, obsolete = status(lang)

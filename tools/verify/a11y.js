@@ -1,8 +1,17 @@
-// Accessibility checks: axe-core scan on every page in every theme under test
-// (THEMES, default light,dark), plus functional tests for the skip link, the
-// still client list, the no-JS and reduced-motion fallbacks, and an
-// independent contrast sweep. The home page is scanned and swept with its hero
-// background, the drafting sheet, in place (it is pure CSS and always there).
+// Accessibility checks: axe-core scan on every root page and a sample of the
+// generated ones, in every theme under test (THEMES, default light,dark), plus
+// functional tests for the skip link, the still client list, the no-JS and
+// reduced-motion fallbacks, and an independent contrast sweep. The home page is
+// scanned and swept with its hero background, the drafting sheet, in place (it
+// is pure CSS and always there). Scope: all, a sample of the pages for the axe
+// scan, the skip link and the contrast sweep, and the English home page for the
+// client list, no-JS and reduced-motion tests.
+//
+// The sample is every root page (pagesIn('root') in _common.js) and the home page of each generated language
+// (samplePages('generated')). Every generated page as well would make this the longest check of the chain: alone
+// it took 4 minutes 13 seconds instead of 1 minute 21, and the whole run of check.js 10 minutes 58 seconds, over
+// its budget of ten (25 November 2026). i18n.js scans the generated copies of the root sample's English pages with
+// axe, and requests.js and theme.js load every generated page.
 //
 // Every page is audited the way a first-time visitor meets it: with the consent module armed (armGa, the dummy
 // ID, Google stubbed) and no answer stored, so the bar is up and is part of what axe and the contrast sweep
@@ -10,8 +19,11 @@
 // the page every returning visitor who declined sees, bar-less. consent-layout.js adds the bar-specific
 // checks (size, focus not obscured, target size, forced colours).
 const fs = require('fs');
-const { PAGES, BASE, THEMES, pinTheme, pinConsent, armGa, launch, pool } = require('./_common');
+const { BASE, THEMES, pinTheme, pinConsent, armGa, launch, pool, pagesIn, samplePages, scopeLine } = require('./_common');
 const AXE = require.resolve('axe-core/axe.min.js');
+
+// The pages of the scan, the skip link and the sweep: every root page and the sample of the generated ones.
+const PAGES = pagesIn('root').concat(samplePages('generated'));
 
 // The two ways a page is met: first visit (no answer stored, bar up) and after a decline (bar gone).
 const PASSES = [['', undefined], [', consent pinned denied', 'denied']];
@@ -28,6 +40,7 @@ async function armed(browser, opts = {}, answer) {
 const labelOf = (theme, pass) => `${theme}${pass}`;
 
 (async () => {
+  console.log(scopeLine('all', PAGES, { sample: 'every root page and the home page of each generated language', note: 'the client list, no-JS and reduced-motion tests on index.html' }));
   const browser = await launch();
   const axeSrc = fs.readFileSync(AXE, 'utf8');
   let problems = 0;
@@ -70,10 +83,11 @@ const labelOf = (theme, pass) => `${theme}${pass}`;
   }
 
   // --- skip link, on every page --------------------------------------------
+  // Each page in a context of its own, three at a time like the scans, so the keyboard of one never reaches another.
   {
-    const page = await (await armed(browser)).newPage();
-    const bad = [];
-    for (const pg of PAGES) {
+    const rows = await pool(PAGES, 3, async (pg) => {
+      const ctx = await armed(browser);
+      const page = await ctx.newPage();
       await page.goto(BASE + pg, { waitUntil: 'load' });
       await page.keyboard.press('Tab');
       await page.waitForTimeout(250);          // let the reveal transition finish
@@ -84,15 +98,14 @@ const labelOf = (theme, pass) => `${theme}${pass}`;
                  onScreen: box.top >= 0 && box.top < window.innerHeight,
                  target: !!document.querySelector('#main') };
       });
-      if (!(r.cls.includes('skip-link') && r.href === '#main' && r.onScreen && r.target)) {
-        bad.push(`${pg}: ${JSON.stringify(r)}`);
-      }
-    }
+      await ctx.close();
+      return { pg, r };
+    });
+    const bad = rows.filter(({ r }) => !(r.cls.includes('skip-link') && r.href === '#main' && r.onScreen && r.target)).map(({ pg, r }) => `${pg}: ${JSON.stringify(r)}`);
     if (bad.length) problems++;
     console.log(bad.length
       ? `FAIL skip link — ${bad.join(' | ')}`
       : `ok   skip link is the first Tab stop and reveals on focus on all ${PAGES.length} pages`);
-    await page.close();
   }
 
   // --- the client list: one still, labelled list ---------------------------

@@ -28,6 +28,7 @@
 //   node stamp.js           rewrite the stamps in every root *.html page and every page of a generated
 //                           language (es/, fr/ ...: the folders tools/i18n/messages.json lists)
 //   node stamp.js --check   exit 1 if any stamp is missing or out of date
+// Either form exits 2, writing nothing, when tools/i18n/messages.json cannot be read or has no list of folders.
 //
 // Run it after any change to one of the five files, then commit the pages with
 // the change. `npm run check` fails until you do.
@@ -63,10 +64,22 @@ if (args.some((a) => a !== '--check')) {
 }
 const check = args.includes('--check');
 // The pages at the root, and the pages of the generated languages: tools/seo-head.py builds those from the
-// English pages, stamps included, so they are stamped here too and the two tools never disagree.
+// English pages, stamps included, so they are stamped here too and the two tools never disagree. The folders come
+// from tools/i18n/messages.json, and a file that cannot be read stops the run before any page is written: falling
+// back to the root pages alone would stamp (or pass) them and say nothing of the generated pages it left out.
 function languageFolders() {
-  try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'messages.json'), 'utf8')).languages || []; }
-  catch (e) { return []; }
+  const file = path.join('tools', 'i18n', 'messages.json');
+  let langs;
+  try { langs = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'messages.json'), 'utf8')).languages; }
+  catch (e) {
+    console.error(`stamp.js: cannot read ${file} (${e.message.split('\n')[0]}); it names the folders of the generated languages, whose pages are stamped too. Run python3 tools/seo-head.py, which writes it, and then this again. Nothing was stamped.`);
+    process.exit(2);
+  }
+  if (!Array.isArray(langs) || !langs.every((l) => typeof l === 'string' && /^[a-z]{2}$/.test(l))) {
+    console.error(`stamp.js: ${file} has no "languages" list of two-letter folder names (found ${JSON.stringify(langs)}); run python3 tools/seo-head.py, which writes it, and then this again. Nothing was stamped.`);
+    process.exit(2);
+  }
+  return langs;
 }
 const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
 for (const lang of languageFolders()) {

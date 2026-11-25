@@ -1,4 +1,6 @@
-// Hero background "sheet": clearance, contrast and registration guard for the home hero.
+// Hero background "sheet": clearance, contrast and registration guard for the home hero. Scope: root, the English
+// home page, whose hero carries the sheet, and three other root pages for the test that only the home page asks for
+// the art.
 //
 //   cd tools && BASE=http://localhost:8000/ THEMES=mono-light,mono-dark node verify/bg-sheet.js
 //
@@ -30,7 +32,7 @@
 //                  JavaScript, and the hero is pixel-identical in the two; <html> has no data-bg.
 // Exits non-zero on any failure. The sheet is the hero's one background and is always drawn; the script pins the theme.
 // Needs Playwright and pngjs (tools/package.json has both).
-const { BASE, THEMES, ALL_THEMES, pinTheme, launch, heroUnit } = require('./_common.js');
+const { BASE, THEMES, ALL_THEMES, pinTheme, launch, heroUnit, scopeLine } = require('./_common.js');
 const { PNG } = require('pngjs');
 
 const WIDTHS = (process.env.WIDTHS || '390,768,1000,1200,1440,1920').split(',').map(Number);
@@ -227,6 +229,7 @@ async function open(browser, theme, width, zoom) {
 }
 
 (async () => {
+  console.log(scopeLine('root', ['index.html'], { feature: 'the English home page, whose hero carries the sheet', note: 'sv.html, about.html and services.html for the art asked for by the home page only' }));
   const browser = await launch();
   for (const theme of THEMES) for (const width of WIDTHS) {
     // ---- B and C, hero text, at every zoom ----

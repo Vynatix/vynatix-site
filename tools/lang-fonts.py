@@ -16,19 +16,32 @@ faces to their script as well), so Geist draws those in every language.
 
     python3 tools/lang-fonts.py            cut the four files again (fetches the sources, about 15 MB,
                                            into a cache outside the repo and checks their SHA-256)
-    python3 tools/lang-fonts.py --check    no sources needed: exit 1 if a character a page uses is
-                                           missing from the shipped file that should draw it
+    python3 tools/lang-fonts.py --check    exit 1 if a character a page uses is missing from the shipped
+                                           file that should draw it (this part needs no sources), or if
+                                           a cut made now would not write the shipped file byte for byte
+                                           (this part cuts into a temporary folder, so it needs the
+                                           sources: fetched as above, or from the cache)
+
+A cut is reproducible. The head table of a font carries the time it was written, and fontTools would
+stamp the clock into it on every save; each face instead gets the fixed `modified` recorded in FACES,
+the one its committed file carried. With the sources pinned by SHA-256 and fontTools and brotli pinned
+in tools/requirements.txt, the same pages give the same bytes, so a font in a diff means its characters
+changed. `modified` is not the date of the last cut and stays as it is when the glyphs change. One
+consequence for --check: it also fails when a translation drops the last use of a kanji, because the
+shipped file still holds a glyph a new cut would leave out; cut again and commit the fonts.
 
 When to run it: after a translation adds a kanji the Japanese text face does not hold, or puts a new
 kanji in an accent (an <em> in a headline, a pull quote). `node tools/verify/i18n.js` fails in both
 cases and names the characters; it asks the browser which font drew each run, so it is the real gate
-and this script's --check is the quick one. Arabic is cut to the whole Arabic-language repertoire and
-kana to the whole syllabaries, so ordinary edits need no new cut.
+and this script's --check is the quick one. Also after a translation drops the last use of a kanji:
+only --check sees that one. Arabic is cut to the whole Arabic-language repertoire and kana to the
+whole syllabaries, so an edit that brings no new kanji and takes none away needs no new cut.
 
-Needs fontTools and brotli (pip install fonttools brotli). Neither is needed by `npm run check`.
+Needs fontTools and brotli, pinned in tools/requirements.txt (pip install -r tools/requirements.txt). Neither is needed by `npm run check`.
 AGENTS.md, "Languages" and "Assets", say why these four faces.
 """
 import glob, hashlib, io, os, sys, tempfile, urllib.parse, urllib.request
+from http.client import HTTPException
 from html.parser import HTMLParser
 
 EXEC = os.path.dirname(os.path.abspath(__file__))
@@ -52,15 +65,22 @@ ARABIC = set(range(0x0621, 0x063B)) | set(range(0x0640, 0x0653)) | set(range(0x0
 # closure and double the glyph count. Arabic keeps everything: its joining forms are features.
 JA_FEATURES = ['ccmp', 'locl', 'kern', 'palt', 'mark', 'mkmk']
 
+# modified: head.modified of the cut, in seconds since 1904 (the font format's epoch). Each is the value the
+# committed file carried when the cut became reproducible (23 November 2026, 22:36:20 to 22:36:24 UTC), so a
+# cut that changes no glyph writes the committed file byte for byte. Never set one to the time of a cut.
 FACES = [
     dict(file='mplus2-variable-ja.woff2', lang='ja', role='text', src='ofl/mplus2/MPLUS2[wght].ttf',
-         sha256='2e4f45c2391355fb03195da4854ffbe85fea49bfdff5cc51020238083af6b75c', features=JA_FEATURES),
+         sha256='2e4f45c2391355fb03195da4854ffbe85fea49bfdff5cc51020238083af6b75c', features=JA_FEATURES,
+         modified=3878318180),
     dict(file='shippori-mincho-500-ja.woff2', lang='ja', role='accent', src='ofl/shipporimincho/ShipporiMincho-Medium.ttf',
-         sha256='700e505afc4cded2338eba29478a041e04c1c2ea5114fbb3e0b04e76c302c5d8', features=JA_FEATURES),
+         sha256='700e505afc4cded2338eba29478a041e04c1c2ea5114fbb3e0b04e76c302c5d8', features=JA_FEATURES,
+         modified=3878318182),
     dict(file='noto-sans-arabic-variable-ar.woff2', lang='ar', role='text', src='ofl/notosansarabic/NotoSansArabic[wdth,wght].ttf',
-         sha256='63111b5b2e074dd48cc67692e0a2726d86ee94c1c37fe8598257b7b4e87e869e', features=['*'], pin={'wdth': 100}),
+         sha256='63111b5b2e074dd48cc67692e0a2726d86ee94c1c37fe8598257b7b4e87e869e', features=['*'], pin={'wdth': 100},
+         modified=3878318183),
     dict(file='amiri-400-ar.woff2', lang='ar', role='accent', src='ofl/amiri/Amiri-Regular.ttf',
-         sha256='ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7', features=['*']),
+         sha256='ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7', features=['*'],
+         modified=3878318184),
 ]
 
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
@@ -140,8 +160,14 @@ def fetch(face):
     if not os.path.exists(path):
         url = SOURCE + urllib.parse.quote(face['src'])
         print(f'  fetching {url}')
-        with urllib.request.urlopen(url, timeout=300) as r, open(path, 'wb') as out:
-            out.write(r.read())
+        try:                             # written whole or not at all: a cut-off download is not cached
+            with urllib.request.urlopen(url, timeout=300) as r:
+                data = r.read()
+        except (OSError, HTTPException) as e:
+            sys.exit(f'{url}: {e}. Without the source nothing can be cut or compared.')
+        with open(path + '.part', 'wb') as out:
+            out.write(data)
+        os.replace(path + '.part', path)
     digest = hashlib.sha256(open(path, 'rb').read()).hexdigest()
     if digest != face['sha256']:
         sys.exit(f"{path}: SHA-256 {digest} is not the recorded {face['sha256']}.\n"
@@ -150,7 +176,8 @@ def fetch(face):
     return path
 
 
-def cut(face):
+def cut(face, folder=FONTS):
+    """Cut one face into folder; returns the path written and its number of glyphs."""
     from fontTools import subset
     from fontTools.ttLib import TTFont
     from fontTools.varLib import instancer
@@ -174,9 +201,11 @@ def cut(face):
     s.populate(unicodes=sorted(c for c in want if c in cmap))
     s.subset(font)
     font.flavor = 'woff2'
-    out = os.path.join(FONTS, face['file'])
+    font.recalcTimestamp = False                     # the recorded time, not the clock (see "A cut is reproducible")
+    font['head'].modified = face['modified']
+    out = os.path.join(folder, face['file'])
     font.save(out)
-    print(f"  {face['file']:38s} {os.path.getsize(out) / 1024:6.1f} KB  {font['maxp'].numGlyphs} glyphs")
+    return out, font['maxp'].numGlyphs
 
 
 def check():
@@ -197,10 +226,38 @@ def check():
     return bad
 
 
+def compare():
+    """Cut every face into a temporary folder and compare it with the shipped file, byte for byte. It fails
+    closed: a source that cannot be fetched or does not match its SHA-256 stops it with exit 1."""
+    from fontTools.ttLib import TTFont
+    bad = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        for face in FACES:
+            shipped = os.path.join(FONTS, face['file'])
+            fresh, _ = cut(face, tmp)
+            if not os.path.exists(shipped):
+                bad += 1; continue                       # check() has said so already
+            if open(fresh, 'rb').read() == open(shipped, 'rb').read():
+                print(f"ok   {face['file']}: a cut made now writes the shipped file byte for byte"); continue
+            bad += 1
+            new, old = set(TTFont(fresh).getBestCmap()), set(TTFont(shipped).getBestCmap())
+            what = '; '.join(x for x in (
+                f"it would add {''.join(map(chr, sorted(new - old)))}" if new - old else '',
+                f"it would drop {''.join(map(chr, sorted(old - new)))}" if old - new else '') if x) or \
+                'the same characters in other bytes: compare fontTools and brotli with tools/requirements.txt, ' \
+                "and the face's modified and options with the commit that cut the shipped file"
+            print(f"FAIL {face['file']}: a cut made now does not write the shipped file ({what}). "
+                  'Run python3 tools/lang-fonts.py and commit the fonts.')
+    return bad
+
+
 if __name__ == '__main__':
     if '--check' in sys.argv:
-        sys.exit(1 if check() else 0)
+        bad = check()                                    # the glyphs, from the shipped files alone
+        bad += compare()                                 # the bytes, from a new cut: needs the sources
+        sys.exit(1 if bad else 0)
     print('Cutting the script faces from the generated pages:')
     for f in FACES:
-        cut(f)
+        out, glyphs = cut(f)
+        print(f"  {f['file']:38s} {os.path.getsize(out) / 1024:6.1f} KB  {glyphs} glyphs")
     sys.exit(1 if check() else 0)

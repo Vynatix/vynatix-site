@@ -5,9 +5,10 @@ For a page that must stop being served: a wrong claim, a client name under NDA, 
 
 GitHub Pages has no server-side redirects, a push to the production branch is live within about a minute, and
 the repository is public. So a page that has been public never gets a 404 by accident: it keeps its URL and
-answers with a short stub. The registry in `tools/seo-head.py` drives it: set `status='withdrawn'` on the page
-and run the script, and the page's title, description and whole `<main>` are replaced by the stub (about a
-hundred characters, no reason given, built from the existing `.page-hero` markup), the robots meta becomes
+answers with a short stub. The registry drives it: set `"status": "withdrawn"` in the page's row,
+`tools/site/pages/<slug>.json`, and run `tools/seo-head.py`, and the page's title, description and whole `<main>` are replaced by the stub (about a
+hundred characters, no reason given, built from the existing `.page-hero` markup; its markup and its English and
+Swedish words are `tools/templates/stub.html`), the robots meta becomes
 `noindex`, hreflang, FAQ and Article data disappear, and the page leaves `sitemap.xml`.
 
 **What a stub does not do.** It controls only what vynatix.com serves. The old text stays in git history, in
@@ -21,14 +22,17 @@ run: a translation in a live language has been public and becomes the stub in it
 strings are in the catalogues `tools/i18n/<code>.json`), and a translation in a draft language, which was never
 published, is deleted. The withdrawn text is also in those catalogues, keyed by the English sentence: run
 `python3 tools/i18n.py prune` after the script so the catalogues and `tools/i18n/messages.json` stop carrying
-it. They are not published, but the repository is public, and like the page they stay in git history.
+it. They are not published, but the repository is public, and like the page they stay in git history. If prune
+stops ("prune stopped, nothing dropped"), it names a byline entry from before dates became patterns that it
+cannot carry into its pattern: translate that pattern by hand as it says and run it again. The published pages do
+not wait for it.
 
 ## Before you start
 
 - Python 3, Node, `npm install` in `tools/` (once), Chromium, and a server for the repository root
   (`python3 -m http.server 8000` from the root; `CHROME=<path>` if Playwright's browser is elsewhere).
   `links.js` and `seo.js` open pages in the browser; the rest are browser-free. If you cannot run a browser, the
-  browser-free minimum is `csp.js`, `publish.js`, `permanence.js`, `mailto.js`, `stamp.js --check` and
+  browser-free minimum is `csp.js`, `publish.js`, `permanence.js`, `mailto.js`, `copies.js`, `stamp.js --check` and
   `release-gate.js --self-test`.
 - Someone who can merge. `CODEOWNERS` asks for Code Owner review on every change; name a deputy in advance. The
   owner authorises the takedown; write the time you started in the pull request.
@@ -38,25 +42,36 @@ it. They are not published, but the repository is public, and like the page they
 ## Steps
 
 1. **Branch from main** (root). `git checkout -b takedown/<slug> origin/main`. Do not push the old text anywhere new.
-2. **Withdraw the page.** In `tools/seo-head.py`, on the page's entry, add `status='withdrawn'` and set `mod` to
-   today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
+2. **Withdraw the page.** In the page's row, `tools/site/pages/<slug>.json`, add `"status": "withdrawn"` and set
+   `mod` to today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
    *If the page has a twin* (an hreflang pair), withdraw the twin as well only if it is also at fault. Otherwise
-   the live twin must stop pointing at the withdrawn page: remove its `alt` (and `original` if it has one) from
-   its registry entry, remove its in-body link to the withdrawn page, and move its `mod`. The generator refuses to
-   run until the live twin's `alt` is gone ("remove the alt from ... first"): that message is the expected prompt,
-   not a bug.
+   the pair is undone on both sides: remove `alt` and `original` from the live twin's row **and from the
+   withdrawn page's own row**, remove the twin's in-body link to the withdrawn page, and move the twin's `mod` and, on a post, the "Last
+   updated" date of its visible byline with it (`permanence.js` fails while the two disagree).
+   The generator refuses to run while either row still names the other: "remove the alt from ... first" (the
+   twin still points at the withdrawn page) and "names ... as its twin, but ... does not name ... back" (the
+   withdrawn row still points at the twin) are the expected prompts, not bugs. Rehearsed on 25 November 2026
+   on a scratch copy with `test-automation.html`: with both rows cleared the generator goes on to the lists of
+   step 3.
 3. **Remove everything that points at it.** `node verify/permanence.js` (from `tools/`) names each page that still
-   links to it. Remove: the `llms.txt` line; the entry on `blog.html`; **the item in the ItemList in
-   `tools/seo/blog.json`** (and fix `numberOfItems` and the positions); the `index.html` Further reading or
-   `sv.html` guider item; any other cross-link in a page body; and, if the post has them, its assets (`git rm`;
+   links to it. Remove: **its slug from every list in `tools/site/lists.json`** (the generator refuses to run while
+   a list names a withdrawn page, and names each list that does; the next run then takes its line out of
+   `llms.txt` and its item out of the ItemList of `blog.html`, with `numberOfItems` and the positions); the entry on
+   `blog.html`; the `index.html` Insights or `sv.html` guider item (these three are written by hand, and
+   `verify/copies.js` fails until each agrees with the lists file); any other cross-link in a page body; and, if
+   the post has them, its assets (`git rm`;
    images and fonts are not stamped and not covered by the lock). **Move `mod` to today on every page you edited**
    (the Blog page, the home page, the twin): the sitemap `lastmod` and your IndexNow ping depend on it, and no
    check enforces it.
 4. **Regenerate** (root). `python3 tools/seo-head.py`. Open the withdrawn page: it must be the stub and nothing else.
 5. **Check** (`tools/`). `node verify/permanence.js` (the withdrawn page is exactly the stub, noindex and
    unlisted; every locked URL still has a file), `python3 seo-head.py --check` (or `npm run check:gen`),
-   then `csp.js`, `publish.js`, `mailto.js`, `stamp.js --check`, `release-gate.js --self-test`, `links.js` and
-   `seo.js`.
+   then `csp.js`, `publish.js`, `mailto.js`, `copies.js`, `stamp.js --check`, `release-gate.js --self-test`, `links.js` and
+   `seo.js`; `node check.js --static` runs the static ones in one go. `docs.js` fails on a page count the docs
+   state that the withdrawal made false ("three of them withdrawn" in `AGENTS.md` and `CLAUDE.md`): correct the
+   number in the sentence it names. The whole runbook, steps 2 to 5, was rehearsed on 25 November 2026 on a
+   scratch copy with `test-automation.html` (a post with a Swedish twin, on three lists): with these steps the
+   static tier, `links.js`, `seo.js` and `requests.js` pass.
 6. **Merge.** The Pages deployment takes about 40 to 70 seconds (three runs measured on 21 to 24 October 2026:
    68, 41 and 40 seconds).
 7. **Verify live.** `curl -sI https://vynatix.com/<file>.html` and fetch the body: the stub, `noindex`. Compare
@@ -93,13 +108,13 @@ it. They are not published, but the repository is public, and like the page they
 
 ## Afterwards
 
-- The URL stays registered and locked for good: keep the file, keep the registry entry, never reuse the slug.
+- The URL stays registered and locked for good: keep the file, keep its registry row, never reuse the slug.
   `permanence.js` fails if a locked URL has no file or a locked `pub` moves, and `publish.js` fails on a file that
   is not registered. The lock itself is append-only by convention and review: in review, check that
-  `git diff tools/urls.lock` shows only added lines. Deleting the file, its registry entries and its lock row
+  `git diff tools/urls.lock` shows only added lines. Deleting the file, its registry row and its lock row
   together is not caught by any script.
 - If the reason was a wrong fact rather than a confidentiality breach, a corrected page can replace the stub
-  later: remove `status='withdrawn'`, write the page, move `mod`. `pub` stays as it was.
+  later: remove `"status": "withdrawn"` from its row, write the page, move `mod`. `pub` stays as it was.
 - Practise once a year on a scratch copy (copy the repository, withdraw a stand-in page, run the steps, time
   them). The mechanism (steps 2 to 5) was rehearsed that way on 4 November 2026 with stand-in pages, including a
   pair: the old text was gone from the file, the page was noindex and out of the sitemap, and `permanence.js`

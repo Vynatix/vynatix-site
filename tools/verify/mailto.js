@@ -1,5 +1,6 @@
-// The subject lines of the mailto links on the pages. Static, no browser.
-//   node verify/mailto.js            checks every page in PAGES
+// The subject lines of the mailto links on the pages. Static, no browser. Scope: all, every root page and every
+// generated page (pagesIn('all') in _common.js).
+//   node verify/mailto.js            checks every page
 //   node verify/mailto.js --self-test
 //
 // contact.html tells the sender to start the subject line with Project or Membership, and a guide's call to
@@ -9,20 +10,24 @@
 //  - the address front.disk@vynatix.com and exactly one parameter, subject (no body, cc or second subject);
 //  - the subject spelled with %20, never +;
 //  - a decoded subject that is "Project" or "Membership", optionally followed by ": " and the page's own slug,
-//    and nothing else, at most 80 characters, with no em dash, exclamation mark or ellipsis;
+//    and nothing else, at most 80 characters, with no em dash, exclamation mark or ellipsis; on a page of a
+//    generated language the subject then ends with that language in brackets, " [es]", which tools/seo-head.py
+//    adds so the inbox shows where an enquiry came from, and a root page carries no such tag;
 //  - a slug (the file name without .html) of a-z, 0-9 and hyphens that does not contain the routing words, so a
 //    word-matching inbox rule cannot be confused by it.
 // A tagged subject is only allowed on a page whose slug it names, and that page must link the email section of the
-// privacy notice in its language (privacy.html#email or integritet.html#email), which must exist: the notices are
-// where the tag and the per-guide count are disclosed. A mailto link without a subject is fine, but
+// privacy notice in its language (privacy.html#email or integritet.html#email; ../privacy.html#email from a generated
+// page, whose notice is the English one), which must exist: the notices are where the tag and the per-guide count
+// are disclosed. A mailto link without a subject is fine, but
 // it must still go to that address and carry no cc, bcc or body. The href is read the way a browser reads it:
 // entities decoded, tabs, newlines and surrounding spaces removed, the scheme case-insensitive.
-const { ROOT, PAGES, readPage, pageLang, parseTags, decodeEntities } = require('./_common');
+const { ROOT, pagesIn, scopeLine, readPage, pageLang, parseTags, decodeEntities } = require('./_common');
 const NOTICE_EMAIL = { en: 'privacy.html#email', sv: 'integritet.html#email' };
 
 const ADDRESS = 'front.disk@vynatix.com';
 
-// The problems of one mailto href on the page with the given file name, [] when it is fine.
+// The problems of one mailto href on the page with the given path from the root ('contact.html', 'es/contact.html'),
+// [] when it is fine.
 const clean = (href) => decodeEntities(String(href)).replace(/[\t\n\r]/g, '').trim();
 
 function subjectProblems(rawHref, file) {
@@ -42,9 +47,13 @@ function subjectProblems(rawHref, file) {
   if (/\+/.test(raw)) out.push('"+" in the subject (spell a space %20)');
   let subject;
   try { subject = decodeURIComponent(raw); } catch (e) { out.push('subject does not decode'); return out; }
-  const slug = file.replace(/\.html$/, '');
-  const ok = new RegExp('^(Project|Membership)(: ' + slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')?$').test(subject);
-  if (!ok) out.push(`subject "${subject}" (want Project or Membership, optionally followed by ": ${slug}")`);
+  const parts = file.split('/');
+  const code = parts.length > 1 ? parts[0] : null;
+  const slug = parts[parts.length - 1].replace(/\.html$/, '');
+  const tag = code ? ` [${code}]` : '';
+  const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const ok = new RegExp('^(Project|Membership)(: ' + esc(slug) + ')?' + esc(tag) + '$').test(subject);
+  if (!ok) out.push(`subject "${subject}" (want Project or Membership, optionally followed by ": ${slug}"${code ? `, and then "${tag}"` : ''})`);
   if (subject.length > 80) out.push('subject longer than 80 characters');
   if (/—|!|…|\.\.\./.test(subject)) out.push('em dash, exclamation mark or ellipsis in the subject');
   if (subject.includes(':') && !/^[a-z0-9-]+$/.test(slug)) out.push(`slug "${slug}" is not a-z, 0-9 and hyphens`);
@@ -61,6 +70,10 @@ function selfTest() {
     ['mailto:front.disk@vynatix.com', 'about.html'],
     ['https://vynatix.com/', 'about.html'],
     [' MAILTO:front.disk@vynatix.com?SUBJECT=Project\n', 'contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project%20%5Bes%5D', 'es/contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Membership%20%5Bar%5D', 'ar/contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project:%20choose-a-software-consultancy%20%5Bes%5D', 'es/choose-a-software-consultancy.html'],
+    ['mailto:front.disk@vynatix.com', 'ja/about.html'],
   ];
   const bad = [
     ['mailto:front.disk@vynatix.com?subject=Project:%20choose-a-software-consultancy%20-%20membership', 'choose-a-software-consultancy.html'],
@@ -76,6 +89,12 @@ function selfTest() {
     ['mailto:front.disk@vynatix.com?bcc=evil@x.com', 'about.html'],
     ['mailto:someone@example.com', 'about.html'],
     ['mailto:front.disk@vynatix.com?subject=Project&amp;body=hi', 'contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project', 'es/contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project%20%5Bfr%5D', 'es/contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project%20%5Bes%5D', 'contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project%20%5Bes%5D:%20choose-a-software-consultancy', 'es/choose-a-software-consultancy.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project:%20choose-a-software-consultancy%20%5Bes%5D', 'es/contact.html'],
+    ['mailto:front.disk@vynatix.com?subject=Project%20%5Bes%5D+', 'es/contact.html'],
   ];
   let bad_ = 0;
   for (const [h, f] of good) if (subjectProblems(h, f).length) { bad_++; console.log(`FAIL accepted-by-design rejected: ${h} on ${f}: ${subjectProblems(h, f).join('; ')}`); }
@@ -86,6 +105,8 @@ function selfTest() {
 
 if (require.main === module) {
   if (process.argv.includes('--self-test')) process.exit(selfTest() ? 1 : 0);
+  const PAGES = pagesIn('all');
+  console.log(scopeLine('all', PAGES));
   let bad = selfTest();
   let links = 0;
   const tagged = new Set();
@@ -101,8 +122,9 @@ if (require.main === module) {
   }
   for (const p of tagged) {
     const lang = (pageLang(p) || 'en').slice(0, 2);
-    const want = NOTICE_EMAIL[lang] || NOTICE_EMAIL.en;
-    const notice = want.split('#')[0];
+    const section = NOTICE_EMAIL[lang] || NOTICE_EMAIL.en;
+    const want = '../'.repeat(p.split('/').length - 1) + section;
+    const notice = section.split('#')[0];
     if (!parseTags(readPage(p), 'a').some((t) => clean(t.attrs.href || '') === want)) { bad++; console.log(`FAIL ${p}: its button carries the page's slug in the subject, but the page does not link ${want}, where the tag is disclosed`); }
     if (!/\bid="email"/.test(readPage(notice))) { bad++; console.log(`FAIL ${notice} has no id="email" section, which ${p} relies on`); }
   }

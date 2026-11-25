@@ -1,16 +1,26 @@
 // What ships: the checks on the repository as GitHub Pages will publish it. Static, no browser, no server; second in
-// `npm run check`, after csp.js, because every other script takes its list of pages from PAGES in _common.js and
-// trusts that nothing else is published.
+// `npm run check`, after csp.js, because every other script takes its pages from the registry (the files of
+// tools/site/pages/, through pagesIn() in _common.js) and trusts that nothing else is published. Scope: root for the
+// registry and the files at the root; all, every root page and every generated page, for the footer link, the hero
+// background and the inline styles.
 //   node verify/publish.js
 //
-//  - every *.html at the root is in PAGES, and every PAGES entry exists (a page that is not in the list escapes the
-//    CSP, link, SEO and consent checks, which all iterate PAGES);
+//  - every *.html at the root has a registry file, tools/site/pages/<slug>.json, and every registry file a page (a
+//    page without a row is in no check's pages, so it escapes the CSP, link, SEO and consent checks, which all walk
+//    the registry);
 //  - every other file at the root is a page, an asset the site uses (css, js, xml, ico, png, svg, webmanifest,
 //    CNAME, robots.txt, llms.txt or the IndexNow <32 hex>.txt key) or is named in _config.yml `exclude`; a directory
 //    is assets, fonts, .well-known, tools (excluded), .git or the folder of a live generated language, or is
 //    excluded, and the folder of a draft language is always excluded; no .md document sits in assets,
 //    fonts or .well-known unless it is excluded (otherwise GitHub Pages serves it);
-//  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies;
+//  - Jekyll copies every published file through unchanged: there is no .nojekyll in the published tree (one at the
+//    root turns Jekyll off, and `exclude` with it, so every file would be served), and no published file begins with
+//    --- (front matter: Jekyll renders the file and strips the block);
+//  - every url() in every published stylesheet (tokens.css, colors_and_type.css, styles.css, hero-bg.css) names a
+//    published file, resolved against the stylesheet; data: URIs, fragment-only references and @supports conditions
+//    are not fetched and are not compared;
+//  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies
+//    (../privacy.html#cookies on a generated page, whose notice is the English one at the root);
 //  - no page, written or generated, links a home page as index.html: the link names the folder (./, ../, es/), so
 //    the address bar shows vynatix.com/ and not vynatix.com/index.html;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
@@ -21,11 +31,11 @@
 //  - the site rules of CLAUDE.md that nothing else reads: no raw hex colour in styles.css, no style="" attribute in
 //    any page, no .style, cssText or setAttribute('style' in app.js (comments excluded);
 //  - llms.txt links every URL in sitemap.xml (seo.js checks the other direction).
-// Exports run() and the helpers release-gate.js shares.
+// Exports run(), the helpers release-gate.js shares, and publishedOnDisk() and cssUrlProblems() for other checks.
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, NOTICE_PAGES, readRegistry, readLangs, pagesIn, scopeLine, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -49,12 +59,17 @@ function yamlList(text, key) {
   return out;
 }
 
-// The footer's Cookie settings link problems of one page, or [] when it is there.
-function footerLinkProblems(html) {
+// The way up from a page to the root: '' for a root page, '../' for 'es/services.html'.
+const upFrom = (page) => '../'.repeat(page.split('/').length - 1);
+
+// The footer's Cookie settings link problems of one page, or [] when it is there. `page` is the page's path from the
+// root, so that a generated page's link is read as pointing up to the notice.
+function footerLinkProblems(html, page = '') {
+  const want = upFrom(page) + 'privacy.html#cookies';
   const footer = (/<footer\b[\s\S]*<\/footer>/i.exec(html) || [''])[0];
   const links = parseTags(footer, 'a').filter((t) => 'data-consent-open' in t.attrs);
   if (!links.length) return ['no link with data-consent-open in the footer'];
-  if (!links.some((t) => t.attrs.href === 'privacy.html#cookies')) return ['the data-consent-open link does not point at privacy.html#cookies'];
+  if (!links.some((t) => t.attrs.href === want)) return [`the data-consent-open link does not point at ${want}`];
   return [];
 }
 
@@ -74,20 +89,100 @@ function walk(dir, rel = '') {
   return out;
 }
 
-function run(root = ROOT, pages = PAGES) {
+// The files GitHub Pages' Jekyll would publish from the tree on disk, by the rules shipped.js applies to a git
+// listing: not _config.yml, no path named in `exclude` or under one, and no path with a part that begins with . _ #
+// or ~ or ends with ~ unless `include` names it (.well-known). It also returns every .nojekyll it meets in a
+// directory it walks, looked at before the dot rule and `exclude` would pass over it: GitHub reads that file before
+// Jekyll runs, and with one at the root it skips Jekyll and serves every file of the branch, tools/ and the
+// developer documents included. Excluded directories are not walked, so tools/node_modules is never read.
+function publishedOnDisk(root, exclude, include) {
+  const files = [];
+  const nojekyll = [];
+  const under = (list, r) => [...list].some((e) => r === e || r.startsWith(e + '/'));
+  const special = (name) => /^[._#~]/.test(name) || /~$/.test(name);
+  const visit = (rel) => {
+    let list;
+    try { list = fs.readdirSync(path.join(root, rel), { withFileTypes: true }); } catch (e) { return; }
+    for (const e of list) {
+      const r = rel ? rel + '/' + e.name : e.name;
+      if (r === '.git') continue;
+      if (e.name === '.nojekyll') { nojekyll.push(r); continue; }
+      if (under(exclude, r) || (special(e.name) && !under(include, r))) continue;
+      if (e.isDirectory()) visit(r);
+      else if (r !== '_config.yml') files.push(r);
+    }
+  };
+  visit('');
+  return { files: files.sort(), nojekyll: nojekyll.sort() };
+}
+
+// The first three bytes of a file, or null when it cannot be read.
+function firstBytes(file) {
+  let fd;
+  try {
+    fd = fs.openSync(file, 'r');
+    const b = Buffer.alloc(3);
+    return b.subarray(0, fs.readSync(fd, b, 0, 3, 0)).toString('latin1');
+  } catch (e) { return null; } finally { if (fd !== undefined) fs.closeSync(fd); }
+}
+
+// The url() references of one stylesheet (its path from the root, as served) that do not name a published file:
+// { refs, problems }. Each target is resolved against the stylesheet's own URL, as a browser does, and its query
+// and fragment are dropped. Not fetched, so not compared: a data: URI, a reference to a fragment alone (the glass
+// filters' url(#vx-lens)), and anything in the condition of an @supports rule, which only asks whether the browser
+// understands the syntax (light-dark(url(a.webp), url(b.webp)) in styles.css). Comments are read as blank. A url(
+// that the pattern cannot read is a problem too, so that an unusual spelling is reported and not skipped.
+const SITE = 'https://vynatix.com/';
+function cssUrlProblems(text, sheet, isPublished, onDisk) {
+  const blank = (s) => s.replace(/[^\n]/g, ' ');
+  const code = String(text).replace(/\/\*[\s\S]*?\*\//g, blank).replace(/@supports\b[^{]*/g, blank);
+  const lineOf = (i) => code.slice(0, i).split('\n').length;
+  const problems = [];
+  let refs = 0;
+  const targets = [];
+  const opened = [...code.matchAll(/\burl\(/gi)].length;
+  for (const m of code.matchAll(/\burl\(\s*(?:"([^"]*)"|'([^']*)'|([^)"'\s]*))\s*\)/gi)) targets.push([m[1] ?? m[2] ?? m[3], m.index]);
+  if (targets.length !== opened) problems.push(`${sheet}: ${opened} url( but only ${targets.length} that this check can read; write each as url("path")`);
+  for (const m of code.matchAll(/@import\s+(?:"([^"]*)"|'([^']*)')/gi)) targets.push([m[1] ?? m[2], m.index]);
+  for (const [raw, at] of targets) {
+    const t = raw.trim();
+    const where = `${sheet} line ${lineOf(at)}`;
+    if (/^data:/i.test(t) || t.startsWith('#')) continue;
+    refs++;
+    if (!t) { problems.push(`${where}: an empty url()`); continue; }
+    let u;
+    try { u = new URL(t, SITE + sheet); } catch (e) { problems.push(`${where}: ${t} is not a URL`); continue; }
+    if (u.origin !== new URL(SITE).origin) { problems.push(`${where}: ${t} is off the site (not a file this repository publishes)`); continue; }
+    let rel;
+    try { rel = decodeURIComponent(u.pathname.slice(1)); } catch (e) { rel = u.pathname.slice(1); }
+    if (isPublished(rel)) continue;
+    problems.push(`${where}: ${t} names ${rel || '/'}, ${onDisk(rel) ? 'which is on disk but not published (excluded, or a dot path)' : 'which is not on disk'}`);
+  }
+  return { refs, problems };
+}
+
+// pages: the root pages to check, by default the registry of `root` (pagesIn('root') in _common.js). The checks of
+// every page add the generated pages of `root` to them.
+function run(root = ROOT, pages) {
   const results = [];
   const add = (ok, name, detail) => results.push({ ok, name, detail: detail || '' });
   const tryRead = (rel) => { try { return fs.readFileSync(path.join(root, rel), 'utf8'); } catch (e) { return null; } };
 
-  // --- the pages on disk and PAGES
+  // --- the pages on disk and the registry
+  if (!pages) {
+    try { pages = pagesIn('root', root); } catch (e) { add(false, 'the registry, tools/site/pages, can be read', e.message); pages = []; }
+  }
+  let generatedPages = [];
+  try { generatedPages = pagesIn('generated', root); } catch (e) { add(false, 'the generated pages can be listed', e.message); }
+  const everyPage = pages.concat(generatedPages);
   let entries = [];
   try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch (e) { add(false, 'the repository root can be read', e.message); }
   const htmlOnDisk = entries.filter((e) => e.isFile() && /\.html?$/i.test(e.name)).map((e) => e.name);
   const notListed = htmlOnDisk.filter((f) => !pages.includes(f));
   const missing = pages.filter((f) => !htmlOnDisk.includes(f));
-  add(!notListed.length && !missing.length, `the *.html files at the root are exactly the ${pages.length} pages in PAGES (_common.js)`,
-    [notListed.length ? `not in PAGES: ${notListed.join(', ')} (csp, links, seo and consent skip it; add it to PAGES, or it should not be a page)` : '',
-      missing.length ? `in PAGES but missing: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
+  add(!notListed.length && !missing.length, `the *.html files at the root are exactly the ${pages.length} pages of the registry: each has its file in tools/site/pages, and each file there its page`,
+    [notListed.length ? `no registry file: ${notListed.join(', ')} (it is in no check's pages, so csp, links, seo and consent skip it; give it its row, tools/site/pages/<slug>.json, or it should not be a page)` : '',
+      missing.length ? `a registry file but no page: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
 
   // --- what Pages would publish
   const config = tryRead('_config.yml');
@@ -95,10 +190,10 @@ function run(root = ROOT, pages = PAGES) {
   const exclude = new Set(yamlList(config || '', 'exclude'));
   const include = new Set(yamlList(config || '', 'include'));
   const stray = [];
-  // The folder of a generated language (LANGS in tools/seo-head.py): published once the language is live, and
+  // The folder of a generated language (tools/site/langs.json, LANGS in tools/seo-head.py): published once the language is live, and
   // named in `exclude` for as long as it is a draft (seo-head.py keeps that list).
   let langs = {};
-  try { langs = readLangs(root); } catch (e) { add(false, 'the LANGS table of tools/seo-head.py can be read', e.message); }
+  try { langs = readLangs(root); } catch (e) { add(false, 'the language table, tools/site/langs.json, can be read', e.message); }
   const generated = Object.entries(langs).filter(([, l]) => l.kind === 'generated');
   const gateProblems = [];
   for (const [code, l] of generated) {
@@ -110,7 +205,7 @@ function run(root = ROOT, pages = PAGES) {
   }
   add(gateProblems.length === 0, `the ${generated.length} generated languages are published only when live: a draft's folder is in _config.yml exclude`, gateProblems.join(' | '));
   const unread = generated.filter(([, l]) => l.status === 'live' && !(/^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim())).map(([code]) => code);
-  if (unread.length) console.log(`note the native reader's check is still owed for ${unread.join(', ')}: published on the owner's decision (waived in LANGS, tools/seo-head.py)`);
+  if (unread.length) console.log(`note the native reader's check is still owed for ${unread.join(', ')}: published on the owner's decision (waived in tools/site/langs.json)`);
   for (const e of entries) {
     const n = e.name;
     if (e.isDirectory()) {
@@ -132,15 +227,49 @@ function run(root = ROOT, pages = PAGES) {
   if (!exclude.has('tools')) stray.push('tools/ is not named in _config.yml exclude (the verification scripts would be published)');
   add(stray.length === 0, 'every root file and directory is a page, a site asset or named in _config.yml exclude', stray.join(' | '));
 
+  // --- Jekyll copies every published file through unchanged: no .nojekyll, no front matter
+  const pub = publishedOnDisk(root, exclude, include);
+  const published = new Set(pub.files);
+  add(pub.nojekyll.length === 0, 'no .nojekyll in the published tree (with one at the root GitHub skips Jekyll, and _config.yml exclude with it: every file would be served)',
+    pub.nojekyll.length ? `found: ${pub.nojekyll.join(', ')}` : '');
+  // Every published file and not only the text ones: Jekyll reads the first line of each file it meets, binary or
+  // not, to decide whether it is a page. No image or font format begins with these bytes.
+  const matter = [];
+  for (const f of pub.files) {
+    const b = firstBytes(path.join(root, f));
+    if (b === null) matter.push(`${f} cannot be read`);
+    else if (b === '---') matter.push(`${f} begins with --- (front matter: Jekyll would render it and strip the block instead of copying the file)`);
+  }
+  add(pub.files.length > 0 && matter.length === 0, `none of the ${pub.files.length} published files begins with --- (front matter, which Jekyll renders instead of copying)`,
+    pub.files.length ? matter.slice(0, 8).join(' | ') + (matter.length > 8 ? ` | and ${matter.length - 8} more` : '') : 'no published file found');
+
+  // --- every url() of every published stylesheet names a published file
+  {
+    const sheets = pub.files.filter((f) => /\.css$/i.test(f));
+    const bad = [];
+    let refs = 0;
+    for (const want of ['tokens.css', 'colors_and_type.css', 'styles.css']) if (!published.has(want)) bad.push(`${want} is not published`);
+    for (const s of sheets) {
+      const text = tryRead(s);
+      if (text === null) { bad.push(`${s} cannot be read`); continue; }
+      const r = cssUrlProblems(text, s, (f) => published.has(f), (f) => fs.existsSync(path.join(root, f)));
+      refs += r.refs;
+      bad.push(...r.problems);
+    }
+    if (!refs) bad.push('no url() reference found in any published stylesheet (tokens.css alone names every font of the site)');
+    add(bad.length === 0, `every url() in the ${sheets.length} published stylesheets (${sheets.join(', ')}) names a published file (${refs} references; data: URIs, fragment-only references and @supports conditions are not fetched)`,
+      bad.slice(0, 8).join(' | ') + (bad.length > 8 ? ` | and ${bad.length - 8} more` : ''));
+  }
+
   // --- the footer link on every page
   const noFooter = [];
-  for (const p of pages) {
+  for (const p of everyPage) {
     const html = tryRead(p);
     if (html === null) { noFooter.push(`${p} (missing)`); continue; }
-    const pr = footerLinkProblems(html);
+    const pr = footerLinkProblems(html, p);
     if (pr.length) noFooter.push(`${p} (${pr[0]})`);
   }
-  add(noFooter.length === 0, 'the footer of every page carries the Cookie settings link (data-consent-open, href privacy.html#cookies)',
+  add(noFooter.length === 0, `the footer of every page (${everyPage.length}) carries the Cookie settings link (data-consent-open, href privacy.html#cookies, from a generated page ../privacy.html#cookies)`,
     noFooter.length ? `${noFooter.length}: ${noFooter.slice(0, 4).join(', ')}${noFooter.length > 4 ? ' ...' : ''}` : '');
 
   // --- a home page is linked by its folder (./, ../, es/), so the address bar never shows /index.html
@@ -185,7 +314,13 @@ function run(root = ROOT, pages = PAGES) {
     const lost = storageKeyProblems(html, keys);
     if (lost.length) keyBad.push(`${page} does not name ${lost.map((k) => '<code>' + k + '</code>').join(', ')}`);
   }
-  if (app) for (const k of [THEME_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
+  // The theme key the notices and _common.js name is the value of THEME_KEY in app.js, read by appConst. (The scan
+  // above stays a scan on purpose: it collects every key the code writes, wherever it is written.)
+  if (app) {
+    let k = null;
+    try { k = appConst('THEME_KEY', app.src, 'string'); } catch (e) { keyBad.push(e.message); }
+    if (k !== null && k !== THEME_KEY) keyBad.push(`app.js THEME_KEY is ${k}, no longer ${THEME_KEY} (rename it in the notices and in _common.js too)`);
+  }
   // The retired colour-scheme draw: no script may write its key again, and no notice may still describe it.
   if (app && stripJsComments(app.src).includes(LOOK_KEY)) keyBad.push(`app.js uses ${LOOK_KEY}, the retired colour-scheme draw`);
   for (const page of Object.values(NOTICE_PAGES)) { const html = tryRead(page); if (html && html.includes(LOOK_KEY)) keyBad.push(`${page} still names ${LOOK_KEY}, which nothing writes now`); }
@@ -198,10 +333,10 @@ function run(root = ROOT, pages = PAGES) {
     const hero = tryRead('hero-bg.css');
     if (hero === null) bad.push('hero-bg.css is missing');
     if (tryRead('hero-bg.js') !== null) bad.push('hero-bg.js is back (the sheet has no script; the other backgrounds were removed)');
-    for (const pg of pages) {
+    for (const pg of everyPage) {
       const html = tryRead(pg);
       if (html === null) continue;
-      const linksCss = /href="hero-bg\.css(\?v=[0-9a-f]*)?"/.test(html);
+      const linksCss = /href="(?:\.\.\/)*hero-bg\.css(\?v=[0-9a-f]*)?"/.test(html);
       if (pg === 'index.html' && !linksCss) bad.push('index.html does not link hero-bg.css');
       if (pg !== 'index.html' && linksCss) bad.push(`${pg} links hero-bg.css, which only index.html may`);
       if (/hero-bg\.js/.test(html)) bad.push(`${pg} links hero-bg.js`);
@@ -241,13 +376,13 @@ function run(root = ROOT, pages = PAGES) {
       found.length ? `${found.slice(0, 5).join(', ')}${found.length > 5 ? ' ...' : ''}. Use a role token; if a hex is truly needed, add it to ALLOWED_HEX in verify/publish.js with the reason` : '');
   }
   const inline = [];
-  for (const p of pages) {
+  for (const p of everyPage) {
     const html = tryRead(p);
     if (html === null) continue;
     const markup = stripElements(stripComments(html), ['script', 'style']);
     if (/<[a-zA-Z][^<>]*\sstyle\s*=/.test(markup)) inline.push(p);
   }
-  add(inline.length === 0, 'no page has a style="" attribute (the CSP pins style-src \'self\')', inline.join(', '));
+  add(inline.length === 0, `no page (${everyPage.length}) has a style="" attribute (the CSP pins style-src 'self')`, inline.join(', '));
   if (app) {
     const code = stripJsComments(app.src);
     const hits = [];
@@ -272,9 +407,10 @@ function run(root = ROOT, pages = PAGES) {
   return results;
 }
 
-module.exports = { run, yamlList, footerLinkProblems, storageKeyProblems, ALLOWED_HEX };
+module.exports = { run, yamlList, footerLinkProblems, storageKeyProblems, publishedOnDisk, cssUrlProblems, ALLOWED_HEX };
 
 if (require.main === module) {
+  console.log(scopeLine('root', pagesIn('root'), { note: `the footer link, the hero background and the inline styles on all ${pagesIn('all').length} pages` }));
   const results = run();
   let bad = 0;
   for (const r of results) {

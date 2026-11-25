@@ -1,111 +1,183 @@
 // Shared config for the verification scripts.
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 
 // The repository root: the tree these scripts read static files from (EDGE-SETUP.md,
 // app.js, the pages). The scripts that open a browser read the tree through BASE.
 const ROOT = path.join(__dirname, '..', '..');
 
-const PAGES = [
-  'index.html', 'about.html', 'services.html', 'industries.html',
-  'work.html', 'membership.html', 'contact.html', 'blog.html',
-  'privacy.html', 'terms.html', 'accessibility.html',
-  // English deep pages and the list page (each has a Swedish twin below)
-  'android-automotive-development.html', 'ai-engineering.html',
-  'android-automotive-consultancies-gothenburg.html',
-  // Swedish pages: the hub, the twins, the guides and the Swedish privacy notice
-  'sv.html', 'android-automotive-utveckling.html', 'ai-utveckling.html',
-  'konsultbolag-android-automotive-goteborg.html', 'valja-konsultbolag.html',
-  'platform-engineering.html', 'ai-assistent-interna-dokument.html',
-  'ai-konsultbolag-sverige.html', 'integritet.html',
-  // The first English post, the twin of valja-konsultbolag.html
-  'choose-a-software-consultancy.html',
-  // Swedish posts written for the buyer questions AI assistants are asked (November 2026)
-  'testautomatisering.html', 'systemutveckling.html', 'systemintegration-och-forvaltning.html',
-  'ai-i-befintlig-produkt.html', 'fordonsmjukvara.html',
-  // their English twins
-  'test-automation.html', 'custom-software-development.html', 'system-integration-and-maintenance.html',
-  'ai-in-your-existing-product.html', 'automotive-software.html',
-];
-
-// The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):
-// { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }.
-// Each entry is one `'file.html': dict(...)` on one line, optionally followed by a comma and a # comment; a value is
-// a quoted string (single or double quotes), True, False or a flat {'k': 'v'} dict. `status` defaults to 'live'.
-// `original` is the effective value: the key when given, otherwise true for an English page (the English page of a
-// pair is its original unless the registry says otherwise). This reader is strict on purpose: anything it cannot
-// read, an unknown key, a bad status or kind, or an entry that is not alone on its line throws, because a registry
-// entry that is silently dropped or misread would turn a withdrawn page into a live one for the checks that use it.
-const REGISTRY_KEYS = ['lang', 'type', 'og', 'pub', 'mod', 'alt', 'article', 'original', 'kind', 'status'];
+// The page registry: tools/site/pages/<slug>.json, one JSON file per page written by hand (the row of about.html is
+// about.json). tools/seo-head.py documents the keys, refuses an unknown key or a value of the wrong type, and loads
+// the same files into its PAGES; `seo-head.py --check` is in the chain. Read here (Python is not run):
+// { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }, in the
+// registry's order, which is the order of sitemap.xml: the rows that carry an `order` by it, then the others by
+// `pub` and then by slug, compared as plain strings, as load_pages() in seo-head.py sorts them. `alt` defaults to
+// {}, `article` to false, `status` to 'live' and `kind` to null. `original` is the effective value: the key when
+// given, otherwise true for an English page (the English page of a pair is its original unless the registry says
+// otherwise). `order` and `note` say nothing about the page and are left out. A folder or a file it cannot read, a
+// file that holds no JSON object, and a bad status or kind throw, because a row that is silently dropped or misread
+// would turn a withdrawn page into a live one for the checks that use it.
+const REGISTRY_DIR = path.join('tools', 'site', 'pages');
+function registryOrder(a, b) {
+  const ao = a.row.order, bo = b.row.order;
+  if (ao !== undefined || bo !== undefined) {
+    if (ao === undefined) return 1;
+    if (bo === undefined) return -1;
+    if (ao !== bo) return ao < bo ? -1 : 1;
+  }
+  const ap = String(a.row.pub), bp = String(b.row.pub);
+  if (ap !== bp) return ap < bp ? -1 : 1;
+  return a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0;
+}
 function readRegistry(root = ROOT) {
-  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
-  const out = {};
-  const q = String.raw`(?:'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")`;
-  const unq = (v) => v.slice(1, -1).replace(/\\(.)/g, '$1');
-  const pair = new RegExp(String.raw`(${q})\s*:\s*(${q})`, 'g');
-  const tok = new RegExp(String.raw`\s*(\w+)\s*=\s*(${q}|True|False|\{[^}]*\})\s*(?:,|$)`, 'y');
-  for (const line of py.split('\n')) {
-    const m = /^\s*(['"])([^'"\n]+\.html)\1\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
-    if (!m) continue;
-    const file = m[2];
-    if (out[file]) throw new Error(`tools/seo-head.py: ${file} is registered twice`);
-    const e = { alt: {}, article: false, status: 'live', kind: null };
-    const body = m[3].trim();
-    let pos = 0;
-    while (pos < body.length) {
-      tok.lastIndex = pos;
-      const t = tok.exec(body);
-      if (!t) throw new Error(`tools/seo-head.py: cannot read the registry entry for ${file} near "${body.slice(pos, pos + 40)}"`);
-      pos = tok.lastIndex;
-      const [, k, v] = t;
-      if (!REGISTRY_KEYS.includes(k)) throw new Error(`tools/seo-head.py: ${file} has an unknown registry key "${k}" (known: ${REGISTRY_KEYS.join(', ')})`);
-      if (v === 'True' || v === 'False') e[k] = v === 'True';
-      else if (v[0] === '{') {
-        e[k] = {};
-        for (const p of v.matchAll(pair)) e[k][unq(p[1])] = unq(p[2]);
-      } else e[k] = unq(v);
-    }
-    if (!['live', 'withdrawn'].includes(e.status)) throw new Error(`tools/seo-head.py: ${file} has status "${e.status}" (live or withdrawn)`);
-    if (e.kind !== null && e.kind !== 'post') throw new Error(`tools/seo-head.py: ${file} has kind "${e.kind}" (post, or leave it out)`);
-    if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
-    out[file] = e;
+  let names;
+  try { names = fs.readdirSync(path.join(root, REGISTRY_DIR)).sort(); } catch (e) {
+    throw new Error(`tools/site/pages cannot be read (${e.code || e.message}); the registry is one JSON file per page there`);
   }
-  const declared = (py.match(/['"][^'"\n]+\.html['"]\s*:\s*dict\(/g) || []).length;
-  if (declared !== Object.keys(out).length) {
-    throw new Error(`tools/seo-head.py: ${declared} entries look like registry entries but ${Object.keys(out).length} were read; one entry per line, as in the table`);
+  const rows = [];
+  for (const name of names) {
+    const rel = `tools/site/pages/${name}`;
+    if (!/^[^./][^/]*\.json$/.test(name)) throw new Error(`${rel}: only rows belong in tools/site/pages, one <slug>.json per page`);
+    let row;
+    try { row = JSON.parse(fs.readFileSync(path.join(root, REGISTRY_DIR, name), 'utf8')); } catch (e) { throw new Error(`${rel} cannot be read as JSON (${e.message})`); }
+    if (!row || typeof row !== 'object' || Array.isArray(row)) throw new Error(`${rel} holds no JSON object`);
+    rows.push({ slug: name.slice(0, -'.json'.length), row });
+  }
+  rows.sort(registryOrder);
+  const out = {};
+  for (const { slug, row } of rows) {
+    const e = { alt: {}, article: false, status: 'live', kind: null };
+    for (const [k, v] of Object.entries(row)) if (k !== 'order' && k !== 'note') e[k] = v;
+    if (!['live', 'withdrawn'].includes(e.status)) throw new Error(`tools/site/pages/${slug}.json has status "${e.status}" (live or withdrawn)`);
+    if (e.kind !== null && e.kind !== 'post') throw new Error(`tools/site/pages/${slug}.json has kind "${e.kind}" (post, or leave it out)`);
+    if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
+    out[slug + '.html'] = e;
   }
   return out;
 }
 
-// The LANGS table of tools/seo-head.py, read as text the way readRegistry reads PAGES:
-// { es: { name, tag, locale, dir, kind, status, pub, mod, checked, by }, ... } in the table's order.
-// One entry per line: 'xx': dict(key='value', ...). kind is 'written' (English, Swedish: the pages in PAGES) or
-// 'generated' (a folder of pages tools/seo-head.py builds from the English ones and tools/i18n/<code>.json).
+// PAGES: the root pages, written by hand. They are the files of the registry, in its order, the list pagesIn('root')
+// below gives too, and publish.js holds it equal to the *.html files at the root. It is read when a script first asks
+// for it (module.exports.PAGES, at the end of this file), so a registry that cannot be read stops that script with
+// the reader's error instead of giving an empty list that every check would pass over, and a script that never
+// asks, such as check.js, still starts.
+let rootPagesRead = null;
+const rootPages = () => (rootPagesRead = rootPagesRead || Object.keys(readRegistry(ROOT)));
+
+// The language table: tools/site/langs.json, { es: { name, tag, locale, dir, kind, status, pub, mod, checked, by },
+// ... } in the file's order, which is the order of LANGS in tools/seo-head.py (it documents and checks the keys).
+// kind is 'written' (English, Swedish: the pages in PAGES) or 'generated' (a folder of pages tools/seo-head.py builds
+// from the English ones and tools/i18n/<code>.json). `note` is left out. A file it cannot read, or an entry without
+// its kind, tag and dir, throws.
 function readLangs(root = ROOT) {
-  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
+  const rel = 'tools/site/langs.json';
+  let data;
+  try { data = JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8')); } catch (e) { throw new Error(`${rel} cannot be read as JSON (${e.message})`); }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error(`${rel} holds no JSON object`);
   const out = {};
-  for (const line of py.split('\n')) {
-    const m = /^\s*'([a-z]{2})'\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
-    if (!m) continue;
+  for (const [code, l] of Object.entries(data)) {
+    if (!/^[a-z]{2}$/.test(code) || !l || typeof l !== 'object' || !l.kind || !l.tag || !l.dir) throw new Error(`${rel}: cannot read the entry for ${code}`);
     const e = {};
-    for (const t of m[2].matchAll(/(\w+)\s*=\s*'((?:[^'\\]|\\.)*)'/g)) e[t[1]] = t[2];
-    if (!e.kind || !e.tag || !e.dir) throw new Error(`tools/seo-head.py: cannot read the LANGS entry for ${m[1]}`);
-    out[m[1]] = e;
+    for (const [k, v] of Object.entries(l)) if (k !== 'note') e[k] = v;
+    out[code] = e;
   }
-  if (!out.en) throw new Error('tools/seo-head.py: no LANGS table found (one language per line, as in the table)');
+  if (!out.en) throw new Error(`${rel}: no entry for en`);
   return out;
 }
-// The pages of the generated languages on disk, 'es/services.html', in the order of LANGS.
+// The pages of the generated languages on disk, 'es/services.html', in the order of LANGS. A tree from before the
+// language table became data (tools/REFACTORING-PLAN.md, step 2.1), such as the merge base that screenshot.js
+// against reads, has no tools/site/langs.json; there the languages are the ones tools/i18n/messages.json lists, which
+// seo-head.py writes in the same order. A langs.json that exists and cannot be read still throws.
+function generatedLanguages(root) {
+  try { return Object.entries(readLangs(root)).filter(([, l]) => l.kind === 'generated').map(([code]) => code); } catch (e) {
+    if (fs.existsSync(path.join(root, 'tools', 'site', 'langs.json'))) throw e;
+    let listed;
+    try { listed = JSON.parse(fs.readFileSync(path.join(root, 'tools', 'i18n', 'messages.json'), 'utf8')).languages; } catch (e2) { throw e; }
+    if (!Array.isArray(listed) || !listed.every((c) => /^[a-z]{2}$/.test(c))) throw e;
+    return listed;
+  }
+}
 function generatedPages(root = ROOT) {
   const out = [];
-  for (const [code, l] of Object.entries(readLangs(root))) {
-    if (l.kind !== 'generated') continue;
+  for (const code of generatedLanguages(root)) {
     let files = [];
     try { files = fs.readdirSync(path.join(root, code)).filter((f) => f.endsWith('.html')).sort(); } catch (e) { /* not built */ }
     for (const f of files) out.push(code + '/' + f);
   }
   return out;
+}
+
+// The page universe (tools/REFACTORING-PLAN.md, step 3.2). Every check takes its pages from here, never from a list of
+// file names of its own, and says which part of the universe it walks: in the first paragraph of its header comment,
+// in a sentence that opens "Scope:", and in the one line scopeLine() makes for it, which it prints when it starts
+// checking (not in a self-test). The scopes:
+//   root       the pages written by hand at the root: the files of the registry, in its order (PAGES)
+//   generated  the pages tools/seo-head.py builds for the generated languages, in the order of LANGS
+//   all        both, the root pages first
+// A check that walks fewer pages than its scope on purpose, to keep the run inside its time, says "a sample of" and
+// takes the sample from samplePages(), which derives it from the registry and the language table, so a new kind of
+// page or a new language joins it with no edit. A check of one feature (the rate calculator, the home hero, the
+// behaviour of the consent module) names the pages the feature lives on and says so: those pages are its fixtures,
+// not a sample of the site. Everything here reads the tree when it is called, never when this file is required.
+const SCOPES = ['root', 'generated', 'all'];
+function checkScope(scope) {
+  if (!SCOPES.includes(scope)) throw new Error(`the scope of a check is root, generated or all, not "${scope}"`);
+}
+// The pages of a scope. A generated language with no page on disk throws, because a check of the generated or of all
+// pages would otherwise pass over that whole language without a word (python3 tools/seo-head.py builds them).
+function pagesIn(scope, root = ROOT) {
+  checkScope(scope);
+  const written = scope === 'generated' ? [] : Object.keys(readRegistry(root));
+  if (scope === 'root') return written;
+  const gen = generatedPages(root);
+  const empty = generatedLanguages(root).filter((code) => !gen.some((p) => p.startsWith(code + '/')));
+  if (empty.length) throw new Error(`no page of the generated language${empty.length === 1 ? '' : 's'} ${empty.join(', ')} on disk, so a check of ${scope === 'all' ? 'every page' : 'the generated pages'} would pass over ${empty.length === 1 ? 'it' : 'them'} (python3 tools/seo-head.py builds them)`);
+  return written.concat(gen);
+}
+// The sample of a scope, for a check that cannot walk all of it in its time. From the root: the first page, in the
+// registry's order, of each kind of row the registry holds, a kind being the row's lang, type, og, kind and status
+// together (so each language's home page, the About, Contact and collection pages, a guide in each language, an
+// article and each withdrawn stub are in it). From the generated languages: the home page of each.
+function samplePages(scope = 'all', root = ROOT) {
+  checkScope(scope);
+  const out = [];
+  if (scope !== 'generated') {
+    const seen = new Set();
+    for (const [file, r] of Object.entries(readRegistry(root))) {
+      const kind = [r.lang, r.type, r.og, r.kind, r.status].join(' ');
+      if (!seen.has(kind)) { seen.add(kind); out.push(file); }
+    }
+  }
+  if (scope !== 'root') {
+    const gen = pagesIn('generated', root);
+    for (const code of generatedLanguages(root)) if (gen.includes(code + '/index.html')) out.push(code + '/index.html');
+  }
+  return out;
+}
+// The home page of each written language (`home` in tools/site/langs.json: index.html, sv.html), in the table's order.
+// A written language whose home is not a page of the registry throws.
+function writtenHomes(root = ROOT) {
+  const reg = readRegistry(root);
+  return Object.entries(readLangs(root)).filter(([, l]) => l.kind === 'written').map(([code, l]) => {
+    if (!l.home || !reg[l.home]) throw new Error(`tools/site/langs.json: the written language ${code} names no home page of the registry`);
+    return l.home;
+  });
+}
+// The line a check prints when it starts checking: its scope and how many pages it walks, split into root and
+// generated for the scope all. For a sample, opts.sample says how it is chosen; for the pages of one feature,
+// opts.feature says which feature. Both name the pages. A check whose units are not pages (the published files of
+// two revisions) says what they are in opts.what instead. opts.note adds a clause (a part of the check that walks
+// another set), opts.root the tree the totals are read from.
+function scopeLine(scope, pages, opts = {}) {
+  checkScope(scope);
+  if (opts.what) return `scope: ${scope}, ${opts.what}${opts.note ? `; ${opts.note}` : ''}`;
+  const count = (n) => `${n} page${n === 1 ? '' : 's'}`;
+  const gen = pages.filter((p) => p.includes('/')).length;
+  const split = scope === 'all' ? ` (${pages.length - gen} root, ${gen} generated)` : '';
+  const note = opts.note ? `; ${opts.note}` : '';
+  if (opts.sample) return `scope: ${scope}, a sample of ${count(pages.length)}${split} of the ${pagesIn(scope, opts.root).length}, ${opts.sample}: ${pages.join(', ')}${note}`;
+  if (opts.feature) return `scope: ${scope}, ${opts.feature}: ${pages.join(', ')}${note}`;
+  return `scope: ${scope}, ${count(pages.length)}${split}${note}`;
 }
 
 // The page that carries the privacy notice (and the in-page consent panel) in each language.
@@ -190,39 +262,266 @@ const todayUtc = () => new Date().toISOString().slice(0, 10);
 // Masks anything shaped like a Measurement ID except the dummy one, for output that may carry a request URL.
 const redact = (s) => String(s).replace(/G-[A-Z0-9]{6,12}/g, (m) => (m === TEST_ID ? m : 'G-REDACTED'));
 
-// Reads app.js: the Measurement ID line, POLICY_VERSION and the COPY object, without running the module.
-function skipString(src, i) {
-  const q = src[i];
-  for (i++; i < src.length; i++) {
-    if (src[i] === '\\') { i++; continue; }
-    if (src[i] === q) return i;
+// --- The constants of app.js -------------------------------------------------------------------------------------
+// appConst(name, src, type) is the one reader of a constant of app.js: no check matches `var NAME = ...` with a
+// pattern of its own. It reads the file without running it and returns the value of the name's one declaration,
+// `var NAME = <value>;` (let and const are read the same way), which has to stand at the top level of the file or
+// of one of its feature blocks. It evaluates only a literal it can prove: a string, a number, true or false, an
+// array or object of those, and a product, quotient or sum of numbers (365 * 24 * 60 * 60, 5 / 52). Everything else
+// throws, with the
+// name and the line: a name that is not declared, a name declared twice anywhere in the file (in two feature
+// blocks, or as a var and a function) or assigned again after its declaration, a declaration inside a nested block
+// or function, and a value that is not such a literal (a call, another name, two strings joined with
+// +). So a reformat of app.js either reads the same value or stops the check that asked, and never hands it a wrong
+// number, as the old pattern for `var NAME = (\d+)` did with a product, which it read as its first factor.
+// type ('string', 'number', 'boolean', 'array' or 'object') makes a value of another kind throw as well.
+// Comments are blanked first (stripJsComments), and a string or a regular expression literal is one token, so a
+// comment or a string that says `var NAME =` is no declaration. What it cannot see: a property written later on an
+// object constant (COPY.en.label = ...); app.js writes none. src is the text of app.js; without it the file in the
+// tree is read.
+const JS_PUNCT = ['>>>=', '...', '===', '!==', '**=', '<<=', '>>=', '>>>', '&&=', '||=', '??=', '=>', '==', '!=', '<=', '>=',
+  '&&', '||', '??', '?.', '++', '--', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '**', '<<', '>>'];
+// The operators that write to the name in front of them (and ++ or -- in front of a name writes to it too).
+const JS_WRITE = new Set(['=', '+=', '-=', '*=', '/=', '%=', '**=', '<<=', '>>=', '>>>=', '&=', '|=', '^=', '&&=', '||=', '??=', '++', '--']);
+// After these words a slash opens a regular expression; the same list as in stripJsComments, so the two agree.
+const JS_REGEX_AFTER = /^(return|typeof|instanceof|in|of|new|delete|void|throw|case|do|else)$/;
+const JS_NUMBER = /0[xX][0-9a-fA-F]+|0[oO][0-7]+|0[bB][01]+|(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/y;
+
+// The tokens of app.js, comments left out: { type: 'name' | 'num' | 'str' | 'template' | 'regex' | 'punct', text,
+// line }. A slash opens a regular expression exactly where stripJsComments takes it for one.
+function jsTokens(src) {
+  const code = stripJsComments(src);
+  const out = [];
+  const n = code.length;
+  let i = 0, line = 1;
+  const fail = (why, at) => { throw new Error(`app.js: ${why} on line ${at}, so no constant of it can be read`); };
+  while (i < n) {
+    const c = code[i];
+    if (c === '\n') { line++; i++; continue; }
+    if (/\s/.test(c)) { i++; continue; }
+    const start = i, at = line, prev = out[out.length - 1];
+    let type = 'punct';
+    if (/[A-Za-z_$]/.test(c)) {
+      while (i < n && /[\w$]/.test(code[i])) i++;
+      type = 'name';
+    } else if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(code[i + 1] || ''))) {
+      JS_NUMBER.lastIndex = i;
+      JS_NUMBER.exec(code);
+      i = JS_NUMBER.lastIndex;
+      type = 'num';
+    } else if (c === '"' || c === "'" || c === '`') {
+      for (i++; i < n && code[i] !== c; i++) {
+        if (code[i] === '\\') { if (code[i + 1] === '\n') line++; i++; continue; }
+        if (code[i] === '\n') { if (c !== '`') fail('a string runs past the end of its line', at); line++; }
+      }
+      if (i >= n) fail('a string is not closed', at);
+      i++;
+      type = c === '`' ? 'template' : 'str';
+    } else if (c === '/' && (!prev || (prev.type === 'punct' && /[(,=:[!&|?{};+\-*%<>~^]$/.test(prev.text)) || (prev.type === 'name' && JS_REGEX_AFTER.test(prev.text)))) {
+      let inClass = false;
+      for (i++; i < n && code[i] !== '\n'; i++) {
+        if (code[i] === '\\') { i++; continue; }
+        if (code[i] === '[') inClass = true;
+        else if (code[i] === ']') inClass = false;
+        else if (code[i] === '/' && !inClass) break;
+      }
+      if (code[i] !== '/') fail('a regular expression is not closed', at);
+      for (i++; i < n && /[A-Za-z]/.test(code[i]); i++);
+      type = 'regex';
+    } else {
+      const p = JS_PUNCT.find((q) => code.startsWith(q, i));
+      i += p ? p.length : 1;
+    }
+    out.push({ type, text: code.slice(start, i), line: at });
   }
-  throw new Error('unterminated string in app.js');
+  return out;
 }
-function objectLiteralAt(src, start) {
-  let depth = 0;
-  for (let i = start; i < src.length; i++) {
-    const c = src[i];
-    if (c === "'" || c === '"') { i = skipString(src, i); continue; }
-    if (c === '/' && src[i + 1] === '/') { i = src.indexOf('\n', i); if (i < 0) break; continue; }
-    if (c === '/' && src[i + 1] === '*') { i = src.indexOf('*/', i) + 1; continue; }
-    if (c === '{') depth++;
-    if (c === '}' && --depth === 0) return src.slice(start, i + 1);
+
+// Every declaration in app.js and every later write to a variable, by name: { toks, decls, writes }. A declaration
+// is { line, depth (braces open around it), kind ('var' or 'function'), init (the token its value starts at, or -1) }.
+// The commas of a var statement are told from those inside its values by the bracket level the statement opened at.
+const constIndexes = new Map();
+function constIndex(src) {
+  if (constIndexes.has(src)) return constIndexes.get(src);
+  const toks = jsTokens(src);
+  const decls = new Map(), writes = new Map();
+  const note = (map, name, v) => { if (!map.has(name)) map.set(name, []); map.get(name).push(v); };
+  const is = (t, text) => !!t && t.type === 'punct' && t.text === text;
+  const lists = [];                    // the bracket levels of the var statements still open, innermost last
+  let level = 0, depth = 0, expect = false;
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i], prev = toks[i - 1], next = toks[i + 1];
+    const open = lists.length ? lists[lists.length - 1] : -1;
+    const declarator = expect;
+    expect = false;
+    if (t.type === 'punct') {
+      if (t.text === '(' || t.text === '[' || t.text === '{') { level++; if (t.text === '{') depth++; }
+      else if (t.text === ')' || t.text === ']' || t.text === '}') {
+        level--;
+        if (t.text === '}') depth--;
+        while (lists.length && lists[lists.length - 1] > level) lists.pop();
+      } else if (t.text === ';' && open === level) lists.pop();
+      else if (t.text === ',' && open === level) expect = true;
+      continue;
+    }
+    if (t.type !== 'name' || is(prev, '.') || is(prev, '?.')) continue;   // a property is no variable
+    if (t.text === 'var' || t.text === 'let' || t.text === 'const') {
+      if (open === level) lists.pop();                                     // the last statement lacked its semicolon
+      lists.push(level);
+      expect = true;
+      continue;
+    }
+    if (declarator) {
+      note(decls, t.text, { line: t.line, depth, kind: 'var', init: is(next, '=') ? i + 2 : -1 });
+      if (is(next, '=')) i++;                                              // the = that gives the value writes nothing more
+      continue;
+    }
+    if (t.text === 'function' && next && next.type === 'name') { note(decls, next.text, { line: next.line, depth, kind: 'function', init: -1 }); i++; continue; }
+    if ((t.text === 'in' || t.text === 'of') && open === level) { lists.pop(); continue; }   // for (var k in o)
+    if ((next && next.type === 'punct' && JS_WRITE.has(next.text)) || is(prev, '++') || is(prev, '--')) note(writes, t.text, t.line);
   }
-  throw new Error('unbalanced braces in app.js');
+  if (constIndexes.size >= 32) constIndexes.clear();                      // the release gate's self-test reads many variants
+  const index = { toks, decls, writes };
+  constIndexes.set(src, index);
+  return index;
 }
+
+// The value of a JavaScript string literal, quotes included in `text`. An escape the reader cannot be sure of (an
+// octal one, a malformed \x or \u) throws.
+function jsString(text, fail) {
+  const body = text.slice(1, -1);
+  const simple = { n: '\n', r: '\r', t: '\t', b: '\b', f: '\f', v: '\v' };
+  let out = '';
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] !== '\\') { out += body[i]; continue; }
+    const d = body[++i];
+    if (Object.prototype.hasOwnProperty.call(simple, d)) out += simple[d];
+    else if (d === '0' && !/[0-9]/.test(body[i + 1] || '')) out += '\0';
+    else if (/[0-9]/.test(d)) fail('a string has an octal escape');
+    else if (d === 'x') {
+      if (!/^[0-9a-fA-F]{2}$/.test(body.slice(i + 1, i + 3))) fail('a string has a malformed \\x escape');
+      out += String.fromCharCode(parseInt(body.slice(i + 1, i + 3), 16));
+      i += 2;
+    } else if (d === 'u' && body[i + 1] === '{') {
+      const end = body.indexOf('}', i);
+      const hex = end < 0 ? '' : body.slice(i + 2, end);
+      if (!/^[0-9a-fA-F]{1,6}$/.test(hex) || parseInt(hex, 16) > 0x10ffff) fail('a string has a malformed \\u{} escape');
+      out += String.fromCodePoint(parseInt(hex, 16));
+      i = end;
+    } else if (d === 'u') {
+      if (!/^[0-9a-fA-F]{4}$/.test(body.slice(i + 1, i + 5))) fail('a string has a malformed \\u escape');
+      out += String.fromCharCode(parseInt(body.slice(i + 1, i + 5), 16));
+      i += 4;
+    } else if (d === '\r') { if (body[i + 1] === '\n') i++; }            // a line continuation adds nothing
+    else if (d !== '\n' && d !== '\u2028' && d !== '\u2029') out += d;   // any other escaped character is itself
+  }
+  return out;
+}
+
+function appConst(name, src, type) {
+  if (src === undefined) src = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const { toks, decls, writes } = constIndex(src);
+  const all = decls.get(name) || [];
+  if (!all.length) throw new Error(`app.js: ${name} is not declared (no var ${name} = ...; outside comments and strings)`);
+  if (all.length > 1) throw new Error(`app.js: ${name} is declared ${all.length} times (lines ${all.map((d) => d.line).join(' and ')}), so which value counts cannot be read`);
+  const d = all[0];
+  const again = writes.get(name) || [];
+  if (again.length) throw new Error(`app.js: ${name} (line ${d.line}) is assigned again on line ${again.join(' and ')}, so the value it is declared with is not proven`);
+  if (d.depth > 1) throw new Error(`app.js: ${name} (line ${d.line}) is declared inside a nested block or function, not at the top of a feature block`);
+  if (d.kind !== 'var' || d.init < 0) throw new Error(`app.js: ${name} (line ${d.line}) is given no value where it is declared`);
+  const is = (t, text) => !!t && t.type === 'punct' && t.text === text;
+  const shown = (t) => (t ? `"${t.text.length > 40 ? t.text.slice(0, 40) + '...' : t.text}" on line ${t.line}` : 'the end of the file');
+  const fail = (why, t) => {
+    throw new Error(`app.js: ${name} (line ${d.line}) is not a literal the reader can prove: ${why}${t !== undefined ? ` at ${shown(t)}` : ''}. ` +
+      'It reads only a string, a number, true or false, an array or object of those, and a product, quotient or sum of numbers');
+  };
+  const number = (i) => {
+    let sign = 1;
+    if (is(toks[i], '-')) { sign = -1; i++; }
+    const t = toks[i];
+    if (!t || t.type !== 'num') fail('a value it cannot evaluate', t);
+    if (/^0[0-9]/.test(t.text)) fail('a number with a leading zero (an old octal form)', t);
+    return { v: sign * Number(t.text), i: i + 1 };
+  };
+  const product = (i) => {
+    let r = number(i);
+    while (is(toks[r.i], '*') || is(toks[r.i], '/')) { const op = toks[r.i].text; const f = number(r.i + 1); r = { v: op === '*' ? r.v * f.v : r.v / f.v, i: f.i }; }
+    return r;
+  };
+  const sum = (i) => {
+    let r = product(i);
+    while (is(toks[r.i], '+')) { const p = product(r.i + 1); r = { v: r.v + p.v, i: p.i }; }
+    if (!Number.isFinite(r.v)) fail('a number that is not finite', toks[i]);
+    return r;
+  };
+  const value = (i) => {
+    const t = toks[i];
+    if (t && t.type === 'str') return { v: jsString(t.text, (why) => fail(why, t)), i: i + 1 };
+    if (t && t.type === 'name' && (t.text === 'true' || t.text === 'false')) return { v: t.text === 'true', i: i + 1 };
+    if (is(t, '[')) {
+      const out = [];
+      i++;
+      while (!is(toks[i], ']')) {
+        const r = value(i);
+        out.push(r.v);
+        i = r.i;
+        if (is(toks[i], ',')) i++;
+        else if (!is(toks[i], ']')) fail('an array that does not go on with , or end with ]', toks[i]);
+      }
+      return { v: out, i: i + 1 };
+    }
+    if (is(t, '{')) {
+      const out = {};
+      i++;
+      while (!is(toks[i], '}')) {
+        const k = toks[i];
+        let key;
+        if (k && k.type === 'name') key = k.text;
+        else if (k && k.type === 'str') key = jsString(k.text, (why) => fail(why, k));
+        else if (k && k.type === 'num') key = String(number(i).v);
+        else fail('an object key that is not a name, a string or a number', k);
+        if (key === '__proto__') fail('an object key __proto__, which sets the prototype instead of a key', k);
+        if (Object.prototype.hasOwnProperty.call(out, key)) fail(`the object key ${key} twice`, k);
+        if (!is(toks[i + 1], ':')) fail('an object key without a : and a value', toks[i + 1]);
+        const r = value(i + 2);
+        out[key] = r.v;
+        i = r.i;
+        if (is(toks[i], ',')) i++;
+        else if (!is(toks[i], '}')) fail('an object that does not go on with , or end with }', toks[i]);
+      }
+      return { v: out, i: i + 1 };
+    }
+    return sum(i);
+  };
+  const r = value(d.init);
+  // The literal has to be the whole value: what follows ends the declaration (a ; or , or the } of its block, or
+  // a new statement on a later line), so `'a' + 'b'` or `5 - 2` is refused rather than read as its first part.
+  const after = toks[r.i], last = toks[r.i - 1];
+  const ends = !after || is(after, ';') || is(after, ',') || is(after, '}') ||
+    (after.line > last.line && after.type === 'name' && after.text !== 'in' && after.text !== 'instanceof');
+  if (!ends) fail('more after the literal', after);
+  if (type !== undefined) {
+    const kind = Array.isArray(r.v) ? 'array' : typeof r.v;
+    if (kind !== type) throw new Error(`app.js: ${name} (line ${d.line}) is ${kind === 'array' || kind === 'object' ? 'an' : 'a'} ${kind}, not ${type === 'array' || type === 'object' ? 'an' : 'a'} ${type}`);
+  }
+  return r.v;
+}
+
+// Reads app.js without running it: the Measurement ID line, and POLICY_VERSION, CONSENT_KEY and COPY through
+// appConst, so a value that is not a plain literal throws with its name and line instead of reading as null.
+// The Measurement ID is read by its line, on purpose: rewriteGaIdSource rewrites exactly one `var GA_ID = '...';`
+// line, and the release gate and consent.js require that line once (gaLines), so its shape is the rule and is not
+// left to the general reader.
 function readApp(root = ROOT, source) {
   const src = source !== undefined ? source : fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   const gaLines = src.match(/var GA_ID = '[^']*';/g) || [];
   const gaId = gaLines.length === 1 ? /'([^']*)'/.exec(gaLines[0])[1] : null;
-  const pv = /var POLICY_VERSION = '([^']*)'/.exec(src);
-  const ck = /var CONSENT_KEY = '([^']*)'/.exec(src);
-  let copy = null;
-  const at = src.indexOf('var COPY = {');
-  if (at >= 0) {
-    try { copy = vm.runInNewContext('(' + objectLiteralAt(src, src.indexOf('{', at)) + ')', {}, { timeout: 1000 }); } catch (e) { copy = null; }
-  }
-  return { src, gaLines: gaLines.length, gaId, policyVersion: pv ? pv[1] : null, consentKey: ck ? ck[1] : null, copy };
+  return {
+    src, gaLines: gaLines.length, gaId,
+    policyVersion: appConst('POLICY_VERSION', src, 'string'),
+    consentKey: appConst('CONSENT_KEY', src, 'string'),
+    copy: appConst('COPY', src, 'object'),
+  };
 }
 // A Measurement ID the module would act on: GA4 shape and not the placeholder.
 const isActiveShape = (id) => typeof id === 'string' && /^G-[A-Z0-9]{6,12}$/.test(id) && !/^G-X+$/.test(id);
@@ -440,10 +739,11 @@ function parseTags(html, name) {
 // Serves app.js with the Measurement ID replaced, so a browser check runs the same module the visitors get
 // but never with a real ID. The source is fetched here, once, outside the route, so a missing or doubled
 // line rejects this call (a throw inside a route handler would be swallowed). Playwright runs the most
-// recently registered matching route first, so call this after any catch-all route.
-async function rewriteGaId(context, id = TEST_ID) {
-  const res = await context.request.get(new URL('app.js', BASE).href);
-  if (!res.ok()) throw new Error(`rewriteGaId: ${BASE}app.js answered ${res.status()}`);
+// recently registered matching route first, so call this after any catch-all route. base is the address the tree
+// is served from (default BASE): app.js is fetched from that tree.
+async function rewriteGaId(context, id = TEST_ID, base = BASE) {
+  const res = await context.request.get(new URL('app.js', base).href);
+  if (!res.ok()) throw new Error(`rewriteGaId: ${base}app.js answered ${res.status()}`);
   const body = rewriteGaIdSource(await res.text(), id);
   await context.route((url) => url.pathname.endsWith('/app.js'), (route) =>
     route.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', headers: { 'cache-control': 'no-store' }, body }));
@@ -567,13 +867,15 @@ const FOOTER_LINK = '\n            <li><a href="privacy.html#cookies" data-conse
 // BASE, for cookie-domain checks on a made-up host name). Two options are for consent-live.js alone: live (the
 // CSP's own Google hosts get the real network instead of the stand-ins; any request that carries another
 // Measurement ID is still aborted) and stripUpgrade (drop upgrade-insecure-requests from the policy, which WebKit
-// applies even to http://localhost; on by default under ENGINE=webkit). Returns the log object.
+// applies even to http://localhost; on by default under ENGINE=webkit). One option is for screenshot.js against,
+// which serves two trees at once: base (default BASE), the address of the tree this context loads, whose origin
+// counts as the site's own and whose app.js is the one rewritten. Returns the log object.
 async function armGa(context, opts = {}) {
-  const o = Object.assign({ id: TEST_ID, inert: false, csp: 'auto', footer: true, stub: {}, origins: [], controlId: false, live: false, stripUpgrade: process.env.ENGINE === 'webkit' }, opts);
+  const o = Object.assign({ id: TEST_ID, inert: false, csp: 'auto', footer: true, stub: {}, origins: [], controlId: false, live: false, stripUpgrade: process.env.ENGINE === 'webkit', base: BASE }, opts);
   if (!o.inert && isActiveShape(o.id) && o.id !== TEST_ID && !o.controlId) {
     throw new Error('armGa: refusing to arm an active-looking ID other than the dummy ' + TEST_ID);
   }
-  const base = new URL(BASE);
+  const base = new URL(o.base);
   const ga = { id: o.id, gtag: [], collect: [], blocked: [], leaks: [], errors: [], pages: [], live: [], t0: Date.now() };
   ga.google = () => ga.gtag.concat(ga.collect, ga.leaks);
   ga.reset = () => { ga.gtag.length = ga.collect.length = ga.blocked.length = ga.leaks.length = ga.errors.length = 0; };
@@ -639,7 +941,7 @@ async function armGa(context, opts = {}) {
       try { await route.abort(); } catch (e2) { /* already handled */ }
     }
   });
-  if (!o.inert) await rewriteGaId(context, o.id);
+  if (!o.inert) await rewriteGaId(context, o.id, o.base);
   context.__ga = ga;
   ARMED.push(ga);
   installExitHook();
@@ -724,10 +1026,12 @@ async function heroUnit(page) {
 }
 
 module.exports = {
-  ROOT, PAGES, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
+  ROOT, readRegistry, readLangs, generatedPages, SCOPES, pagesIn, samplePages, writtenHomes, scopeLine, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
-  readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
+  readApp, appConst, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
   parseCsp, CSP_META_RE, readPage, pageLang, edgeCsp,
   lowerAscii, escapeRegExp, stripComments, stripElements, decodeEntities, BLOCK_TAGS, htmlToText,
 };
+// PAGES is read on first use (rootPages, above).
+Object.defineProperty(module.exports, 'PAGES', { enumerable: true, get: rootPages });

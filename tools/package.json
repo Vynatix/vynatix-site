@@ -1,22 +1,31 @@
 {
   "name": "vynatix-site-verify",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "description": "Local verification scripts and the version-stamp writer for the Vynatix site. Not part of the site build; excluded from the published output by _config.yml.",
   "scripts": {
-    "check": "node verify/csp.js && node verify/publish.js && node verify/permanence.js && node verify/permanence.js --self-test && node verify/mailto.js && node verify/release-gate.js --self-test && node stamp.js --check && node verify/links.js && node verify/seo.js && node verify/requests.js && node verify/adversarial.js && node verify/theme.js && node verify/calc.js && node verify/waves.js && node verify/hero-fit.js && node verify/stale-cache.js && node verify/consent.js && node verify/consent-layout.js && npm run check:bg && node verify/a11y.js && npm run check:gen && node verify/i18n.js",
+    "check": "node verify/csp.js && node verify/publish.js && node verify/permanence.js && node verify/permanence.js --self-test && node verify/mailto.js && node verify/copies.js && node verify/release-gate.js --self-test && node sync.js --self-test && node verify/shipped.js --self-test && node verify/docs.js && node verify/docs.js --self-test && node stamp.js --check && node verify/links.js && node verify/seo.js && node verify/requests.js && node verify/adversarial.js && node verify/theme.js && node verify/calc.js && node verify/waves.js && node verify/hero-fit.js && node verify/stale-cache.js && node verify/consent.js && node verify/consent-layout.js && npm run check:bg && node verify/a11y.js && npm run check:gen && python3 migrate/registry.py --check && python3 migrate/chrome.py --check && python3 migrate/lists.py --check && python3 migrate/agents-split.py --check && node verify/i18n.js",
     "check:gen": "python3 seo-head.py --check",
     "check:i18n": "python3 i18n.py && node verify/i18n.js",
     "redate": "python3 redate.py",
     "check:bg": "node verify/bg-sheet.js && node verify/bg-fit.js",
     "shots": "node verify/screenshot.js current && node verify/screenshot.js compare",
+    "shots:against": "node verify/screenshot.js against",
     "stamp": "node stamp.js",
+    "shipped": "node verify/shipped.js",
+    "sync": "node sync.js",
+    "facts": "node verify/docs.js --facts",
+    "check:parallel": "node check.js",
+    "check:list": "node check.js --list",
     "release-gate": "node verify/release-gate.js",
     "consent-live": "node verify/consent-live.js --live"
   },
   "dependencies": {
     "axe-core": "^4",
     "pixelmatch": "^7",
-    "playwright": "^1",
+    "playwright": "1.63.0",
     "pngjs": "^7"
   }
 }

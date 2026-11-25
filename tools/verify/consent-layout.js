@@ -1,5 +1,7 @@
 // Layout and accessibility of the consent bar, measured in a real browser with the module armed
-// (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted).
+// (armGa in _common.js: the dummy ID, Google stubbed, any other off-origin request aborted). Scope: root, a sample
+// of the root pages: the home page of each written language (writtenHomes() in _common.js), and with FULL=1 the
+// first withdrawn page of the registry too; the two notices for the bar beside their in-page panel.
 //   node verify/consent-layout.js                 about two minutes, both themes: mono-light,mono-dark
 //   THEMES=mono-dark node verify/consent-layout.js    only the themes named
 //   FULL=1 node verify/consent-layout.js          more viewports, pages and Tab sweeps
@@ -18,7 +20,7 @@
 const fs = require('fs');
 const { PNG } = require('pngjs');
 const {
-  PLACEHOLDER_ID, THEMES: ENV_THEMES, ALL_THEMES, launch, pool,
+  PLACEHOLDER_ID, THEMES: ENV_THEMES, ALL_THEMES, NOTICE_PAGES, launch, pool, readRegistry, writtenHomes, scopeLine,
 } = require('./_common');
 const C = require('./_consent');
 
@@ -26,12 +28,15 @@ const { sleep, snap, armedContext, open, barButton: btn } = C;
 const FULL = !!process.env.FULL;
 const THEMES = process.env.THEMES ? ENV_THEMES : ALL_THEMES;           // both of the site's themes; THEMES= narrows it
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
-const PAGES_L = FULL ? ['index.html', 'sv.html', 'android-automotive-consultancies-gothenburg.html'] : ['index.html', 'sv.html'];
+// The pages the bar is measured on: the home page of each written language, the two languages the bar is written in,
+// and with FULL=1 also the first withdrawn page of the registry, a stub that is barely taller than the bar.
+const REGISTRY = readRegistry();
+const PAGES_L = writtenHomes().concat(FULL ? Object.keys(REGISTRY).filter((f) => REGISTRY[f].status === 'withdrawn').slice(0, 1) : []);
 const VIEWPORTS = [[320, 568], [360, 640], [390, 844], [768, 1024], [1440, 900], [320, 256]];
 const PHONES = [[320, 568], [360, 640], [390, 844]];
 const rep = C.reporter();
 const ck = rep.check;
-const langOf = (p) => (p === 'sv.html' ? 'sv' : 'en');
+const langOf = (p) => (REGISTRY[p] && REGISTRY[p].lang === 'sv' ? 'sv' : 'en');
 const copy = require('./_common').readApp().copy;
 
 // --- measuring helpers (serialised into the page) --------------------------------------------------
@@ -105,6 +110,15 @@ const BOTTOM_CLEARANCE = () => {
     fixed, covered, fine, legalMin: legalMin === Infinity ? null : legalMin,
     cookieClear: !fixed || cookie.bottom <= b.top || cookie.right <= b.left || cookie.left >= b.right,
     atBottom: Math.abs(innerHeight + scrollY - document.documentElement.scrollHeight) < 2,
+    // The geometry, so a failure says why: the bar's top and height, the footer's reserve below its last link
+    // (padding-bottom, 12rem while the bar is up), how far the page is from its end, and whether the web fonts and
+    // the consent-open class were in place when it was measured.
+    geo: {
+      barTop: Math.round(b.top), barH: Math.round(b.height), innerH: innerHeight,
+      footerPad: getComputedStyle(document.querySelector('.site-footer')).paddingBottom,
+      short: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY),
+      open: document.documentElement.classList.contains('consent-open'), fonts: document.fonts.status,
+    },
   };
 };
 
@@ -116,6 +130,7 @@ async function reopen(page) {
 }
 
 (async () => {
+  console.log(scopeLine('root', PAGES_L, { sample: `the home page of each written language${FULL ? ' and the first withdrawn page' : ''}`, note: `the bar beside the in-page panel on ${Object.values(NOTICE_PAGES).join(', ')}` }));
   const t0 = Date.now();
   const browser = await launch();
   const timings = [];
@@ -278,7 +293,7 @@ async function reopen(page) {
       await env.close();
       return { ...j, r };
     });
-    const bad2 = rows2.filter((x) => x.r.covered.length || !x.r.cookieClear || !x.r.atBottom).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}: links under the bar ${x.r.covered.join('/') || 'none'}, Cookie settings clear ${x.r.cookieClear}`);
+    const bad2 = rows2.filter((x) => x.r.covered.length || !x.r.cookieClear || !x.r.atBottom).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}: links under the bar ${x.r.covered.join('/') || 'none'}, Cookie settings clear ${x.r.cookieClear}, at the end of the page ${x.r.atBottom} ${JSON.stringify(x.r.geo)}`);
     const gaps = rows2.map((x) => x.r.legalMin).filter((g) => g !== null);
     ck(!bad2.length, `at the end of the page every footer link, the Legal list and Cookie settings are clear of the bar (${rows2.length} runs; smallest gap above the bar ${gaps.length ? Math.round(Math.min(...gaps)) : 'n/a'}px)`, fail(bad2));
     const fine = rows2.filter((x) => x.r.fine).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}`);
@@ -287,7 +302,7 @@ async function reopen(page) {
 
   // -------------------------------------------------------------------------------------------------
   await scenario('NAME AND LANDMARK: label in name', async () => {
-    for (const [p, lang] of [['index.html', 'en'], ['sv.html', 'sv']]) {
+    for (const [p, lang] of writtenHomes().map((h) => [h, langOf(h)])) {
       const L = copy[lang];
       const env = await armedContext(browser, { viewport: { width: 390, height: 844 }, theme: THEMES[0] });
       const page = await open(env.ctx, p);
@@ -438,7 +453,7 @@ async function reopen(page) {
     const jobs = [];
     const vps = [[320, 568], [390, 844], [1440, 900]];
     for (const theme of THEMES) for (const [w, h] of vps) for (const p of PAGES_L) jobs.push({ theme, w, h, p, state: 'first' });
-    for (const p of ['privacy.html', 'integritet.html']) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'first' });
+    for (const p of Object.values(NOTICE_PAGES)) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'first' });
     for (const p of PAGES_L) jobs.push({ theme: THEMES[0], w: 390, h: 844, p, state: 'reopen' });
     const rows = await pool(jobs, 3, async (j) => {
       // bypassCSP only to inject axe, as a11y.js does; the policy itself is proven by csp.js and consent.js

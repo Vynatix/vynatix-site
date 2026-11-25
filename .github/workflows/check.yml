@@ -1,0 +1,124 @@
+# The checks of tools/ on every pull request and on every push to main (tools/REFACTORING-PLAN.md, steps 0.2
+# and 3.5). Nothing here deploys: GitHub Pages builds and publishes main on its own, exactly as before.
+#
+#   static   the static tier: no install, no browser, seconds. The one meant to be a required status check.
+#   build    GitHub's own Pages build of the same commit (the action and image of the Pages run, which builds and
+#            does not deploy), compared byte for byte with the files the repository says it publishes.
+#   browser  the browser checks through tools/check.js. Reports; whether it is required is the owner's choice.
+#
+# A pull request that must move nothing on the site carries the line "Byte-neutral: yes" alone in its
+# description; shipped.js then fails on any published file that differs. The description reaches the script
+# through the environment only, never through the command line.
+name: check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      # The checks that name origin/main (permanence.js, shipped.js) compare with the base of this run: the first
+      # parent of a pull request's merge commit, or the commit before a push. On a push origin/main is the pushed
+      # commit itself, so comparing with it would prove nothing.
+      - name: Point origin/main at the base of this run
+        id: base
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = push ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then base="$BEFORE"; else base="$(git rev-parse HEAD^1)"; fi
+          git update-ref refs/remotes/origin/main "$base"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "comparing $(git rev-parse --short HEAD) with $(git rev-parse --short "$base")"
+      - name: Static tier
+        working-directory: tools
+        run: node check.js --static
+      - name: The generated languages, statically
+        working-directory: tools
+        run: node verify/i18n.js --static
+      - name: What this change ships
+        working-directory: tools
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_REV: ${{ steps.base.outputs.base }}
+        run: node verify/shipped.js --base "$BASE_REV" --head HEAD
+
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+        with:
+          source: ./
+          destination: ./_site_check
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: The build holds exactly what the repository publishes
+        working-directory: tools
+        run: node verify/shipped.js --head HEAD --built ../_site_check
+      # tools/pages-build.txt records the carrier version local builds use; a new version on GitHub's side fails
+      # here, so it is noticed and the local build is moved with it.
+      - name: The carrier is the recorded version
+        run: |
+          want="$(sed -n 's/^gem install github-pages -v \([0-9]*\).*/\1/p' tools/pages-build.txt)"
+          have="$(curl -fsS https://pages.github.com/versions.json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s)["github-pages"]))')"
+          echo "recorded github-pages $want, GitHub Pages builds with $have"
+          test -n "$want" && test "$want" = "$have"
+
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install the pinned packages and their browser
+        working-directory: tools
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Point origin/main at the base of this run
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = push ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then base="$BEFORE"; else base="$(git rev-parse HEAD^1)"; fi
+          git update-ref refs/remotes/origin/main "$base"
+      - name: Every check
+        working-directory: tools
+        run: node check.js

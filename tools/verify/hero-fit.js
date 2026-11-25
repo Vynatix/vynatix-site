@@ -1,4 +1,6 @@
-// The hero fit (styles.css, "Hero fit"): when the page loads, the first screen is the hero.
+// The hero fit (styles.css, "Hero fit"): when the page loads, the first screen is the hero. Scope: root, the home
+// page of each written language, the two pages the Hero fit block solves for (a generated home page's headline is
+// held to its two lines by i18n.js).
 //
 // The hero is drawn in its own unit, --hero-u, which styles.css solves from the window's height, so that
 // the header and the hero's message end exactly on the fold. Nothing is measured by
@@ -24,18 +26,60 @@
 //   S  Support. Without svh the hero is the plain one (the rules sit behind @supports), and so it is
 //      on paper and, without JavaScript, at 904px and narrower, where the header is not sticky and
 //      lists its links, so what stands above the hero is not what the solve assumes.
+//   W  Write, with --write only, before everything above. Each line that M proves is solved from the same
+//      two measurements M takes of it (LINES): the slope is the rise between them per unit, rounded to a
+//      whole number, and the fixed part is the mean of what that slope leaves at the two, rounded to a
+//      whole pixel. On the pinned browser (tools/package.json) that rule gives back every committed number
+//      exactly, which is the condition it was introduced on. A line is written only when M fails for it
+//      with the committed numbers: two of today's slopes come out at 489.53 and 457.58, so a sixty-fourth
+//      of a pixel or two in one measurement rounds them the other way, another build of the browser could
+//      solve a different number for a line that still passes, and a passing line is never rewritten. The
+//      solved and the committed numbers are printed for every line either way, and then the check runs
+//      as usual on the file as written, so its verdict is the verdict on the new numbers.
+//      It writes the ten numbers of the three lines measured at 1440px (--hero-f1, --hero-k1, --hero-f2
+//      and --hero-k2 on both home pages, --hero-wf and --hero-wk on the English one) and nothing else.
+//      The phone lines are not measured (under 600px the lede wraps by the window, so its line count
+//      moves with the unit and there is no straight line to measure), and the floors (--hero-min),
+//      --hero-above, --hero-h, --hero-hw and the heights of the states in the media queries are not
+//      lines: they stay numbers a person sets. It writes nothing at all when BASE does not serve this
+//      tree's two home pages and stylesheets (SOURCES) or a pair is not on a line of its own in its rule,
+//      and nothing for a page whose headline or lede is not the two lines that the lines and --hero-h
+//      assume, because that is a new model, not a refit.
 //
 //   node verify/hero-fit.js                      (serve the repo root first, as for the other checks)
 //   REPORT=1 node verify/hero-fit.js             prints every row of the table, not only the failures
+//   node verify/hero-fit.js --write              refits the lines that fail (W), then runs the check;
+//                                                after a write, run npm run stamp and npm run check:bg
 //
 // The hero's background is not this check's: bg-sheet.js proves the art against the text at the design
 // size and, through bg-fit.js, at a scaled one. This one runs in the first theme of
 // THEMES only: the two themes share every size.
-const { BASE, THEMES, launch, pinTheme } = require('./_common.js');
+const fs = require('fs');
+const path = require('path');
+const { ROOT, BASE, THEMES, launch, pinTheme, scopeLine } = require('./_common.js');
 
 const REPORT = !!process.env.REPORT;
+const WRITE = process.argv.includes('--write');
 const THEME = THEMES[0];
 const TOL = 2;           // px: how far the solved line may be from the fold or from the measured height
+
+// The lines of the model and the two units each one is measured at. M holds a line to its two
+// measurements and W fits the line through the same two, so the check and the refit cannot disagree
+// about the points. The units matter: the hero's height is not exactly straight between them (while
+// the lede scales it grows by 576px per unit between 1 and 0.95 and by 556px between 0.95 and 0.9),
+// so a line through other units would come out with other numbers. The whole hero's line is the
+// English page's only.
+const LINES = [
+  { f: 'f1', k: 'k1', us: [1, 0.9] },
+  { f: 'f2', k: 'k2', us: [0.7, 0.5] },
+  { f: 'wf', k: 'wk', us: [1, 0.85], whole: true },
+];
+// The rule in the Hero fit block of styles.css that holds each page's lines: the Swedish hub's hero is
+// the plain .hero, the English one is the hero with the client row.
+const RULES = { 'index.html': '.hero.hero--clients', 'sv.html': '.hero' };
+// How M accepts a line at one measurement: within TOL of it, and under it by a pixel at most.
+const fits = (got, want) => Math.abs(got - want) <= TOL && got <= want + 1;
+const REFIT = 'node verify/hero-fit.js --write refits the two numbers in styles.css ("Hero fit") from this measurement and the line\'s other one; by hand, the line may be under the measurement by a pixel at most';
 
 // The windows. state: what the page must be in; exact: the line is exact there, so the rule (or the hero's
 // end) lies on the fold within TOL; where it is not exact (the lede wraps by the window, not by its
@@ -96,6 +140,7 @@ function measure() {
 }
 
 (async () => {
+  console.log(scopeLine('root', Object.keys(RULES), { feature: 'the home page of each written language, the pages the Hero fit block solves for' }));
   const browser = await launch();
   let problems = 0, rows = 0;
   const check = (ok, name, detail) => {
@@ -119,7 +164,9 @@ function measure() {
   // --- M. The model -------------------------------------------------------------------------
   // The unit is forced through a style element (the context bypasses the CSP for it) in a window tall
   // enough that nothing but the unit sets the hero's height, in the plain block layout the line is for.
-  for (const file of ['index.html', 'sv.html']) {
+  // model() measures a page and prove() holds the numbers in force to the measurements; W uses the
+  // same measurements to solve the numbers.
+  async function model(file) {
     const index = file === 'index.html';
     const { ctx, page } = await open(file, 1440, 600, { bypassCSP: true });
     const at = async (u) => {
@@ -136,27 +183,120 @@ function measure() {
       return o;
     });
     // The window here is under the envelope, so the page is in the natural state and the forced unit is all that moves.
-    const end = (m) => (index ? m.rule : m.heroBottom) - m.heroTop;
-    for (const [u, f, k, name] of [[1, vars.f1, vars.k1, 'f1 + k1'], [0.9, vars.f1, vars.k1, 'f1 + k1'], [0.7, vars.f2, vars.k2, 'f2 + k2'], [0.5, vars.f2, vars.k2, 'f2 + k2']]) {
-      const m = await at(u), want = f + k * u, got = end(m);
-      say(Math.abs(got - want) <= TOL && got <= want + 1, `M  ${file}: at u = ${u} the ${index ? 'message (to the clients\' rule)' : 'hero'} is ${got.toFixed(1)}px, the line --hero-${name.replace(' + ', ' + --hero-')} * u gives ${want.toFixed(1)}`,
-        Math.abs(got - want) <= TOL && got <= want + 1 ? '' : 'refit the two numbers in styles.css ("Hero fit") from this measurement and one at another u; the line may be under the measurement by a pixel at most');
+    // A line of the message ends at the clients' rule on the English page and at the hero's bottom edge on the
+    // Swedish hub; the whole hero's line ends at the hero's bottom edge.
+    const end = (m, whole) => (index && !whole ? m.rule : m.heroBottom) - m.heroTop;
+    const points = {};
+    for (const line of LINES) {
+      if (line.whole && !index) continue;
+      points[line.f] = [];
+      for (const u of line.us) points[line.f].push({ u, got: end(await at(u), line.whole) });
     }
     const one = await at(1);
-    say(one.h1Lines === 2 && one.ledeLines === 2, `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes 2 and 2)`);
-    say(Math.abs(one.above - one.aboveVar) <= 0.5, `M  ${file}: ${one.above}px stand above the hero, --hero-above is ${one.aboveVar}px`);
     // The headline's share of the slope: two lines at the headline's leading, 1.05.
     const lh = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.hero__h1')).lineHeight) / parseFloat(getComputedStyle(document.querySelector('.hero__h1')).fontSize));
+    await ctx.close();
+    return { file, index, vars, points, one, lh };
+  }
+  function prove({ file, index, vars, points, one, lh }) {
+    const hold = (line, what) => {
+      for (const { u, got } of points[line.f]) {
+        const want = vars[line.f] + vars[line.k] * u, ok = fits(got, want);
+        say(ok, `M  ${file}: at u = ${u} the ${what} is ${got.toFixed(1)}px, the line --hero-${line.f} + --hero-${line.k} * u gives ${want.toFixed(1)}`, ok ? '' : REFIT);
+      }
+    };
+    for (const line of LINES) if (!line.whole) hold(line, index ? 'message (to the clients\' rule)' : 'hero');
+    say(one.h1Lines === 2 && one.ledeLines === 2, `M  ${file}: the headline is ${one.h1Lines} lines and the lede ${one.ledeLines} at 1440px (the line assumes 2 and 2)`);
+    say(Math.abs(one.above - one.aboveVar) <= 0.5, `M  ${file}: ${one.above}px stand above the hero, --hero-above is ${one.aboveVar}px`);
     say(Math.abs(vars.h - 2 * lh * 96) <= 0.5, `M  ${file}: --hero-h ${vars.h} is 2 headline lines of 96 at a leading of ${lh.toFixed(2)}`);
-    if (index) {
-      // The whole hero, for the state with the client row: --hero-wf + --hero-wk * u.
-      for (const u of [1, 0.85]) {
-        const m = await at(u), want = vars.wf + vars.wk * u, got = m.heroBottom - m.heroTop;
-        say(Math.abs(got - want) <= TOL && got <= want + 1, `M  ${file}: at u = ${u} the whole hero is ${got.toFixed(1)}px, the line --hero-wf + --hero-wk * u gives ${want.toFixed(1)}`);
+    // The whole hero, for the state with the client row: --hero-wf + --hero-wk * u.
+    if (index) for (const line of LINES) if (line.whole) hold(line, 'whole hero');
+  }
+
+  // --- W. The refit (--write) ------------------------------------------------------------------
+  // The line through two measurements, in whole numbers: the slope rounded first, then the fixed part
+  // that the rounded slope leaves at the two, averaged and rounded. (The fixed part is not taken from the
+  // unrounded slope: the English message's first line meets the axis at 65.5px exactly, so the last bit
+  // of a division would decide between 65 and 66.)
+  const solve = (pts) => {
+    const k = Math.round((pts[0].got - pts[1].got) / (pts[0].u - pts[1].u));
+    return { f: Math.round(pts.reduce((s, p) => s + p.got - k * p.u, 0) / pts.length), k };
+  };
+  // Finds the one declaration line of a pair in a page's rule of the Hero fit block, where every pair
+  // stands on a line of its own, "  --hero-f1: 66px;  --hero-k1: 566;". The phone lines repeat the same
+  // names on one-line rules inside a media query, and are not matched: the rule has to start a line.
+  const FIT = /\/\* -{10,}\n\s*Hero fit: /;
+  function pairLine(css, selector, line) {
+    const head = FIT.exec(css);
+    if (!head) throw new Error('styles.css has no "Hero fit" block');
+    const next = css.indexOf('\n/* ---', head.index + head[0].length);
+    const block = [head.index, next < 0 ? css.length : next];
+    const open = `\n${selector} {\n`;
+    const starts = [];
+    for (let i = css.indexOf(open, block[0]); i >= 0 && i < block[1]; i = css.indexOf(open, i + 1)) starts.push(i);
+    if (starts.length !== 1) throw new Error(`the Hero fit block of styles.css has ${starts.length} rules "${selector} {" that start a line, not one`);
+    const body = [starts[0] + open.length, css.indexOf('\n}', starts[0] + open.length)];
+    const re = new RegExp(String.raw`^  --hero-${line.f}: (-?\d+(?:\.\d+)?)px; +--hero-${line.k}: (-?\d+(?:\.\d+)?);$`, 'gm');
+    const found = [...css.slice(body[0], body[1]).matchAll(re)];
+    if (found.length !== 1) throw new Error(`the rule "${selector}" of the Hero fit block has ${found.length} lines "  --hero-${line.f}: Npx; --hero-${line.k}: N;", not one`);
+    const from = body[0] + found[0].index;
+    return { from, to: from + found[0][0].length, f: Number(found[0][1]), k: Number(found[0][2]) };
+  }
+  // The pair as it is written, the second declaration in the column the block uses.
+  const pairText = (line, n) => `  ${`--hero-${line.f}: ${n.f}px;`.padEnd(17)} --hero-${line.k}: ${n.k};`;
+
+  // The files the lines are facts about: the two pages' copy and the stylesheets that lay out their heroes.
+  const SOURCES = ['styles.css', 'tokens.css', 'colors_and_type.css', 'hero-bg.css', ...Object.keys(RULES)];
+  async function refit() {
+    const file = path.join(ROOT, 'styles.css');
+    const css = fs.readFileSync(file, 'utf8');
+    // What is measured is what BASE serves and what is written is this tree: they have to be the same files.
+    for (const name of SOURCES) {
+      let served = null;
+      try { const res = await fetch(new URL(name, BASE)); if (res.ok) served = await res.text(); } catch (e) { /* not served */ }
+      if (served !== fs.readFileSync(path.join(ROOT, name), 'utf8')) {
+        say(false, `W  ${new URL(name, BASE)} is not this tree's ${name} (${path.join(ROOT, name)}): serve the repository root this script sits in, so that what is measured is what is written; nothing written`);
+        return;
       }
     }
-    await ctx.close();
+    const edits = [];
+    try {
+      for (const page of Object.keys(RULES)) {
+        const r = await model(page);
+        if (r.one.h1Lines !== 2 || r.one.ledeLines !== 2) {
+          say(false, `W  ${page}: the headline is ${r.one.h1Lines} lines and the lede ${r.one.ledeLines} at 1440px, and the lines and --hero-h assume 2 and 2: that is a new model, not a refit, so nothing is written for this page (AGENTS.md, Hero fit)`);
+          continue;
+        }
+        for (const line of LINES) {
+          const pts = r.points[line.f];
+          if (!pts) continue;
+          const at = pairLine(css, RULES[page], line), was = { f: r.vars[line.f], k: r.vars[line.k] }, s = solve(pts);
+          // The numbers in force at 1440px must be the ones in the rule written here, or the write would miss.
+          if (at.f !== was.f || at.k !== was.k) throw new Error(`${page}: --hero-${line.f} and --hero-${line.k} are ${was.f}px and ${was.k} at 1440px but ${at.f}px and ${at.k} in "${RULES[page]}" of the Hero fit block`);
+          // Through two measurements the solved line always holds: rounding the fixed part moves it half a
+          // pixel at most and rounding the slope tilts it a quarter of a pixel at most at either measurement,
+          // so it is never more than 0.75px from either, inside what M accepts. The test stays for a change to solve()
+          // or to LINES (a third unit, say) after which that is no longer so.
+          const holds = (n) => pts.every(({ u, got }) => fits(got, n.f + n.k * u));
+          const said = `W  ${page}: --hero-${line.f} and --hero-${line.k} through ${pts.map(({ u, got }) => `${got.toFixed(3)}px at u = ${u}`).join(' and ')}: solved ${s.f}px and ${s.k}, committed ${was.f}px and ${was.k}`;
+          if (holds(was)) say(true, `${said}, ${s.f === was.f && s.k === was.k ? 'the same' : 'and the committed ones still pass, so they are left as they are'}`);
+          else if (!holds(s)) say(false, `${said}: the solved line does not hold at both measurements either, so nothing is written for it; refit it by hand`);
+          else { say(true, `${said}: the committed ones fail, so the solved ones are to be written`); edits.push({ at, text: pairText(line, s) }); }
+        }
+      }
+    } catch (e) {
+      say(false, `W  ${e.message}; nothing written`);
+      return;
+    }
+    if (!edits.length) { console.log('     W  nothing to write: styles.css is unchanged'); return; }
+    let out = css;
+    for (const { at, text } of edits.sort((a, b) => b.at.from - a.at.from)) out = out.slice(0, at.from) + text + out.slice(at.to);
+    fs.writeFileSync(file, out);
+    console.log(`     W  wrote ${edits.length * 2} numbers into styles.css ("Hero fit"); the check below runs on them. Then run npm run stamp (styles.css changed) and npm run check:bg (the sheet is placed from the same boxes)`);
   }
+  if (WRITE) await refit();
+
+  for (const file of Object.keys(RULES)) prove(await model(file));
 
   // --- F. The fold, and E. the envelope --------------------------------------------------------
   async function row(file, win, tag) {

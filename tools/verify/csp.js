@@ -1,5 +1,6 @@
 // The Content-Security-Policy, checked statically (no browser, no server): this runs first in
-// `npm run check` because everything the consent checks prove about Google traffic rests on it.
+// `npm run check` because everything the consent checks prove about Google traffic rests on it. Scope: all, every
+// root page and every generated page (pagesIn('all') in _common.js), each read from disk.
 //   node verify/csp.js
 //
 // The policy is a security decision, not a convenience: it admits Google Analytics and nothing else, so
@@ -18,7 +19,8 @@
 //    snippet cannot hide behind the way it is written.
 // Exports run() for release-gate.js and publish.js.
 const {
-  PAGES, ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp, parseTags, stripComments,
+  ROOT, GOOGLE_HOSTS, GTAG_SCRIPT, isGoogleHost, parseCsp, CSP_META_RE, readPage, edgeCsp, parseTags, stripComments,
+  pagesIn, scopeLine,
 } = require('./_common');
 
 // The directives Google Analytics did not touch, as they were on every page before it.
@@ -84,7 +86,8 @@ function commentAbove(html) {
   return start < 0 ? null : before.slice(start + 4, -3).replace(/\s+/g, ' ').trim();
 }
 
-function run(root = ROOT, pages = PAGES) {
+// pages: the pages to read, by default every page of `root` (the scope all).
+function run(root = ROOT, pages = pagesIn('all', root)) {
   const results = [];
   const add = (ok, name, detail) => results.push({ ok, name, detail: detail || '' });
 
@@ -204,6 +207,7 @@ function run(root = ROOT, pages = PAGES) {
 module.exports = { run, googleHintLinks, googleScriptTags, googleHostMentions, commentAbove };
 
 if (require.main === module) {
+  console.log(scopeLine('all', pagesIn('all')));
   const results = run();
   let bad = 0;
   for (const r of results) {

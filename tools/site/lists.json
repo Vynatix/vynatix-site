@@ -1,0 +1,103 @@
+{
+  "blog.html#english": [
+    "choose-a-software-consultancy",
+    "test-automation",
+    "custom-software-development",
+    "system-integration-and-maintenance",
+    "ai-in-your-existing-product",
+    "automotive-software"
+  ],
+  "blog.html#swedish": [
+    {
+      "slug": "valja-konsultbolag",
+      "override": {
+        "description": "Vynatix i Göteborg om att välja konsultbolag för mjukvaruutveckling: frågorna att ställa, varningssignalerna och när ett större bolag passar bättre."
+      }
+    },
+    "platform-engineering",
+    "ai-assistent-interna-dokument",
+    "ai-i-befintlig-produkt",
+    "systemutveckling",
+    "systemintegration-och-forvaltning",
+    "testautomatisering",
+    "fordonsmjukvara"
+  ],
+  "index.html#insights": [
+    "test-automation",
+    "custom-software-development",
+    "system-integration-and-maintenance",
+    "ai-in-your-existing-product",
+    "automotive-software",
+    "ai-engineering",
+    "choose-a-software-consultancy",
+    {
+      "slug": "platform-engineering",
+      "override": {
+        "description": "Platform engineering explained by Vynatix in Gothenburg: what an internal developer platform is, when it pays off, what to measure and how to start."
+      }
+    }
+  ],
+  "sv.html#guider": [
+    "ai-i-befintlig-produkt",
+    "systemutveckling",
+    "systemintegration-och-forvaltning",
+    "testautomatisering",
+    "fordonsmjukvara",
+    "platform-engineering",
+    "ai-assistent-interna-dokument",
+    "valja-konsultbolag"
+  ],
+  "blog.html#guides": [
+    "choose-a-software-consultancy",
+    "valja-konsultbolag",
+    "platform-engineering",
+    "ai-assistent-interna-dokument",
+    "ai-i-befintlig-produkt",
+    "systemutveckling",
+    "systemintegration-och-forvaltning",
+    "testautomatisering",
+    "fordonsmjukvara",
+    "test-automation",
+    "custom-software-development",
+    "system-integration-and-maintenance",
+    "ai-in-your-existing-product",
+    "automotive-software"
+  ],
+  "llms.txt": [
+    {
+      "slug": "choose-a-software-consultancy",
+      "override": {
+        "description": "the questions to ask, the warning signs and how to judge whether the developers are really senior; also available in Swedish"
+      }
+    },
+    "test-automation",
+    "custom-software-development",
+    "system-integration-and-maintenance",
+    "ai-in-your-existing-product",
+    "automotive-software",
+    {
+      "slug": "platform-engineering",
+      "override": {
+        "title": "Platform engineering: vad det är och när det lönar sig",
+        "description": ""
+      }
+    },
+    {
+      "slug": "ai-assistent-interna-dokument",
+      "override": {
+        "description": ""
+      }
+    },
+    {
+      "slug": "valja-konsultbolag",
+      "override": {
+        "description": ""
+      }
+    },
+    "ai-i-befintlig-produkt",
+    "systemutveckling",
+    "systemintegration-och-forvaltning",
+    "testautomatisering",
+    "fordonsmjukvara"
+  ]
+}

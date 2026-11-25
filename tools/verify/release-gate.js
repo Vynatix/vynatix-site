@@ -1,4 +1,5 @@
 // The release gate: what must be true before GA_ID in app.js is set to a real Measurement ID and the branch is merged.
+// Scope: all for the footer link and the policy, root for the rest (the last paragraph says why).
 //   node verify/release-gate.js              npm run release-gate
 //   node verify/release-gate.js --self-test  proves the gate fails for the right reason (no browser, no server)
 //
@@ -7,26 +8,31 @@
 // script can see: a [[CONFIRM ...]] marker, a draft banner (and a marker on a page that has lost its banner), an
 // unticked box in sections 1 to 9 of tools/PRE-FLIP-CHECKLIST.md or a blank fill-in field in its header or sign-off
 // block, PURGE_ONLY not false, a policy constant that is not 365 days, a notice that does not say 12 months /
-// 12 månader or does not name the two storage keys, a notice date that is not the `mod` in tools/seo-head.py or is
-// older than 14 days, a stale "no analytics" sentence, a missing footer link, a CSP that differs, a snapshot that is
+// 12 månader or does not name the two storage keys, a notice date that is not the `mod` of the page's registry row
+// (tools/site/pages/privacy.json, integritet.json) or is older than 14 days, a stale "no analytics" sentence, a missing footer link, a CSP that differs, a snapshot that is
 // not current. Each line is `ok` or `FAIL`, with the file it is about.
 //
 // It exits 0 only when every scripted gate holds, and then it does NOT print a bare PASS: it prints
 // `scripted gates pass, N human gates open`, because the gates a script cannot see (counsel, Google's terms, the
 // real-ID run, the keyboard and screen reader passes) are printed above it and are still the owner's.
+//
+// The scope: every root page and every generated page (pagesIn('all') in _common.js) for the footer link and the
+// Content-Security-Policy; the root pages for the stale "no analytics" sentences (a generated page's text is its
+// English page's, translated); and the notices for what only they carry.
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const {
-  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, readApp, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
-  stripJsComments, todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
+  ROOT, NOTICE_PAGES, TEST_ID, THEME_KEY, pagesIn, scopeLine, readApp, appConst, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
+  todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
 } = require('./_common');
 const csp = require('./csp');
 const pub = require('./publish');
 const C = require('./_consent');
 
 const CHECKLIST = 'tools/PRE-FLIP-CHECKLIST.md';
-const SEO_HEAD = 'tools/seo-head.py';
+// The registry row of a page, which holds its `mod`: tools/site/pages/privacy.json for privacy.html.
+const registryRow = (rel) => `tools/site/pages/${rel.replace(/\.html$/, '')}.json`;
 const SNAPSHOT_REL = 'tools/verify/consent-copy.snapshot.json';
 const MAX_NOTICE_AGE_DAYS = 14;                       // a notice date older than this is stale at the flip
 const COOKIE_MAX_AGE_WANT = 31536000;                 // 365 days in seconds: the "12 months" the notices say
@@ -203,13 +209,15 @@ function visibleDate(html, lang) {
   return mi < 0 ? null : `${m[3]}-${pad(mi + 1)}-${pad(+m[1])}`;
 }
 const formatDate = (iso, lang) => `${+iso.slice(8, 10)} ${lang === 'sv' ? MONTHS.sv[+iso.slice(5, 7) - 1] : MONTHS.en[+iso.slice(5, 7) - 1].replace(/^./, (c) => c.toUpperCase())} ${iso.slice(0, 4)}`;
-// The `mod` of a page in the PAGES registry of tools/seo-head.py (read as text; Python is not run).
-const registryEntry = (py, page) => new RegExp('([\'"]' + escapeRegExp(page) + '[\'"]\\s*:\\s*dict\\()([^)]*)(\\))').exec(py || '');
-function modOf(py, page) {
-  const e = registryEntry(py, page);
-  const m = e ? /\bmod\s*=\s*['"](\d{4}-\d{2}-\d{2})['"]/.exec(e[2]) : null;
-  return m ? m[1] : null;
+// The `mod` in the text of a registry row (JSON; Python is not run), or null for a row that is missing, is not JSON or
+// holds no date in mod.
+function modOf(rowText) {
+  let row = null;
+  try { row = JSON.parse(rowText); } catch (e) { return null; }
+  return row && typeof row.mod === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.mod) ? row.mod : null;
 }
+// The text of a registry row with its mod set to iso, as the flip-day step leaves it.
+const withMod = (rowText, iso) => JSON.stringify(Object.assign(JSON.parse(rowText), { mod: iso }), null, 2) + '\n';
 const dayNum = (iso) => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) / 86400000;
 
 // Runs every check against a tree. overrides: { 'app.js': '...' } replaces a file's content (used by --self-test);
@@ -222,25 +230,32 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   const tryRead = (rel) => { try { return read(rel); } catch (e) { return null; } };
   const add = (id, file, ok, name, detail, count) => results.push({ id, file, ok, name, detail: detail || '', count });
 
-  // 1. The Measurement ID
-  const app = readApp(root, overrides['app.js']);
+  // 1. The Measurement ID. readApp reads POLICY_VERSION, CONSENT_KEY and COPY with appConst, which throws on a value
+  // it cannot prove; that is one FAIL row with the reader's message, and the rows that need those values are not run.
+  let app;
+  try { app = readApp(root, overrides['app.js']); } catch (e) {
+    add('app-js', 'app.js', false, 'app.js can be read: POLICY_VERSION, CONSENT_KEY and COPY are literals (appConst in _common.js)', e.message);
+    return { results, warns, notes };
+  }
   const shape = app.gaId === null ? `${app.gaLines} GA_ID lines` : /^G-X+$/.test(app.gaId) ? 'the placeholder' : app.gaId === TEST_ID ? 'the dummy test ID' : isActiveShape(app.gaId) ? `valid shape, ${app.gaId.length} characters` : 'not a GA4 ID';
   add('ga-id', 'app.js', app.gaLines === 1 && isActiveShape(app.gaId) && app.gaId !== TEST_ID, 'GA_ID is a valid Measurement ID and not the placeholder or the test ID', `now: ${shape}`);
 
-  // 1b. The exit switch and the policy constants (T3)
+  // 1b. The exit switch and the policy constants (T3). The PURGE_ONLY verdict stays with purgeOnlyState, on purpose:
+  // the rule is the shape of the one line a re-flip edits, exactly one `var PURGE_ONLY = false;` and no other
+  // assignment. appConst only says what the value is, for the message.
   const purge = purgeOnlyState(app.src);
-  const purgeNow = (/^[ \t]*var PURGE_ONLY = (true|false);/m.exec(app.src) || [])[1];
+  const constOf = (name, type) => { try { return { value: appConst(name, app.src, type) }; } catch (e) { return { why: e.message }; } };
+  const purgeNow = constOf('PURGE_ONLY', 'boolean');
   add('purge-only', 'app.js', purge.assignments === 1 && purge.falseDecls === 1, 'PURGE_ONLY is false (exactly one "var PURGE_ONLY = false;"; true is the emergency stop, a re-flip sets it back)',
-    purge.assignments === 1 && purge.falseDecls === 1 ? '' : `now: ${purge.assignments} assignment(s), PURGE_ONLY ${purgeNow || 'not declared'}`);
-  const code = stripJsComments(app.src);
-  const constOf = (name) => { const all = [...code.matchAll(new RegExp('var ' + name + ' = (\\d+);', 'g'))]; return all.length === 1 ? Number(all[0][1]) : null; };
-  const maxAge = constOf('COOKIE_MAX_AGE'), maxDays = constOf('CONSENT_MAX_DAYS');
-  add('policy-constants', 'app.js', maxAge === COOKIE_MAX_AGE_WANT && maxDays === CONSENT_MAX_DAYS_WANT,
+    purge.assignments === 1 && purge.falseDecls === 1 ? '' : `now: ${purge.assignments} assignment(s); ${purgeNow.why || `PURGE_ONLY is ${purgeNow.value}`}`);
+  // The two lifetimes are read by appConst: 365 * 24 * 60 * 60 is read as 31536000, and a value it cannot prove fails.
+  const age = constOf('COOKIE_MAX_AGE', 'number'), days = constOf('CONSENT_MAX_DAYS', 'number');
+  const lifetimesOk = age.value === COOKIE_MAX_AGE_WANT && days.value === CONSENT_MAX_DAYS_WANT;
+  add('policy-constants', 'app.js', lifetimesOk,
     `COOKIE_MAX_AGE is ${COOKIE_MAX_AGE_WANT} (365 days in seconds) and CONSENT_MAX_DAYS is ${CONSENT_MAX_DAYS_WANT}: the "12 months" both notices say`,
-    maxAge === COOKIE_MAX_AGE_WANT && maxDays === CONSENT_MAX_DAYS_WANT ? '' : `now: COOKIE_MAX_AGE ${maxAge === null ? 'not found once' : maxAge}, CONSENT_MAX_DAYS ${maxDays === null ? 'not found once' : maxDays}`);
+    lifetimesOk ? '' : `now: ${age.why || `COOKIE_MAX_AGE ${age.value}`}; ${days.why || `CONSENT_MAX_DAYS ${days.value}`}`);
 
   // 2. The notice pages: the section and one empty panel; 3. banner and markers; 4. lifetime words and storage keys; 5. dates
-  const py = tryRead(SEO_HEAD);
   const sitemap = tryRead('sitemap.xml');
   const pages = {};
   const keys = [app.consentKey, THEME_KEY];
@@ -272,16 +287,17 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
 
     // dates (T4)
     const seen = visibleDate(html, lang);
-    const mod = modOf(py, rel);
+    const row = registryRow(rel);
+    const mod = modOf(tryRead(row));
     const age = seen && mod ? dayNum(today) - dayNum(mod) : null;
-    const flipStep = 'follow the checklist flip-day step (9.2): set the visible "Last updated" line to the flip day, set mod for the page in tools/seo-head.py to the same day, run python3 tools/seo-head.py';
+    const flipStep = `follow the checklist flip-day step (9.2): set the visible "Last updated" line to the flip day, set mod in ${row} to the same day, run python3 tools/seo-head.py`;
     let why = '';
     if (!seen) why = `no parseable "${lang === 'sv' ? 'Senast uppdaterad' : 'Last updated'} D month YYYY" line`;
-    else if (!mod) why = `no mod date for ${rel} in the PAGES registry of ${SEO_HEAD}`;
+    else if (!mod) why = `no mod date for ${rel} in its registry row, ${row}`;
     else if (seen !== mod) why = `the visible date is ${seen} but mod is ${mod}`;
     else if (age < 0) why = `the date ${mod} is in the future (today is ${today})`;
     else if (age > MAX_NOTICE_AGE_DAYS) why = `the date ${mod} is ${age} days old (today is ${today}; at most ${MAX_NOTICE_AGE_DAYS})`;
-    add('dates-' + rel, rel, !why, `the visible date equals mod in ${SEO_HEAD} and is at most ${MAX_NOTICE_AGE_DAYS} days old`, why ? `${why}. ${flipStep[0].toUpperCase()}${flipStep.slice(1)}` : `${seen}`);
+    add('dates-' + rel, rel, !why, `the visible date equals mod in ${row} and is at most ${MAX_NOTICE_AGE_DAYS} days old`, why ? `${why}. ${flipStep[0].toUpperCase()}${flipStep.slice(1)}` : `${seen}`);
     // The generated copies of mod: seo-head.py writes them, so a mod moved without running it shows here.
     let gen = '';
     if (mod) {
@@ -297,7 +313,7 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   const stale = staleSentences(root);
   const staleNorm = stale.sentences;
   const hay = [];
-  for (const rel of PAGES) {
+  for (const rel of pagesIn('root', root)) {
     const html = rel in pages ? pages[rel] : tryRead(rel);
     if (html === null) continue;
     const blocks = htmlTexts(html);
@@ -333,18 +349,19 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   if (fresh.length > MAX_WARN_LINES) warns.push(`${fresh.length - MAX_WARN_LINES} more read-by-eye sentence(s) not shown (the list stops at ${MAX_WARN_LINES}); fix the first ones and run the gate again`);
   if (suppressed) notes.push(`${suppressed} read-by-eye sentence(s) matched READ_BY_EYE_OK in tools/verify/release-gate.js (read once, true today) and are not printed`);
 
-  // 7. The footer link on every page (the same test as verify/publish.js)
+  // 7. The footer link on every page, root and generated (the same test as verify/publish.js)
   const noLink = [];
-  for (const rel of PAGES) {
+  const every = pagesIn('all', root);
+  for (const rel of every) {
     const html = rel in pages ? pages[rel] : tryRead(rel);
     if (html === null) { noLink.push(rel + ' (missing)'); continue; }
-    if (pub.footerLinkProblems(html).length) noLink.push(rel);
+    if (pub.footerLinkProblems(html, rel).length) noLink.push(rel);
   }
-  add('footer', 'every page in PAGES', noLink.length === 0, 'the footer carries the Cookie settings link (data-consent-open, href privacy.html#cookies)', noLink.length ? `missing on ${noLink.length}: ${noLink.slice(0, 5).join(', ')}` : '');
+  add('footer', `every page (${every.length})`, noLink.length === 0, 'the footer carries the Cookie settings link (data-consent-open, href privacy.html#cookies)', noLink.length ? `missing on ${noLink.length}: ${noLink.slice(0, 5).join(', ')}` : '');
 
   // 8. The CSP, identical everywhere and equal to EDGE-SETUP.md
   let cspResults = [];
-  try { cspResults = csp.run(root, PAGES); } catch (e) { cspResults = [{ ok: false, name: 'csp.js ran', detail: e.message }]; }
+  try { cspResults = csp.run(root, pagesIn('all', root)); } catch (e) { cspResults = [{ ok: false, name: 'csp.js ran', detail: e.message }]; }
   const cspBad = cspResults.filter((r) => !r.ok);
   add('csp', 'every page, EDGE-SETUP.md', cspBad.length === 0, 'the Content-Security-Policy is identical on every page and equals EDGE-SETUP.md minus frame-ancestors (verify/csp.js)',
     cspBad.length ? cspBad.map((r) => r.name).slice(0, 3).join(' | ') + (cspBad.length > 3 ? ` (+${cspBad.length - 3}; run node verify/csp.js)` : '') : '');
@@ -435,7 +452,6 @@ const withId = (src, id) => src.replace(/var GA_ID = '[^']*';/, `var GA_ID = '${
 function readyFiles(today) {
   const o = {};
   o['app.js'] = normalisePurgeOnly(withId(readApp().src, 'G-ABCDEF1234'), false);
-  let py = fs.readFileSync(path.join(ROOT, SEO_HEAD), 'utf8');
   let map = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   for (const [lang, rel] of Object.entries(NOTICE_PAGES)) {
     let html = readPage(rel);
@@ -444,10 +460,9 @@ function readyFiles(today) {
     html = html.replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(today, lang)}`);
     html = html.replace(/(<meta\s+property="article:modified_time"\s+content=")[^"]*(")/i, `$1${today}$2`);
     o[rel] = html;
-    py = py.replace(registryEntry(py, rel)[0], (all) => all.replace(/\bmod\s*=\s*['"]\d{4}-\d{2}-\d{2}['"]/, `mod='${today}'`));
+    o[registryRow(rel)] = withMod(fs.readFileSync(path.join(ROOT, registryRow(rel)), 'utf8'), today);
     map = map.replace(new RegExp('(<loc>https://vynatix\\.com/' + escapeRegExp(rel) + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${today}`);
   }
-  o[SEO_HEAD] = py;
   o['sitemap.xml'] = map;
   // tick sections 1 to 9, fill the blanks before section 1 and after the Sign-off heading
   let where = 'header';
@@ -548,12 +563,39 @@ function selfTest() {
     t(ok({ [SV]: ready[SV].split(`<code>${k}</code>`).join(k) }, 'keys-' + SV) === false, `T3: the Swedish notice without <code>${k}</code> fails`);
   }
   t(ok({ 'app.js': app.replace("var CONSENT_KEY = 'vynatix-consent'", "var CONSENT_KEY = 'vynatix-choice'") }, 'keys-' + EN) === false, 'T3: CONSENT_KEY renamed in app.js while the notices still say vynatix-consent fails');
+  // The lifetimes go through appConst, so a reformat reads the same value or fails, never a wrong number.
+  const lifetime = (v) => ({ 'app.js': app.replace(/var COOKIE_MAX_AGE = \d+;/, `var COOKIE_MAX_AGE = ${v};`) });
+  t(ok(lifetime('365 * 24 * 60 * 60'), 'policy-constants') === true, 'T3: COOKIE_MAX_AGE written as 365 * 24 * 60 * 60 is read as 31536000 and passes');
+  t(ok(lifetime('365 * 24 * 60'), 'policy-constants') === false, 'T3: a product that is not 365 days in seconds fails (it is read whole, not as its first factor)');
+  t(ok(lifetime('DAY_MS / 1000 * 365'), 'policy-constants') === false, 'T3: a lifetime the reader cannot prove (another name, a division) fails');
+  t(ok({ 'app.js': app.replace('var CONSENT_MAX_DAYS = 365;', 'var CONSENT_MAX_DAYS = 365;\n  CONSENT_MAX_DAYS = 730;') }, 'policy-constants') === false, 'T3: CONSENT_MAX_DAYS assigned again after its declaration fails');
+  // A constant readApp needs that is not a literal is one FAIL row naming it and its line, not a crash.
+  const unread = run({ 'app.js': app.replace("noticeHref: 'privacy.html#cookies'", "noticeHref: 'privacy.html' + '#cookies'") });
+  const unreadRow = rowOf(unread, 'app-js');
+  t(!!unreadRow && !unreadRow.ok && /^app\.js: COPY \(line \d+\) is not a literal/.test(unreadRow.detail) && failedIds(unread).join() === 'app-js', 'T3: a COPY that is not a literal is one FAIL row with the name and the line, not a crash');
+
+  // appConst itself (_common.js), the one reader of app.js's constants: what it proves, and how it refuses.
+  const feature = (body) => `(function () {\n  ${body}\n})();\n`;
+  const read = (body, name = 'X', type) => appConst(name, feature(body), type);
+  const refuses = (body, re, name = 'X', type) => { try { read(body, name, type); return false; } catch (e) { return re.test(e.message); } };
+  t(read("var X = 'it\\'s';") === "it's" && read('var X = "v1";') === 'v1' && read("var X = '\\u00e5\\x41';") === 'åA', 'appConst: a string in either quote, its escapes decoded');
+  t(read('var X = 365 * 24 * 60 * 60;') === 31536000 && read('var X = 60 * 60 + 5;') === 3605 && read('var X = 1e7;') === 1e7 && read('var X = -0.5;') === -0.5, 'appConst: a number, a product and a sum of numbers');
+  t(read('var X = false;') === false && JSON.stringify(read("var X = { a: [1, 'b', true], 'c-d': { e: 2 * 3 }, };")) === '{"a":[1,"b",true],"c-d":{"e":6}}', 'appConst: booleans, and arrays and objects of literals (a trailing comma allowed)');
+  t(read("// var X = 2;\n  var s = 'var X = 3;';\n  var X = 1;") === 1, 'appConst: a comment or a string that says "var X =" is no declaration');
+  t(read('var a = 1, X = 4, b = [X];') === 4, 'appConst: a constant in a list of declarations');
+  t(refuses('var Y = 1;', /^app\.js: X is not declared/), 'appConst: a missing name throws, naming it');
+  t(refuses('var X = 1;\n  var X = 1;', /X is declared 2 times \(lines 2 and 3\)/) && (() => { try { appConst('X', feature('var X = 1;') + feature('var X = 1;')); return false; } catch (e) { return /declared 2 times/.test(e.message); } })(), 'appConst: a name declared twice (in one block or in two) throws, with both lines');
+  t(refuses('var X = 1;\n  X = 2;', /X \(line 2\) is assigned again on line 3/) && refuses('var X = 1;\n  X++;', /assigned again/), 'appConst: a name assigned again after its declaration throws');
+  t(refuses('if (a) {\n    var X = 1;\n  }', /X \(line 3\) is declared inside a nested block/), 'appConst: a declaration inside a nested block throws');
+  t(refuses('var X = Math.pow(2, 3);', /^app\.js: X \(line 2\) is not a literal the reader can prove: .* on line 2/), 'appConst: a call throws, with the name and the line');
+  t(read('var X = 5 / 52;', 'X') === 5 / 52 && refuses('var X = 1 / 0;', /not finite/) && refuses('var X = 5 - 2;', /not a literal/) && refuses("var X = 'a' + 'b';", /not a literal/) && refuses('var X = Y;', /not a literal/) && refuses('var X = 010;', /leading zero/) && refuses('var X;', /given no value/), 'appConst: a quotient reads as its value; a division by zero, a difference, joined strings, another name, an old octal number and no value all throw');
+  t(refuses('var X = 1;', /X \(line 2\) is a number, not a string/, 'X', 'string') && read('var X = [];', 'X', 'array').length === 0, 'appConst: a value of another kind than the one asked for throws');
+  t(appConst('COOKIE_MAX_AGE', lifetime('365 * 24 * 60 * 60')['app.js']) === 31536000 && appConst('COOKIE_MAX_AGE', app) === 31536000, 'appConst: the lifetime in app.js reads as 31536000, written as a number or as a product');
 
   // T4: the dates
   const day = (offset) => { const d = new Date(dayNum(today) * 86400000 + offset * 86400000); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };
   const setDates = (rel, lang, iso, mod = iso) => {
-    const py = ready[SEO_HEAD].replace(registryEntry(ready[SEO_HEAD], rel)[0], (all) => all.replace(/\bmod\s*=\s*['"]\d{4}-\d{2}-\d{2}['"]/, `mod='${mod}'`));
-    return { [rel]: ready[rel].replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(iso, lang)}`), [SEO_HEAD]: py };
+    return { [rel]: ready[rel].replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(iso, lang)}`), [registryRow(rel)]: withMod(ready[registryRow(rel)], mod) };
   };
   t(ok(setDates(EN, 'en', day(-1)), 'dates-' + EN) === true, 'T4: a notice dated yesterday with mod equal passes');
   t(ok(setDates(EN, 'en', day(-MAX_NOTICE_AGE_DAYS)), 'dates-' + EN) === true, `T4: ${MAX_NOTICE_AGE_DAYS} days old passes`);
@@ -564,7 +606,8 @@ function selfTest() {
   t(ok(setDates(SV, 'sv', day(-1), today), 'dates-' + SV) === false, 'T4: a visible date that differs from mod fails (Swedish, mod newer)');
   t(ok(sub(EN, /Last updated\s+\d{1,2}\s+\w+\s+\d{4}/, 'Updated recently'), 'dates-' + EN) === false, 'T4: a page without a parseable "Last updated" line fails');
   t(ok(sub(SV, /Senast uppdaterad\s+\d{1,2}\s+\w+\s+\d{4}/, 'Senast uppdaterad 19 oktobre 2026'), 'dates-' + SV) === false, 'T4: an unknown Swedish month name fails');
-  t(ok({ [SEO_HEAD]: ready[SEO_HEAD].replace(registryEntry(ready[SEO_HEAD], EN)[0], "'x.html': dict(") }, 'dates-' + EN) === false, 'T4: a page missing from the registry in seo-head.py fails');
+  t(ok({ [registryRow(EN)]: null }, 'dates-' + EN) === false, 'T4: a notice without its registry row fails');
+  t(ok({ [registryRow(SV)]: ready[registryRow(SV)].replace(/("mod": "[^"]*")/, '<<<<<<< HEAD\n  $1,\n=======\n  $1,\n>>>>>>> origin/main') }, 'dates-' + SV) === false, 'T4: a registry row that is not JSON (a merge left in it) fails');
   t(ok({ 'sitemap.xml': ready['sitemap.xml'].replace(new RegExp('(<loc>https://vynatix\\.com/' + EN.replace('.', '\\.') + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${day(-3)}`) }, 'dates-generated-' + EN) === false, 'T4: a sitemap lastmod that is not mod fails (seo-head.py was not run)');
   t(ok(sub(SV, /(<meta\s+property="article:modified_time"\s+content=")[^"]*/, `$1${day(-3)}`), 'dates-generated-' + SV) === false, 'T4: an article:modified_time that is not mod fails');
 
@@ -590,8 +633,10 @@ function selfTest() {
   t(staleOf(add('There are <strong>no cookies</strong>. We set none, so there is no consent banner to click.')) > sbase, 'the old "no cookies ... no consent banner" sentences add a hit');
   t(staleOf(add('Before then the site used no analytics and set no cookies.')) === sbase, 'an honest history sentence ("Before then the site used no analytics") adds none');
 
-  // The footer link row shares publish.js's test.
+  // The footer link row shares publish.js's test, on the root pages and the generated ones.
   t(ok({ 'about.html': fs.readFileSync(path.join(ROOT, 'about.html'), 'utf8').replace(/data-consent-open/g, '') }, 'footer') === false, 'a page whose footer link lost data-consent-open fails the footer gate');
+  const generatedOne = pagesIn('generated')[0];
+  t(ok({ [generatedOne]: fs.readFileSync(path.join(ROOT, generatedOne), 'utf8').replace(/data-consent-open/g, '') }, 'footer') === false, `a generated page (${generatedOne}) whose footer link lost data-consent-open fails the footer gate`);
   console.log(bad === 0 ? '\nPASS — the release gate fails for the right reasons' : `\nFAIL — ${bad} self-test(s) wrong`);
   return bad;
 }
@@ -600,6 +645,7 @@ module.exports = { htmlTexts, runChecks, staleSentences, selfTest, readyFiles, H
 
 if (require.main === module) {
   if (process.argv.includes('--self-test')) process.exit(selfTest() === 0 ? 0 : 1);
+  console.log(scopeLine('all', pagesIn('all'), { note: 'the stale sentences on the root pages, the notices for what only they carry' }));
   const report = runChecks();
   process.exit(printReport(report) === 0 ? 0 : 1);
 }

@@ -885,7 +885,7 @@
    ]
   },
   {
-   "id": "Published <1>24 November 2026</1>",
+   "id": "Published <1>{date}</1>",
    "pages": [
     "index.html"
    ]
@@ -964,12 +964,6 @@
    ]
   },
   {
-   "id": "Published <1>18 October 2026</1>",
-   "pages": [
-    "index.html"
-   ]
-  },
-  {
    "id": "How to choose a software consultancy",
    "pages": [
     "index.html",
@@ -985,19 +979,13 @@
    ]
   },
   {
-   "id": "Published <1>6 November 2026</1>",
-   "pages": [
-    "index.html"
-   ]
-  },
-  {
    "id": "Platform engineering explained by Vynatix in Gothenburg: what an internal developer platform is, when it pays off, what to measure and how to start.",
    "pages": [
     "index.html"
    ]
   },
   {
-   "id": "Published <1>18 October 2026</1> · In Swedish",
+   "id": "Published <1>{date}</1> · In Swedish",
    "pages": [
     "index.html"
    ]
@@ -3730,9 +3718,14 @@
    ]
   },
   {
-   "id": "Published <1>6 November 2026</1> · Last updated <2>20 November 2026</2> · Vynatix",
+   "id": "Published <1>{date}</1> · Last updated <2>{date}</2> · Vynatix",
    "pages": [
-    "choose-a-software-consultancy.html"
+    "choose-a-software-consultancy.html",
+    "test-automation.html",
+    "custom-software-development.html",
+    "system-integration-and-maintenance.html",
+    "ai-in-your-existing-product.html",
+    "automotive-software.html"
    ]
   },
   {
@@ -4211,16 +4204,6 @@
    "id": "Automated tests pay off when they run on every change, when the team trusts the result and when the people who write the code also write the tests. Vynatix, a software consultancy in Gothenburg, wrote this guide. It shows where to start, which tests come first and how your team comes to own the tests.",
    "pages": [
     "test-automation.html"
-   ]
-  },
-  {
-   "id": "Published <1>24 November 2026</1> · Last updated <2>24 November 2026</2> · Vynatix",
-   "pages": [
-    "test-automation.html",
-    "custom-software-development.html",
-    "system-integration-and-maintenance.html",
-    "ai-in-your-existing-product.html",
-    "automotive-software.html"
    ]
   },
   {

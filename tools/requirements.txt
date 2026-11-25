@@ -1,0 +1,4 @@
+# The Python packages of tools/lang-fonts.py, pinned: the cut fonts are tied to these versions.
+# pip install -r tools/requirements.txt (seo-head.py, i18n.py and redate.py need the standard library only)
+fonttools==4.68.0
+brotli==1.2.1

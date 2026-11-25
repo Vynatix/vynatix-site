@@ -1,5 +1,6 @@
-// Search, sharing and copy checks for every page in PAGES and every page of a generated language that is live,
-// run in Chromium against the local server.
+// Search, sharing and copy checks for every root page and every page of a generated language that is live, run in
+// Chromium against the local server. Scope: all, every root page and every generated page (pagesIn('all') in
+// _common.js) but those of a draft language, which is not public and is i18n.js's alone.
 // - one canonical per page, in the form the sitemap uses; og:url, og:title and og:description
 //   match the canonical, <title> and meta description; html lang is a language of LANGS and og:locale agrees
 // - one robots meta per page, exactly "index, follow, max-snippet:-1, max-image-preview:large" (a withdrawn
@@ -27,22 +28,23 @@
 // text the copy rules and the FAQ comparison see.
 const fs = require('fs');
 const path = require('path');
-const { PAGES: WRITTEN, readRegistry, readLangs, generatedPages, BASE, armGa, launch } = require('./_common');
+const { readRegistry, readLangs, pagesIn, scopeLine, BASE, armGa, launch } = require('./_common');
 
 const ROOT = path.join(__dirname, '..', '..');
 const SITE = 'https://vynatix.com/';
 const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p.replace(/\/index\.html$/, '/'));
 const ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large';
 const ROBOTS_WITHDRAWN = 'noindex';
-// The registry of tools/seo-head.py, read as text. A withdrawn page keeps its URL but is left out of the
+// The registry, tools/site/pages (readRegistry in _common.js). A withdrawn page keeps its URL but is left out of the
 // sitemap, carries noindex and has no hreflang, FAQ or Article node (TAKEDOWN.md).
 const REG = readRegistry();
-// The languages (LANGS in tools/seo-head.py). The pages of a generated language that is live are checked here
+const WRITTEN = pagesIn('root');
+// The languages (tools/site/langs.json, LANGS in tools/seo-head.py). The pages of a generated language that is live are checked here
 // with the pages written by hand: 'es/services.html' takes the registry entry of services.html, as a translation
 // of it. A draft language is not public and is checked by i18n.js alone.
 const LANGS = readLangs();
 const LIVE_LANGS = Object.keys(LANGS).filter((k) => LANGS[k].kind === 'generated' && LANGS[k].status === 'live');
-const GENERATED = generatedPages().filter((p) => LIVE_LANGS.includes(p.split('/')[0]));
+const GENERATED = pagesIn('generated').filter((p) => LIVE_LANGS.includes(p.split('/')[0]));
 for (const g of GENERATED) {
   const [code, file] = g.split('/');
   REG[g] = Object.assign({}, REG[file], { lang: code, alt: {}, original: false, translationOf: file });
@@ -52,13 +54,15 @@ const PAGES = WRITTEN.concat(GENERATED);
 const translationsOf = (p) => GENERATED.filter((g) => g.split('/')[1] === p && REG[p] && REG[p].lang === 'en');
 const TAGS = Object.values(LANGS).map((l) => l.tag);
 const LOCALE = Object.fromEntries(Object.values(LANGS).map((l) => [l.tag, l.locale]));
-const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is in PAGES (_common.js) but not in the registry of tools/seo-head.py`); return REG[p].status === 'live'; };
+const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is a page this check was given but has no row in the registry, tools/site/pages`); return REG[p].status === 'live'; };
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
 const ok = (msg) => console.log('ok   ' + msg);
 const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 
 (async () => {
+  const drafts = pagesIn('generated').length - GENERATED.length;
+  console.log(scopeLine('all', PAGES, drafts ? { note: `less the ${drafts} pages of a draft language` } : {}));
   // Files at the root
   const sitemap = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   const locs = [...sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>[\s\S]*?<lastmod>([^<]+)<\/lastmod>/g)]

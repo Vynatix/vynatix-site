@@ -1,0 +1,87 @@
+<!-- The site footer. tools/seo-head.py writes it in place of the footer of every page on each run, so a change to
+     its links or its fine print is made here, once, and the script run (python3 tools/seo-head.py); it is never
+     edited in the pages. Not published: tools/ is excluded in _config.yml.
+
+     The footer is the fragment <template id="footer"> below, the lines between that tag and </template>. What
+     differs from page to page is named as ${name}:
+       ${lang}       lang="en" on a page written by hand, where the footer stays English (the Swedish pages
+                     included), and nothing on a page of a generated language, which translates it with the rest.
+       ${grid}       nothing on a page written by hand; " site-footer__grid--four" on a generated page, which
+                     has no Swedish column.
+       ${swedish}    the Swedish column, <template id="swedish"> further down, on a page written by hand, and
+                     nothing on a generated page. It stands at the start of the line it comes before.
+       ${languages}  the language list (languages_for in tools/seo-head.py) on every page once a generated
+                     language is live, and nothing before; on a generated page, the slot the list is put in after
+                     the page is translated. It stands at the start of the line it comes before.
+     Any other name is a fact of the company, the key of the same name in tools/site/company.json: the contact
+     details and the footer's shorter wording of the company sentence are changed there, once, and the same file
+     gives them to the structured data of every page. Everything else is copied as it stands. A dollar sign is
+     written $$. -->
+<template id="footer">
+  <!-- ============================================================ Footer -->
+  <footer class="site-footer inverse"${lang}>
+    <div class="container">
+      <div class="site-footer__grid${grid}">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
+            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
+          </a>
+          <p class="site-footer__about">${footer_sentence}</p>
+          <address class="site-footer__addr">
+            <a href="mailto:${email}">${email}</a><br>
+            <a href="tel:${telephone}">${telephone_shown}</a><br>
+            ${street}, ${postal_code} ${city}<br>
+            Org.nr ${org_number} · <a href="${group_url}" rel="noopener">Part of ${group}</a>
+          </address>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Services</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="services.html#ai-engineering">AI engineering</a></li>
+            <li><a href="services.html#cloud-platforms">Cloud platforms</a></li>
+            <li><a href="services.html#application-development">Application development</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-footer__h">Company</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="about.html">About</a></li>
+            <li><a href="industries.html">Industries</a></li>
+            <li><a href="work.html">Cases</a></li>
+            <li><a href="blog.html">Insights</a></li>
+            <li><a href="membership.html">Career</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+${swedish}        <div>
+          <h2 class="site-footer__h">Legal</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
+            <li><a href="terms.html">Terms</a></li>
+            <li><a href="accessibility.html">Accessibility</a></li>
+            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <span>© 2026 ${legal_name}</span>
+${languages}        <span>vynatix.com</span>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<!-- The footer's Swedish column: ${swedish} above, on the pages written by hand only. A generated page has the
+     language list instead. -->
+<template id="swedish">
+        <div lang="sv">
+          <h2 class="site-footer__h">På svenska</h2>
+          <ul class="site-footer__links list-reset">
+            <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>
+            <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>
+            <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>
+            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>
+          </ul>
+        </div>
+</template>

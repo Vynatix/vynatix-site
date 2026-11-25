@@ -4,8 +4,10 @@ This file orients Claude Code when working in this repository.
 
 **Read [AGENTS.md](./AGENTS.md) first** — it is the primary, comprehensive guide
 to this project (what it is, the layout, architecture, conventions, and how to
-run and ship it). Everything there applies to Claude too. This file only
-highlights the things most worth keeping front-of-mind.
+run and ship it). Everything there applies to Claude too. Its long sections live in `tools/docs/`, one
+file per topic, word for word, and its *Topics* index names each by the heading this file cites ("AGENTS.md,
+*Hero fit*"): open the topic a change touches. This file only highlights the things most worth keeping
+front-of-mind.
 
 ## The short version
 
@@ -19,13 +21,13 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
+  (Python 3; rewrites the search block, header, footer, sitemap, URL lock and the guide lines of `llms.txt`), and the mask generator
   `sheet-art.js` for the hero background, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
   never run at deploy time.
 - **Seven languages, two kinds.** English and Swedish are written by hand (the thirty-four pages above).
   Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
   the three notices in `es/`, `fr/`, `de/`, `ja/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
-  English message to its translation (`tools/i18n.py` is the engine; `LANGS` in `seo-head.py` is the one table).
+  English message to its translation (`tools/i18n.py` is the engine; `tools/site/langs.json`, `LANGS` in `seo-head.py`, is the one table).
   **Never edit a file in a language folder**: edit the English page, run `python3 tools/seo-head.py`, then
   translate what `python3 tools/i18n.py missing <code>` lists, in all five catalogues, and run it again. A
   changed English sentence shows in English on the generated pages until then, and `tools/verify/i18n.js`
@@ -39,10 +41,10 @@ highlights the things most worth keeping front-of-mind.
   locked URL without a file only when it is listed there (and never linked, never reused).
   Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
   is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
-  its last block, "Languages". **Japanese and Arabic have their own faces, two each for the two roles of the
+  its "Languages" block. **Japanese and Arabic have their own faces, two each for the two roles of the
   Latin type** (M PLUS 2 and Noto Sans Arabic where Geist stands, Shippori Mincho and Amiri where Fraunces
   italic stands; Geist still draws the Latin and the digits on those pages). They are subsets cut from the
-  generated pages by `python3 tools/lang-fonts.py` (needs `pip install fonttools brotli`): when a translation
+  generated pages by `python3 tools/lang-fonts.py` (needs `pip install -r tools/requirements.txt`): when a translation
   adds a kanji the fonts lack, `tools/verify/i18n.js` fails and names it, and the fonts are cut again and
   committed with the catalogues. See AGENTS.md, *Languages*.
 - **Built on the Vynatix Design System, three-layer CSS:** `tokens.css` (the
@@ -85,7 +87,7 @@ highlights the things most worth keeping front-of-mind.
 - **One hero background, the drafting sheet.** The English home hero carries one piece of
   decorative art: ruled guides behind the headline, a scale under the header and, from
   75rem, an A-frame drawing. It is pure CSS in `hero-bg.css`, which **only `index.html`
-  links** (so the other twenty-three pages never download it): no script, no storage, no
+  links** (so no other page downloads it): no script, no storage, no
   motion, the same with and without JavaScript, every rule on the hero carrying
   `:lang(en)`, custom properties named `--sheet-*`, role tokens only. Its two masks are
   `assets/bg-sheet-*.svg` (from `tools/sheet-art.js`, new names whenever regenerated).
@@ -111,10 +113,10 @@ highlights the things most worth keeping front-of-mind.
   window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the
   plain scrolling one. An owner decision. **The solve's constants (`--hero-f1`, `--hero-k1`, `--hero-above`
   and the rest) are facts about the current copy, the header and the hero's spacing: after changing any of
-  those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
+  those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit; `--write` refits the ten numbers it measures at 1440px, never the phone lines (AGENTS.md, *Hero fit*).**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
-  block of `styles.css` named "The English home page: its pictures" (the last but one) holds it: a tall lead case beside two compact ones, the hero's
+  block of `styles.css` named "The English home page: its pictures" holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
   Insights as ruled rows. The Services picture and the three case pictures are generated photographs of the work
@@ -129,8 +131,9 @@ highlights the things most worth keeping front-of-mind.
   drawn frames over a film (20 November 2026): no video. `sv.html` keeps the older layout and the stock
   photographs. See AGENTS.md, *The English home page*.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
-  sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
-  templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
+  sources are `tools/templates/header.html` (its menu, where `${current}` puts `aria-current="page"` on the
+  page's own link) and `footer.html`, with the company's facts and contact details in `tools/site/company.json`,
+  which `tools/seo-head.py` reads: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. A home page is linked by its folder (`./`, `../`, `es/`), never `index.html`,
   so the address bar shows `vynatix.com/`: the script folds such links as it writes (`folder_links`) and
   `publish.js` fails on one that remains. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
@@ -143,7 +146,9 @@ highlights the things most worth keeping front-of-mind.
   protect the visitor's browser cache; GitHub's CDN ignores the query string. After
   editing any of the five, run `cd tools && npm run stamp` and commit the pages with
   the change; `npm run check` fails until you do. Fonts and images are not stamped
-  (rename one if a stale copy would show).
+  (rename one if a stale copy would show). To bring `main` into a branch,
+  run `cd tools && npm run sync` and never take one side of a root page: it settles
+  the stamp conflicts and stops for the real ones (AGENTS.md, *Bringing `main` into a branch*).
 - **`app.js`** is vanilla, IIFE-per-feature, element-guarded: five features
   (theme toggle, mobile nav, the silk background's `js-waves` and pause
   button, the Career page's rate calculator, and last, where `consent.js`
@@ -165,7 +170,7 @@ highlights the things most worth keeping front-of-mind.
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
   visit counts until it lapses). To switch it on, only when
   `tools/PRE-FLIP-CHECKLIST.md` is complete: set the notices' visible "Last
-  updated" lines and their `mod` in `tools/seo-head.py` to the day of the flip, run
+  updated" lines and their `mod` (`tools/site/pages/privacy.json`, `integritet.json`) to the day of the flip, run
   `python3 tools/seo-head.py`, then edit the `GA_ID` line (after an exit, also set
   `PURGE_ONLY` back to `false`), run `cd tools && npm run stamp` and
   `node verify/release-gate.js`. That is the last commit of the one PR and it
@@ -222,9 +227,10 @@ highlights the things most worth keeping front-of-mind.
   automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
   AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
-  `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
+  row with `"kind": "post"`, `tools/site/pages/<slug>.json` (read into `PAGES` by `tools/seo-head.py` and by
+  `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
-  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. A fact
+  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. What each list of guides holds, and in what order, is `tools/site/lists.json`: `seo-head.py` writes a guide's line in `llms.txt` and its item in the ItemList of `blog.html` from it, and `tools/verify/copies.js` holds the hand-written lists of `blog.html`, `index.html` and `sv.html` to its order. A fact
   not already on a published page is drafted outside the public repo until the owner approves it, and a
   `[[CONFIRM]]` marker is never filled in. `status='withdrawn'` replaces a page with a stub; `tools/urls.lock`
   and `tools/verify/permanence.js` stop a URL from disappearing; `tools/TAKEDOWN.md` is the runbook.
@@ -232,10 +238,10 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for every language version of the page (the five English/Swedish pairs, and the five generated languages), and one
+  canonical link, Open Graph, hreflang for every language version of the page (the English/Swedish pairs, and the five generated languages), and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
-  the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;
+  its registry row, `tools/site/pages/<slug>.json`, and run `python3 tools/seo-head.py`;
   it writes `dateModified`, the `article:modified_time` meta and the sitemap
   `<lastmod>` from that one value; a visible FAQ
   (`data-faq`) and its FAQPage data must match word for word (answers are flat `p`
@@ -257,14 +263,18 @@ There is no lint step, but there *is* a check suite: see `tools/README.md`
 off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
-style rules, the hero background's rules and the retired draws), the hero background's guard, the rate
-calculator's arithmetic and no-JavaScript state (`calc.js`), accessibility
+style rules, the hero background's rules and the retired draws, no `.nojekyll` or front matter, every `url()` target published), the hero background's guard, the rate
+calculator's arithmetic and no-JavaScript state (`calc.js`), the page counts the docs state and the
+order of the `styles.css` blocks (`docs.js`), accessibility
 including a contrast sweep, and a screenshot diff.
 The generated languages have their own check in the chain, `i18n.js` (catalogues complete, the draft gate,
-every generated page loaded at three widths, axe on three pages of each).
+every generated page loaded at three widths, axe on a sample of each), and the checks of every page take the
+generated pages too (links, requests, theme, csp, mailto; a11y a sample of them). Each check states its scope, root,
+generated or all, in its header and in the first line it prints (`docs.js` holds them to it).
 `release-gate.js` (only its `--self-test` is in the chain) and the opt-in
 `consent-live.js` are outside `npm run check`. Serve the repo root first
-(`python3 -m http.server 8000`). `THEMES` narrows the themes a run covers (see `tools/README.md`).
+(`python3 -m http.server 8000`), or run `node tools/check.js`, which serves the tree itself, runs the browser checks side by
+side and prints one summary (`--static`, `--only`, `--since <rev>`; `--list` prints what each step proves). `THEMES` narrows the themes a run covers (see `tools/README.md`).
 
 Also verify visually: render in light and dark, confirm header/footer match the
 other pages, and check it degrades gracefully with JS disabled and reduced

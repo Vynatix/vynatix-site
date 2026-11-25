@@ -233,8 +233,9 @@ paragraphs inside it that are cited by their own name.
 
 ## Working in this repo
 
-- **Run it** by opening `index.html` in a browser, or serve the folder
-  (`python3 -m http.server`) so relative paths and `fetch` behave. There is no
+- **Run it** by serving the folder (`python3 -m http.server`, or `node tools/check.js`, which serves it
+  itself) so relative paths and `fetch` behave. Opened from disk the pages render, but a link to a home
+  page names a folder (`./`, `es/`), which a browser shows as a file listing, not the page. There is no
   dev server, hot reload, or watch task.
 - **The site has no build step** — no framework, bundler, or package manager,
   and what is in the repo ships verbatim. The one exception is `tools/`: the

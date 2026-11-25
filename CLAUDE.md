@@ -129,7 +129,9 @@ front-of-mind.
   sources are `tools/templates/header.html` (its menu, where `${current}` puts `aria-current="page"` on the
   page's own link) and `footer.html`, with the company's facts and contact details in `tools/site/company.json`,
   which `tools/seo-head.py` reads: a nav, logo or contact-detail change is made there and the script run,
-  which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
+  which writes it into every page. A home page is linked by its folder (`./`, `../`, `es/`), never `index.html`,
+  so the address bar shows `vynatix.com/`: the script folds such links as it writes (`folder_links`) and
+  `publish.js` fails on one that remains. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
   `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`
   on `tokens.css`, `colors_and_type.css`, `styles.css`, `app.js`; `hero-bg.css`

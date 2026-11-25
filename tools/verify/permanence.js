@@ -49,7 +49,8 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // The stub (tools/templates/stub.html: its fragment and the words of each language written by hand). The strings are
 // repeated here on purpose, so that the check does not trust the generator; a test below proves they still equal the
-// template's.
+// template's. `home` is the href as written to the page: a home page is linked by its folder (./), never index.html
+// (folder_links in seo-head.py).
 const MONTHS = {
   en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   sv: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
@@ -57,7 +58,7 @@ const MONTHS = {
 const day = (iso, lang) => `${+iso.slice(8, 10)} ${MONTHS[lang][+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
 const STUB = {
   en: { title: 'Page withdrawn, Vynatix', desc: 'Vynatix has withdrawn this page.', eyebrow: 'Withdrawn', h1: 'This page has been withdrawn',
-        lede: (iso) => `Vynatix removed this page on ${day(iso, 'en')}. Go to the home page.`, home: 'index.html' },
+        lede: (iso) => `Vynatix removed this page on ${day(iso, 'en')}. Go to the home page.`, home: './' },
   sv: { title: 'Sidan är återkallad, Vynatix', desc: 'Vynatix har tagit bort den här sidan.', eyebrow: 'Återkallad', h1: 'Den här sidan är återkallad',
         lede: (iso) => `Vynatix tog bort sidan den ${day(iso, 'sv')}. Gå till startsidan.`, home: 'sv.html' },
 };
@@ -78,10 +79,15 @@ const fill = (s, values) => String(s).replace(/\$(?:\$|\{([a-z][a-z0-9_]*)\})/gi
 // What a word of the template differs in from the copy above: [] when the two agree. The lede is compared as the
 // visible text of a page withdrawn on SAMPLE_DAY.
 const SAMPLE_DAY = '2026-11-05';
+// The template names a home page by its file (index.html, es/index.html), and seo-head.py writes such a link as the
+// folder (./, es/: folder_links) as each page is written; STUB holds the href as written. The rule is repeated here,
+// not imported, so the check does not trust the generator.
+const asWritten = (href) => String(href).replace(/^((?:\.\/|\/|(?:\.\.\/)+)?(?:[a-z]{2}\/)?)index\.html(?=$|[#?])/, (m, prefix) => prefix || './');
 function stubDiffers(lang, w) {
   const t = STUB[lang];
   if (!w) return [`tools/templates/stub.html has no <dl lang="${lang}">`];
-  const out = ['title', 'desc', 'eyebrow', 'h1', 'home'].filter((k) => w[k] !== t[k]).map((k) => `${k} is "${w[k]}", not "${t[k]}"`);
+  const out = ['title', 'desc', 'eyebrow', 'h1'].filter((k) => w[k] !== t[k]).map((k) => `${k} is "${w[k]}", not "${t[k]}"`);
+  if (asWritten(w.home) !== t.home) out.push(`home is "${w.home}", written as "${asWritten(w.home)}", not "${t.home}"`);
   const [y, mo, d] = SAMPLE_DAY.split('-');
   const date = fill(w.date, { d: +d, m: +mo, month: MONTHS[lang][+mo - 1], y });
   const lede = htmlToText(fill(w.lede, { date, home: w.home })).replace(/\s+/g, ' ').trim();
@@ -376,7 +382,7 @@ function selfTest() {
       + `<meta name="twitter:title" content="${t.title}">\n<meta name="twitter:description" content="${t.desc}">\n`
       + '<script type="application/ld+json">{"@graph":[{"@type":"WebPage"}]}</script></head><body>\n'
       + `  <main id="main">\n    <section class="page-hero"><div class="container"><p class="eyebrow">${t.eyebrow}</p><h1 class="page-hero__h1">${t.h1}</h1>\n`
-      + `<p class="page-hero__lede">${extra.lede || t.lede('2026-11-05').replace('Go to the home page.', '<a href="index.html">Go to the home page</a>.')}</p></div></section>\n  </main>\n</body></html>\n`;
+      + `<p class="page-hero__lede">${extra.lede || t.lede('2026-11-05').replace('Go to the home page.', '<a href="./">Go to the home page</a>.')}</p></div></section>\n  </main>\n</body></html>\n`;
     fs.writeFileSync(path.join(dir, 'standin.html'), extra.main ? html.replace(/<main[\s\S]*<\/main>/, extra.main) : html);
     const standin = { lang: 'en', type: 'WebPage', og: 'website', pub: '2026-11-04', mod: '2026-11-05', status: 'withdrawn' };
     fs.writeFileSync(path.join(dir, row('standin')), extra.compact ? JSON.stringify(standin) : JSON.stringify(standin, null, 2) + '\n');

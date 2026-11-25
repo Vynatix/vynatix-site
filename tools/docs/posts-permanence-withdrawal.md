@@ -142,7 +142,7 @@ locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt
 `git diff tools/urls.lock` shows only added lines); a deliberate deletion of the file, the registry entries and
 the lock row together is not caught. The runbook, with the timeline and what a stub
 cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
-title and the description.
+title and the description (apart from a link to a home page, which it writes as the folder anywhere in a page).
 
 **Checks.** `permanence.js`, `mailto.js` and `copies.js` are in `npm run check` (static, third, fourth and fifth).
 `python3 tools/seo-head.py --check` (`npm run check:gen`) reports any generated part that differs from what a

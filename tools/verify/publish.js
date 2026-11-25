@@ -21,6 +21,8 @@
 //    are not fetched and are not compared;
 //  - the footer of every page carries the Cookie settings link: data-consent-open and href privacy.html#cookies
 //    (../privacy.html#cookies on a generated page, whose notice is the English one at the root);
+//  - no page, written or generated, links a home page as index.html: the link names the folder (./, ../, es/), so
+//    the address bar shows vynatix.com/ and not vynatix.com/index.html;
 //  - the notice link in each language of COPY in app.js points at that language's notice page (NOTICE_PAGES);
 //  - both notice pages name every storage key the site's script uses (app.js), each in <code>;
 //  - the hero background is the drafting sheet alone: hero-bg.css is linked by index.html only, holds still, role-token
@@ -269,6 +271,24 @@ function run(root = ROOT, pages) {
   }
   add(noFooter.length === 0, `the footer of every page (${everyPage.length}) carries the Cookie settings link (data-consent-open, href privacy.html#cookies, from a generated page ../privacy.html#cookies)`,
     noFooter.length ? `${noFooter.length}: ${noFooter.slice(0, 4).join(', ')}${noFooter.length > 4 ? ' ...' : ''}` : '');
+
+  // --- a home page is linked by its folder (./, ../, es/), so the address bar never shows /index.html
+  const homeByFile = [];
+  const liveFolders = generated.filter(([, l]) => l.status === 'live').map(([code]) => code);
+  const shipped = [...pages, ...liveFolders.flatMap((code) => {
+    try { return fs.readdirSync(path.join(root, code)).filter((n) => /\.html$/.test(n)).map((n) => `${code}/${n}`); } catch (e) { return []; }
+  })];
+  for (const p of shipped) {
+    const html = tryRead(p);
+    if (html === null) continue;
+    for (const t of parseTags(stripComments(html), 'a')) {
+      const href = String(t.attrs.href || '').trim();
+      const ours = !/^([a-z][\w+.-]*:|\/\/)/i.test(href) || /^(https?:)?\/\/(www\.)?vynatix\.com\//i.test(href);
+      if (ours && /(^|\/)index\.html([?#]|$)/i.test(href)) homeByFile.push(`${p}: ${href}`);
+    }
+  }
+  add(homeByFile.length === 0, `no page links a home page as index.html (${shipped.length} pages; the folder, ./ or es/, is the URL; tools/seo-head.py writes it)`,
+    homeByFile.length ? `${homeByFile.length}: ${homeByFile.slice(0, 4).join(', ')}${homeByFile.length > 4 ? ' ...' : ''}` : '');
 
   // --- the notice links in COPY
   let app = null;

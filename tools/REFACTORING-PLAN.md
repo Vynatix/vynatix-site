@@ -1,8 +1,8 @@
 # Refactoring plan: less overhead per change
 
 Written 24 November 2026 and revised the same day after an adversarial review. Not published (`tools/` is
-excluded in `_config.yml`). A plan, not a change: nothing here has been carried out, and nothing in it is an
-owner decision until the owner makes it.
+excluded in `_config.yml`). Nothing in it is an owner decision until the owner makes it. What has been carried
+out since, and what waits, is in *Status* below; the rest of the text describes the state before that work.
 
 **The goal** is to cut the overhead of a routine change: the files it touches, the commands it needs, the merge
 conflicts it causes, the prose that has to be read or updated first, and the time the checks take.
@@ -23,6 +23,61 @@ not tested again; those adopted here were first checked against the repository o
 A last read-only audit of the revised text (five auditors: coverage of the findings, internal consistency,
 repository facts and the constraints) raised 88 points, 16 of them major and many of them the same point seen
 from two sides; they are worked in as well. Numbers are measured unless marked as a projection.
+
+## Status (25 November 2026)
+
+Every item an agent could carry out without an owner decision is done, on the branch
+`claude/epic-tesla-8ae0hj`, one commit per item, each declared and proven byte-neutral. The branch as a whole was
+built with the recorded GitHub Pages gem beside `origin/main`: the two sites, 246 files each, are identical
+byte for byte (`diff -r`), and `shipped.js --neutral` lists nothing. The whole chain passes through `check.js`
+(34 steps, 9 minutes 15 seconds of wall time on four cores) and through the old serial `npm run check` (17
+minutes 23 seconds).
+
+| Item | State | Commit |
+| --- | --- | --- |
+| 0.1 `shipped.js` | Done; also `--built` against a Pages build | c3ec306, 79a77f1 |
+| 0.2 the workflow | Done (static, build, browser jobs, actions pinned by commit); runs from the first pull request | 635545b |
+| 0.3 branch protection | Waits: an owner setting (section 5, item 2) | |
+| 0.4 pins, 0.5 `.gitattributes` | Done | 5784a9c |
+| 0.6 `tools/sync.js` | Done, self-test in the chain | 1ea94b0 |
+| 0.7 fail-open holes | Done (and one in `shipped.js` itself) | 79a77f1 |
+| 0.8 and 2.4 (a) `copies.js` | Done | 41c274f |
+| Step 1, the stamps | Waits: the owner's option, 0.3 set, and the throwaway-repository test (section 5, items 1, 2, 8) | |
+| 2.1 the registry as JSON | Done, `tools/migrate/registry.py` | 56dee3e |
+| 2.2 templates and company facts | Done, `tools/migrate/chrome.py` | f931442 |
+| 2.3 the shell tool-written | Waits for step 1 | |
+| 2.4 (b) lists as data, `llms.txt` and the ItemList derived | Done, `tools/migrate/lists.py` | acd7b68 |
+| 2.4 (c) the hub lists inside `<main>` | Waits: section 5, item 3 (b) | |
+| 2.5 byline pattern | Done; its lock-row check waits for section 5, item 6 | 18c9d5b |
+| 2.5b dating by content | Waits: section 5, item 4 | |
+| 2.6 old wording in `missing`; reproducible font cuts | Done | cfc42b6 |
+| 2.6 catalogue key order | Measured and left as it is: neither order removes the conflict | 18c9d5b |
+| 2.7 the generator in modules | Not done: optional, and it saves nothing in files, commands or conflicts | |
+| 2.8 `appConst` | Done | aa870f2 |
+| 3.1, 3.4, 3.6 `check.js` | Done | f5d01f8 |
+| 3.2 one page universe | Done; `a11y.js` on a declared sample to stay inside the budget | 21db050 |
+| 3.3 the visual net | Done (`screenshot.js against`) | f70ed03 |
+| 3.5 browser tier on GitHub | Done as a reporting job; making it required is the owner's | 635545b |
+| 3.7 `hero-fit.js --write` | Done for the ten numbers it can measure | 95b5b50 |
+| 4.0 the classification table | Done (`tools/DECISION-TABLE.md`); its gate passes as worded, not counted strictly | abf071d |
+| 4.1, 4.2, 4.5 the register | Waits: the owner's reading of the gate and of the first batch (section 5, item 7) | |
+| 4.3 the docs split | Done for the block bodies and the index; the `CLAUDE.md` cut waits (item 7) | 745489e |
+| 4.4 `docs.js` | Done | 57a8a31 |
+| Step 5 | Waits: the owner's word, item by item | |
+
+A branch opened before the moves of 2.1, 2.2, 2.4 (b), 2.5 and 4.3 carries its edits across with the steps in
+the docstring of each script in `tools/migrate/` (and `python3 tools/i18n.py dates` for 2.5); each recipe was
+rehearsed on a scratch branch. Everything up to 635545b moves no text between files and can be merged even
+while another branch is open.
+
+Found while carrying it out, for the owner: the published `accessibility.html` says every page is scanned
+with axe-core, which is true of the 34 root pages and not of all 80 generated ones (it was not true before
+either); on a generated page the consent bar names its footer link in English while the link is translated;
+French writes the first of a month "1er", which the byline pattern does not yet (no current byline falls on a
+first, so no byte moves); and a published comment, `styles.css` line 20, calls Liquid Glass the last block of
+the file, which it is not (fixing it moves a byte, so it belongs with step 5). Fixed on the way: step 2 of
+`tools/TAKEDOWN.md` cleared the twin's `alt` only, which stops the generator; it now clears the pair on both
+rows (rehearsed).
 
 ## 1. What a change costs today
 

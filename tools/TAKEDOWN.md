@@ -45,10 +45,13 @@ not wait for it.
 2. **Withdraw the page.** In the page's row, `tools/site/pages/<slug>.json`, add `"status": "withdrawn"` and set
    `mod` to today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
    *If the page has a twin* (an hreflang pair), withdraw the twin as well only if it is also at fault. Otherwise
-   the live twin must stop pointing at the withdrawn page: remove its `alt` (and `original` if it has one) from
-   its row, remove its in-body link to the withdrawn page, and move its `mod`. The generator refuses to
-   run until the live twin's `alt` is gone ("remove the alt from ... first"): that message is the expected prompt,
-   not a bug.
+   the pair is undone on both sides: remove `alt` and `original` from the live twin's row **and from the
+   withdrawn page's own row**, remove the twin's in-body link to the withdrawn page, and move the twin's `mod`.
+   The generator refuses to run while either row still names the other: "remove the alt from ... first" (the
+   twin still points at the withdrawn page) and "names ... as its twin, but ... does not name ... back" (the
+   withdrawn row still points at the twin) are the expected prompts, not bugs. Rehearsed on 25 November 2026
+   on a scratch copy with `test-automation.html`: with both rows cleared the generator goes on to the lists of
+   step 3.
 3. **Remove everything that points at it.** `node verify/permanence.js` (from `tools/`) names each page that still
    links to it. Remove: **its slug from every list in `tools/site/lists.json`** (the generator refuses to run while
    a list names a withdrawn page, and names each list that does; the next run then takes its line out of

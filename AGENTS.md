@@ -511,7 +511,8 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   (at 125 percent in a 790px window). At the default text size the term is zero and the lines are
   untouched. **A change to the headline, the lede, a typeface, the header's height or the hero's
   spacing moves them**: `tools/verify/hero-fit.js` (check M) fails, prints the measured height
-  and names the pair to refit.
+  and names the pair to refit; `node tools/verify/hero-fit.js --write` refits the ten numbers
+  it measures (see *Refitting* below).
 - **Three states, by the window's height.** *Message*: the message is fitted and the clients'
   rule lies on the fold, so the client row starts the scroll and is never cut half way
   (`.hero__msg`, the wrapper round the message in `index.html`, takes the first screen's
@@ -550,6 +551,28 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   window (the design size, client row included) and `bg-fit.js` runs each again at 650, 790,
   864 and 900px, where they multiply their own distances by the unit they read from the page
   (`heroUnit` in `_common.js`). Both are in `npm run check`.
+- **Refitting.** `node tools/verify/hero-fit.js --write`, run by hand and never in `npm run check`,
+  solves each line M proves from the same two measurements M holds it to (`LINES` in the
+  script): the slope per unit rounded to a whole number, then the fixed part that slope leaves,
+  averaged over the two and rounded to a whole pixel. On the pinned browser that gives back every
+  committed number exactly, which is the condition it was introduced on. It writes a line only
+  when M fails for it with the committed numbers (two of today's slopes, 489.53 and 457.58, are a
+  sixty-fourth of a pixel or two from rounding the other way, so another browser build could
+  solve a different number for a line that still passes), prints the solved and the committed
+  numbers for every line, then runs the whole check on the file as written. It writes the ten
+  numbers of the three lines measured at 1440px: `--hero-f1`/`k1` and `f2`/`k2` on both home
+  pages and `--hero-wf`/`wk` on the English one. The other sixteen numbers of the block stay a
+  person's: the eight of the two phone lines (under 600px the lede wraps by the window, so its
+  line count moves with the unit and there is no straight line to measure), the three floors
+  (`--hero-min`), `--hero-above`, and `--hero-h` and `--hero-hw` on both rules; so do the
+  heights of the states in the media queries. M has no row for the phone lines, and F and E
+  cannot see a line that makes the hero too short (`min-height` stretches it to the fold, so the
+  hero only comes out smaller than it could be): "hero-fit: ok" after a write vouches for the
+  ten numbers written, not for those sixteen. It writes nothing when `BASE` does not serve this
+  tree's two home pages and stylesheets, when a pair is not on a line of its own in its rule or
+  when the numbers in force at 1440px are not the ones in that rule, and nothing for a page whose
+  headline or lede is not two lines, which is a new model and not a refit. After a write, run
+  `npm run stamp` (`styles.css` changed) and `npm run check:bg`.
 
 **Audience switch (retired, November 2026).** The English home page used to open with a bar of two
 links, "Hire a team" and "Join the team", and held a second view for senior engineers at

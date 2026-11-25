@@ -111,7 +111,7 @@ highlights the things most worth keeping front-of-mind.
   window under 650px high, 520px on a phone, which is where browser zoom lands, or no `svh`) the hero is the
   plain scrolling one. An owner decision. **The solve's constants (`--hero-f1`, `--hero-k1`, `--hero-above`
   and the rest) are facts about the current copy, the header and the hero's spacing: after changing any of
-  those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
+  those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit; `--write` refits the ten numbers it measures at 1440px, never the phone lines (AGENTS.md, *Hero fit*).**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
   block of `styles.css` named "The English home page: its pictures" holds it: a tall lead case beside two compact ones, the hero's

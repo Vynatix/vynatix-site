@@ -2352,7 +2352,7 @@ body::after {
    - Partnership: the hero's drawing at four stages on one datum line.
    - One sheet: no tinted strips between blocks; the drawing's centre line runs down the left margin.
    - Insights: three ruled rows.
-   - Services and Cases: generated still lifes, a daylight set and a night set, chosen by the page's
+   - Services and Cases: generated photographs, a daylight set and a night set, chosen by the page's
      colour scheme. */
 
 /* ---------------------------------------------------------------
@@ -2502,18 +2502,20 @@ body::after {
 /* ---------------------------------------------------------------
    One picture across the services
    --------------------------------------------------------------- */
-/* One wide still life (a generated image, assets/CREDITS.md) sits across the three services: each
-   column shows its third, so the three pictures are one sheet with one pencil line through them. The size
-   adds the two column gaps to three slice widths, and the three positions (left, centre, right) then land
-   each slice where it would lie in the uncut picture. Decorative: the spans are aria-hidden and empty. */
+/* One wide photograph (a generated image, assets/CREDITS.md) sits across the three services: one oak bench with
+   the tools of each service, so each column shows its own group on the same bench, at the same height. The
+   picture is drawn at 280% of a column's width, so each column sees 0.357 of it: the left column from its left
+   edge, the right one to its right edge, and the middle one from 0.346 to 0.703, which is the gap between the
+   GPU board and the phone in this picture (both measured on the file; a new picture needs new numbers). The
+   vertical position keeps the bench top in view. Decorative: the spans are aria-hidden and empty. */
 .cap__art {
   display: block;
   aspect-ratio: 4 / 3;
   margin-bottom: var(--space-3);
   border-radius: var(--radius-lg);
-  background: var(--md-sys-color-surface-container-highest) url(assets/services-drafting-sheet.webp) 0 39% / calc(300% + 2 * var(--space-6)) auto no-repeat;
+  background: var(--md-sys-color-surface-container-highest) url(assets/services-bench.webp) 0 85% / 280% auto no-repeat;
 }
-.cap__art--2 { background-position-x: 50%; }
+.cap__art--2 { background-position-x: 53.8%; }
 .cap__art--3 { background-position-x: 100%; }
 /* The picture is the column's top edge now, so the rule above it goes. */
 .home #services .cap {
@@ -2527,26 +2529,28 @@ body::after {
 /* ---------------------------------------------------------------
    Two sets of pictures: one for the light theme, one for the dark
    --------------------------------------------------------------- */
-/* Each generated picture exists twice: the daylight sheet, and its night version on dark paper with chalk
-   lines. The page's own colour scheme picks one: the design system sets `color-scheme` with the theme
+/* Each generated picture exists twice: the scene in daylight, and the same scene late in the evening. The
+   page's own colour scheme picks one: the design system sets `color-scheme` with the theme
    (colors_and_type.css), and light-dark() reads it, so there is no theme selector here and a browser
    fetches only the set it shows. A browser without light-dark() for images keeps the daylight set in both
    themes, which is what the site's photographs do today. */
 .case__img--documents,
-.case__img--stopwatch,
-.case__img--dial {
+.case__img--pipeline,
+.case__img--cab {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
-.case__img--documents { background-image: url(assets/case-ai-bound-documents.webp); }
-.case__img--stopwatch { background-image: url(assets/case-cars-stopwatch.webp); }
-.case__img--dial { background-image: url(assets/case-trucks-radio-dial.webp); }
+.case__img--documents { background-image: url(assets/case-ai-cited-answer.webp); }
+.case__img--pipeline { background-image: url(assets/case-cars-build-passed.webp); }
+/* On a phone the box is wide and the square picture is cut top and bottom: keep the screen's header in view. */
+.case__img--pipeline { background-position: 50% 40%; }
+.case__img--cab { background-image: url(assets/case-trucks-cab-player.webp); }
 @supports (background-image: light-dark(url(a.webp), url(b.webp))) {
-  .cap__art { background-image: light-dark(url(assets/services-drafting-sheet.webp), url(assets/services-drafting-sheet-dark.webp)); }
-  .case__img--documents { background-image: light-dark(url(assets/case-ai-bound-documents.webp), url(assets/case-ai-bound-documents-dark.webp)); }
-  .case__img--stopwatch { background-image: light-dark(url(assets/case-cars-stopwatch.webp), url(assets/case-cars-stopwatch-dark.webp)); }
-  .case__img--dial { background-image: light-dark(url(assets/case-trucks-radio-dial.webp), url(assets/case-trucks-radio-dial-dark.webp)); }
+  .cap__art { background-image: light-dark(url(assets/services-bench.webp), url(assets/services-bench-dark.webp)); }
+  .case__img--documents { background-image: light-dark(url(assets/case-ai-cited-answer.webp), url(assets/case-ai-cited-answer-dark.webp)); }
+  .case__img--pipeline { background-image: light-dark(url(assets/case-cars-build-passed.webp), url(assets/case-cars-build-passed-dark.webp)); }
+  .case__img--cab { background-image: light-dark(url(assets/case-trucks-cab-player.webp), url(assets/case-trucks-cab-player-dark.webp)); }
 }
 
 /* ---------------------------------------------------------------

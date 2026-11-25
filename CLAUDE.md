@@ -25,7 +25,7 @@ highlights the things most worth keeping front-of-mind.
 - **Seven languages, two kinds.** English and Swedish are written by hand (the thirty-four pages above).
   Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
   the three notices in `es/`, `fr/`, `de/`, `ja/` and `ar/` from the catalogues `tools/i18n/<code>.json`, which map each
-  English message to its translation (`tools/i18n.py` is the engine; `LANGS` in `seo-head.py` is the one table).
+  English message to its translation (`tools/i18n.py` is the engine; `tools/site/langs.json`, `LANGS` in `seo-head.py`, is the one table).
   **Never edit a file in a language folder**: edit the English page, run `python3 tools/seo-head.py`, then
   translate what `python3 tools/i18n.py missing <code>` lists, in all five catalogues, and run it again. A
   changed English sentence shows in English on the generated pages until then, and `tools/verify/i18n.js`
@@ -160,7 +160,7 @@ highlights the things most worth keeping front-of-mind.
   no cookie set, before the visitor has accepted (a stored Accept from an earlier
   visit counts until it lapses). To switch it on, only when
   `tools/PRE-FLIP-CHECKLIST.md` is complete: set the notices' visible "Last
-  updated" lines and their `mod` in `tools/seo-head.py` to the day of the flip, run
+  updated" lines and their `mod` (`tools/site/pages/privacy.json`, `integritet.json`) to the day of the flip, run
   `python3 tools/seo-head.py`, then edit the `GA_ID` line (after an exit, also set
   `PURGE_ONLY` back to `false`), run `cd tools && npm run stamp` and
   `node verify/release-gate.js`. That is the last commit of the one PR and it
@@ -217,7 +217,8 @@ highlights the things most worth keeping front-of-mind.
   automotive, the Volvo Trucks challenge line), and the Swedish still needs a native reader's check. See
   AGENTS.md, *The English home page*, *The other pages* and *Swedish pages*.
 - **Posts are guides at the flat root, and a page can be withdrawn but never deleted.** A new guide is a
-  `kind='post'` entry in `PAGES` of `tools/seo-head.py` (and in `tools/verify/_common.js`), written to the
+  row with `"kind": "post"`, `tools/site/pages/<slug>.json` (read into `PAGES` by `tools/seo-head.py` and by
+  `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
   `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. A fact
   not already on a published page is drafted outside the public repo until the owner approves it, and a
@@ -230,7 +231,7 @@ highlights the things most worth keeping front-of-mind.
   canonical link, Open Graph, hreflang for every language version of the page (the English/Swedish pairs, and the five generated languages), and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
-  the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;
+  its registry row, `tools/site/pages/<slug>.json`, and run `python3 tools/seo-head.py`;
   it writes `dateModified`, the `article:modified_time` meta and the sitemap
   `<lastmod>` from that one value; a visible FAQ
   (`data-faq`) and its FAQPage data must match word for word (answers are flat `p`

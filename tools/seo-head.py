@@ -33,7 +33,7 @@ GitHub Pages a withdrawn URL has to keep answering and must stop serving its old
                                           from what a run would write, without writing anything
 
 When to run it: after editing a FAQ (the FAQPage data must repeat the visible answers word for
-word), after moving a page's `mod` date in PAGES because its content changed (`pub`, the date the
+word), after moving a page's `mod` date in its row because its content changed (`pub`, the date the
 page first went live, never moves), or after changing the footer. It is idempotent: on an
 unchanged tree it changes nothing. If styles or scripts changed as well, run `npm run stamp` in
 tools/ afterwards; the stamps are not this script's business, and `npm run check` fails until
@@ -54,55 +54,102 @@ ORG_ID = SITE + '#organization'
 WEBSITE_ID = SITE + '#website'
 
 # ---------------------------------------------------------------- registry
+# Every page written by hand has one row, the file tools/site/pages/<slug>.json (the row of about.html is
+# about.json): a JSON object with the keys below, in this order, and only the ones the page needs, because a key
+# left out takes its default.
 # lang: the page language. type: the schema.org page type. og: website|article.
 # pub: datePublished, the date the page first went live (first commit for the original nine);
 #      it never moves. mod: dateModified; move it when the page's content changes, then run this.
 # alt: the twin in the other language (hreflang). article: the page also carries an Article node.
 # original: which page of an alt pair is the original and which the translation (translationOfWork /
-#      workTranslation). Default: the English page is the original. Give True on a Swedish original
-#      and False on its English twin; exactly one page of each pair must be the original.
-# kind: 'post' marks a guide or blog post written after the blog was added (the visible-date check
+#      workTranslation). Default: the English page is the original. Give true on a Swedish original
+#      and false on its English twin; exactly one page of each pair must be the original.
+# kind: "post" marks a guide or blog post written after the blog was added (the visible-date check
 #      of tools/verify/permanence.js applies to these; the older guides are not marked).
-# status: 'live' (default) or 'withdrawn'. A withdrawn page keeps its URL but is replaced by a short
+# status: "live" (default) or "withdrawn". A withdrawn page keeps its URL but is replaced by a short
 #      stub, carries noindex and no hreflang, and is left out of sitemap.xml (and so of llms.txt).
-# One entry per line, as written here: tools/verify/_common.js reads this table as text.
-# The order here is the order of sitemap.xml.
-PAGES = {
-  'index.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-05-14', mod='2026-11-24', alt={'sv': 'sv.html'}),
-  'about.html':        dict(lang='en', type='AboutPage',      og='website', pub='2026-06-27', mod='2026-11-20'),
-  'services.html':     dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-23'),
-  'industries.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-11-20', mod='2026-11-20'),
-  'work.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-06-27', mod='2026-11-19'),
-  'membership.html':   dict(lang='en', type='WebPage',        og='website', pub='2026-06-27', mod='2026-11-20'),
-  'contact.html':      dict(lang='en', type='ContactPage',    og='website', pub='2026-06-27', mod='2026-11-23'),
-  'blog.html':         dict(lang='en', type='CollectionPage', og='website', pub='2026-11-06', mod='2026-11-24'),
-  'privacy.html':      dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20', alt={'sv': 'integritet.html'}),
-  'terms.html':        dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-08-19'),
-  'accessibility.html':dict(lang='en', type='WebPage',        og='website', pub='2026-08-19', mod='2026-11-20'),
-  'sv.html':                                    dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-23', alt={'en': 'index.html'}),
-  'android-automotive-development.html':        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'android-automotive-utveckling.html'}),
-  'android-automotive-utveckling.html':         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'android-automotive-development.html'}),
-  'ai-engineering.html':                        dict(lang='en', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'sv': 'ai-utveckling.html'}),
-  'ai-utveckling.html':                         dict(lang='sv', type='WebPage', og='website', pub='2026-10-18', mod='2026-11-20', alt={'en': 'ai-engineering.html'}),
-  'android-automotive-consultancies-gothenburg.html': dict(lang='en', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, alt={'sv': 'konsultbolag-android-automotive-goteborg.html'}, status='withdrawn'),
-  'konsultbolag-android-automotive-goteborg.html':    dict(lang='sv', type='CollectionPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, alt={'en': 'android-automotive-consultancies-gothenburg.html'}, status='withdrawn'),
-  'valja-konsultbolag.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, original=True, alt={'en': 'choose-a-software-consultancy.html'}),
-  'platform-engineering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True),
-  'ai-assistent-interna-dokument.html':         dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True),
-  'ai-konsultbolag-sverige.html':               dict(lang='sv', type='WebPage', og='article', pub='2026-10-18', mod='2026-11-20', article=True, status='withdrawn'),
-  'choose-a-software-consultancy.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-06', mod='2026-11-20', article=True, kind='post', original=False, alt={'sv': 'valja-konsultbolag.html'}),
-  'integritet.html':                            dict(lang='sv', type='WebPage', og='website', pub='2026-10-19', mod='2026-11-20', alt={'en': 'privacy.html'}),
-  'testautomatisering.html':                  dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'test-automation.html'}),
-  'systemutveckling.html':                    dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'custom-software-development.html'}),
-  'systemintegration-och-forvaltning.html':   dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'system-integration-and-maintenance.html'}),
-  'ai-i-befintlig-produkt.html':              dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'ai-in-your-existing-product.html'}),
-  'fordonsmjukvara.html':                     dict(lang='sv', type='WebPage', og='article', pub='2026-11-23', mod='2026-11-24', article=True, kind='post', original=True, alt={'en': 'automotive-software.html'}),
-  'test-automation.html':                     dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'testautomatisering.html'}),
-  'custom-software-development.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'systemutveckling.html'}),
-  'system-integration-and-maintenance.html':  dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'systemintegration-och-forvaltning.html'}),
-  'ai-in-your-existing-product.html':         dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'ai-i-befintlig-produkt.html'}),
-  'automotive-software.html':                 dict(lang='en', type='WebPage', og='article', pub='2026-11-24', mod='2026-11-24', article=True, kind='post', original=False, alt={'sv': 'fordonsmjukvara.html'}),
-}
+# order: the page's place in sitemap.xml. The 34 pages registered before the rows became files carry 1 to 34,
+#      the order of the table they came from; a new page needs none and comes after them, by pub and then by
+#      slug, so two branches that each add a page cannot tie unseen.
+# note: a remark for the person who reads the row, where a comment beside it would go; nothing reads it.
+# load_pages() reads the rows into PAGES, in that order, which is the order of sitemap.xml, and refuses an
+# unknown key or a value of the wrong type; tools/verify/_common.js reads the same files.
+SITE_DATA = os.path.join(EXEC, 'site')
+PAGE_KEYS = ('lang', 'type', 'og', 'pub', 'mod', 'alt', 'article', 'original', 'kind', 'status', 'order', 'note')
+LANG_KEYS = ('name', 'tag', 'locale', 'dir', 'kind', 'home', 'status', 'checked', 'by', 'waived', 'pub', 'mod', 'note')
+
+def load_json(path):
+    """The JSON object in a data file of tools/site/. A file that cannot be read, is not JSON, is not an object or
+    names a key twice (as a merge that kept both sides of a line would) stops the run, naming the file."""
+    rel = os.path.relpath(path, REPO)
+    def once(pairs):
+        keys = [k for k, _ in pairs]
+        twice = sorted({k for k in keys if keys.count(k) > 1})
+        if twice:
+            raise SystemExit(f'{rel}: {twice[0]} is given twice')
+        return dict(pairs)
+    try:
+        with open(path, encoding='utf-8') as fh:
+            data = json.load(fh, object_pairs_hook=once)
+    except OSError as e:
+        raise SystemExit(f'{rel}: cannot be read ({e.strerror})')
+    except ValueError as e:
+        raise SystemExit(f'{rel}: is not JSON ({e})')
+    if not isinstance(data, dict):
+        raise SystemExit(f'{rel}: holds a JSON {type(data).__name__}, not an object')
+    return data
+
+def load_pages():
+    """PAGES from tools/site/pages/: {'file.html': row}, the rows with an order by it, then the others by pub and
+    then by slug. Each key and its type is checked here; order and note stay in the files, so a row of PAGES holds
+    the page's own keys only."""
+    folder = os.path.join(SITE_DATA, 'pages')
+    try:
+        names = sorted(os.listdir(folder))
+    except OSError as e:
+        raise SystemExit(f'tools/site/pages: cannot be read ({e.strerror}); it holds one JSON file per page')
+    types = dict(alt=dict, article=bool, original=bool, order=int)
+    rows = []
+    for name in names:
+        rel = f'tools/site/pages/{name}'
+        if not re.fullmatch(r'[^./][^/]*\.json', name):
+            raise SystemExit(f'{rel}: only rows belong in tools/site/pages, one <slug>.json per page')
+        row = load_json(os.path.join(folder, name))
+        unknown = sorted(set(row) - set(PAGE_KEYS))
+        if unknown:
+            raise SystemExit(f'{rel}: unknown registry key {unknown} (known: {list(PAGE_KEYS)})')
+        for k, v in row.items():
+            want = types.get(k, str)
+            if not isinstance(v, want) or (want is int and (isinstance(v, bool) or v < 1)):
+                raise SystemExit(f'{rel}: {k} is {json.dumps(v, ensure_ascii=False)}, which is not '
+                                 + {str: 'a string', bool: 'true or false', int: 'a whole number from 1'}.get(want, 'an object'))
+        if not all(isinstance(a, str) and isinstance(b, str) for a, b in row.get('alt', {}).items()):
+            raise SystemExit(f'{rel}: alt maps a language to a page, {{"sv": "sv.html"}}')
+        rows.append((name[:-len('.json')], row))
+    placed = {}
+    for slug, row in rows:
+        if 'order' in row and placed.setdefault(row['order'], slug) != slug:
+            raise SystemExit(f"tools/site/pages/{placed[row['order']]}.json and {slug}.json have the same order, "
+                             f"{row['order']}; a new page needs none")
+    rows.sort(key=lambda r: (0, r[1]['order'], '', '') if 'order' in r[1] else (1, 0, r[1].get('pub', ''), r[0]))
+    return {slug + '.html': {k: v for k, v in row.items() if k not in ('order', 'note')} for slug, row in rows}
+
+def load_langs():
+    """LANGS from tools/site/langs.json, in the file's order. Each key is checked, and every value is a string;
+    note stays in the file."""
+    langs = load_json(os.path.join(SITE_DATA, 'langs.json'))
+    for k, l in langs.items():
+        if not isinstance(l, dict):
+            raise SystemExit(f'tools/site/langs.json: {k} is not an object')
+        unknown = sorted(set(l) - set(LANG_KEYS))
+        if unknown:
+            raise SystemExit(f'tools/site/langs.json: {k} has an unknown key {unknown} (known: {list(LANG_KEYS)})')
+        not_text = [a for a, b in l.items() if not isinstance(b, str)]
+        if not_text:
+            raise SystemExit(f'tools/site/langs.json: {k}: {not_text[0]} is not a string')
+    return {k: {a: b for a, b in l.items() if a != 'note'} for k, l in langs.items()}
+
+PAGES = load_pages()
 for f, p in PAGES.items():
     p.setdefault('alt', {}); p.setdefault('article', False); p.setdefault('status', 'live')
 assert all('pub' in p and 'mod' in p for p in PAGES.values())
@@ -128,31 +175,26 @@ for f, p in PAGES.items():
             f'{f}: alt {other} is withdrawn; remove the alt from {f} first')
 
 # ---------------------------------------------------------------- languages
-# Every language the site is in, in the order the language list shows them. One entry per line.
+# Every language the site is in, in the order the language list shows them: tools/site/langs.json, one entry per
+# language code, each a JSON object of strings with the keys below, in this order. load_langs() above reads it.
 # name: the language's own name. tag: the value of lang and hreflang. locale: og:locale. dir: ltr or rtl.
-# kind: 'written' (pages written by hand and registered in PAGES above: English and Swedish) or
-#       'generated' (every English page except UNTRANSLATED, rebuilt in the folder <code>/ from the
+# kind: "written" (pages written by hand and registered in PAGES above: English and Swedish) or
+#       "generated" (every English page except UNTRANSLATED, rebuilt in the folder <code>/ from the
 #       catalogue tools/i18n/<code>.json by tools/i18n.py; never edit a generated page).
+# home: a written language's home page, which the language list links to.
 # A generated language also has:
-# status: 'draft' or 'live'. A draft is built and checked but not published: its folder is named in
+# status: "draft" or "live". A draft is built and checked but not published: its folder is named in
 #       _config.yml exclude (this script keeps that list), its pages carry noindex and no hreflang, no
-#       other page links to it, and it has no row in sitemap.xml, llms.txt or tools/urls.lock. 'live'
+#       other page links to it, and it has no row in sitemap.xml, llms.txt or tools/urls.lock. "live"
 #       publishes it, and its URLs are then permanent like every other; a live language never goes
-#       back to draft. The brand voice requires a native reader's check first, so 'live' needs:
+#       back to draft. The brand voice requires a native reader's check first, so "live" needs:
 # checked, by: the date of that check and who made it (a name or a role); or
 # waived: the date the owner decided to publish the language without that check. It says the check has
 #       NOT been made. Never write a date in `checked` for a check nobody made; when a reader has been
 #       through the language, fill in checked and by and leave waived as the record of what came first.
 # pub: the day the language goes live (set it on that day); mod: move it when its catalogue changes.
-LANGS = {
-  'en': dict(name='English', tag='en', locale='en_GB', dir='ltr', kind='written', home='index.html'),
-  'sv': dict(name='Svenska', tag='sv', locale='sv_SE', dir='ltr', kind='written', home='sv.html'),
-  'es': dict(name='Español', tag='es', locale='es_ES', dir='ltr', kind='generated', status='live', pub='2026-11-20', mod='2026-11-24', checked='', by='', waived='2026-11-20'),
-  'fr': dict(name='Français', tag='fr', locale='fr_FR', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
-  'de': dict(name='Deutsch', tag='de', locale='de_DE', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
-  'ja': dict(name='日本語', tag='ja', locale='ja_JP', dir='ltr', kind='generated', status='live', pub='2026-11-21', mod='2026-11-24', checked='', by='', waived='2026-11-21'),
-  'ar': dict(name='العربية', tag='ar', locale='ar_AR', dir='rtl', kind='generated', status='live', pub='2026-11-20', mod='2026-11-24', checked='', by='', waived='2026-11-20'),
-}
+# note: a remark for the person who reads the entry; nothing reads it.
+LANGS = load_langs()
 # The notices are legal text and are not translated: the English text governs, and a generated page
 # links to it and says so (hreflang="en").
 UNTRANSLATED = ('privacy.html', 'terms.html', 'accessibility.html')

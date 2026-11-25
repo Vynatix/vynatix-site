@@ -5,8 +5,8 @@ For a page that must stop being served: a wrong claim, a client name under NDA, 
 
 GitHub Pages has no server-side redirects, a push to the production branch is live within about a minute, and
 the repository is public. So a page that has been public never gets a 404 by accident: it keeps its URL and
-answers with a short stub. The registry in `tools/seo-head.py` drives it: set `status='withdrawn'` on the page
-and run the script, and the page's title, description and whole `<main>` are replaced by the stub (about a
+answers with a short stub. The registry drives it: set `"status": "withdrawn"` in the page's row,
+`tools/site/pages/<slug>.json`, and run `tools/seo-head.py`, and the page's title, description and whole `<main>` are replaced by the stub (about a
 hundred characters, no reason given, built from the existing `.page-hero` markup), the robots meta becomes
 `noindex`, hreflang, FAQ and Article data disappear, and the page leaves `sitemap.xml`.
 
@@ -38,11 +38,11 @@ it. They are not published, but the repository is public, and like the page they
 ## Steps
 
 1. **Branch from main** (root). `git checkout -b takedown/<slug> origin/main`. Do not push the old text anywhere new.
-2. **Withdraw the page.** In `tools/seo-head.py`, on the page's entry, add `status='withdrawn'` and set `mod` to
-   today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
+2. **Withdraw the page.** In the page's row, `tools/site/pages/<slug>.json`, add `"status": "withdrawn"` and set
+   `mod` to today (the stub says "removed on" that date). Do not touch `pub`: it never moves.
    *If the page has a twin* (an hreflang pair), withdraw the twin as well only if it is also at fault. Otherwise
    the live twin must stop pointing at the withdrawn page: remove its `alt` (and `original` if it has one) from
-   its registry entry, remove its in-body link to the withdrawn page, and move its `mod`. The generator refuses to
+   its row, remove its in-body link to the withdrawn page, and move its `mod`. The generator refuses to
    run until the live twin's `alt` is gone ("remove the alt from ... first"): that message is the expected prompt,
    not a bug.
 3. **Remove everything that points at it.** `node verify/permanence.js` (from `tools/`) names each page that still
@@ -93,13 +93,13 @@ it. They are not published, but the repository is public, and like the page they
 
 ## Afterwards
 
-- The URL stays registered and locked for good: keep the file, keep the registry entry, never reuse the slug.
+- The URL stays registered and locked for good: keep the file, keep its registry row, never reuse the slug.
   `permanence.js` fails if a locked URL has no file or a locked `pub` moves, and `publish.js` fails on a file that
   is not registered. The lock itself is append-only by convention and review: in review, check that
-  `git diff tools/urls.lock` shows only added lines. Deleting the file, its registry entries and its lock row
+  `git diff tools/urls.lock` shows only added lines. Deleting the file, its registry row and its lock row
   together is not caught by any script.
 - If the reason was a wrong fact rather than a confidentiality breach, a corrected page can replace the stub
-  later: remove `status='withdrawn'`, write the page, move `mod`. `pub` stays as it was.
+  later: remove `"status": "withdrawn"` from its row, write the page, move `mod`. `pub` stays as it was.
 - Practise once a year on a scratch copy (copy the repository, withdraw a stand-in page, run the steps, time
   them). The mechanism (steps 2 to 5) was rehearsed that way on 4 November 2026 with stand-in pages, including a
   pair: the old text was gone from the file, the page was noindex and out of the sitemap, and `permanence.js`

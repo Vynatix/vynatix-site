@@ -4,8 +4,8 @@
 //   node verify/permanence.js
 //   node verify/permanence.js --self-test     proves the checks fail for the right reasons (in `npm run check`)
 //
-//  A  the PAGES registry of tools/seo-head.py can be read, and it and PAGES in _common.js name the same files,
-//     each of which exists
+//  A  the registry, one row per page in tools/site/pages/<slug>.json (readRegistry in _common.js), can be read,
+//     and every page it names exists (publish.js holds the other direction: every root page has its row)
 //  W  every withdrawn page (registry status 'withdrawn', see tools/TAKEDOWN.md) is exactly the stub: its title,
 //     description, og/twitter copies and <main> are the stub's own strings for its language and the date in
 //     `mod`, it carries noindex and no Article or FAQPage data; and it is in no sitemap.xml, llms.txt or feed,
@@ -34,7 +34,7 @@ const fs = require('fs');
 const os = require('os');
 const { execFileSync } = require('child_process');
 const path = require('path');
-const { ROOT, PAGES, NOTICE_PAGES, readRegistry, parseTags, htmlToText, stripComments, decodeEntities } = require('./_common');
+const { ROOT, NOTICE_PAGES, readRegistry, parseTags, htmlToText, stripComments, decodeEntities } = require('./_common');
 
 const SITE = 'https://vynatix.com/';
 const urlOf = (f) => (f === 'index.html' ? SITE : SITE + f);
@@ -78,25 +78,20 @@ function mainLock(root = ROOT) {
 
 // `main` is the lock to compare with (mainLock above). The self-test passes its own, because its scratch copies are
 // not git checkouts.
-function run(root = ROOT, pages = PAGES, main = mainLock(root)) {
+function run(root = ROOT, main = mainLock(root)) {
   const out = [];
   const add = (ok, name, detail) => out.push({ ok, name, detail: ok ? '' : detail });
   const tryRead = (rel) => { try { return fs.readFileSync(path.join(root, rel), 'utf8'); } catch (e) { return null; } };
 
-  // A. one registry, and it can be read
+  // A. the registry can be read, and every page it names exists
   let reg;
   try { reg = readRegistry(root); } catch (e) {
-    add(false, 'the PAGES registry in tools/seo-head.py can be read', e.message);
+    add(false, 'the registry, tools/site/pages, can be read', e.message);
     return out;
   }
   const files = Object.keys(reg);
-  const onlyPy = files.filter((f) => !pages.includes(f));
-  const onlyJs = pages.filter((f) => !reg[f]);
   const missing = files.filter((f) => !fs.existsSync(path.join(root, f)));
-  add(!onlyPy.length && !onlyJs.length && !missing.length,
-    `PAGES in tools/seo-head.py and in _common.js name the same ${files.length} files, and each exists`,
-    [onlyPy.length ? `only in seo-head.py: ${onlyPy.join(', ')}` : '', onlyJs.length ? `only in _common.js: ${onlyJs.join(', ')}` : '',
-      missing.length ? `no file: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
+  add(!missing.length, `the registry names ${files.length} pages, and each exists`, `a row but no file: ${missing.join(', ')}`);
 
   // W. withdrawn pages
   const withdrawn = files.filter((f) => reg[f].status === 'withdrawn');
@@ -326,14 +321,19 @@ function selfTest() {
       fs.mkdirSync(path.join(dir, d.name), { recursive: true });
       for (const f of fs.readdirSync(path.join(ROOT, d.name))) if (/\.html$/.test(f)) fs.copyFileSync(path.join(ROOT, d.name, f), path.join(dir, d.name, f));
     }
+    // The registry (tools/site: the page rows and the language table), and seo-head.py, which holds the stub strings.
     fs.mkdirSync(path.join(dir, 'tools', 'seo'), { recursive: true });
     for (const f of ['seo-head.py', 'urls.lock', 'urls.retired']) if (fs.existsSync(path.join(ROOT, 'tools', f))) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
     for (const f of fs.readdirSync(path.join(ROOT, 'tools', 'seo'))) fs.copyFileSync(path.join(ROOT, 'tools', 'seo', f), path.join(dir, 'tools', 'seo', f));
+    fs.cpSync(path.join(ROOT, 'tools', 'site'), path.join(dir, 'tools', 'site'), { recursive: true });
     return dir;
   };
   const edit = (dir, rel, fn) => { const p = path.join(dir, rel); fs.writeFileSync(p, fn(fs.readFileSync(p, 'utf8'))); };
-  const PY = path.join('tools', 'seo-head.py');
+  const row = (slug) => path.join('tools', 'site', 'pages', slug + '.json');
+  // Edit one registry row as data: fn takes the row's object and changes it.
+  const editRow = (dir, slug, fn) => edit(dir, row(slug), (s) => { const o = JSON.parse(s); fn(o); return JSON.stringify(o, null, 2) + '\n'; });
   // A correct stub for page `name` (lang en), as the generator writes it, registered as withdrawn and locked.
+  // extra.compact writes its row on one line: the reader reads JSON, not a layout.
   const withStub = (dir, extra = {}) => {
     const t = STUB.en;
     const html = '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
@@ -344,52 +344,52 @@ function selfTest() {
       + `  <main id="main">\n    <section class="page-hero"><div class="container"><p class="eyebrow">${t.eyebrow}</p><h1 class="page-hero__h1">${t.h1}</h1>\n`
       + `<p class="page-hero__lede">${extra.lede || t.lede('2026-11-05').replace('Go to the home page.', '<a href="index.html">Go to the home page</a>.')}</p></div></section>\n  </main>\n</body></html>\n`;
     fs.writeFileSync(path.join(dir, 'standin.html'), extra.main ? html.replace(/<main[\s\S]*<\/main>/, extra.main) : html);
-    edit(dir, PY, (s) => s.replace("  'integritet.html': ", `  'standin.html': dict(lang='en', type='WebPage', og='website', pub='2026-11-04', mod='2026-11-05', status=${extra.q || "'"}withdrawn${extra.q || "'"}),\n  'integritet.html': `));
+    const standin = { lang: 'en', type: 'WebPage', og: 'website', pub: '2026-11-04', mod: '2026-11-05', status: 'withdrawn' };
+    fs.writeFileSync(path.join(dir, row('standin')), extra.compact ? JSON.stringify(standin) : JSON.stringify(standin, null, 2) + '\n');
     edit(dir, path.join('tools', 'urls.lock'), (s) => s.replace(/\n?$/, '\n') + 'https://vynatix.com/standin.html 2026-11-04\n');
-    return [...PAGES, 'standin.html'];
   };
   const cases = [
-    ['control: the real tree passes', (d) => PAGES, true],
+    ['control: the real tree passes', (d) => {}, true],
     ['control: a correct, unlinked stub passes', (d) => withStub(d), true],
-    ['control: the same with a double-quoted status passes', (d) => withStub(d, { q: '"' }), true],
+    ['control: the same with its row written on one line passes', (d) => withStub(d, { compact: true }), true],
     ['an old title on a withdrawn page', (d) => withStub(d, { title: 'Så väljer ni konsultbolag, Vynatix' }), /title is/],
     ['a short wrong <main> on a withdrawn page', (d) => withStub(d, { main: '<main id="main"><p>Volvo Trucks paid us under NDA clause 7</p></main>' }), /<main> is/],
-    ['a withdrawn page linked as ./standin.html', (d) => { const p = withStub(d); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="./standin.html">x</a></main>')); return p; }, /linked from about\.html/],
-    ['a withdrawn page linked by a <link rel=alternate href="/standin.html">', (d) => { const p = withStub(d); edit(d, 'about.html', (s) => s.replace('</head>', '<link rel="alternate" href="/standin.html"></head>')); return p; }, /linked from about\.html/],
-    ['a withdrawn page linked as http://www.vynatix.com/standin.html', (d) => { const p = withStub(d); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="http://www.vynatix.com/standin.html?x=1">x</a></main>')); return p; }, /linked from about\.html/],
-    ['a withdrawn page still in llms.txt', (d) => { const p = withStub(d); edit(d, 'llms.txt', (s) => s + '- [x](https://vynatix.com/standin.html)\n'); return p; }, /still in llms\.txt/],
-    ['a double-quoted status and a link (must not read as live)', (d) => { const p = withStub(d, { q: '"' }); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="standin.html">x</a></main>')); return p; }, /linked from about\.html/],
-    ['two registry entries on one line', (d) => { edit(d, PY, (s) => s.replace("  'terms.html':", "  'privacy2.html': dict(lang='en', type='WebPage', og='website', pub='2026-08-19', mod='2026-08-19'), 'terms.html':")); return PAGES; }, /cannot read|look like registry entries/],
-    ['an unknown registry key', (d) => { edit(d, PY, (s) => s.replace("'terms.html':        dict(lang='en',", "'terms.html':        dict(staus='withdrawn', lang='en',")); return PAGES; }, /unknown registry key/],
-    ['a duplicate row in the lock', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/about.html 2026-07-01\n'); return PAGES; }, /duplicate row/],
-    ['a locked URL with no file', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); return PAGES; }, /gone: https:\/\/vynatix\.com\/ghost\.html/],
-    ['control: a locked URL with no file, listed in urls.retired, passes', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); return PAGES; }, true],
-    ['a retired URL that was never locked', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/never.html 2026-11-21\n'); return PAGES; }, /retired but never locked/],
-    ['a retired URL that still has a file', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/about.html 2026-11-21\n'); return PAGES; }, /retired but still has a file/],
-    ['a page linking a retired URL', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/xx/ 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/xx/ 2026-11-21\n'); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="xx/index.html">x</a></main>')); return PAGES; }, /about\.html links to the retired/],
-    ['a retired URL still in llms.txt', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); edit(d, 'llms.txt', (s) => s + '- [x](https://vynatix.com/ghost.html)\n'); return PAGES; }, /retired but in llms\.txt/],
-    ['a moved pub date', (d) => { edit(d, PY, (s) => s.replace(/('about\.html':[^\n]*?\bpub=')\d{4}-\d{2}-\d{2}'/, (m, a) => a + "2001-01-01'")); return PAGES; }, /pub moved/],
-    ['a [[CONFIRM marker in llms.txt', (d) => { edit(d, 'llms.txt', (s) => s + '[[CONFIRM: a figure]]\n'); return PAGES; }, /found in llms\.txt/],
-    ['a [[CONFIRM marker in a post', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace('<h1', '[[CONFIRM: x]]<h1')); return PAGES; }, /found in choose-a-software-consultancy\.html/],
-    ['a post whose shown date differs from its datetime', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace(/(<p class="prose__meta">Published <time datetime="[^"]*">)[^<]*(<\/time>)/, (m, a, b) => a + '1 January 2020' + b)); return PAGES; }, /shows \"1 January 2020\"/],
-    ['a post missing from blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/<li><a href="choose-a-software-consultancy\.html">[\s\S]*?<\/li>\n/, '')); return PAGES; }, /is not listed on blog\.html|differ/],
-    ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); return PAGES; }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
-    ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); return PAGES; }, /privacy\.html: Last updated shows/],
-    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); return PAGES; }, /numberOfItems/],
+    ['a withdrawn page linked as ./standin.html', (d) => { withStub(d); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="./standin.html">x</a></main>')); }, /linked from about\.html/],
+    ['a withdrawn page linked by a <link rel=alternate href="/standin.html">', (d) => { withStub(d); edit(d, 'about.html', (s) => s.replace('</head>', '<link rel="alternate" href="/standin.html"></head>')); }, /linked from about\.html/],
+    ['a withdrawn page linked as http://www.vynatix.com/standin.html', (d) => { withStub(d); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="http://www.vynatix.com/standin.html?x=1">x</a></main>')); }, /linked from about\.html/],
+    ['a withdrawn page still in llms.txt', (d) => { withStub(d); edit(d, 'llms.txt', (s) => s + '- [x](https://vynatix.com/standin.html)\n'); }, /still in llms\.txt/],
+    ['a row on one line and a link (must not read as live)', (d) => { withStub(d, { compact: true }); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="standin.html">x</a></main>')); }, /linked from about\.html/],
+    ['a registry row that is not JSON (both sides of a merge kept)', (d) => { edit(d, row('terms'), (s) => s.replace(/("mod": "[^"]*")/, '<<<<<<< HEAD\n  $1,\n=======\n  $1,\n>>>>>>> origin/main')); }, /terms\.json cannot be read as JSON/],
+    ['a status that is neither live nor withdrawn', (d) => { editRow(d, 'terms', (o) => { o.status = 'Withdrawn'; }); }, /terms\.json has status "Withdrawn"/],
+    ['a duplicate row in the lock', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/about.html 2026-07-01\n'); }, /duplicate row/],
+    ['a locked URL with no file', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); }, /gone: https:\/\/vynatix\.com\/ghost\.html/],
+    ['control: a locked URL with no file, listed in urls.retired, passes', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); }, true],
+    ['a retired URL that was never locked', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/never.html 2026-11-21\n'); }, /retired but never locked/],
+    ['a retired URL that still has a file', (d) => { fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/about.html 2026-11-21\n'); }, /retired but still has a file/],
+    ['a page linking a retired URL', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/xx/ 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/xx/ 2026-11-21\n'); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="xx/index.html">x</a></main>')); }, /about\.html links to the retired/],
+    ['a retired URL still in llms.txt', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s + 'https://vynatix.com/ghost.html 2026-07-01\n'); fs.appendFileSync(path.join(d, 'tools', 'urls.retired'), 'https://vynatix.com/ghost.html 2026-11-21\n'); edit(d, 'llms.txt', (s) => s + '- [x](https://vynatix.com/ghost.html)\n'); }, /retired but in llms\.txt/],
+    ['a moved pub date', (d) => { editRow(d, 'about', (o) => { o.pub = '2001-01-01'; }); }, /pub moved/],
+    ['a [[CONFIRM marker in llms.txt', (d) => { edit(d, 'llms.txt', (s) => s + '[[CONFIRM: a figure]]\n'); }, /found in llms\.txt/],
+    ['a [[CONFIRM marker in a post', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace('<h1', '[[CONFIRM: x]]<h1')); }, /found in choose-a-software-consultancy\.html/],
+    ['a post whose shown date differs from its datetime', (d) => { edit(d, 'choose-a-software-consultancy.html', (s) => s.replace(/(<p class="prose__meta">Published <time datetime="[^"]*">)[^<]*(<\/time>)/, (m, a, b) => a + '1 January 2020' + b)); }, /shows \"1 January 2020\"/],
+    ['a post missing from blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/<li><a href="choose-a-software-consultancy\.html">[\s\S]*?<\/li>\n/, '')); }, /is not listed on blog\.html|differ/],
+    ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
+    ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); }, /privacy\.html: Last updated shows/],
+    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); }, /numberOfItems/],
     // M. The comparison with main. The scratch copies are not git checkouts, so every case above compares with
     // MAIN, the tree's own lock as it stands; these cases give their own (the fourth element).
-    ['a lock row that is on main, removed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^https:\/\/vynatix\.com\/about\.html \S+\n/m, '')); return PAGES; }, /lock row removed: https:\/\/vynatix\.com\/about\.html/],
-    ['a lock row that is on main, changed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^(https:\/\/vynatix\.com\/about\.html) \S+$/m, '$1 2001-01-01')); return PAGES; }, /lock row changed: https:\/\/vynatix\.com\/about\.html is 2001-01-01/],
-    ['a checkout with no origin/main (a git checkout without the remote)', (d) => PAGES, /no origin\/main to compare the lock with/,
+    ['a lock row that is on main, removed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^https:\/\/vynatix\.com\/about\.html \S+\n/m, '')); }, /lock row removed: https:\/\/vynatix\.com\/about\.html/],
+    ['a lock row that is on main, changed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^(https:\/\/vynatix\.com\/about\.html) \S+$/m, '$1 2001-01-01')); }, /lock row changed: https:\/\/vynatix\.com\/about\.html is 2001-01-01/],
+    ['a checkout with no origin/main (a git checkout without the remote)', (d) => {}, /no origin\/main to compare the lock with/,
       (d) => { execFileSync('git', ['init', '-q', d], { stdio: 'ignore' }); return mainLock(d); }],
-    ['a lock on main with no rows', (d) => PAGES, /has no row to compare with/, () => ({ label: 'origin/main 0000000 (self-test)', text: '# comments only\n' })],
+    ['a lock on main with no rows', (d) => {}, /has no row to compare with/, () => ({ label: 'origin/main 0000000 (self-test)', text: '# comments only\n' })],
   ];
   const MAIN = { label: 'the lock of this tree (self-test)', text: fs.readFileSync(path.join(ROOT, 'tools', 'urls.lock'), 'utf8') };
   let bad = 0;
   for (const [name, setup, expectPass, mainOf] of cases) {
     const dir = copy();
     let results;
-    try { results = run(dir, setup(dir), mainOf ? mainOf(dir) : MAIN); } catch (e) { results = [{ ok: false, name: 'threw', detail: e.message }]; }
+    try { setup(dir); results = run(dir, mainOf ? mainOf(dir) : MAIN); } catch (e) { results = [{ ok: false, name: 'threw', detail: e.message }]; }
     fs.rmSync(dir, { recursive: true, force: true });
     const failed = results.filter((r) => !r.ok);
     const text = failed.map((f) => f.name + ' ' + f.detail).join(' / ');

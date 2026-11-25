@@ -1,0 +1,83 @@
+{
+  "en": {
+    "name": "English",
+    "tag": "en",
+    "locale": "en_GB",
+    "dir": "ltr",
+    "kind": "written",
+    "home": "index.html"
+  },
+  "sv": {
+    "name": "Svenska",
+    "tag": "sv",
+    "locale": "sv_SE",
+    "dir": "ltr",
+    "kind": "written",
+    "home": "sv.html"
+  },
+  "es": {
+    "name": "Español",
+    "tag": "es",
+    "locale": "es_ES",
+    "dir": "ltr",
+    "kind": "generated",
+    "status": "live",
+    "checked": "",
+    "by": "",
+    "waived": "2026-11-20",
+    "pub": "2026-11-20",
+    "mod": "2026-11-24"
+  },
+  "fr": {
+    "name": "Français",
+    "tag": "fr",
+    "locale": "fr_FR",
+    "dir": "ltr",
+    "kind": "generated",
+    "status": "live",
+    "checked": "",
+    "by": "",
+    "waived": "2026-11-21",
+    "pub": "2026-11-21",
+    "mod": "2026-11-24"
+  },
+  "de": {
+    "name": "Deutsch",
+    "tag": "de",
+    "locale": "de_DE",
+    "dir": "ltr",
+    "kind": "generated",
+    "status": "live",
+    "checked": "",
+    "by": "",
+    "waived": "2026-11-21",
+    "pub": "2026-11-21",
+    "mod": "2026-11-24"
+  },
+  "ja": {
+    "name": "日本語",
+    "tag": "ja",
+    "locale": "ja_JP",
+    "dir": "ltr",
+    "kind": "generated",
+    "status": "live",
+    "checked": "",
+    "by": "",
+    "waived": "2026-11-21",
+    "pub": "2026-11-21",
+    "mod": "2026-11-24"
+  },
+  "ar": {
+    "name": "العربية",
+    "tag": "ar",
+    "locale": "ar_AR",
+    "dir": "rtl",
+    "kind": "generated",
+    "status": "live",
+    "checked": "",
+    "by": "",
+    "waived": "2026-11-20",
+    "pub": "2026-11-20",
+    "mod": "2026-11-24"
+  }
+}

@@ -22,8 +22,8 @@
 //    lines are read as one line. A number in any other form (a sample, "axe on three pages of each", or a dated
 //    measurement) is not read: --literals lists those too, so a person can see what the check leaves alone.
 //
-// The facts come from the registry and the language table of tools/seo-head.py (read as text by _common.js, as
-// every check reads them) and from the files on disk; nothing here parses another part of seo-head.py.
+// The facts come from the registry and the language table, tools/site/pages and tools/site/langs.json (read by
+// _common.js, as every check reads them), and from the files on disk; nothing here parses seo-head.py.
 const fs = require('fs');
 const path = require('path');
 const { ROOT: REPO, readRegistry, readLangs, generatedPages, stripJsComments } = require('./_common');
@@ -392,7 +392,7 @@ function printFacts(root) {
   const f = pageFacts(root);
   const pad = (s, n) => (s + ' '.repeat(n)).slice(0, Math.max(n, s.length));
   const out = [];
-  out.push('Pages (the registry and the language table of tools/seo-head.py, and the folders on disk)');
+  out.push('Pages (the registry and the language table in tools/site, and the folders on disk)');
   out.push(`  ${pad('root, English', 26)}${f.rootEnglish}`);
   out.push(`  ${pad('root, Swedish', 26)}${f.rootSwedish}`);
   out.push(`  ${pad('root, in all', 26)}${f.rootTotal} (${f.withdrawn} of them withdrawn stubs)`);

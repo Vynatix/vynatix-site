@@ -1,10 +1,10 @@
 // What ships: the checks on the repository as GitHub Pages will publish it. Static, no browser, no server; second in
-// `npm run check`, after csp.js, because every other script takes its list of pages from PAGES in _common.js and
-// trusts that nothing else is published.
+// `npm run check`, after csp.js, because every other script takes its list of pages from PAGES in _common.js (the
+// files of the registry, tools/site/pages/) and trusts that nothing else is published.
 //   node verify/publish.js
 //
-//  - every *.html at the root is in PAGES, and every PAGES entry exists (a page that is not in the list escapes the
-//    CSP, link, SEO and consent checks, which all iterate PAGES);
+//  - every *.html at the root has a registry file, tools/site/pages/<slug>.json, and every registry file a page (a
+//    page without a row is not in PAGES, so it escapes the CSP, link, SEO and consent checks, which all iterate it);
 //  - every other file at the root is a page, an asset the site uses (css, js, xml, ico, png, svg, webmanifest,
 //    CNAME, robots.txt, llms.txt or the IndexNow <32 hex>.txt key) or is named in _config.yml `exclude`; a directory
 //    is assets, fonts, .well-known, tools (excluded), .git or the folder of a live generated language, or is
@@ -29,7 +29,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, NOTICE_PAGES, readRegistry, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -150,20 +150,24 @@ function cssUrlProblems(text, sheet, isPublished, onDisk) {
   return { refs, problems };
 }
 
-function run(root = ROOT, pages = PAGES) {
+// pages: the root pages to check, by default the registry of `root` (PAGES in _common.js is the same list for ROOT).
+function run(root = ROOT, pages) {
   const results = [];
   const add = (ok, name, detail) => results.push({ ok, name, detail: detail || '' });
   const tryRead = (rel) => { try { return fs.readFileSync(path.join(root, rel), 'utf8'); } catch (e) { return null; } };
 
-  // --- the pages on disk and PAGES
+  // --- the pages on disk and the registry
+  if (!pages) {
+    try { pages = Object.keys(readRegistry(root)); } catch (e) { add(false, 'the registry, tools/site/pages, can be read', e.message); pages = []; }
+  }
   let entries = [];
   try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch (e) { add(false, 'the repository root can be read', e.message); }
   const htmlOnDisk = entries.filter((e) => e.isFile() && /\.html?$/i.test(e.name)).map((e) => e.name);
   const notListed = htmlOnDisk.filter((f) => !pages.includes(f));
   const missing = pages.filter((f) => !htmlOnDisk.includes(f));
-  add(!notListed.length && !missing.length, `the *.html files at the root are exactly the ${pages.length} pages in PAGES (_common.js)`,
-    [notListed.length ? `not in PAGES: ${notListed.join(', ')} (csp, links, seo and consent skip it; add it to PAGES, or it should not be a page)` : '',
-      missing.length ? `in PAGES but missing: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
+  add(!notListed.length && !missing.length, `the *.html files at the root are exactly the ${pages.length} pages of the registry: each has its file in tools/site/pages, and each file there its page`,
+    [notListed.length ? `no registry file: ${notListed.join(', ')} (it is not in PAGES, so csp, links, seo and consent skip it; give it its row, tools/site/pages/<slug>.json, or it should not be a page)` : '',
+      missing.length ? `a registry file but no page: ${missing.join(', ')}` : ''].filter(Boolean).join('; '));
 
   // --- what Pages would publish
   const config = tryRead('_config.yml');
@@ -171,10 +175,10 @@ function run(root = ROOT, pages = PAGES) {
   const exclude = new Set(yamlList(config || '', 'exclude'));
   const include = new Set(yamlList(config || '', 'include'));
   const stray = [];
-  // The folder of a generated language (LANGS in tools/seo-head.py): published once the language is live, and
+  // The folder of a generated language (tools/site/langs.json, LANGS in tools/seo-head.py): published once the language is live, and
   // named in `exclude` for as long as it is a draft (seo-head.py keeps that list).
   let langs = {};
-  try { langs = readLangs(root); } catch (e) { add(false, 'the LANGS table of tools/seo-head.py can be read', e.message); }
+  try { langs = readLangs(root); } catch (e) { add(false, 'the language table, tools/site/langs.json, can be read', e.message); }
   const generated = Object.entries(langs).filter(([, l]) => l.kind === 'generated');
   const gateProblems = [];
   for (const [code, l] of generated) {
@@ -186,7 +190,7 @@ function run(root = ROOT, pages = PAGES) {
   }
   add(gateProblems.length === 0, `the ${generated.length} generated languages are published only when live: a draft's folder is in _config.yml exclude`, gateProblems.join(' | '));
   const unread = generated.filter(([, l]) => l.status === 'live' && !(/^\d{4}-\d{2}-\d{2}$/.test(l.checked || '') && (l.by || '').trim())).map(([code]) => code);
-  if (unread.length) console.log(`note the native reader's check is still owed for ${unread.join(', ')}: published on the owner's decision (waived in LANGS, tools/seo-head.py)`);
+  if (unread.length) console.log(`note the native reader's check is still owed for ${unread.join(', ')}: published on the owner's decision (waived in tools/site/langs.json)`);
   for (const e of entries) {
     const n = e.name;
     if (e.isDirectory()) {

@@ -6,100 +6,100 @@ const path = require('path');
 // app.js, the pages). The scripts that open a browser read the tree through BASE.
 const ROOT = path.join(__dirname, '..', '..');
 
-const PAGES = [
-  'index.html', 'about.html', 'services.html', 'industries.html',
-  'work.html', 'membership.html', 'contact.html', 'blog.html',
-  'privacy.html', 'terms.html', 'accessibility.html',
-  // English deep pages and the list page (each has a Swedish twin below)
-  'android-automotive-development.html', 'ai-engineering.html',
-  'android-automotive-consultancies-gothenburg.html',
-  // Swedish pages: the hub, the twins, the guides and the Swedish privacy notice
-  'sv.html', 'android-automotive-utveckling.html', 'ai-utveckling.html',
-  'konsultbolag-android-automotive-goteborg.html', 'valja-konsultbolag.html',
-  'platform-engineering.html', 'ai-assistent-interna-dokument.html',
-  'ai-konsultbolag-sverige.html', 'integritet.html',
-  // The first English post, the twin of valja-konsultbolag.html
-  'choose-a-software-consultancy.html',
-  // Swedish posts written for the buyer questions AI assistants are asked (November 2026)
-  'testautomatisering.html', 'systemutveckling.html', 'systemintegration-och-forvaltning.html',
-  'ai-i-befintlig-produkt.html', 'fordonsmjukvara.html',
-  // their English twins
-  'test-automation.html', 'custom-software-development.html', 'system-integration-and-maintenance.html',
-  'ai-in-your-existing-product.html', 'automotive-software.html',
-];
-
-// The PAGES registry of tools/seo-head.py, read as text (Python is not run, the way release-gate.js reads `mod`):
-// { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }.
-// Each entry is one `'file.html': dict(...)` on one line, optionally followed by a comma and a # comment; a value is
-// a quoted string (single or double quotes), True, False or a flat {'k': 'v'} dict. `status` defaults to 'live'.
-// `original` is the effective value: the key when given, otherwise true for an English page (the English page of a
-// pair is its original unless the registry says otherwise). This reader is strict on purpose: anything it cannot
-// read, an unknown key, a bad status or kind, or an entry that is not alone on its line throws, because a registry
-// entry that is silently dropped or misread would turn a withdrawn page into a live one for the checks that use it.
-const REGISTRY_KEYS = ['lang', 'type', 'og', 'pub', 'mod', 'alt', 'article', 'original', 'kind', 'status'];
+// The page registry: tools/site/pages/<slug>.json, one JSON file per page written by hand (the row of about.html is
+// about.json). tools/seo-head.py documents the keys, refuses an unknown key or a value of the wrong type, and loads
+// the same files into its PAGES; `seo-head.py --check` is in the chain. Read here (Python is not run):
+// { 'file.html': { lang, type, og, pub, mod, alt: { sv: 'file.html' }, article, status, kind, original } }, in the
+// registry's order, which is the order of sitemap.xml: the rows that carry an `order` by it, then the others by
+// `pub` and then by slug, compared as plain strings, as load_pages() in seo-head.py sorts them. `alt` defaults to
+// {}, `article` to false, `status` to 'live' and `kind` to null. `original` is the effective value: the key when
+// given, otherwise true for an English page (the English page of a pair is its original unless the registry says
+// otherwise). `order` and `note` say nothing about the page and are left out. A folder or a file it cannot read, a
+// file that holds no JSON object, and a bad status or kind throw, because a row that is silently dropped or misread
+// would turn a withdrawn page into a live one for the checks that use it.
+const REGISTRY_DIR = path.join('tools', 'site', 'pages');
+function registryOrder(a, b) {
+  const ao = a.row.order, bo = b.row.order;
+  if (ao !== undefined || bo !== undefined) {
+    if (ao === undefined) return 1;
+    if (bo === undefined) return -1;
+    if (ao !== bo) return ao < bo ? -1 : 1;
+  }
+  const ap = String(a.row.pub), bp = String(b.row.pub);
+  if (ap !== bp) return ap < bp ? -1 : 1;
+  return a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0;
+}
 function readRegistry(root = ROOT) {
-  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
-  const out = {};
-  const q = String.raw`(?:'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")`;
-  const unq = (v) => v.slice(1, -1).replace(/\\(.)/g, '$1');
-  const pair = new RegExp(String.raw`(${q})\s*:\s*(${q})`, 'g');
-  const tok = new RegExp(String.raw`\s*(\w+)\s*=\s*(${q}|True|False|\{[^}]*\})\s*(?:,|$)`, 'y');
-  for (const line of py.split('\n')) {
-    const m = /^\s*(['"])([^'"\n]+\.html)\1\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
-    if (!m) continue;
-    const file = m[2];
-    if (out[file]) throw new Error(`tools/seo-head.py: ${file} is registered twice`);
-    const e = { alt: {}, article: false, status: 'live', kind: null };
-    const body = m[3].trim();
-    let pos = 0;
-    while (pos < body.length) {
-      tok.lastIndex = pos;
-      const t = tok.exec(body);
-      if (!t) throw new Error(`tools/seo-head.py: cannot read the registry entry for ${file} near "${body.slice(pos, pos + 40)}"`);
-      pos = tok.lastIndex;
-      const [, k, v] = t;
-      if (!REGISTRY_KEYS.includes(k)) throw new Error(`tools/seo-head.py: ${file} has an unknown registry key "${k}" (known: ${REGISTRY_KEYS.join(', ')})`);
-      if (v === 'True' || v === 'False') e[k] = v === 'True';
-      else if (v[0] === '{') {
-        e[k] = {};
-        for (const p of v.matchAll(pair)) e[k][unq(p[1])] = unq(p[2]);
-      } else e[k] = unq(v);
-    }
-    if (!['live', 'withdrawn'].includes(e.status)) throw new Error(`tools/seo-head.py: ${file} has status "${e.status}" (live or withdrawn)`);
-    if (e.kind !== null && e.kind !== 'post') throw new Error(`tools/seo-head.py: ${file} has kind "${e.kind}" (post, or leave it out)`);
-    if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
-    out[file] = e;
+  let names;
+  try { names = fs.readdirSync(path.join(root, REGISTRY_DIR)).sort(); } catch (e) {
+    throw new Error(`tools/site/pages cannot be read (${e.code || e.message}); the registry is one JSON file per page there`);
   }
-  const declared = (py.match(/['"][^'"\n]+\.html['"]\s*:\s*dict\(/g) || []).length;
-  if (declared !== Object.keys(out).length) {
-    throw new Error(`tools/seo-head.py: ${declared} entries look like registry entries but ${Object.keys(out).length} were read; one entry per line, as in the table`);
+  const rows = [];
+  for (const name of names) {
+    const rel = `tools/site/pages/${name}`;
+    if (!/^[^./][^/]*\.json$/.test(name)) throw new Error(`${rel}: only rows belong in tools/site/pages, one <slug>.json per page`);
+    let row;
+    try { row = JSON.parse(fs.readFileSync(path.join(root, REGISTRY_DIR, name), 'utf8')); } catch (e) { throw new Error(`${rel} cannot be read as JSON (${e.message})`); }
+    if (!row || typeof row !== 'object' || Array.isArray(row)) throw new Error(`${rel} holds no JSON object`);
+    rows.push({ slug: name.slice(0, -'.json'.length), row });
+  }
+  rows.sort(registryOrder);
+  const out = {};
+  for (const { slug, row } of rows) {
+    const e = { alt: {}, article: false, status: 'live', kind: null };
+    for (const [k, v] of Object.entries(row)) if (k !== 'order' && k !== 'note') e[k] = v;
+    if (!['live', 'withdrawn'].includes(e.status)) throw new Error(`tools/site/pages/${slug}.json has status "${e.status}" (live or withdrawn)`);
+    if (e.kind !== null && e.kind !== 'post') throw new Error(`tools/site/pages/${slug}.json has kind "${e.kind}" (post, or leave it out)`);
+    if (typeof e.original !== 'boolean') e.original = e.lang === 'en';
+    out[slug + '.html'] = e;
   }
   return out;
 }
 
-// The LANGS table of tools/seo-head.py, read as text the way readRegistry reads PAGES:
-// { es: { name, tag, locale, dir, kind, status, pub, mod, checked, by }, ... } in the table's order.
-// One entry per line: 'xx': dict(key='value', ...). kind is 'written' (English, Swedish: the pages in PAGES) or
-// 'generated' (a folder of pages tools/seo-head.py builds from the English ones and tools/i18n/<code>.json).
+// PAGES: the root pages, written by hand. They are the files of the registry, in its order; every check that walks
+// the pages walks this list, and publish.js holds it equal to the *.html files at the root. It is read when a script
+// first asks for it (module.exports.PAGES, at the end of this file), so a registry that cannot be read stops that
+// script with the reader's error instead of giving an empty list that every check would pass over, and a script
+// that never asks, such as check.js, still starts.
+let rootPagesRead = null;
+const rootPages = () => (rootPagesRead = rootPagesRead || Object.keys(readRegistry(ROOT)));
+
+// The language table: tools/site/langs.json, { es: { name, tag, locale, dir, kind, status, pub, mod, checked, by },
+// ... } in the file's order, which is the order of LANGS in tools/seo-head.py (it documents and checks the keys).
+// kind is 'written' (English, Swedish: the pages in PAGES) or 'generated' (a folder of pages tools/seo-head.py builds
+// from the English ones and tools/i18n/<code>.json). `note` is left out. A file it cannot read, or an entry without
+// its kind, tag and dir, throws.
 function readLangs(root = ROOT) {
-  const py = fs.readFileSync(path.join(root, 'tools', 'seo-head.py'), 'utf8');
+  const rel = 'tools/site/langs.json';
+  let data;
+  try { data = JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8')); } catch (e) { throw new Error(`${rel} cannot be read as JSON (${e.message})`); }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error(`${rel} holds no JSON object`);
   const out = {};
-  for (const line of py.split('\n')) {
-    const m = /^\s*'([a-z]{2})'\s*:\s*dict\((.*)\)\s*,?\s*(?:#.*)?$/.exec(line);
-    if (!m) continue;
+  for (const [code, l] of Object.entries(data)) {
+    if (!/^[a-z]{2}$/.test(code) || !l || typeof l !== 'object' || !l.kind || !l.tag || !l.dir) throw new Error(`${rel}: cannot read the entry for ${code}`);
     const e = {};
-    for (const t of m[2].matchAll(/(\w+)\s*=\s*'((?:[^'\\]|\\.)*)'/g)) e[t[1]] = t[2];
-    if (!e.kind || !e.tag || !e.dir) throw new Error(`tools/seo-head.py: cannot read the LANGS entry for ${m[1]}`);
-    out[m[1]] = e;
+    for (const [k, v] of Object.entries(l)) if (k !== 'note') e[k] = v;
+    out[code] = e;
   }
-  if (!out.en) throw new Error('tools/seo-head.py: no LANGS table found (one language per line, as in the table)');
+  if (!out.en) throw new Error(`${rel}: no entry for en`);
   return out;
 }
-// The pages of the generated languages on disk, 'es/services.html', in the order of LANGS.
+// The pages of the generated languages on disk, 'es/services.html', in the order of LANGS. A tree from before the
+// language table became data (tools/REFACTORING-PLAN.md, step 2.1), such as the merge base that screenshot.js
+// against reads, has no tools/site/langs.json; there the languages are the ones tools/i18n/messages.json lists, which
+// seo-head.py writes in the same order. A langs.json that exists and cannot be read still throws.
+function generatedLanguages(root) {
+  try { return Object.entries(readLangs(root)).filter(([, l]) => l.kind === 'generated').map(([code]) => code); } catch (e) {
+    if (fs.existsSync(path.join(root, 'tools', 'site', 'langs.json'))) throw e;
+    let listed;
+    try { listed = JSON.parse(fs.readFileSync(path.join(root, 'tools', 'i18n', 'messages.json'), 'utf8')).languages; } catch (e2) { throw e; }
+    if (!Array.isArray(listed) || !listed.every((c) => /^[a-z]{2}$/.test(c))) throw e;
+    return listed;
+  }
+}
 function generatedPages(root = ROOT) {
   const out = [];
-  for (const [code, l] of Object.entries(readLangs(root))) {
-    if (l.kind !== 'generated') continue;
+  for (const code of generatedLanguages(root)) {
     let files = [];
     try { files = fs.readdirSync(path.join(root, code)).filter((f) => f.endsWith('.html')).sort(); } catch (e) { /* not built */ }
     for (const f of files) out.push(code + '/' + f);
@@ -953,10 +953,12 @@ async function heroUnit(page) {
 }
 
 module.exports = {
-  ROOT, PAGES, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
+  ROOT, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
   readApp, appConst, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
   parseCsp, CSP_META_RE, readPage, pageLang, edgeCsp,
   lowerAscii, escapeRegExp, stripComments, stripElements, decodeEntities, BLOCK_TAGS, htmlToText,
 };
+// PAGES is read on first use (rootPages, above).
+Object.defineProperty(module.exports, 'PAGES', { enumerable: true, get: rootPages });

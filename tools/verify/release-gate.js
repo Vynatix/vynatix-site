@@ -7,8 +7,8 @@
 // script can see: a [[CONFIRM ...]] marker, a draft banner (and a marker on a page that has lost its banner), an
 // unticked box in sections 1 to 9 of tools/PRE-FLIP-CHECKLIST.md or a blank fill-in field in its header or sign-off
 // block, PURGE_ONLY not false, a policy constant that is not 365 days, a notice that does not say 12 months /
-// 12 månader or does not name the two storage keys, a notice date that is not the `mod` in tools/seo-head.py or is
-// older than 14 days, a stale "no analytics" sentence, a missing footer link, a CSP that differs, a snapshot that is
+// 12 månader or does not name the two storage keys, a notice date that is not the `mod` of the page's registry row
+// (tools/site/pages/privacy.json, integritet.json) or is older than 14 days, a stale "no analytics" sentence, a missing footer link, a CSP that differs, a snapshot that is
 // not current. Each line is `ok` or `FAIL`, with the file it is about.
 //
 // It exits 0 only when every scripted gate holds, and then it does NOT print a bare PASS: it prints
@@ -26,7 +26,8 @@ const pub = require('./publish');
 const C = require('./_consent');
 
 const CHECKLIST = 'tools/PRE-FLIP-CHECKLIST.md';
-const SEO_HEAD = 'tools/seo-head.py';
+// The registry row of a page, which holds its `mod`: tools/site/pages/privacy.json for privacy.html.
+const registryRow = (rel) => `tools/site/pages/${rel.replace(/\.html$/, '')}.json`;
 const SNAPSHOT_REL = 'tools/verify/consent-copy.snapshot.json';
 const MAX_NOTICE_AGE_DAYS = 14;                       // a notice date older than this is stale at the flip
 const COOKIE_MAX_AGE_WANT = 31536000;                 // 365 days in seconds: the "12 months" the notices say
@@ -203,13 +204,15 @@ function visibleDate(html, lang) {
   return mi < 0 ? null : `${m[3]}-${pad(mi + 1)}-${pad(+m[1])}`;
 }
 const formatDate = (iso, lang) => `${+iso.slice(8, 10)} ${lang === 'sv' ? MONTHS.sv[+iso.slice(5, 7) - 1] : MONTHS.en[+iso.slice(5, 7) - 1].replace(/^./, (c) => c.toUpperCase())} ${iso.slice(0, 4)}`;
-// The `mod` of a page in the PAGES registry of tools/seo-head.py (read as text; Python is not run).
-const registryEntry = (py, page) => new RegExp('([\'"]' + escapeRegExp(page) + '[\'"]\\s*:\\s*dict\\()([^)]*)(\\))').exec(py || '');
-function modOf(py, page) {
-  const e = registryEntry(py, page);
-  const m = e ? /\bmod\s*=\s*['"](\d{4}-\d{2}-\d{2})['"]/.exec(e[2]) : null;
-  return m ? m[1] : null;
+// The `mod` in the text of a registry row (JSON; Python is not run), or null for a row that is missing, is not JSON or
+// holds no date in mod.
+function modOf(rowText) {
+  let row = null;
+  try { row = JSON.parse(rowText); } catch (e) { return null; }
+  return row && typeof row.mod === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.mod) ? row.mod : null;
 }
+// The text of a registry row with its mod set to iso, as the flip-day step leaves it.
+const withMod = (rowText, iso) => JSON.stringify(Object.assign(JSON.parse(rowText), { mod: iso }), null, 2) + '\n';
 const dayNum = (iso) => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) / 86400000;
 
 // Runs every check against a tree. overrides: { 'app.js': '...' } replaces a file's content (used by --self-test);
@@ -248,7 +251,6 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
     lifetimesOk ? '' : `now: ${age.why || `COOKIE_MAX_AGE ${age.value}`}; ${days.why || `CONSENT_MAX_DAYS ${days.value}`}`);
 
   // 2. The notice pages: the section and one empty panel; 3. banner and markers; 4. lifetime words and storage keys; 5. dates
-  const py = tryRead(SEO_HEAD);
   const sitemap = tryRead('sitemap.xml');
   const pages = {};
   const keys = [app.consentKey, THEME_KEY];
@@ -280,16 +282,17 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
 
     // dates (T4)
     const seen = visibleDate(html, lang);
-    const mod = modOf(py, rel);
+    const row = registryRow(rel);
+    const mod = modOf(tryRead(row));
     const age = seen && mod ? dayNum(today) - dayNum(mod) : null;
-    const flipStep = 'follow the checklist flip-day step (9.2): set the visible "Last updated" line to the flip day, set mod for the page in tools/seo-head.py to the same day, run python3 tools/seo-head.py';
+    const flipStep = `follow the checklist flip-day step (9.2): set the visible "Last updated" line to the flip day, set mod in ${row} to the same day, run python3 tools/seo-head.py`;
     let why = '';
     if (!seen) why = `no parseable "${lang === 'sv' ? 'Senast uppdaterad' : 'Last updated'} D month YYYY" line`;
-    else if (!mod) why = `no mod date for ${rel} in the PAGES registry of ${SEO_HEAD}`;
+    else if (!mod) why = `no mod date for ${rel} in its registry row, ${row}`;
     else if (seen !== mod) why = `the visible date is ${seen} but mod is ${mod}`;
     else if (age < 0) why = `the date ${mod} is in the future (today is ${today})`;
     else if (age > MAX_NOTICE_AGE_DAYS) why = `the date ${mod} is ${age} days old (today is ${today}; at most ${MAX_NOTICE_AGE_DAYS})`;
-    add('dates-' + rel, rel, !why, `the visible date equals mod in ${SEO_HEAD} and is at most ${MAX_NOTICE_AGE_DAYS} days old`, why ? `${why}. ${flipStep[0].toUpperCase()}${flipStep.slice(1)}` : `${seen}`);
+    add('dates-' + rel, rel, !why, `the visible date equals mod in ${row} and is at most ${MAX_NOTICE_AGE_DAYS} days old`, why ? `${why}. ${flipStep[0].toUpperCase()}${flipStep.slice(1)}` : `${seen}`);
     // The generated copies of mod: seo-head.py writes them, so a mod moved without running it shows here.
     let gen = '';
     if (mod) {
@@ -443,7 +446,6 @@ const withId = (src, id) => src.replace(/var GA_ID = '[^']*';/, `var GA_ID = '${
 function readyFiles(today) {
   const o = {};
   o['app.js'] = normalisePurgeOnly(withId(readApp().src, 'G-ABCDEF1234'), false);
-  let py = fs.readFileSync(path.join(ROOT, SEO_HEAD), 'utf8');
   let map = fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8');
   for (const [lang, rel] of Object.entries(NOTICE_PAGES)) {
     let html = readPage(rel);
@@ -452,10 +454,9 @@ function readyFiles(today) {
     html = html.replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(today, lang)}`);
     html = html.replace(/(<meta\s+property="article:modified_time"\s+content=")[^"]*(")/i, `$1${today}$2`);
     o[rel] = html;
-    py = py.replace(registryEntry(py, rel)[0], (all) => all.replace(/\bmod\s*=\s*['"]\d{4}-\d{2}-\d{2}['"]/, `mod='${today}'`));
+    o[registryRow(rel)] = withMod(fs.readFileSync(path.join(ROOT, registryRow(rel)), 'utf8'), today);
     map = map.replace(new RegExp('(<loc>https://vynatix\\.com/' + escapeRegExp(rel) + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${today}`);
   }
-  o[SEO_HEAD] = py;
   o['sitemap.xml'] = map;
   // tick sections 1 to 9, fill the blanks before section 1 and after the Sign-off heading
   let where = 'header';
@@ -588,8 +589,7 @@ function selfTest() {
   // T4: the dates
   const day = (offset) => { const d = new Date(dayNum(today) * 86400000 + offset * 86400000); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };
   const setDates = (rel, lang, iso, mod = iso) => {
-    const py = ready[SEO_HEAD].replace(registryEntry(ready[SEO_HEAD], rel)[0], (all) => all.replace(/\bmod\s*=\s*['"]\d{4}-\d{2}-\d{2}['"]/, `mod='${mod}'`));
-    return { [rel]: ready[rel].replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(iso, lang)}`), [SEO_HEAD]: py };
+    return { [rel]: ready[rel].replace(/(Last updated|Senast uppdaterad)\s+\d{1,2}\s+[A-Za-zåäöÅÄÖ]+\s+\d{4}/, (m, w) => `${w} ${formatDate(iso, lang)}`), [registryRow(rel)]: withMod(ready[registryRow(rel)], mod) };
   };
   t(ok(setDates(EN, 'en', day(-1)), 'dates-' + EN) === true, 'T4: a notice dated yesterday with mod equal passes');
   t(ok(setDates(EN, 'en', day(-MAX_NOTICE_AGE_DAYS)), 'dates-' + EN) === true, `T4: ${MAX_NOTICE_AGE_DAYS} days old passes`);
@@ -600,7 +600,8 @@ function selfTest() {
   t(ok(setDates(SV, 'sv', day(-1), today), 'dates-' + SV) === false, 'T4: a visible date that differs from mod fails (Swedish, mod newer)');
   t(ok(sub(EN, /Last updated\s+\d{1,2}\s+\w+\s+\d{4}/, 'Updated recently'), 'dates-' + EN) === false, 'T4: a page without a parseable "Last updated" line fails');
   t(ok(sub(SV, /Senast uppdaterad\s+\d{1,2}\s+\w+\s+\d{4}/, 'Senast uppdaterad 19 oktobre 2026'), 'dates-' + SV) === false, 'T4: an unknown Swedish month name fails');
-  t(ok({ [SEO_HEAD]: ready[SEO_HEAD].replace(registryEntry(ready[SEO_HEAD], EN)[0], "'x.html': dict(") }, 'dates-' + EN) === false, 'T4: a page missing from the registry in seo-head.py fails');
+  t(ok({ [registryRow(EN)]: null }, 'dates-' + EN) === false, 'T4: a notice without its registry row fails');
+  t(ok({ [registryRow(SV)]: ready[registryRow(SV)].replace(/("mod": "[^"]*")/, '<<<<<<< HEAD\n  $1,\n=======\n  $1,\n>>>>>>> origin/main') }, 'dates-' + SV) === false, 'T4: a registry row that is not JSON (a merge left in it) fails');
   t(ok({ 'sitemap.xml': ready['sitemap.xml'].replace(new RegExp('(<loc>https://vynatix\\.com/' + EN.replace('.', '\\.') + '</loc>(?:(?!</url>)[\\s\\S])*?<lastmod>)[^<]*'), `$1${day(-3)}`) }, 'dates-generated-' + EN) === false, 'T4: a sitemap lastmod that is not mod fails (seo-head.py was not run)');
   t(ok(sub(SV, /(<meta\s+property="article:modified_time"\s+content=")[^"]*/, `$1${day(-3)}`), 'dates-generated-' + SV) === false, 'T4: an article:modified_time that is not mod fails');
 

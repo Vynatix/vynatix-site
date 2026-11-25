@@ -99,7 +99,9 @@ tools/              Local verification scripts (verify/, including the consent c
                     and the hero background guard), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
                     block, header, footer, sitemap and URL lock, and builds the generated languages),
-                    i18n.py (the translation engine) with the catalogues in tools/i18n/, and the sheet's
+                    i18n.py (the translation engine) with the catalogues in tools/i18n/, the registry in
+                    tools/site/ (pages/<slug>.json, one row per page written by hand, and langs.json, the
+                    language table), migrate/registry.py (moved the registry there), and the sheet's
                     mask generator, sheet-art.js; package-lock.json, requirements.txt and pages-build.txt
                     pin the Node packages, the font cutter's Python packages and the GitHub Pages gem;
                     NOT published, not part of the site
@@ -186,6 +188,21 @@ whole file:** the other side's hand-written edits are lost and every check still
 passes. Run the command before you edit a conflicted page. A page you settled by
 hand is never overwritten, but one that still holds git's own markers is merged
 again.
+
+**A branch opened before the registry became data** (step 2.1 of
+`tools/REFACTORING-PLAN.md`: the rows moved from the two tables of
+`tools/seo-head.py` to `tools/site/`) brings `main` in four steps, which the
+docstring of `tools/migrate/registry.py` gives as commands: merge the commit the
+move started from (the parent of the commit that added that script); take the
+script from the move commit, run it and `python3 tools/seo-head.py`, and commit;
+merge the move commit; then merge the rest of `main`. `tools/seo-head.py` then
+merges without a conflict. A row the branch itself edited is an add/add
+conflict, confined to the lines it changed: there, and only there, keep the
+branch's line, then run `seo-head.py` and its `--check`. Without the first step
+every row `main` changed since the branch was opened conflicts too, and the
+branch's side of those is the stale one. The script refuses a `seo-head.py` that
+holds conflict markers and data files that are newer than the table, and changes
+nothing then.
 
 What the stamps do not cover: GitHub's CDN ignores the query string, so it can
 answer a new stamp with the previous bytes until a deploy replaces its copy (the
@@ -763,9 +780,9 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
   it never moves) and `dateModified`, repeated as
   `<meta property="article:published_time">` and
   `<meta property="article:modified_time">` (date-only ISO) and, for
-  dateModified, as the sitemap `<lastmod>`. Both dates live in the page's entry
-  in the `PAGES` registry of `tools/seo-head.py` (`pub` and `mod`), and the
-  script writes all three places from that one value. **When you change a
+  dateModified, as the sitemap `<lastmod>`. Both dates live in the page's row
+  in the registry, `tools/site/pages/<slug>.json` (`pub` and `mod`), and
+  `tools/seo-head.py` writes all three places from that one value. **When you change a
   page's content, move `mod` there, run `python3 tools/seo-head.py`, and run
   `npm run stamp` if styles or scripts changed too.** Guides also carry a visible
   "Publicerad"/"Senast uppdaterad" line; keep it in step.
@@ -1039,8 +1056,8 @@ linked pages' `<title>` (without the brand suffix) and meta description
 word for word; when one of those changes, change the home page item with it. Write
 Swedish as Swedish (the reader is "ni"), not a translation of the English page.
 
-**Languages.** The site is in seven languages under one table, `LANGS` in `tools/seo-head.py`: English and
-Swedish are *written* (the pages in `PAGES`, by hand, as above), and Spanish, French, German, Japanese and
+**Languages.** The site is in seven languages under one table, `tools/site/langs.json` (`LANGS` in
+`tools/seo-head.py`): English and Swedish are *written* (the pages in `PAGES`, by hand, as above), and Spanish, French, German, Japanese and
 Arabic are *generated*. A generated language is every English page except the three notices, rebuilt in a
 folder named by its code (`es/services.html`, home page `es/index.html` at `https://vynatix.com/es/`). The
 English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja/` or `ar/`, and a run of
@@ -1092,7 +1109,7 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   and `tools/verify/i18n.js` fail until all five catalogues have it again. So **an edit to an English page
   is not finished until the five catalogues are**: run `python3 tools/seo-head.py`, then
   `python3 tools/i18n.py missing es` (and `fr`, `de`, `ja`, `ar`) for the list, add the translations, run the script
-  again and move the language's `mod` in `LANGS`. Beside a message that replaces a sentence, `missing` prints the
+  again and move the language's `mod` in `tools/site/langs.json`. Beside a message that replaces a sentence, `missing` prints the
   previous wording on stderr: the old English and its translation, from the catalogue's closest stale entry
   (difflib, an entry of the same page first), so a retranslation starts from the sentence before.
   `python3 tools/i18n.py prune` drops entries no page uses, those stale entries among them, so it runs after
@@ -1170,7 +1187,7 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   The other languages' names in the footer list (日本語 on an English page) are left to the device's fonts.
 
 **A generated language is a draft until it is set live, and the brand voice asks for a native reader's check
-first.** `status='draft'` in `LANGS` means: built and checked, but its folder is named in `_config.yml`
+first.** `"status": "draft"` in `tools/site/langs.json` means: built and checked, but its folder is named in `_config.yml`
 `exclude` (the script keeps that list between two marker lines), its pages carry `noindex` and no hreflang, no
 page outside the folder links to it, and it has no row in `sitemap.xml`, `llms.txt` or `tools/urls.lock`. A
 draft page lists the other drafts in its language list so a reviewer can move between them. `status='live'`
@@ -1178,7 +1195,7 @@ publishes it: every English and Swedish page lists the language in its footer an
 pages are in the sitemap, in `llms.txt` (a block the script writes before "Optional") and in the lock, and
 **its URLs are permanent like every other**: a live language never goes back to draft (the script refuses), and
 a translated page is withdrawn with its English source, as the stub in its own language. `live` needs one of
-two records in `LANGS`: `checked` and `by` (the date of a native reader's check and who made it), or `waived`
+two records in its entry of `tools/site/langs.json`: `checked` and `by` (the date of a native reader's check and who made it), or `waived`
 (the date the owner decided to publish without one).
 
 **All five are live on the owner's decision (`waived`): Spanish and Arabic since 20 November 2026, French,
@@ -1188,9 +1205,9 @@ date in `checked` for a check nobody made. The check is still owed, and `publish
 languages that lack it on every run. When a reader has been through a language, correct its catalogue, move
 its `mod`, and fill in `checked` and `by`. Still open, and the owner's to give: a sentence in
 `accessibility.html` about the five languages (and, for Arabic, right to left), and the decision above about
-the consent bar and the notices before analytics is switched on. Adding a language is one line in `LANGS`
-(as a draft first), a catalogue, and for a new script a family list in the "Languages" block; a draft is
-removed by deleting its line, its catalogue and its folder, a live one never.
+the consent bar and the notices before analytics is switched on. Adding a language is one entry in
+`tools/site/langs.json` (as a draft first), a catalogue, and for a new script a family list in the "Languages" block; a draft is
+removed by deleting its entry, its catalogue and its folder, a live one never.
 
 **The one exception: Chinese and Hindi, deleted on 21 November 2026.** Simplified Chinese (`zh/`) and Hindi
 (`hi/`) went live with the others on 20 November and were removed the next day on the owner's decision, when
@@ -1236,7 +1253,7 @@ to the catalogue. Never draw an icon by hand, and never use `.ms`.
 
 The site's blog format is the **Guide**: a dated page that answers one buyer question, in the house pattern
 of the four Swedish guides. A page written to this pattern after the blog was added is a **post**, marked
-`kind='post'` in its `PAGES` entry in `tools/seo-head.py` (the older guides are not marked). The full plan,
+`"kind": "post"` in its registry row, `tools/site/pages/<slug>.json` (the older guides are not marked). The full plan,
 its measurements and the reasons for every choice below are in the blog extension plan the owner holds; this
 section is the working rules.
 
@@ -1261,8 +1278,9 @@ Article node's `@id` is the page URL plus `#article`, and a FAQ container with t
 byline author is "Vynatix" and the Article's author is the Organization; no named person appears anywhere on the
 site, and naming one is an owner decision.
 
-**Registering a post.** Add its entry to `PAGES` in `tools/seo-head.py` (with `kind='post'`) and its file name to
-`PAGES` in `tools/verify/_common.js`; add a line for it in `llms.txt`; list it on the Blog page (`blog.html`, under
+**Registering a post.** Add its row, `tools/site/pages/<slug>.json`, with `"kind": "post"` and no `order` (a new
+page sorts after the others by `pub`, then by slug), which `tools/seo-head.py` and `tools/verify/_common.js` both
+read; add a line for it in `llms.txt`; list it on the Blog page (`blog.html`, under
 its language, with the page's title without the brand suffix and its meta description word for word, and
 in the ItemList of `tools/seo/blog.json`) and on the home page that matches its language (`index.html` Further
 reading repeats the title and description the same way; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
@@ -1277,7 +1295,7 @@ ping IndexNow for the post, its twin and the pages that now list it (`node tools
 blog.html index.html`). Run `node verify/a11y.js` (both themes by default)
 on the new page, because `accessibility.html` says every page is scanned in both themes. A post adds no
 CSS, so no `npm run stamp`. An English post with a Swedish twin (or the reverse) is a pair: `alt` on both pages and
-`original=True` on the original, `original=False` on the translation (the English page is the original unless
+`"original": true` on the original, `"original": false` on the translation (the English page is the original unless
 the registry says otherwise; `seo-head.py` refuses a pair with zero or two originals, and `seo.js` checks the
 `workTranslation` / `translationOfWork` direction). Pair a page only with a full counterpart that has the same
 question and the same answers.
@@ -1310,7 +1328,7 @@ The notices as a whole remain drafts pending counsel.
 branch merged on a later day than the dates it carries is re-dated on the day of the merge, in its own commit:
 `python3 tools/redate.py` (or `npm run redate` in `tools/`; `--dry-run` shows the plan and exits 1 if anything
 would change, so it can stand in a merge checklist). Against `origin/main` it finds the **new** pages (the file
-is not on `main`) and the **changed** ones (the branch moved `mod` in `PAGES`; a change to the generated header
+is not on `main`) and the **changed** ones (the branch moved `mod` in the page's row; a change to the generated header
 or footer alone moves no date, so `git diff --stat` is not the list). It moves `pub` and `mod` of the new pages
 and `mod` of the changed ones to the merge day, with the byline's Published / Publicerad and Last updated /
 Senast uppdaterad `<time>` and the `legal__meta` line that repeat them, and the `tools/urls.lock` rows of the
@@ -1361,7 +1379,7 @@ Cited by file and phrase, not by line (lines move). The owner must confirm this 
 - Other firms: their own words, alphabetical, dated, sourced, with the disclosure, never ranked (see "The list
   pages" above).
 
-**Withdrawing a page.** `status='withdrawn'` in the registry replaces the page with a stub, adds `noindex`,
+**Withdrawing a page.** `"status": "withdrawn"` in the page's registry row replaces the page with a stub, adds `noindex`,
 drops hreflang, FAQ and Article data, and removes it from `sitemap.xml`; `tools/urls.lock` (append-only,
 written by `seo-head.py`) remembers every URL ever registered, and `tools/verify/permanence.js` fails if a
 locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt` or a feed, or disallowed in
@@ -1415,13 +1433,14 @@ to pass unless it is `false`.
 
 **Flipping it on.** On the day of the flip, set the visible "Last updated" line in
 `privacy.html` and the "Senast uppdaterad" line in `integritet.html` to that day,
-set their `mod` in the `PAGES` registry of `tools/seo-head.py` to the same day, and
+set their `mod` in their registry rows (`tools/site/pages/privacy.json`,
+`integritet.json`) to the same day, and
 run `python3 tools/seo-head.py`. Then edit the `GA_ID` line (a re-flip after an
 exit also sets `PURGE_ONLY` back to `false` in the same commit), run
 `cd tools && npm run stamp` (`app.js` changed, so every page's stamp moves), then
 `node verify/release-gate.js`, then `npm run check`. The flip is the last commit of
 the one PR. It changes the `GA_ID` line (and, on a re-flip, `PURGE_ONLY`), those two
-dates (the visible lines and `mod` in `tools/seo-head.py`), the files `seo-head.py`
+dates (the visible lines and `mod` in the two rows), the files `seo-head.py`
 writes from them (the notices' `dateModified` and `article:modified_time`, two
 sitemap `<lastmod>` lines) and the stamps, and nothing else. It is made only when
 `tools/PRE-FLIP-CHECKLIST.md` is complete.
@@ -1434,7 +1453,7 @@ its header block or sign-off block; `PURGE_ONLY` anything but `false`; a policy
 constant that is not the documented one (`COOKIE_MAX_AGE` 31536000,
 `CONSENT_MAX_DAYS` 365); notices that do not say "12 months" / "12 månader" or do
 not name the three storage keys in `<code>`; a notice date that is not fresh (the
-visible "Last updated" date must equal `mod` in `tools/seo-head.py`, and that date
+visible "Last updated" date must equal `mod` in the page's registry row, and that date
 must be at most 14 days old); a page without the Cookie settings link in its
 footer; a CSP that differs between pages or from `EDGE-SETUP.md`; and any sentence
 that still says the site has no analytics or no cookies. When every scripted gate
@@ -1524,8 +1543,8 @@ page; the banner stays until counsel's written sign-off.
 **Checks.** `csp.js` (the CSP is identical on all 34 pages, matches
 `EDGE-SETUP.md`, and names only the allow-listed Google hosts; a Google host in any
 `<link>` or `<script>` on any page is found whatever the quoting or attribute
-order), `publish.js` ("what ships": every root `*.html` is in `PAGES` and every
-`PAGES` entry exists; every other root file that is not a page or a listed asset
+order), `publish.js` ("what ships": every root `*.html` has its registry row in
+`tools/site/pages` and every row its page; every other root file that is not a page or a listed asset
 type, and every directory other than the known ones, is named in `_config.yml`'s
 `exclude` or flagged; every footer carries the Cookie settings link with
 `data-consent-open` and `href="privacy.html#cookies"`; the notice link in `COPY`
@@ -1654,8 +1673,9 @@ add third-party font/CDN requests for fonts.
   The generated languages have their own check, `i18n.js` (catalogues complete, every generated page
   well-formed and linked right, the draft gate, a load of every page at three widths, axe on three pages of
   each language), and `seo.js` takes in a generated language once it is live; see *Languages*.
-  A new page also goes into `PAGES` in `tools/verify/_common.js` and into
-  `sitemap.xml`; `publish.js` fails if a root `*.html` is missing from `PAGES`.
+  A new page also needs its registry row, `tools/site/pages/<slug>.json`, which puts
+  it in `PAGES` for every check and in `sitemap.xml` once `seo-head.py` runs;
+  `publish.js` fails if a root `*.html` has no row.
   Because light or dark follows the system, the checks that need a particular theme pin
   it first (`pinTheme` in `tools/verify/_common.js` sets the storage key for the theme;
   `pinConsent` pins the analytics choice, and `armGa` arms

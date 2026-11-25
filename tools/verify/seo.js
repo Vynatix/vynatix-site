@@ -34,10 +34,10 @@ const SITE = 'https://vynatix.com/';
 const canonicalOf = (p) => (p === 'index.html' ? SITE : SITE + p.replace(/\/index\.html$/, '/'));
 const ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large';
 const ROBOTS_WITHDRAWN = 'noindex';
-// The registry of tools/seo-head.py, read as text. A withdrawn page keeps its URL but is left out of the
+// The registry, tools/site/pages (readRegistry in _common.js). A withdrawn page keeps its URL but is left out of the
 // sitemap, carries noindex and has no hreflang, FAQ or Article node (TAKEDOWN.md).
 const REG = readRegistry();
-// The languages (LANGS in tools/seo-head.py). The pages of a generated language that is live are checked here
+// The languages (tools/site/langs.json, LANGS in tools/seo-head.py). The pages of a generated language that is live are checked here
 // with the pages written by hand: 'es/services.html' takes the registry entry of services.html, as a translation
 // of it. A draft language is not public and is checked by i18n.js alone.
 const LANGS = readLangs();
@@ -52,7 +52,7 @@ const PAGES = WRITTEN.concat(GENERATED);
 const translationsOf = (p) => GENERATED.filter((g) => g.split('/')[1] === p && REG[p] && REG[p].lang === 'en');
 const TAGS = Object.values(LANGS).map((l) => l.tag);
 const LOCALE = Object.fromEntries(Object.values(LANGS).map((l) => [l.tag, l.locale]));
-const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is in PAGES (_common.js) but not in the registry of tools/seo-head.py`); return REG[p].status === 'live'; };
+const isLive = (p) => { if (!REG[p]) throw new Error(`${p} is a page this check was given but has no row in the registry, tools/site/pages`); return REG[p].status === 'live'; };
 let bad = 0;
 const fail = (msg) => { bad++; console.log('FAIL ' + msg); };
 const ok = (msg) => console.log('ok   ' + msg);

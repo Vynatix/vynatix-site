@@ -340,8 +340,9 @@ flip commit, so the flip commit carries none).
 
 1. On the day of the flip, set the visible "Last updated" line in `privacy.html` and
    the "Senast uppdaterad" line in `integritet.html` to that day.
-2. Set `mod` for both pages in the `PAGES` registry of `tools/seo-head.py` to the
-   same day, then run `python3 tools/seo-head.py` from the repository root. It writes
+2. Set `mod` for both pages in their registry rows, `tools/site/pages/privacy.json`
+   and `tools/site/pages/integritet.json`, to the same day, then run
+   `python3 tools/seo-head.py` from the repository root. It writes
    `dateModified`, the `article:modified_time` meta and the sitemap `<lastmod>`
    from that value. The gate fails if the visible date and `mod` differ, or if the
    date is more than 14 days old.
@@ -354,8 +355,8 @@ flip commit, so the flip commit carries none).
    cd tools && npm run stamp && cd ..
    git add -A && git commit -m "Switch analytics on"
    # run from the repository root. No file outside this list changes: app.js,
-   # sitemap.xml, tools/seo-head.py, privacy.html, integritet.html, and the other
-   # 19 pages (their app.js stamp only)
+   # sitemap.xml, tools/site/pages/privacy.json, tools/site/pages/integritet.json,
+   # privacy.html, integritet.html, and the other 19 pages (their app.js stamp only)
    git diff HEAD~1 --name-only
    # app.js: 2 changed lines (GA_ID, one removed and one added); 4 on a re-flip,
    # where PURGE_ONLY changes as well

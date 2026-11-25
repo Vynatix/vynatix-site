@@ -19,7 +19,7 @@
 //  guides        Every entry of the guide lists (blog.html, #english and #swedish; index.html and sv.html,
 //                ul.reads), every line of llms.txt that links a guide and every ItemList entry of
 //                tools/seo/blog.json repeats the linked page's <title> without ", Vynatix", its meta description
-//                and, where a date shows, its pub in tools/seo-head.py, in the datetime and in the text shown. A
+//                and, where a date shows, its pub in the registry, in the datetime and in the text shown. A
 //                guide is a page that blog.html lists. Not every list carries every field: the ItemList has only
 //                the name, sv.html shows no date, and llms.txt is read only above its generated languages.
 //

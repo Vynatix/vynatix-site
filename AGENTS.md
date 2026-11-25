@@ -105,6 +105,8 @@ tools/PRE-FLIP-CHECKLIST.md   The hard gate for switching analytics on (not publ
 tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-only list of every URL ever
                     registered (written by seo-head.py); tools/CITATION-LOG.md the pilot's measurement
                     protocol and decision rule; none published
+tools/DECISION-TABLE.md   Every owner decision the docs record, classed by what holds it, with the proposed
+                    patterns and their samples (step 4.0 of the refactoring plan); not published
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.

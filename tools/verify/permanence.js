@@ -43,7 +43,8 @@ const PUBLISHED_TEXT = ['llms.txt', 'robots.txt', 'sitemap.xml', 'site.webmanife
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // The stub (tools/seo-head.py, STUB and stub_main). The strings are repeated here on purpose, so that the check
-// does not trust the generator; a test below proves they still equal the generator's.
+// does not trust the generator; a test below proves they still equal the generator's. `home` is the href as written
+// to the page: a home page is linked by its folder (./), never index.html (folder_links in seo-head.py).
 const MONTHS = {
   en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   sv: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
@@ -51,7 +52,7 @@ const MONTHS = {
 const day = (iso, lang) => `${+iso.slice(8, 10)} ${MONTHS[lang][+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
 const STUB = {
   en: { title: 'Page withdrawn, Vynatix', desc: 'Vynatix has withdrawn this page.', eyebrow: 'Withdrawn', h1: 'This page has been withdrawn',
-        lede: (iso) => `Vynatix removed this page on ${day(iso, 'en')}. Go to the home page.`, home: 'index.html' },
+        lede: (iso) => `Vynatix removed this page on ${day(iso, 'en')}. Go to the home page.`, home: './' },
   sv: { title: 'Sidan är återkallad, Vynatix', desc: 'Vynatix har tagit bort den här sidan.', eyebrow: 'Återkallad', h1: 'Den här sidan är återkallad',
         lede: (iso) => `Vynatix tog bort sidan den ${day(iso, 'sv')}. Gå till startsidan.`, home: 'sv.html' },
 };
@@ -312,7 +313,7 @@ function selfTest() {
       + `<meta name="twitter:title" content="${t.title}">\n<meta name="twitter:description" content="${t.desc}">\n`
       + '<script type="application/ld+json">{"@graph":[{"@type":"WebPage"}]}</script></head><body>\n'
       + `  <main id="main">\n    <section class="page-hero"><div class="container"><p class="eyebrow">${t.eyebrow}</p><h1 class="page-hero__h1">${t.h1}</h1>\n`
-      + `<p class="page-hero__lede">${extra.lede || t.lede('2026-11-05').replace('Go to the home page.', '<a href="index.html">Go to the home page</a>.')}</p></div></section>\n  </main>\n</body></html>\n`;
+      + `<p class="page-hero__lede">${extra.lede || t.lede('2026-11-05').replace('Go to the home page.', '<a href="./">Go to the home page</a>.')}</p></div></section>\n  </main>\n</body></html>\n`;
     fs.writeFileSync(path.join(dir, 'standin.html'), extra.main ? html.replace(/<main[\s\S]*<\/main>/, extra.main) : html);
     edit(dir, PY, (s) => s.replace("  'integritet.html': ", `  'standin.html': dict(lang='en', type='WebPage', og='website', pub='2026-11-04', mod='2026-11-05', status=${extra.q || "'"}withdrawn${extra.q || "'"}),\n  'integritet.html': `));
     edit(dir, path.join('tools', 'urls.lock'), (s) => s.replace(/\n?$/, '\n') + 'https://vynatix.com/standin.html 2026-11-04\n');

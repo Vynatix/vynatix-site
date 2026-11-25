@@ -565,7 +565,17 @@ current page's nav link is made there, once, and the script run, not by hand in 
 the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
 `<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files
 The
-header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+header's logo and contact-detail markup is part of the `HEADER` template. **A home page is linked by its folder,
+never by `index.html`:** the logos and the language list are written `href="./"`, `"../"`, `"es/"` or `"../ja/"`, so
+the address bar shows `vynatix.com/` and `vynatix.com/es/` (the canonical URLs) after a click on the logo, not
+`vynatix.com/index.html`. The templates and the rest of the script reason in file names; `folder_links` in
+`tools/seo-head.py` folds a double-quoted `href` of `index.html`, `./index.html`, `../index.html`, `/index.html` or
+`es/index.html` (and the like, with or without a `#fragment`) as each page is written, `<main>` included, so a
+hand-written one is folded too; a hand-written `./` in an English page stays the home of each generated
+language. `publish.js` fails on any page, written or generated, that still links a home page as `index.html`
+(relative or `https://vynatix.com/...`). The Swedish home is a file of its own, `sv.html`, and keeps
+its name. A visitor who types or follows `/index.html` still sees it: GitHub Pages cannot redirect, and the
+canonical link already names `/`. The Legal list in the footer
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons. On a phone the links fold into
@@ -1316,7 +1326,7 @@ locked URL has no file, if a withdrawn page is still linked, listed in `llms.txt
 `git diff tools/urls.lock` shows only added lines); a deliberate deletion of the file, the registry entries and
 the lock row together is not caught. The runbook, with the timeline and what a stub
 cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
-title and the description.
+title and the description (apart from a link to a home page, which it writes as the folder anywhere in a page).
 
 **Checks.** `permanence.js` and `mailto.js` are in `npm run check` (static, third and fourth).
 `python3 tools/seo-head.py --check` (`npm run check:gen`) reports any generated part that differs from what a
@@ -1554,8 +1564,9 @@ add third-party font/CDN requests for fonts.
 
 ## Working in this repo
 
-- **Run it** by opening `index.html` in a browser, or serve the folder
-  (`python3 -m http.server`) so relative paths and `fetch` behave. There is no
+- **Run it** by serving the folder (`python3 -m http.server`) so relative paths and `fetch` behave.
+  Opened from disk the pages render, but a link to a home page names a folder (`./`, `es/`), which a
+  browser shows as a file listing, not the page. There is no
   dev server, hot reload, or watch task.
 - **The site has no build step** — no framework, bundler, or package manager,
   and what is in the repo ships verbatim. The one exception is `tools/`: the

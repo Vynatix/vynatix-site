@@ -19,7 +19,7 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
+  (Python 3; rewrites the search block, header, footer, sitemap, URL lock and the guide lines of `llms.txt`), and the mask generator
   `sheet-art.js` for the hero background, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
   never run at deploy time.
 - **Seven languages, two kinds.** English and Swedish are written by hand (the thirty-four pages above).
@@ -221,7 +221,7 @@ highlights the things most worth keeping front-of-mind.
   row with `"kind": "post"`, `tools/site/pages/<slug>.json` (read into `PAGES` by `tools/seo-head.py` and by
   `tools/verify/_common.js`), written to the
   Guide pattern in AGENTS.md, *Posts, permanence and withdrawal*: undated permanent slug, no directory, no
-  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. A fact
+  `_posts/`, a call to action whose mailto subject carries the slug, section ids that are not `article`. What each list of guides holds, and in what order, is `tools/site/lists.json`: `seo-head.py` writes a guide's line in `llms.txt` and its item in the ItemList of `blog.html` from it, and `tools/verify/copies.js` holds the hand-written lists of `blog.html`, `index.html` and `sv.html` to its order. A fact
   not already on a published page is drafted outside the public repo until the owner approves it, and a
   `[[CONFIRM]]` marker is never filled in. `status='withdrawn'` replaces a page with a stub; `tools/urls.lock`
   and `tools/verify/permanence.js` stop a URL from disappearing; `tools/TAKEDOWN.md` is the runbook.

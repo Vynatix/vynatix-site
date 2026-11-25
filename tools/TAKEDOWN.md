@@ -29,7 +29,7 @@ it. They are not published, but the repository is public, and like the page they
 - Python 3, Node, `npm install` in `tools/` (once), Chromium, and a server for the repository root
   (`python3 -m http.server 8000` from the root; `CHROME=<path>` if Playwright's browser is elsewhere).
   `links.js` and `seo.js` open pages in the browser; the rest are browser-free. If you cannot run a browser, the
-  browser-free minimum is `csp.js`, `publish.js`, `permanence.js`, `mailto.js`, `stamp.js --check` and
+  browser-free minimum is `csp.js`, `publish.js`, `permanence.js`, `mailto.js`, `copies.js`, `stamp.js --check` and
   `release-gate.js --self-test`.
 - Someone who can merge. `CODEOWNERS` asks for Code Owner review on every change; name a deputy in advance. The
   owner authorises the takedown; write the time you started in the pull request.
@@ -47,16 +47,19 @@ it. They are not published, but the repository is public, and like the page they
    run until the live twin's `alt` is gone ("remove the alt from ... first"): that message is the expected prompt,
    not a bug.
 3. **Remove everything that points at it.** `node verify/permanence.js` (from `tools/`) names each page that still
-   links to it. Remove: the `llms.txt` line; the entry on `blog.html`; **the item in the ItemList in
-   `tools/seo/blog.json`** (and fix `numberOfItems` and the positions); the `index.html` Further reading or
-   `sv.html` guider item; any other cross-link in a page body; and, if the post has them, its assets (`git rm`;
+   links to it. Remove: **its slug from every list in `tools/site/lists.json`** (the generator refuses to run while
+   a list names a withdrawn page, and names each list that does; the next run then takes its line out of
+   `llms.txt` and its item out of the ItemList of `blog.html`, with `numberOfItems` and the positions); the entry on
+   `blog.html`; the `index.html` Insights or `sv.html` guider item (these three are written by hand, and
+   `verify/copies.js` fails until each agrees with the lists file); any other cross-link in a page body; and, if
+   the post has them, its assets (`git rm`;
    images and fonts are not stamped and not covered by the lock). **Move `mod` to today on every page you edited**
    (the Blog page, the home page, the twin): the sitemap `lastmod` and your IndexNow ping depend on it, and no
    check enforces it.
 4. **Regenerate** (root). `python3 tools/seo-head.py`. Open the withdrawn page: it must be the stub and nothing else.
 5. **Check** (`tools/`). `node verify/permanence.js` (the withdrawn page is exactly the stub, noindex and
    unlisted; every locked URL still has a file), `python3 seo-head.py --check` (or `npm run check:gen`),
-   then `csp.js`, `publish.js`, `mailto.js`, `stamp.js --check`, `release-gate.js --self-test`, `links.js` and
+   then `csp.js`, `publish.js`, `mailto.js`, `copies.js`, `stamp.js --check`, `release-gate.js --self-test`, `links.js` and
    `seo.js`.
 6. **Merge.** The Pages deployment takes about 40 to 70 seconds (three runs measured on 21 to 24 October 2026:
    68, 41 and 40 seconds).

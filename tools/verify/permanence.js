@@ -27,9 +27,10 @@
 //  V  every other live page that shows a dated line (a prose__meta byline with Published / Publicerad / Last
 //     updated / Senast uppdaterad, or a legal__meta "Last updated" / "Senast uppdaterad" line) shows the registry's
 //     pub and mod (event dates such as the list pages' Checked / Kontrollerad lines are not read)
-//  H  the hub: every live kind 'post' page is listed on blog.html, in the ItemList of tools/seo/blog.json and on
-//     the home page of its language; the ItemList and the visible list on blog.html name the same pages, with
-//     numberOfItems and positions that add up
+//  H  the hub: every live kind 'post' page is listed on blog.html, in the ItemList of blog.html's structured data
+//     and on the home page of its language; the ItemList and the visible list on blog.html name the same pages,
+//     with numberOfItems and positions that add up. The ItemList is read where it ships, in the JSON-LD of
+//     blog.html: tools/seo-head.py writes its items from tools/site/lists.json, and this does not trust that
 // Exports run() and mainLock() for the self-test. See AGENTS.md, "Posts, permanence and withdrawal".
 const fs = require('fs');
 const os = require('os');
@@ -174,7 +175,7 @@ function run(root = ROOT, main = mainLock(root)) {
       const linked = ['a', 'link', 'area'].some((tag) => parseTags(src, tag).some((t) => {
         try { const r = new URL(decodeEntities(String(t.attrs.href || '')).replace(/[\t\n\r]/g, '').trim(), base); return host.test(r.hostname) && r.pathname === '/' + w; } catch (e) { return false; }
       })) || src.includes(u);
-      if (linked) problems.push(`linked from ${other}${other === 'blog.html' ? ' (the visible list, or the ItemList in tools/seo/blog.json)' : ''}`);
+      if (linked) problems.push(`linked from ${other}${other === 'blog.html' ? ' (the visible list, or its ItemList: take it out of tools/site/lists.json)' : ''}`);
     }
     for (const [other, e] of Object.entries(reg)) if (e.status === 'live' && Object.values(e.alt).includes(w)) problems.push(`${other} names it as its hreflang twin`);
     add(!problems.length, `withdrawn page ${w} is exactly the stub, noindex and unlisted`, problems.join('; '));
@@ -311,12 +312,13 @@ function run(root = ROOT, main = mainLock(root)) {
     const blog = tryRead('blog.html') || '';
     const liLinks = (html) => [...html.matchAll(/<li\b[^>]*>\s*<a\b[^>]*\bhref="([^"#]+\.html)"/g)].map((m) => m[1]);
     const visible = liLinks((/<main\b[^>]*>([\s\S]*?)<\/main>/i.exec(stripComments(blog)) || [])[1] || '').filter((f) => f !== 'index.html' && f !== 'sv.html');
-    let item = null;
-    try {
-      const j = JSON.parse(tryRead(path.join('tools', 'seo', 'blog.json')) || 'null');
-      item = j && j.extra_nodes && j.extra_nodes.find((n) => n['@type'] === 'ItemList');
-    } catch (e) { problems.push(`tools/seo/blog.json does not parse: ${e.message}`); }
-    if (!item) problems.push('tools/seo/blog.json has no ItemList');
+    const graph = [];
+    for (const m of blog.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+      try { const j = JSON.parse(m[1]); graph.push(...(Array.isArray(j['@graph']) ? j['@graph'] : [j])); } catch (e) { problems.push(`a JSON-LD block of blog.html does not parse: ${e.message}`); }
+    }
+    const lists = graph.filter((n) => n && n['@type'] === 'ItemList');
+    const item = lists.length === 1 ? lists[0] : null;
+    if (!item) problems.push(`the structured data of blog.html has ${lists.length} ItemList nodes (want 1; run python3 tools/seo-head.py)`);
     else {
       const els = item.itemListElement || [];
       if (item.numberOfItems !== els.length) problems.push(`ItemList numberOfItems ${item.numberOfItems} but ${els.length} items`);
@@ -411,7 +413,14 @@ function selfTest() {
     ['a post missing from blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/<li><a href="choose-a-software-consultancy\.html">[\s\S]*?<\/li>\n/, '')); }, /is not listed on blog\.html|differ/],
     ['a stale Senast uppdaterad line on a page that is not a post', (d) => { edit(d, 'valja-konsultbolag.html', (s) => s.replace(/(Senast uppdaterad <time datetime=")[^"]*(">)[^<]*(<\/time>)/, (m, a, b, c) => a + '2001-01-01' + b + '1 januari 2001' + c)); }, /valja-konsultbolag\.html: Senast uppdaterad shows/],
     ['a stale Last updated line on a notice', (d) => { edit(d, 'privacy.html', (s) => s.replace(/<p class="legal__meta">Last updated [^<]*<\/p>/, '<p class="legal__meta">Last updated 1 January 2001</p>')); }, /privacy\.html: Last updated shows/],
-    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, path.join('tools', 'seo', 'blog.json'), (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); }, /numberOfItems/],
+    ['an ItemList whose numberOfItems is wrong', (d) => { edit(d, 'blog.html', (s) => s.replace(/"numberOfItems": \d+/, '"numberOfItems": 99')); }, /numberOfItems/],
+    ['a post missing from the ItemList of blog.html', (d) => { edit(d, 'blog.html', (s) => s.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/, (m, a, ld, b) => {
+      const j = JSON.parse(ld);
+      const list = j['@graph'].find((n) => n['@type'] === 'ItemList');
+      list.itemListElement = list.itemListElement.filter((e) => !/choose-a-software-consultancy\.html$/.test(e.item.url)).map((e, i) => Object.assign(e, { position: i + 1 }));
+      list.numberOfItems = list.itemListElement.length;
+      return a + JSON.stringify(j, null, 1) + b;
+    })); }, /the ItemList \([^)]*\) and the visible list on blog\.html \([^)]*choose-a-software-consultancy\.html[^)]*\) differ/],
     // M. The comparison with main. The scratch copies are not git checkouts, so every case above compares with
     // MAIN, the tree's own lock as it stands; these cases give their own (the fourth element).
     ['a lock row that is on main, removed', (d) => { edit(d, path.join('tools', 'urls.lock'), (s) => s.replace(/^https:\/\/vynatix\.com\/about\.html \S+\n/m, '')); }, /lock row removed: https:\/\/vynatix\.com\/about\.html/],

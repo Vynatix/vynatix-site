@@ -11,12 +11,15 @@ What it rewrites, on every page it is given:
   og:description), and the JSON-LD graph (the Organization node, identical on every page; the
   WebSite node; the page node with datePublished and dateModified; a FAQPage node built from the
   page's visible FAQ, [data-faq] and [data-faq-item]; an Article node for the guides; and the
-  page's extra nodes from tools/seo/<page>.json, when that file exists);
+  page's extra nodes from tools/seo/<page>.json, when that file exists, with the items of the
+  ItemList of blog.html built from tools/site/lists.json, LISTS below);
 - the footer, from tools/templates/footer.html and the company's facts in tools/site/company.json (a
   footer change is made there, then this is run; it is not edited in every file);
 - the site header, from tools/templates/header.html (a nav change is made there, then this is run); it stays
   English, with lang="en", on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language versions;
+- the guide lines of llms.txt, one "- [title](url): description" line per guide, from tools/site/lists.json
+  (LISTS below); the other lines of the file are written by hand;
 - the generated languages (LANGS below: Spanish, French, German, Japanese, Arabic): every English page except
   the notices, rebuilt in <code>/ from the catalogue tools/i18n/<code>.json by tools/i18n.py, with
   its own head block, translated header and footer and the language list; tools/i18n/messages.json,
@@ -34,11 +37,12 @@ because on GitHub Pages a withdrawn URL has to keep answering and must stop serv
 
 When to run it: after editing a FAQ (the FAQPage data must repeat the visible answers word for
 word), after moving a page's `mod` date in its row because its content changed (`pub`, the date the
-page first went live, never moves), or after changing a template in tools/templates or a fact in
-tools/site/company.json. It is idempotent: on an unchanged tree it changes nothing. If styles or
-scripts changed as well, run `npm run stamp` in tools/ afterwards; the stamps are not this script's
-business, and `npm run check` fails until they are current (stamp.js stamps the language folders with
-the root pages, so the two agree).
+page first went live, never moves), after changing a template in tools/templates or a fact in
+tools/site/company.json, and after changing a guide's title or description or a list in
+tools/site/lists.json (llms.txt and the ItemList repeat them). It is idempotent: on an unchanged tree it
+changes nothing. If styles or scripts changed as well, run `npm run stamp` in tools/ afterwards; the stamps
+are not this script's business, and `npm run check` fails until they are current (stamp.js stamps the
+language folders with the root pages, so the two agree).
 After editing an English page, `python3 tools/i18n.py` lists what the catalogues now lack.
 """
 import json, os, re, sys, html
@@ -376,6 +380,107 @@ def load_company():
                              + ('a list of strings' if lists else 'a string with text in it'))
     return {k: v for k, v in data.items() if k != 'note'}
 
+# ---------------------------------------------------------------- lists
+# What each list of guides holds, and in what order: tools/site/lists.json, one JSON array per list, under the
+# names below, in this order. Neither can be derived (no list is in registry or pub order, and the lists differ
+# from each other), so the file says it (tools/REFACTORING-PLAN.md, step 2.4, part b). An entry is a page's slug,
+# "test-automation" for test-automation.html, or, where a copy differs from its page on purpose, an object:
+#     {"slug": "platform-engineering", "override": {"description": ""}}
+# The override gives the text the copy holds instead of the page's own <title> (without ", Vynatix") or meta
+# description; "" is a description the copy leaves out. Every override is also an exception, with its reason, in
+# EXCEPTIONS of tools/verify/copies.js, which compares each list with its pages and the overrides with its own
+# exceptions, so a difference is recorded twice on purpose: once to write it and once to check it.
+# 'written' says what this script does with the list:
+# - llms.txt: writes it, the guide lines of llms.txt, "- [title](url): description" (llms_guides below).
+# - blog.html#guides: writes it, the items of the ItemList of blog.html, the node with that @id in
+#   tools/seo/blog.json, which holds the rest of the node (item_list below). Both of these list guides only, pages
+#   whose row has "article": true, because an item names the page's Article node.
+# - the other four are the lists on the hub pages, inside <main>, which this script never writes: the sections
+#   #english and #swedish of blog.html and ul.reads in #insights of index.html and #guider of sv.html. Their entries
+#   are written by hand until the owner allows step 2.4, part c; the file holds their order so that a later step
+#   can write them, and copies.js holds the pages to it meanwhile.
+# A slug that is not a page, a page given twice in one list and a withdrawn page stop the run, so a withdrawal
+# (tools/TAKEDOWN.md, step 3) takes the page out of every list here, and that takes it out of llms.txt and the
+# ItemList on the next run.
+LISTS = {
+    'blog.html#english': dict(written=False, fields=('title', 'description')),
+    'blog.html#swedish': dict(written=False, fields=('title', 'description')),
+    'index.html#insights': dict(written=False, fields=('title', 'description')),
+    'sv.html#guider': dict(written=False, fields=('title', 'description')),
+    'blog.html#guides': dict(written=True, fields=('title',)),
+    'llms.txt': dict(written=True, fields=('title', 'description')),
+}
+BRAND = ', Vynatix'            # the suffix of every <title>, which a list entry leaves out
+
+def load_lists():
+    """{list name: [(page file, override)]} from tools/site/lists.json, every name of LISTS, in the file's order of
+    each list. Each entry is checked against the registry here; what the pages show is the checks' business."""
+    rel = 'tools/site/lists.json'
+    data = load_json(os.path.join(SITE_DATA, 'lists.json'))
+    names = list(data)
+    if names != list(LISTS):
+        unknown = [n for n in names if n not in LISTS]
+        missing = [n for n in LISTS if n not in names]
+        raise SystemExit(f'{rel}: ' + (f'unknown list {unknown[0]}' if unknown else f'no list {missing[0]}' if missing else
+                                       'the lists are out of order') + f' (it holds {", ".join(LISTS)}, in that order)')
+    out = {}
+    for name, entries in data.items():
+        if not isinstance(entries, list):
+            raise SystemExit(f'{rel}: {name} is not a list of slugs')
+        rows = []
+        for i, e in enumerate(entries, 1):
+            where = f'{rel}: {name}, entry {i}'
+            if isinstance(e, dict):
+                if set(e) - {'slug', 'override', 'note'} or 'slug' not in e:
+                    raise SystemExit(f'{where}: an entry is a slug, or an object with "slug", "override" and "note"')
+                slug, override = e['slug'], e.get('override', {})
+            else:
+                slug, override = e, {}
+            if not isinstance(slug, str) or not re.fullmatch(r'[a-z0-9]+(-[a-z0-9]+)*', slug):
+                raise SystemExit(f'{where}: {json.dumps(slug, ensure_ascii=False)} is not a slug ("test-automation" for test-automation.html)')
+            f = slug + '.html'
+            if isinstance(e, dict) and 'override' in e and (not isinstance(override, dict) or not override or any(
+                    k not in LISTS[name]['fields'] or not isinstance(v, str) for k, v in override.items())):
+                raise SystemExit(f'{where}: the override of {slug} gives {" or ".join(LISTS[name]["fields"])} as a string, at least one')
+            if f not in PAGES:
+                raise SystemExit(f'{where}: {slug} is not a page (no tools/site/pages/{slug}.json)')
+            if any(f == g for g, _ in rows):
+                raise SystemExit(f'{where}: {slug} is in {name} twice')
+            if PAGES[f]['status'] != 'live':
+                raise SystemExit(f'{where}: {f} is withdrawn; take it out of every list of {rel} (tools/TAKEDOWN.md, step 3): '
+                                 + ', '.join(n for n, es in data.items() if slug in [x['slug'] if isinstance(x, dict) else x for x in es]))
+            if LISTS[name]['written'] and not PAGES[f]['article']:
+                raise SystemExit(f'{where}: {f} is not a guide (its row has no "article": true), and {name} lists guides only')
+            rows.append((f, override))
+        out[name] = rows
+    return out
+
+LIST = load_lists()
+
+def guide_facts(f):
+    """A page's <title> without ", Vynatix" and its meta description, as a list repeats them: entities decoded, white
+    space run together. A title without the suffix stops the run, because a list could not tell what to leave out."""
+    s = read(f)
+    title = re.sub(r'\s+', ' ', html.unescape(re.search(r'<title>(.*?)</title>', s, re.S).group(1))).strip()
+    desc = re.sub(r'\s+', ' ', html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))).strip()
+    if not title.endswith(BRAND):
+        raise SystemExit(f'{f}: its <title> "{title}" does not end in "{BRAND}", which the lists of tools/site/lists.json leave out')
+    return title[:-len(BRAND)], desc
+
+def item_list(node, name):
+    """The ItemList node of tools/seo/blog.json with its items: numberOfItems and itemListElement, from the list
+    `name` of tools/site/lists.json, after the keys the file gives."""
+    if 'numberOfItems' in node or 'itemListElement' in node:
+        raise SystemExit(f'tools/seo/blog.json: the ItemList {node["@id"]} gives its own items, which the list {name} of '
+                         'tools/site/lists.json holds now; a branch opened before the move runs tools/migrate/lists.py')
+    items = []
+    for i, (f, override) in enumerate(LIST[name], 1):
+        title = override.get('title', guide_facts(f)[0])
+        items.append({"@type": "ListItem", "position": i,
+                      "item": {"@type": "Article", "@id": url_of(f) + "#article", "url": url_of(f), "name": title,
+                               "inLanguage": LANGS[PAGES[f]['lang']]['tag']}})
+    return {**node, "numberOfItems": len(items), "itemListElement": items}
+
 # ---------------------------------------------------------------- shared nodes
 # The company's facts, tools/site/company.json: the Organization node is built from them, and the footer names the
 # ones it shows (tools/templates/footer.html).
@@ -615,19 +720,28 @@ def extra_nodes_for(f):
     """The page's own JSON-LD nodes (Service, ItemList, ...) from tools/seo/<page>.json, if any.
     That file holds either "extra_nodes" (the nodes themselves) or "extra_nodes_from" (another file
     in tools/seo/) with "ids": the "extra_nodes" of that file whose "@id" is listed, in the order
-    of "ids", so a node that more than one page carries has one source."""
+    of "ids", so a node that more than one page carries has one source. A node whose @id names a list
+    of tools/site/lists.json that this script writes (blog.html#guides) gets its items from there."""
     path = os.path.join(SEO_DIR, f[:-len('.html')] + '.json')
+    lists = {SITE + name: name for name, l in LISTS.items() if l['written'] and '#' in name}
     if not os.path.exists(path):
+        if any(name.startswith(f + '#') for name in lists.values()):
+            raise SystemExit(f'{f}: no tools/seo/{f[:-len(".html")]}.json to hold the ItemList that tools/site/lists.json fills')
         return None
     data = json.load(open(path, encoding='utf-8'))
     src = data.get('extra_nodes_from')
     if not src:
-        return data.get('extra_nodes')
-    nodes = {n['@id']: n for n in json.load(open(os.path.join(SEO_DIR, src), encoding='utf-8')).get('extra_nodes', [])}
-    missing = [i for i in data.get('ids', []) if i not in nodes]
-    if missing:
-        raise SystemExit(f + ': ' + src + ' has no node with @id ' + ', '.join(missing))
-    return [nodes[i] for i in data.get('ids', [])]
+        nodes = data.get('extra_nodes')
+    else:
+        found = {n['@id']: n for n in json.load(open(os.path.join(SEO_DIR, src), encoding='utf-8')).get('extra_nodes', [])}
+        missing = [i for i in data.get('ids', []) if i not in found]
+        if missing:
+            raise SystemExit(f + ': ' + src + ' has no node with @id ' + ', '.join(missing))
+        nodes = [found[i] for i in data.get('ids', [])]
+    for u, name in lists.items():
+        if name.startswith(f + '#') and not any(n.get('@id') == u for n in nodes or []):
+            raise SystemExit(f'tools/seo/{f[:-len(".html")]}.json: no node with @id {u}, which the list {name} of tools/site/lists.json fills')
+    return None if nodes is None else [item_list(n, lists[n['@id']]) if n.get('@id') in lists else n for n in nodes]
 
 def main_of(s):
     m = re.search(r'(\s*<main id="main"[^>]*>.*?</main>)', s, re.S); return m.group(1) if m else ''
@@ -839,7 +953,8 @@ def message_list():
     return warnings
 
 # llms.txt: the pages of each live generated language, between these two lines, before "## Optional".
-# The rest of the file is written by hand; a draft language is not in it.
+# The rest of the file is written by hand, apart from its guide lines (llms_guides below); a draft language is not
+# in it.
 LLMS_OPEN = '<!-- Generated languages: written by tools/seo-head.py from LANGS, not by hand -->'
 LLMS_CLOSE = '<!-- end of the generated languages -->'
 
@@ -858,11 +973,63 @@ def llms(rendered):
         parts.append(f'## {LANGS[k]["name"]} ({LANGS[k]["tag"]})\n\n' + '\n'.join(rows) + '\n')
     block = (LLMS_OPEN + '\n\n' + '\n'.join(parts) + '\n' + LLMS_CLOSE + '\n\n') if parts else ''
     text = re.sub(re.escape(LLMS_OPEN) + r'.*?' + re.escape(LLMS_CLOSE) + r'\n\n', '', text, flags=re.S)
+    text = llms_guides(text)
     if block:
         if '## Optional' not in text:
             raise SystemExit('llms.txt: no "## Optional" section to put the generated languages before')
         text = text.replace('## Optional', block + '## Optional', 1)
     write('llms.txt', text)
+
+def llms_guides(text):
+    """llms.txt with its guide lines written from the list llms.txt of tools/site/lists.json. A guide line is a
+    "- [...](url)" line that links a page whose row has "article": true, live or withdrawn; every other line is
+    written by hand and kept as it is. Each written language has one "## " section, the one with the line that
+    links its home page, and its guides stand there in one unbroken run, in the order of the list: the run of guide
+    lines it holds is replaced, and a section that holds none gets its run after the last line of its list. A guide
+    line anywhere else, or a run broken by a hand-written line, stops the run, because what to do with it is a
+    person's call."""
+    lines = text.split('\n')
+    def page(line):
+        m = re.match(r'- \[[^\]\n]*\]\((' + re.escape(SITE) + r'[^)\s]*)\)', line)
+        f = m and ('index.html' if m.group(1) == SITE else m.group(1)[len(SITE):])
+        return f if f in PAGES else None
+    guide = lambda i: bool(page(lines[i]) and PAGES[page(lines[i])]['article'])
+    heads = [i for i, l in enumerate(lines) if l.startswith('## ')]
+    sections = list(zip(heads, heads[1:] + [len(lines)]))
+    where = {}
+    for k, l in LANGS.items():
+        if l['kind'] != 'written': continue
+        found = [s for s in sections if any(page(lines[i]) == l['home'] for i in range(*s))]
+        if len(found) != 1:
+            raise SystemExit(f'llms.txt: {len(found)} "## " sections link {l["home"]}, the home page of {l["name"]} '
+                             f'(want 1: its guide lines go in that section)')
+        where[k] = found[0]
+    # The text here has no generated block, so a refusal names a line by its section and its text, not by a number.
+    under = lambda i: next((f'under "{lines[h]}"' for h in reversed(heads) if h <= i), 'above the first "## " heading')
+    stray = [i for i in range(len(lines)) if guide(i) and not any(a <= i < b for a, b in where.values())]
+    if stray:
+        raise SystemExit(f'llms.txt: the line that links the guide {page(lines[stray[0]])} stands {under(stray[0])}, outside '
+                         'the section of a written language; move or remove it')
+    runs = {}
+    for k, (a, b) in where.items():
+        at = [i for i in range(a, b) if guide(i)]
+        if at and at != list(range(at[0], at[-1] + 1)):
+            gap = next(i for i in range(at[0], at[-1]) if not guide(i))
+            raise SystemExit(f'llms.txt: the hand-written line "{lines[gap][:60]}" stands inside the run of guide lines '
+                             f'{under(gap)}; the run is written whole, so move the line out of it')
+        last = max([i for i in range(a, b) if lines[i].startswith('- ')] or [a + 1])
+        runs[k] = (at[0], at[-1] + 1) if at else (last + 1, last + 1)
+    for k in sorted(runs, key=lambda k: runs[k], reverse=True):     # from the bottom up, so the places above hold
+        rows = []
+        for f, override in LIST['llms.txt']:
+            if PAGES[f]['lang'] != k: continue
+            title, desc = guide_facts(f)
+            title, desc = override.get('title', title), override.get('description', desc)
+            if not title or ']' in title:
+                raise SystemExit(f'tools/site/lists.json: llms.txt: {f} would get the title "{title}", which a "- [title](url)" line cannot hold')
+            rows.append(f'- [{title}]({url_of(f)})' + (f': {desc}' if desc else ''))
+        lines[runs[k][0]:runs[k][1]] = rows
+    return '\n'.join(lines)
 
 # _config.yml: the folders of the draft languages are named in `exclude`, between these two lines, so a
 # draft is never published. This script keeps the list; tools/verify/publish.js reads the result.

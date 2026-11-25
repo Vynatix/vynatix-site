@@ -98,7 +98,7 @@ EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not publ
 tools/              Local verification scripts (verify/, including the consent checks
                     and the hero background guard), stamp.js (writes the ?v=
                     version stamps into the pages), seo-head.py (rewrites the search
-                    block, header, footer, sitemap and URL lock, and builds the generated languages),
+                    block, header, footer, sitemap, URL lock and the guide lines of llms.txt, and builds the generated languages),
                     i18n.py (the translation engine) with the catalogues in tools/i18n/, the registry in
                     tools/site/ (pages/<slug>.json, one row per page written by hand, and langs.json, the
                     language table), migrate/registry.py (moved the registry there), and the sheet's
@@ -1292,14 +1292,12 @@ site, and naming one is an owner decision.
 
 **Registering a post.** Add its row, `tools/site/pages/<slug>.json`, with `"kind": "post"` and no `order` (a new
 page sorts after the others by `pub`, then by slug), which `tools/seo-head.py` and `tools/verify/_common.js` both
-read; add a line for it in `llms.txt`; list it on the Blog page (`blog.html`, under
-its language, with the page's title without the brand suffix and its meta description word for word, and
-in the ItemList of `tools/seo/blog.json`) and on the home page that matches its language (`index.html` Further
+read; add its slug to each list of `tools/site/lists.json` it belongs in (the Blog page's section of its language, the home page of its language, the ItemList `blog.html#guides` and `llms.txt`; `seo-head.py` writes its line in `llms.txt` and its item in the ItemList of `blog.html` from there); list it on the Blog page (`blog.html`, under
+its language, with the page's title without the brand suffix and its meta description word for word) and on the home page that matches its language (`index.html` Further
 reading repeats the title and description the same way; `sv.html` guider); run `python3 tools/seo-head.py`, which writes the head, the
-footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
+footer, the header, the sitemap, `tools/urls.lock`, the guide's line in `llms.txt` and its item in the ItemList; run `node tools/indexnow.js <slug>.html` after the
 deploy. `publish.js` names an omission of the registries or `llms.txt` precisely, and `permanence.js` fails if
-a `kind='post'` page is missing from `blog.html`, from the ItemList in `tools/seo/blog.json` (keep
-`numberOfItems` and the positions right) or from the home page of its language. `tools/verify/copies.js` fails if an entry on those lists, a guide line of `llms.txt` or an ItemList name stops repeating its page's title (without the brand suffix), meta description or `pub`, apart from the differences it records, with their text, in `EXCEPTIONS`. Nothing checks the other
+a `kind='post'` page is missing from `blog.html`, from its ItemList (read in the page's structured data) or from the home page of its language. `tools/verify/copies.js` fails if an entry on those lists, a guide line of `llms.txt` or an ItemList name stops repeating its page's title (without the brand suffix), meta description or `pub`, apart from the differences it records, with their text, in `EXCEPTIONS`. It also fails if a list holds other pages, or holds them in another order, than `tools/site/lists.json` gives it, or if an `override` there is not one of those exceptions with the same text: the hub lists are written by hand until the owner allows `seo-head.py` to write them (`tools/REFACTORING-PLAN.md`, step 2.4, part c), and the file holds their order meanwhile. A list that names a withdrawn page stops `seo-head.py` (`tools/TAKEDOWN.md`, step 3). Nothing checks the other
 hand-kept lists: when you edit `blog.html`, `index.html` or `sv.html`, move that page's `mod` and run the
 generator. Swedish items on the Blog page carry `lang="sv"` (and `hreflang="sv"` on the link). Adding a Swedish
 post makes the `sv.html` guider lead ("Publicerade den 18 oktober 2026") false: fix it then. After the deploy,

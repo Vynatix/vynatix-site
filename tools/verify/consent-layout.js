@@ -110,6 +110,15 @@ const BOTTOM_CLEARANCE = () => {
     fixed, covered, fine, legalMin: legalMin === Infinity ? null : legalMin,
     cookieClear: !fixed || cookie.bottom <= b.top || cookie.right <= b.left || cookie.left >= b.right,
     atBottom: Math.abs(innerHeight + scrollY - document.documentElement.scrollHeight) < 2,
+    // The geometry, so a failure says why: the bar's top and height, the footer's reserve below its last link
+    // (padding-bottom, 12rem while the bar is up), how far the page is from its end, and whether the web fonts and
+    // the consent-open class were in place when it was measured.
+    geo: {
+      barTop: Math.round(b.top), barH: Math.round(b.height), innerH: innerHeight,
+      footerPad: getComputedStyle(document.querySelector('.site-footer')).paddingBottom,
+      short: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY),
+      open: document.documentElement.classList.contains('consent-open'), fonts: document.fonts.status,
+    },
   };
 };
 
@@ -284,7 +293,7 @@ async function reopen(page) {
       await env.close();
       return { ...j, r };
     });
-    const bad2 = rows2.filter((x) => x.r.covered.length || !x.r.cookieClear || !x.r.atBottom).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}: links under the bar ${x.r.covered.join('/') || 'none'}, Cookie settings clear ${x.r.cookieClear}`);
+    const bad2 = rows2.filter((x) => x.r.covered.length || !x.r.cookieClear || !x.r.atBottom).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}: links under the bar ${x.r.covered.join('/') || 'none'}, Cookie settings clear ${x.r.cookieClear}, at the end of the page ${x.r.atBottom} ${JSON.stringify(x.r.geo)}`);
     const gaps = rows2.map((x) => x.r.legalMin).filter((g) => g !== null);
     ck(!bad2.length, `at the end of the page every footer link, the Legal list and Cookie settings are clear of the bar (${rows2.length} runs; smallest gap above the bar ${gaps.length ? Math.round(Math.min(...gaps)) : 'n/a'}px)`, fail(bad2));
     const fine = rows2.filter((x) => x.r.fine).map((x) => `${x.w}x${x.h} ${x.p.slice(0, 5)} x${x.scale} ${x.state}`);

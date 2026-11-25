@@ -9,9 +9,9 @@
 //
 // Static:
 //  - the catalogues: every message of tools/i18n/messages.json has a usable translation in every language (the
-//    same numbered placeholders and {tokens}, no other markup), so no sentence falls back to English; an
-//    optional message (the brand line, held in English by translate="no") is checked only where a catalogue
-//    carries it, which is what sets it in that language (Japanese and Arabic);
+//    same numbered placeholders and {tokens}, each {date} of a byline in its own pair, no other markup), so no
+//    sentence falls back to English; an optional message (the brand line, held in English by translate="no") is
+//    checked only where a catalogue carries it, which is what sets it in that language (Japanese and Arabic);
 //  - every generated page declares its language and direction, has its own canonical address, carries the same
 //    Content-Security-Policy as the English pages, links no hero-bg.css, and every relative link, script, style
 //    and image in it resolves to a file (and a #fragment to an id);
@@ -54,6 +54,7 @@ const urlOf = (f) => (f === 'index.html' ? SITE : SITE + f.replace(/(^|\/)index\
 // ---------------------------------------------------------------- catalogues
 const PLACEHOLDER = /<\/?\d+\/?>/g;
 const TOKEN = /\{[a-z]+\}/g;
+const SLOT = /<(\d+)>\{date\}<\/\1>/g;
 const sorted = (m) => (m || []).slice().sort().join(' ');
 function unusable(id, t) {
   if (typeof t !== 'string' || !t.trim()) return 'empty';
@@ -64,6 +65,8 @@ function unusable(id, t) {
   const want = id.match(TOKEN) || [];
   // The date pattern may swap {month} for {m}; every other token has to survive as written.
   if (id !== '{d} {month} {y}' && sorted(want) !== sorted(t.match(TOKEN))) return 'a {token} is missing or changed';
+  // A byline's date (<1>{date}</1>, tools/i18n.py) is written into its own pair, wherever the translation puts the pair.
+  if (sorted(id.match(SLOT)) !== sorted(t.match(SLOT))) return 'a {date} has left its numbered pair';
   if (/[—!]|\.\.\./.test(rest) && !/[—!]|\.\.\./.test(id)) return 'an em dash, an exclamation mark or an ellipsis (the content rules)';
   return null;
 }

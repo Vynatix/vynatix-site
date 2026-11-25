@@ -1103,6 +1103,8 @@ if __name__ == '__main__':
     unknown_flags = [a for a in flags if a != '--check']
     if unknown_flags:
         raise SystemExit('unknown option ' + ', '.join(unknown_flags) + ' (the only option is --check)')
+    if (DATE_PATTERN, MONTHS['en']) != (i18n.DATE_PATTERN, i18n.MONTHS):   # i18n.py writes the bylines' dates with its copies
+        raise SystemExit('DATE_PATTERN or MONTHS["en"] differs from its copy in tools/i18n.py: make them equal')
     only = [os.path.basename(a) for a in sys.argv[1:] if not a.startswith('--')]
     unknown = [f for f in only if f not in PAGES]
     if unknown:

@@ -22,7 +22,10 @@ run: a translation in a live language has been public and becomes the stub in it
 strings are in the catalogues `tools/i18n/<code>.json`), and a translation in a draft language, which was never
 published, is deleted. The withdrawn text is also in those catalogues, keyed by the English sentence: run
 `python3 tools/i18n.py prune` after the script so the catalogues and `tools/i18n/messages.json` stop carrying
-it. They are not published, but the repository is public, and like the page they stay in git history.
+it. They are not published, but the repository is public, and like the page they stay in git history. If prune
+stops ("prune stopped, nothing dropped"), it names a byline entry from before dates became patterns that it
+cannot carry into its pattern: translate that pattern by hand as it says and run it again. The published pages do
+not wait for it.
 
 ## Before you start
 

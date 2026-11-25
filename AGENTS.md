@@ -1080,6 +1080,13 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   the meta description). Inline markup inside a message becomes numbered placeholders (`Read <1>the
   guide</1> <2/>`), so a translator never sees an attribute. Scripts, styles, inline SVG, `<code>`, anything
   with `translate="no"` and anything with a `lang` of its own are carried over as they are.
+  A date that is the whole text of an inline element (the `<time>` of a byline: a day, an English month name
+  and a year) is not part of the message. It stands as `{date}`, so the bylines are three messages
+  (`Published <1>{date}</1>`, the same with ` · In Swedish`, and `Published <1>{date}</1> · Last updated
+  <2>{date}</2> · Vynatix`), and each date is written in the language's own form from the catalogue's date
+  pattern (`{d} {month} {y}`) and month names. A re-dated guide, or a new one with that byline, needs no
+  catalogue entry for it. A translation keeps each `{date}` inside its own pair, or `i18n.py` and
+  `verify/i18n.js` call it unusable.
 - *The brand line.* "Engineering that compounds." in the home hero is `translate="no"` and stays English
   with `lang="en"` in Spanish, French and German, as on the Swedish hub. **On the Japanese and Arabic home
   pages it is set in the page's language, the owner's decision of 23 November 2026** (it was the largest
@@ -1112,7 +1119,8 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   if the headline of a generated home page takes more than its two lines.
 - *Catalogues.* `tools/i18n/<code>.json` maps each English message to its translation, the way gettext does.
   `tools/i18n/messages.json` (written by the script, never by hand) lists every message and the pages it is
-  on, plus the few that are on no page: the label of the language list and the withdrawn stub with its date.
+  on, plus the few that are on no page: the label of the language list, and the withdrawn stub with the date
+  pattern and the month names, which write the dates of the bylines too (*Messages*).
   The page's own JSON-LD nodes (`tools/seo/<page>.json`) are translated from the same catalogue; the
   Organization node stays the one English node every page carries.
 - *Drift is a failed check.* When an English sentence changes, its message is no longer in the catalogues.
@@ -1124,7 +1132,9 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   previous wording on stderr: the old English and its translation, from the catalogue's closest stale entry
   (difflib, an entry of the same page first), so a retranslation starts from the sentence before.
   `python3 tools/i18n.py prune` drops entries no page uses, those stale entries among them, so it runs after
-  the retranslation.
+  the retranslation. It first does what `python3 tools/i18n.py dates` does alone, dropping nothing: an entry
+  from before dates were patterns (`Published <1>6 November 2026</1>`) is carried into its pattern. A branch
+  opened before that change runs `dates` before it merges it; the steps are at the head of `tools/i18n.py`.
 - *Links.* A link to a page the language has keeps its name; everything else gains `../` (stylesheets,
   images, the notices, the Swedish pages) and a link to a page in another language gets `hreflang`, which
   `styles.css` shows as "(EN)" or "(SV)" after the link. A mailto subject gains the language in brackets
@@ -1284,7 +1294,9 @@ the pattern also asked for an interest disclosure and a "when we are the wrong c
 plan removed both, with the argument for other firms.) The byline is
 `<p class="prose__meta">Published <time datetime="YYYY-MM-DD">…</time> · Last updated <time datetime="YYYY-MM-DD">…</time> · Vynatix</p>`
 (Swedish: "Publicerad" and "Senast uppdaterad"); the two dates are `pub` and `mod` in the registry, and
-`permanence.js` fails if they differ. No cadence promise anywhere. **Section ids must not be `article`**: the
+`permanence.js` fails if they differ. The generated languages translate a byline once per wording, not once
+per date (*Languages*), so a new guide that keeps this byline adds no catalogue entry for it. No cadence
+promise anywhere. **Section ids must not be `article`**: the
 Article node's `@id` is the page URL plus `#article`, and a FAQ container with that id collides with it
 (`seo.js` then reports a misleading date error). Use `intro`, `questions`, `faq` and the like. The
 byline author is "Vynatix" and the Article's author is the Organization; no named person appears anywhere on the
@@ -1342,7 +1354,9 @@ is not on `main`) and the **changed** ones (the branch moved `mod` in the page's
 or footer alone moves no date, so `git diff --stat` is not the list). It moves `pub` and `mod` of the new pages
 and `mod` of the changed ones to the merge day, with the byline's Published / Publicerad and Last updated /
 Senast uppdaterad `<time>` and the `legal__meta` line that repeat them, and the `tools/urls.lock` rows of the
-new pages, then runs `seo-head.py`. It never touches a lock row whose URL is on `main` (a row is never edited
+new pages, then runs `seo-head.py`. The generated pages follow with no catalogue edit, because a byline's
+date is not part of its message (*Languages*). It never touches a lock row whose URL is on `main` (a row is
+never edited
 once its URL has been on the live site), event dates (the list pages' Checked / Kontrollerad lines, the
 `sv.html` guider lead, `tools/TAKEDOWN.md`, `tools/CITATION-LOG.md`), a date in the future or one earlier than
 the date it replaces, and it refuses a page whose visible date already disagrees with the registry and a

@@ -33,7 +33,7 @@
 // _common.js, as every check reads them), and from the files on disk; nothing here parses seo-head.py.
 const fs = require('fs');
 const path = require('path');
-const { ROOT: REPO, readRegistry, readLangs, generatedPages, pagesIn, scopeLine, stripJsComments } = require('./_common');
+const { ROOT: REPO, readRegistry, readLangs, generatedPages, pagesIn, scopeLine, stripJsComments, escapeRegExp } = require('./_common');
 
 const DOCS = ['AGENTS.md', 'CLAUDE.md', 'tools/README.md'];
 // The docs the count guard reads: the three above and every topic file AGENTS.md indexes (tools/docs/*.md).
@@ -210,7 +210,7 @@ function storageKeys(appSrc) {
   const out = {};
   for (const m of code.matchAll(/['"](vynatix-[a-z-]+)['"]/g)) out[m[1]] = out[m[1]] || [];
   for (const key of Object.keys(out)) {
-    const esc = key.replace(/[-]/g, '\\-');
+    const esc = escapeRegExp(key);
     const holders = [...code.matchAll(new RegExp(String.raw`\b([A-Za-z_$][\w$]*)\s*=\s*['"]${esc}['"]`, 'g'))].map((m) => m[1]);
     const args = [String.raw`['"]${esc}['"]`, ...holders.map((h) => String.raw`\b${h}\b`)].join('|');
     for (const m of code.matchAll(new RegExp(String.raw`\b(localStorage|sessionStorage)\s*\.\s*(?:getItem|setItem|removeItem)\s*\(\s*(?:${args})`, 'g'))) {

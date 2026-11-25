@@ -1,20 +1,29 @@
 # Image credits
 
-## Drawn pictures (English home page)
+## Generated pictures (English home page)
 
-The Services figure and the three case covers on the English home page (and on its five generated
-language versions) are drawings made for the site on 24 November 2026: `cover-cite`, `cover-build`,
-`cover-media` and `services-line`, each an ink mask and an `-accent` mask, written by
-`tools/case-art.js`. No photograph, person, brand or client system is shown. The digits are drawn
-by the script. The four glyphs in them (play, skip next, skip previous, person) are Material
-Symbols Outlined, weight 300, from `@material-symbols/svg-300` 0.47.5, Apache License 2.0 (see
-*Icons*).
+Made on 25 November 2026 with ElevenLabs' image tools. The daylight pictures are from the model
+`bytedance-seedream-5-pro`; each night version was made by editing its daylight picture with
+`gpt-image-2.5-sunburst`, so the two match, and the night Services file was then upscaled with
+`topaz-image-upscale-v2`. No photograph was used, and no person, brand or client system is
+shown: the prompts described an office, a desk and a truck cab, asked for no logos and no
+readable text, and named no company. The truck cab is not a Volvo's and the screens show no
+client software.
 
-They replaced four pictures generated on 20 November 2026 with ElevenLabs' image tools (model
-`gpt-image-2.5-sunburst`): `services-drafting-sheet`, `case-ai-bound-documents`,
-`case-cars-stopwatch` and `case-trucks-radio-dial`, each with a `-dark` twin. The owner had them
-removed on 24 November 2026 because they looked AI-generated and out of context. The files are in
-the repository's history.
+| File (and its `-dark` twin) | Where on the home page | What it shows |
+|---|---|---|
+| `services-workbench.webp` | Services, one picture across the three columns | An oak workbench with a laptop and an accelerator board, a small server rack, and a phone, a tablet and a watch |
+| `case-ai-source-documents.webp` | Cases, the regulated client card | Three binders and an open report with a highlighted passage, beside a laptop with an assistant on screen |
+| `case-cars-build-pipeline.webp` | Cases, the Volvo Cars card | A monitor in portrait showing a build pipeline, every stage with a green check |
+| `case-trucks-cab-media.webp` | Cases, the Volvo Trucks card | The dashboard of a truck on a forest road, a media player on its centre screen |
+
+The Services files are 2048px wide (quality 82), the case files 1280px (quality 84).
+
+They replaced the first generated set of 20 November 2026 (`services-drafting-sheet`,
+`case-ai-bound-documents`, `case-cars-stopwatch`, `case-trucks-radio-dial`, made with
+`gpt-image-2.5-sunburst`: still lifes of brass instruments on a drafting sheet), which the owner
+had removed because it looked AI-generated and out of context. Those files are in the
+repository's history.
 
 ## Photographs (Swedish hub)
 

@@ -1,9 +1,0 @@
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 340' width='180' height='340' fill='none' stroke='currentColor' stroke-width='2'>
-<path d='M22 300H158' stroke-width='1.25' stroke-dasharray='14 4 2 4'/>
-<path d='M52 46.2H132' stroke-width='1.25'/>
-<path d='M66 300V46.2'/>
-<path d='M66 300h-12M66 294.6h-5M66 289.2h-5M66 283.8h-5M66 278.4h-5M66 273h-8.5M66 267.6h-5M66 262.2h-5M66 256.8h-5M66 251.4h-5M66 246h-12M66 240.6h-5M66 235.2h-5M66 229.8h-5M66 224.4h-5M66 219h-8.5M66 213.6h-5M66 208.2h-5M66 202.8h-5M66 197.4h-5M66 192h-12M66 186.6h-5M66 181.2h-5M66 175.8h-5M66 170.4h-5M66 165h-8.5M66 159.6h-5M66 154.2h-5M66 148.8h-5M66 143.4h-5M66 138h-12M66 132.6h-5M66 127.2h-5M66 121.8h-5M66 116.4h-5M66 111h-8.5M66 105.6h-5M66 100.2h-5M66 94.8h-5M66 89.4h-5M66 84h-12M66 78.6h-5M66 73.2h-5M66 67.8h-5M66 62.4h-5M66 57h-8.5M66 51.6h-5M66 46.2h-5' stroke-width='1'/>
-<path d='M62 304L70 296M62 50.2L70 42.2'/>
-<path d='M118 259.6V46.2' stroke-width='1.25' stroke-dasharray='6 5'/>
-<g stroke-width='1.06' stroke-linecap='round' stroke-linejoin='round'><path transform='translate(52.86 18.2) scale(1.8)' d='M4.5 10V0L0 7H6'/><path transform='translate(68.34 18.2) scale(1.8)' d='M0 0H6L2.4 10'/></g>
-</svg>

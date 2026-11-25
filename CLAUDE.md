@@ -19,8 +19,8 @@ highlights the things most worth keeping front-of-mind.
   `vynatix.com` (`CNAME`). `_config.yml` decides what is published; developer
   docs and `tools/` are excluded. `tools/` is the one npm-using exception: local
   verification tooling plus `stamp.js` (see the stamps bullet) and `seo-head.py`
-  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generators
-  `sheet-art.js` for the hero background and `case-art.js` for the home page's drawn pictures, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
+  (Python 3; rewrites the search block, header, footer, sitemap and URL lock), and the mask generator
+  `sheet-art.js` for the hero background, and `lang-fonts.py`, which cuts the Japanese and Arabic fonts, never site content and
   never run at deploy time.
 - **Seven languages, two kinds.** English and Swedish are written by hand (the thirty-four pages above).
   Spanish, French, German, Japanese and Arabic are **generated**: `tools/seo-head.py` rebuilds every English page except
@@ -113,17 +113,18 @@ highlights the things most worth keeping front-of-mind.
   and the rest) are facts about the current copy, the header and the hero's spacing: after changing any of
   those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
-- **The English home page tells its story in pictures, and every one of them is drawn.** The
+- **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
   block of `styles.css` named "The English home page: its pictures" (the last but one) holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
-  Insights as ruled rows. The Services figure and the three case covers are drawings of what their text states
-  (47 and 6 minutes to one scale, an answer tied to its source, a tuner's needle as a playhead), written by
-  `node tools/case-art.js` as alpha-only masks (`assets/cover-*.svg`, `services-line*.svg`) that `styles.css` lays
-  over role colours, so one pair of files serves both themes. The AI-generated still lifes that stood there went on
-  the owner's word of 24 November 2026 (they looked generated and out of context): **no generated and no stock
-  picture comes back, a mask is never edited by hand, no drawing carries a word, and `publish.js` fails if a mask,
-  the stylesheet or the figures on the Volvo Cars card drift from the generator.** The contents row no longer pins: the header is the only bar. The owner chose the
+  Insights as ruled rows. The Services picture and the three case pictures are generated photographs of the work
+  their text names (a workbench with the tools of the three services, documents beside an assistant, a build
+  pipeline on a monitor, a truck cab's media screen), made with ElevenLabs on the owner's word of 25 November 2026
+  after the first set, still lifes of brass instruments, looked AI-generated and out of context: keep them plain
+  and in context (no styling, no readable text, no person, no logo). Each has a
+  daylight and a night version; `light-dark()` picks the file from the page's `color-scheme`, so there is
+  no theme selector and only one set is fetched. **A new picture ships as a pair, the night one made by
+  editing the daylight one.** The contents row no longer pins: the header is the only bar. The owner chose the
   drawn frames over a film (20 November 2026): no video. `sv.html` keeps the older layout and the stock
   photographs. See AGENTS.md, *The English home page*.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The

@@ -1,9 +1,0 @@
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360' width='640' height='360' fill='none' stroke='currentColor' stroke-width='3'>
-<path d='M38 90V296' stroke-width='1.8' stroke-dasharray='14 4 2 4'/>
-<path d='M602 128V274' stroke-width='1.8'/>
-<path d='M38 152H602'/>
-<path d='M38 152v21M50 152v9M62 152v9M74 152v9M86 152v9M98 152v15M110 152v9M122 152v9M134 152v9M146 152v9M158 152v21M170 152v9M182 152v9M194 152v9M206 152v9M218 152v15M230 152v9M242 152v9M254 152v9M266 152v9M278 152v21M290 152v9M302 152v9M314 152v9M326 152v9M338 152v15M350 152v9M362 152v9M374 152v9M386 152v9M398 152v21M410 152v9M422 152v9M434 152v9M446 152v9M458 152v15M470 152v9M482 152v9M494 152v9M506 152v9M518 152v21M530 152v9M542 152v9M554 152v9M566 152v9M578 152v15M590 152v9M602 152v9' stroke-width='1.8'/>
-<path d='M31 159L45 145M595 159L609 145'/>
-<path d='M122 250H602' stroke-width='1.8' stroke-dasharray='9 8'/>
-<g stroke-width='0.88' stroke-linecap='round' stroke-linejoin='round'><path transform='translate(295.18 98) scale(3.4)' d='M4.5 10V0L0 7H6'/><path transform='translate(324.42 98) scale(3.4)' d='M0 0H6L2.4 10'/></g>
-</svg>

@@ -527,9 +527,8 @@ h1 em, h2 em {
      buttons. At 1440px wide the headline is 96px from about 710px of window height and 86px
      at the envelope's lower edge.
    - Whole. From 864px of height (1024px and wider) the client row fits as well: the unit is
-     solved for the whole hero, never under 0.82, and the row is pinned to the bottom of the
-     window with the spare room above its rule. From 975px that is the design size with more
-     air.
+     solved for the whole hero, never under 0.82, so the hero ends on the fold. From 975px that is the design
+     size and the row is not pinned: the next section starts on the first screen.
    - Natural. Outside the envelope the hero is the plain scrolling hero at the design
      size: a window under 650px high (520px on a phone), which is also where browser zoom
      lands, so zooming in always ends at full-size text, and any browser without svh or
@@ -599,19 +598,18 @@ h1 em, h2 em {
     .hero.hero--clients { min-height: 0; display: block; }
     .hero__msg { min-height: calc(var(--hero-room) - var(--hero-pad) - var(--hero-gap)); }
   }
-  /* Whole: the client row is on the first screen, pinned to its bottom edge. The height is where the
+  /* Whole: the client row is on the first screen. The height is where the
      whole hero fits at a unit of 0.82: 864px. (Until 24 November 2026 the English hero kept 336 units
      under its buttons from 1100px, the room the drafting sheet's A-frame hung into, and this was
      1060px there; the art now stands beside the message and the room is gone.) */
   @media screen and (min-width: 1024px) and (min-height: 864px) {
     .hero.hero--clients { --hero-fit: clamp(0.82px, max((var(--hero-room) - var(--hero-wf)) / var(--hero-wk), (var(--hero-room) - var(--hero-wf) - var(--hero-hw)) / (var(--hero-wk) - var(--hero-h))), 1px); }
   }
+  /* The row follows the buttons at the plain gap and is not pinned: where the window is taller than
+     the whole hero at the design size (975px and up), the next section starts on the first screen
+     instead of an empty band above the clients' rule (the owner's word of 25 November 2026). */
   @media screen and (min-width: 1024px) and (min-height: 864px), screen and (min-width: 768px) and (max-width: 1023px) and (min-height: 1000px) {
-    .hero.hero--clients { min-height: var(--hero-room); display: flex; flex-direction: column; }
-    .hero.hero--clients > .container { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     .hero.hero--clients .hero__msg { min-height: 0; }
-    .hero.hero--clients .clients { margin-top: auto; padding-top: var(--space-8); }
-    .hero.hero--clients .hero__ctas { margin-bottom: var(--hero-gap); }
   }
   /* Without script the narrow header is not sticky and lists its links, so what stands above the
      hero is not --hero-above: the plain hero there. */

@@ -18,7 +18,7 @@
 //      phones at their small viewport height) the page is in the state the table expects and:
 //        message  the buttons end above the fold, and the clients' rule lies on it (never above it, so
 //                 the row is not cut half way); on the Swedish hub the hero ends on it
-//        whole    the hero ends on the fold with the client row inside it
+//        whole    the client row is on the first screen: the hero ends on the fold while fitted, above it at 1px
 //        natural  the unit is 1px: the plain scrolling hero, at the design size
 //      and in every state: no text under its floor, no horizontal scroll, nothing clipped.
 //   E  Envelope. One pixel inside and outside each edge of the envelope, and a 200% browser zoom (half
@@ -313,7 +313,10 @@ function measure() {
       check(m.u >= m.min - 1e-6 && m.u <= 1 + 1e-6, `${name}: the unit ${m.u.toFixed(3)}px is between its floor ${m.min}px and 1px`);
       if (win.fit) check(m.cta <= m.fold - 8, `${name}: the buttons end above the fold`, `they end ${(m.cta - m.fold).toFixed(1)}px ${m.cta > m.fold ? 'below' : 'above'} it (unit ${m.u.toFixed(3)}px)`);
       if (win.state === 'whole') {
-        check(Math.abs(m.heroBottom - m.fold) <= TOL, `${name}: whole, the hero ends on the fold`, `it ends ${(m.heroBottom - m.fold).toFixed(1)}px from it`);
+        // Fitted (unit under 1px) the hero ends on the fold; at the design size it ends above it and the
+        // next section starts on the first screen, with no spare room pinned above the clients' rule.
+        check(m.u < 1 - 1e-6 ? Math.abs(m.heroBottom - m.fold) <= TOL : m.heroBottom <= m.fold + TOL, `${name}: whole, the hero ends ${m.u < 1 - 1e-6 ? 'on' : 'on or above'} the fold`, `it ends ${(m.heroBottom - m.fold).toFixed(1)}px from it`);
+        check(m.rule - m.cta <= 96 * m.u + 0.1 + TOL, `${name}: whole, the clients' rule follows the buttons at the plain gap`, `it is ${(m.rule - m.cta).toFixed(1)}px under them`);
         check(m.rowEnd <= m.fold, `${name}: whole, the client row is on the first screen`, `it ends ${(m.rowEnd - m.fold).toFixed(1)}px below the fold`);
       } else if (index) {
         // Never above the fold: a row that starts on the first screen and ends under it is the cut the fit removes.

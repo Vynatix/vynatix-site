@@ -2,19 +2,37 @@
 
 ## Generated pictures (English home page)
 
-Made on 20 November 2026 with ElevenLabs' image tools (model `gpt-image-2.5-sunburst`; the two
-Services files upscaled twice with `topaz-image-upscale-v2`). No photograph, person, brand or
-client system is shown; the prompts described a drafting sheet with instruments and named no
-company. Each night version was made by editing its daylight version, so the two match.
+Made on 25 November 2026 with ElevenLabs' image tools, in the flow "Vynatix home page pictures,
+premium set (4K)", where the 4K masters and the candidates not chosen remain. Each slot was
+generated four times with each of two models at 4K, and the best of the eight kept: the Services
+picture, the regulated client and Volvo Cars with `gpt-image-2.6-sunburst` (quality high), Volvo
+Trucks with `flux-3-image`. Each night version was made by editing its daylight picture with
+`gpt-image-2.6-sunburst` at 4K, so the two match. No photograph was used, and no person, brand or
+client system is shown: the prompts described a studio, a desk and a truck cab, asked for no logos,
+and named no company. The truck cab is not a Volvo's, the car body is unbadged, and the screens
+show no client software. The one readable screen says "Build passed" and "6 min", the figure of
+the Volvo Cars case.
 
 | File (and its `-dark` twin) | Where on the home page | What it shows |
 |---|---|---|
-| `services-drafting-sheet.webp` | Services, one picture across the three columns | A card-index drawer, five brass weights stepping up in size, a compass and set square over a pencilled triangle |
-| `case-ai-bound-documents.webp` | Cases, the regulated client card | A stack of bound documents, the top one open with three brass page markers, and a magnifying glass |
-| `case-cars-stopwatch.webp` | Cases, the Volvo Cars card | A brass stopwatch over a long and a short pencilled dimension line |
-| `case-trucks-radio-dial.webp` | Cases, the Volvo Trucks card | A radio tuning dial, its knob and a length of cable |
+| `services-bench.webp` | Services, one picture across the three columns | An oak bench with a laptop and a GPU board, a small server rack, and a phone, a tablet and a watch |
+| `case-ai-cited-answer.webp` | Cases, the regulated client card | Three binders and an open document with a highlighted passage, beside a laptop whose assistant answers with two numbered sources; a harbour crane in the window |
+| `case-cars-build-passed.webp` | Cases, the Volvo Cars card | A portrait monitor reading "Build passed" and "6 min" over ten stages with green checks; a car body on a lift beyond the glass |
+| `case-trucks-cab-player.webp` | Cases, the Volvo Trucks card | A truck cab on a forest road, a media player on its centre screen |
 
-The Services files are 2400px wide (quality 80), the case files 1280px (quality 84).
+The Services files are 3072 by 1024 (quality 80), the regulated client's 2000 by 1333 (quality
+78), the Volvo files 1600 square (quality 82): twice the largest size each is shown at.
+
+A second set, made the same day with `bytedance-seedream-5-pro` at 2K (`services-workbench`,
+`case-ai-source-documents`, `case-cars-build-pipeline`, `case-trucks-cab-media`), was on the
+branch for a few hours and replaced by this one before it was published; it is in the repository's
+history.
+
+They replaced the first generated set of 20 November 2026 (`services-drafting-sheet`,
+`case-ai-bound-documents`, `case-cars-stopwatch`, `case-trucks-radio-dial`, made with
+`gpt-image-2.5-sunburst`: still lifes of brass instruments on a drafting sheet), which the owner
+had removed because it looked AI-generated and out of context. Those files are in the
+repository's history.
 
 ## Photographs (Swedish hub)
 

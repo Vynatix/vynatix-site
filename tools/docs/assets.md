@@ -14,7 +14,7 @@ places where inline SVG cannot go (email, documents) and for regenerating the
 icons. The system holds the other inks (teal, ink, cloud, champagne, charcoal,
 paper) for the other directions.
 
-The English home page's pictures are generated still lifes (`services-drafting-sheet*.webp` and
+The English home page's pictures are generated photographs (`services-workbench*.webp` and
 three `case-*.webp`, each with a `-dark` twin; see `assets/CREDITS.md`), shown in full colour
 with no filter or overlay. They illustrate the work and show no client system, and the page
 says so in the line under the case cards. The Swedish hub still carries the three stock

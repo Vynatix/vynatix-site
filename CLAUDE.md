@@ -119,8 +119,13 @@ front-of-mind.
   block of `styles.css` named "The English home page: its pictures" holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
-  Insights as ruled rows. The Services picture and the three case pictures are generated still lifes with a
-  daylight and a night version each; `light-dark()` picks the file from the page's `color-scheme`, so there is
+  Insights as ruled rows. The Services picture and the three case pictures are generated photographs of the work
+  their text names (a workbench with the tools of the three services, documents beside an assistant, a build
+  pipeline on a monitor, a truck cab's media screen), made with ElevenLabs on the owner's word of 25 November 2026
+  after the first set, still lifes of brass instruments, looked AI-generated and out of context: keep them plain
+  and in context (no styling, no person, no logo; text in a picture is too small to read or true, as the
+  "6 min" on the Volvo Cars monitor is), generated at 4K and shipped at twice their largest size. Each has a
+  daylight and a night version; `light-dark()` picks the file from the page's `color-scheme`, so there is
   no theme selector and only one set is fetched. **A new picture ships as a pair, the night one made by
   editing the daylight one.** The contents row no longer pins: the header is the only bar. The owner chose the
   drawn frames over a film (20 November 2026): no video. `sv.html` keeps the older layout and the stock

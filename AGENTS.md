@@ -56,7 +56,7 @@ ai-in-your-existing-product.html, automotive-software.html   Their English twins
                     and through them the five generated languages
 konsultbolag-android-automotive-goteborg.html, ai-konsultbolag-sverige.html   Withdrawn on
                     20 November 2026 (stubs)
-integritet.html     Swedish privacy notice, the twin of privacy.html (one of five
+integritet.html     Swedish privacy notice, the twin of privacy.html (one of the
                     English/Swedish pairs); the Swedish consent bar links to it.
                     Thirty-four pages in total, three of them withdrawn stubs
 robots.txt          Allows every crawler, names the AI search agents, points at the sitemap
@@ -140,6 +140,11 @@ There is no `assets/`-level JS or CSS — those folders are static files only.
   scales. New components follow the system's cards (TopAppBar, Button, Card,
   EditorialCard, MetricCard, Banner, FocusRing, Logo); the file's comments
   name which pattern each block implements.
+  Each block opens with a banner (a comment headed by a rule, with the block's name on
+  its next line), and the docs cite a block by that name (`styles.css`, "Hero fit"), never
+  by its place in the file: `tools/verify/docs.js` holds the names in order and fails when a
+  block is moved, renamed, added or removed, so a new block goes into its list in the same
+  commit.
 
 **Version stamps on the four shared files.** Every page loads `tokens.css`,
 `colors_and_type.css`, `styles.css` and `app.js` with a content hash in the URL
@@ -239,7 +244,7 @@ inverse bands (`.inverse`: the CTA band, the editorial band, the footer) sit on
 **Liquid Glass.** The site follows Apple's Liquid Glass as far as the web allows (an
 owner decision of 18 November 2026; a first pass on the 17th put frosted glass on the
 content cards over a tinted backdrop, which Apple's own rules exclude, and was
-replaced). One fenced block at the end of `styles.css`. The rules it follows:
+replaced). One fenced block of `styles.css`, "Liquid Glass". The rules it follows:
 
 - **Glass is the controls layer; content is never glass.** Pages, cards (`.panel`,
   `.metric`, `.case`) and the consent bar keep the system's solid surfaces.
@@ -384,7 +389,7 @@ masks and the guards of each. `publish.js` fails if `hero-bg.js`, `data-bg` or a
 `vynatix-bg` key comes back.
 
 - **Where it lives.** `hero-bg.css`, which only `index.html` links, after `styles.css`, so
-  the other twenty-three pages never download it. It carries a version stamp (`stamp.js`).
+  no other page downloads it. It carries a version stamp (`stamp.js`).
   There is no script, no storage and no markup for it, so the page is the same with and
   without JavaScript (`bg-sheet.js` compares the two pixel for pixel).
 - **The rules.** Every rule on the hero carries `:lang(en)`, so the Swedish hub would be
@@ -599,7 +604,7 @@ without JavaScript the wrapped nav shows the link, and under 375px it sits in th
 enlarged text its label wraps rather than leaving the bar), so a reader can act from any depth
 of a long page. The menu button's listeners are delegated from the document in the blocking
 head, so it works from the moment it is painted. On a phone the footer's link groups sit two-up
-where two columns fit, one column where they do not. The print layer at the end of `styles.css`
+where two columns fit, one column where they do not. The print layer (`styles.css`, "Print")
 prints the header once, without its controls, and keeps the inverse bands, the filled buttons
 and the client marks in colour; tonal surfaces, cards and outlined buttons print the browser's
 economical way, so a dark theme does not print as black slabs.
@@ -685,7 +690,8 @@ afterthought — preserve it:
 **Largest contentful paint.** On every page the LCP element is the opening
 paragraph (the hero lede, or the page hero's). It paints in the fallback face as
 soon as the stylesheets arrive, so `font-display: swap` keeps fonts out of the real
-LCP: measured on a throttled phone, LCP equals first paint on all 20 pages. What is
+LCP: measured on a throttled phone, LCP equalled first paint on each of the 20 pages the site
+had when this was written (19 October 2026). What is
 left is render work and, in Lighthouse's simulated score, font bytes.
 
 - On the two home pages `.hero ~ section` carries `content-visibility: auto`
@@ -878,8 +884,8 @@ version of those pages, so the label would be false there), and everything on th
 above, to which the report added: which changes cut the build time, how hours are estimated
 and whether an engagement can change, and any certification.
 
-**The page's pictures** (`styles.css`, "The English home page: its pictures", the last block of
-the file) are the owner's decisions of 20 November 2026. On this page `.section--surface` has no
+**The page's pictures** (`styles.css`, "The English home page: its pictures")
+are the owner's decisions of 20 November 2026. On this page `.section--surface` has no
 tint and no rules, so the silk runs unbroken from the client row to the closing band; from
 1280px the hero drawing's dash-dot centre line runs down the left margin, 40px outside the text
 edge, with a tick at each block's label (pseudo-elements, decoration only). **The generated
@@ -940,7 +946,7 @@ month's invoicing, the highest gross salary it carries (a whole hundred, never u
 that salary costs line by line, the fixed and total costs, and what is left on the balance.
 
 - **Where it lives.** Markup in `membership.html` (`[data-calc]`, inputs named by `data-calc-in`,
-  figures by `data-calc-out`), the fourth block of `app.js`, the last section of `styles.css`
+  figures by `data-calc-out`), the fourth block of `app.js`, the "Rate calculator" block of `styles.css`
   (`.calc`). No form element (Enter must not submit anything), no storage, no request: what is
   typed never leaves the page, so the notices do not mention it.
 - **The share is 70 per cent and its slider is out of sight** (asked for on 20 November 2026). The
@@ -988,7 +994,7 @@ settings" link, which it relabels "Cookie-inställningar" (with `lang="sv"` and 
 link to `integritet.html#cookies`) on any page whose `<html lang>` starts with
 `sv`. Without JavaScript, or while the module is inert, the English link to
 `privacy.html#cookies` stays. `integritet.html` is the Swedish twin of
-`privacy.html`, one of five English/Swedish pairs, and the Swedish consent bar links
+`privacy.html`, one of the English/Swedish pairs, and the Swedish consent bar links
 to it. The footer's "På svenska" column (`lang="sv"`) links the Swedish
 hub (`sv.html`), which links every Swedish guide in its `#guider` section, and
 `integritet.html`, which is a notice and not a guide and so is linked from that
@@ -1080,7 +1086,7 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   (`data-i18n-play` on the background motion button, `data-i18n-percent` and `data-i18n-status` on the rate
   calculator) and the English is only the fallback. A new sentence written by script goes the same way. On a
   page in a language folder `app.js` finds the site's root from its own `src` (`UP`).
-- *Type and direction.* The last block of `styles.css` ("Languages") is all the CSS there is: no tracking,
+- *Type and direction.* The "Languages" block of `styles.css` is all the CSS there is: no tracking,
   taller display leading and upright emphasis for Japanese and Arabic (French and German need nothing); the
   script's own faces appended to the family lists (next point); and the few physical sides that right-to-left
   mirrors, most of them in the design system's own sheet. The layout itself is flex, grid and logical properties and
@@ -1599,7 +1605,8 @@ add third-party font/CDN requests for fonts.
   the hero background's guard (`bg-sheet.js`) and its
   run on a scaled hero (`bg-fit.js`),
   the accessibility suite with its contrast sweep (`a11y.js`), the static CSP sync
-  (`csp.js`), the "what ships" check (`publish.js`) and the consent behaviour and
+  (`csp.js`), the "what ships" check (`publish.js`), the page counts the docs state and the order of
+  the `styles.css` blocks (`docs.js`) and the consent behaviour and
   layout checks (`consent.js`, `consent-layout.js`). Two more run outside
   `npm run check`: the release gate (`release-gate.js`, which must fail
   until analytics is switched on for real; only its `--self-test` is in the chain)
@@ -1633,7 +1640,7 @@ add third-party font/CDN requests for fonts.
 - **Do not add inline `style=""` attributes.** The CSP pins `style-src 'self'`,
   so the browser blocks them outright. One-off layout goes in `styles.css` as a
   component modifier (`.section__h2--wide`) or, for pure spacing, one of the
-  small `.u-*` utilities at the end of the file (values from the spacing scale
+  small `.u-*` utilities of the "Utilities" block (values from the spacing scale
   only). Those utilities are single-class rules, so anything you append later
   with equal specificity will outrank them — put new component rules before
   that block, not after it.

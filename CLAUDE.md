@@ -39,7 +39,7 @@ highlights the things most worth keeping front-of-mind.
   locked URL without a file only when it is listed there (and never linked, never reused).
   Text that `app.js` writes comes from the page (`data-i18n-*`), never from a dictionary in the script. Arabic
   is right to left: use logical properties in `styles.css`, and put what a script or a direction changes in
-  its last block, "Languages". **Japanese and Arabic have their own faces, two each for the two roles of the
+  its "Languages" block. **Japanese and Arabic have their own faces, two each for the two roles of the
   Latin type** (M PLUS 2 and Noto Sans Arabic where Geist stands, Shippori Mincho and Amiri where Fraunces
   italic stands; Geist still draws the Latin and the digits on those pages). They are subsets cut from the
   generated pages by `python3 tools/lang-fonts.py` (needs `pip install -r tools/requirements.txt`): when a translation
@@ -85,7 +85,7 @@ highlights the things most worth keeping front-of-mind.
 - **One hero background, the drafting sheet.** The English home hero carries one piece of
   decorative art: ruled guides behind the headline, a scale under the header and, from
   75rem, an A-frame drawing. It is pure CSS in `hero-bg.css`, which **only `index.html`
-  links** (so the other twenty-three pages never download it): no script, no storage, no
+  links** (so no other page downloads it): no script, no storage, no
   motion, the same with and without JavaScript, every rule on the hero carrying
   `:lang(en)`, custom properties named `--sheet-*`, role tokens only. Its two masks are
   `assets/bg-sheet-*.svg` (from `tools/sheet-art.js`, new names whenever regenerated).
@@ -114,7 +114,7 @@ highlights the things most worth keeping front-of-mind.
   those, run `node tools/verify/hero-fit.js`, which prints the measurement and names the pair to refit.**
   `min-height` only, never `height` or `overflow` on the hero. See AGENTS.md, *Hero fit*.
 - **The English home page tells its story in pictures, and its generated pictures come in two sets.** The
-  block of `styles.css` named "The English home page: its pictures" (the last but one) holds it: a tall lead case beside two compact ones, the hero's
+  block of `styles.css` named "The English home page: its pictures" holds it: a tall lead case beside two compact ones, the hero's
   drawing at four stages in the Partnership band (masks `assets/stage-*.svg`, written by `tools/sheet-art.js`
   from the hero's own constants), no tinted strips, the drawing's centre line down the left margin, and
   Insights as ruled rows. The Services picture and the three case pictures are generated still lifes with a
@@ -227,7 +227,7 @@ highlights the things most worth keeping front-of-mind.
   `assets/icons/` (`aria-hidden`, beside visible words or inside a labelled
   button). Never draw one, never use the `.ms` font classes.
 - **Every page is written to be quoted by AI search engines.** Each `<head>` has a
-  canonical link, Open Graph, hreflang for every language version of the page (the five English/Swedish pairs, and the five generated languages), and one
+  canonical link, Open Graph, hreflang for every language version of the page (the English/Swedish pairs, and the five generated languages), and one
   JSON-LD graph with the same Organization node everywhere (`memberOf` Ultra Group,
   matching the footer). When page content changes, move the page's `mod` date in
   the `PAGES` registry of `tools/seo-head.py` and run `python3 tools/seo-head.py`;
@@ -253,7 +253,8 @@ off-origin requests, CSP enforcement and sync (`csp.js`), the consent behaviour
 and layout (`consent.js`, `consent-layout.js`), what ships (`publish.js`: pages
 registered, new root files excluded, footer link, storage keys named, the site's
 style rules, the hero background's rules and the retired draws, no `.nojekyll` or front matter, every `url()` target published), the hero background's guard, the rate
-calculator's arithmetic and no-JavaScript state (`calc.js`), accessibility
+calculator's arithmetic and no-JavaScript state (`calc.js`), the page counts the docs state and the
+order of the `styles.css` blocks (`docs.js`), accessibility
 including a contrast sweep, and a screenshot diff.
 The generated languages have their own check in the chain, `i18n.js` (catalogues complete, the draft gate,
 every generated page loaded at three widths, axe on three pages of each).

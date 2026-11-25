@@ -12,6 +12,7 @@
     "redate": "python3 redate.py",
     "check:bg": "node verify/bg-sheet.js && node verify/bg-fit.js",
     "shots": "node verify/screenshot.js current && node verify/screenshot.js compare",
+    "shots:against": "node verify/screenshot.js against",
     "stamp": "node stamp.js",
     "shipped": "node verify/shipped.js",
     "sync": "node sync.js",

@@ -100,6 +100,7 @@ Then, from `tools/`:
 | `node verify/screenshot.js current` | Capture into `current/` |
 | `node verify/screenshot.js compare` | Pixel-diff `current/` against `baseline/` |
 | `node verify/screenshot.js bar` | Viewport-only captures of the consent bar itself in each theme under test (index and Swedish hub, 390x844 and 1440x900 or `VW`x`VH`): first visit, reopened from the footer, and scrolled to the end of the page. Into `current-bar/`, for review by eye; not part of `compare` |
+| `node verify/screenshot.js against [rev]` | The visual net for a refactoring pull request, with no baseline to keep (`npm run shots:against`). It checks `rev` out into a temporary git worktree (default: the merge base of HEAD and `origin/main`), serves that tree and this working tree on two free ports of its own (`python3 -m http.server`; `BASE` is not used), captures every page in both the way `baseline` does (armed, the answer pinned to denied, the pause stored) at 390x844 and 1440x900 (or `VW`x`VH` alone), and compares each pair with pixelmatch at the threshold `compare` uses. The pages are PAGES and the generated pages of either tree, 114 today; `PAGES=index.html,es/about.html` narrows them. With `THEMES` unset it runs mono-light only. It prints every page, width and theme that differs, and any page that exists in one tree only, writes each diff image beside its two captures to `diff-against/`, and exits 1 on any difference. A capture of another height counts as a difference. The worktree and the servers are removed at the end, on a failure and on Ctrl-C too. The rev must carry the consent module, as for a baseline. A full run in one theme (456 captures) took 9 minutes 40 seconds on a 4-core machine; `JOBS=n` compares n pairs at a time. Not in `npm run check` |
 
 `indexnow.js` is not a check: after a change is live on vynatix.com, `node indexnow.js`
 tells Bing and the other IndexNow engines which URLs changed (all of `sitemap.xml`, or the
@@ -112,6 +113,11 @@ a lazy-loaded cover cannot race the screenshot and produce a false diff. They al
 set `content-visibility: visible` on every `main` section, so the home-page sections
 that `styles.css` lets the browser skip are compared as designed, not at a placeholder
 or remembered height.
+
+`screenshot.js against` is the same gate in one run, with nothing to capture by hand
+beforehand: it renders the merge base with `origin/main` (or the revision named) in a
+temporary worktree beside the branch and compares every root and generated page at two
+widths. Run it on a pull request that should change nothing a visitor sees.
 
 The order of the chain is the order of the `check` script in `package.json`, which `node check.js --list` prints with what each step proves. The consent checks arm a page that
 lacks the widened policy or the footer link (armGa supplies both), so that every scenario still
@@ -134,7 +140,9 @@ cannot be carried in a meta CSP at all, so framing protection is an edge-layer
 concern and `headers.js` is where it is asserted.
 
 Other useful env vars: `VW`/`VH` set the screenshot viewport (e.g. `VW=390
-VH=844` for mobile) and `SUFFIX` writes to a separate directory set.
+VH=844` for mobile) and `SUFFIX` writes to a separate directory set. `screenshot.js against` also reads `PAGES`
+(a comma list such as `index.html,es/about.html`) and `JOBS` (how many pairs it compares at
+a time, default 1).
 
 The site has one colour scheme (Monochrome, light or dark), so any check that needs a
 particular theme sets it before the page loads with `pinTheme` from `verify/_common.js`; pass

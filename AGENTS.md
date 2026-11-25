@@ -1597,7 +1597,8 @@ add third-party font/CDN requests for fonts.
   are consistent across pages, behaviour degrades gracefully with JS off and
   reduced motion on, and there are no console errors. Check changes visually in
   both themes. `tools/README.md` documents the repeatable checks — a visual
-  regression gate (`screenshot.js`), an adversarial CSP test (`adversarial.js`),
+  regression gate (`screenshot.js`, whose `against` mode compares a branch with `origin/main`
+  in one run), an adversarial CSP test (`adversarial.js`),
   an off-origin request check (`requests.js`), the random-scheme check
   (`theme.js`), the version-stamp
   check (`stamp.js --check`) and its stale-cache proof (`stale-cache.js`), the search, structured-data and copy check

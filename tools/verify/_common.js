@@ -666,10 +666,11 @@ function parseTags(html, name) {
 // Serves app.js with the Measurement ID replaced, so a browser check runs the same module the visitors get
 // but never with a real ID. The source is fetched here, once, outside the route, so a missing or doubled
 // line rejects this call (a throw inside a route handler would be swallowed). Playwright runs the most
-// recently registered matching route first, so call this after any catch-all route.
-async function rewriteGaId(context, id = TEST_ID) {
-  const res = await context.request.get(new URL('app.js', BASE).href);
-  if (!res.ok()) throw new Error(`rewriteGaId: ${BASE}app.js answered ${res.status()}`);
+// recently registered matching route first, so call this after any catch-all route. base is the address the tree
+// is served from (default BASE): app.js is fetched from that tree.
+async function rewriteGaId(context, id = TEST_ID, base = BASE) {
+  const res = await context.request.get(new URL('app.js', base).href);
+  if (!res.ok()) throw new Error(`rewriteGaId: ${base}app.js answered ${res.status()}`);
   const body = rewriteGaIdSource(await res.text(), id);
   await context.route((url) => url.pathname.endsWith('/app.js'), (route) =>
     route.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', headers: { 'cache-control': 'no-store' }, body }));
@@ -793,13 +794,15 @@ const FOOTER_LINK = '\n            <li><a href="privacy.html#cookies" data-conse
 // BASE, for cookie-domain checks on a made-up host name). Two options are for consent-live.js alone: live (the
 // CSP's own Google hosts get the real network instead of the stand-ins; any request that carries another
 // Measurement ID is still aborted) and stripUpgrade (drop upgrade-insecure-requests from the policy, which WebKit
-// applies even to http://localhost; on by default under ENGINE=webkit). Returns the log object.
+// applies even to http://localhost; on by default under ENGINE=webkit). One option is for screenshot.js against,
+// which serves two trees at once: base (default BASE), the address of the tree this context loads, whose origin
+// counts as the site's own and whose app.js is the one rewritten. Returns the log object.
 async function armGa(context, opts = {}) {
-  const o = Object.assign({ id: TEST_ID, inert: false, csp: 'auto', footer: true, stub: {}, origins: [], controlId: false, live: false, stripUpgrade: process.env.ENGINE === 'webkit' }, opts);
+  const o = Object.assign({ id: TEST_ID, inert: false, csp: 'auto', footer: true, stub: {}, origins: [], controlId: false, live: false, stripUpgrade: process.env.ENGINE === 'webkit', base: BASE }, opts);
   if (!o.inert && isActiveShape(o.id) && o.id !== TEST_ID && !o.controlId) {
     throw new Error('armGa: refusing to arm an active-looking ID other than the dummy ' + TEST_ID);
   }
-  const base = new URL(BASE);
+  const base = new URL(o.base);
   const ga = { id: o.id, gtag: [], collect: [], blocked: [], leaks: [], errors: [], pages: [], live: [], t0: Date.now() };
   ga.google = () => ga.gtag.concat(ga.collect, ga.leaks);
   ga.reset = () => { ga.gtag.length = ga.collect.length = ga.blocked.length = ga.leaks.length = ga.errors.length = 0; };
@@ -865,7 +868,7 @@ async function armGa(context, opts = {}) {
       try { await route.abort(); } catch (e2) { /* already handled */ }
     }
   });
-  if (!o.inert) await rewriteGaId(context, o.id);
+  if (!o.inert) await rewriteGaId(context, o.id, o.base);
   context.__ga = ga;
   ARMED.push(ga);
   installExitHook();

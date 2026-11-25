@@ -2502,18 +2502,20 @@ body::after {
 /* ---------------------------------------------------------------
    One picture across the services
    --------------------------------------------------------------- */
-/* One wide photograph (a generated image, assets/CREDITS.md) sits across the three services: each
-   column shows its third, so the three pictures are one workbench carried across them. The size
-   adds the two column gaps to three slice widths, and the three positions (left, centre, right) then land
-   each slice where it would lie in the uncut picture. Decorative: the spans are aria-hidden and empty. */
+/* One wide photograph (a generated image, assets/CREDITS.md) sits across the three services: one oak bench with
+   the tools of each service, so each column shows its own group on the same bench, at the same height. The
+   picture is drawn at 280% of a column's width, so each column sees 0.357 of it: the left column from its left
+   edge, the right one to its right edge, and the middle one from 0.346 to 0.703, which is the gap between the
+   GPU board and the phone in this picture (both measured on the file; a new picture needs new numbers). The
+   vertical position keeps the bench top in view. Decorative: the spans are aria-hidden and empty. */
 .cap__art {
   display: block;
   aspect-ratio: 4 / 3;
   margin-bottom: var(--space-3);
   border-radius: var(--radius-lg);
-  background: var(--md-sys-color-surface-container-highest) url(assets/services-workbench.webp) 0 39% / calc(300% + 2 * var(--space-6)) auto no-repeat;
+  background: var(--md-sys-color-surface-container-highest) url(assets/services-bench.webp) 0 85% / 280% auto no-repeat;
 }
-.cap__art--2 { background-position-x: 50%; }
+.cap__art--2 { background-position-x: 53.8%; }
 .cap__art--3 { background-position-x: 100%; }
 /* The picture is the column's top edge now, so the rule above it goes. */
 .home #services .cap {
@@ -2539,14 +2541,16 @@ body::after {
   background-size: cover;
   background-repeat: no-repeat;
 }
-.case__img--documents { background-image: url(assets/case-ai-source-documents.webp); }
-.case__img--pipeline { background-image: url(assets/case-cars-build-pipeline.webp); }
-.case__img--cab { background-image: url(assets/case-trucks-cab-media.webp); }
+.case__img--documents { background-image: url(assets/case-ai-cited-answer.webp); }
+.case__img--pipeline { background-image: url(assets/case-cars-build-passed.webp); }
+/* On a phone the box is wide and the square picture is cut top and bottom: keep the screen's header in view. */
+.case__img--pipeline { background-position: 50% 40%; }
+.case__img--cab { background-image: url(assets/case-trucks-cab-player.webp); }
 @supports (background-image: light-dark(url(a.webp), url(b.webp))) {
-  .cap__art { background-image: light-dark(url(assets/services-workbench.webp), url(assets/services-workbench-dark.webp)); }
-  .case__img--documents { background-image: light-dark(url(assets/case-ai-source-documents.webp), url(assets/case-ai-source-documents-dark.webp)); }
-  .case__img--pipeline { background-image: light-dark(url(assets/case-cars-build-pipeline.webp), url(assets/case-cars-build-pipeline-dark.webp)); }
-  .case__img--cab { background-image: light-dark(url(assets/case-trucks-cab-media.webp), url(assets/case-trucks-cab-media-dark.webp)); }
+  .cap__art { background-image: light-dark(url(assets/services-bench.webp), url(assets/services-bench-dark.webp)); }
+  .case__img--documents { background-image: light-dark(url(assets/case-ai-cited-answer.webp), url(assets/case-ai-cited-answer-dark.webp)); }
+  .case__img--pipeline { background-image: light-dark(url(assets/case-cars-build-passed.webp), url(assets/case-cars-build-passed-dark.webp)); }
+  .case__img--cab { background-image: light-dark(url(assets/case-trucks-cab-player.webp), url(assets/case-trucks-cab-player-dark.webp)); }
 }
 
 /* ---------------------------------------------------------------

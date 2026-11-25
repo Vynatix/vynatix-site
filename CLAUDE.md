@@ -121,7 +121,8 @@ highlights the things most worth keeping front-of-mind.
   their text names (a workbench with the tools of the three services, documents beside an assistant, a build
   pipeline on a monitor, a truck cab's media screen), made with ElevenLabs on the owner's word of 25 November 2026
   after the first set, still lifes of brass instruments, looked AI-generated and out of context: keep them plain
-  and in context (no styling, no readable text, no person, no logo). Each has a
+  and in context (no styling, no person, no logo; text in a picture is too small to read or true, as the
+  "6 min" on the Volvo Cars monitor is), generated at 4K and shipped at twice their largest size. Each has a
   daylight and a night version; `light-dark()` picks the file from the page's `color-scheme`, so there is
   no theme selector and only one set is fetched. **A new picture ships as a pair, the night one made by
   editing the daylight one.** The contents row no longer pins: the header is the only bar. The owner chose the

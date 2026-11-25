@@ -67,19 +67,22 @@ constants. The same rules apply: never edit one by hand, and a retuned file take
 ## Generated pictures
 
 The English home page carries four generated photographs, each in a daylight and a night
-version (`-dark`): `services-workbench` (one wide picture, sliced across the three service
-columns) and the case covers `case-ai-source-documents`, `case-cars-build-pipeline` and
-`case-trucks-cab-media`. They are WebP only and are set as CSS backgrounds, because
-`light-dark()` in `styles.css` chooses the version from the page's colour scheme. **A picture
-always ships as a pair**: make the night version by editing the daylight one, so the objects and
-the framing match, and name both in the "Two sets of pictures" block. **A picture shows the work
-its text names, as a plain photograph would**: the first set (brass instruments on a drafting
-sheet) was replaced because it looked AI-generated and out of context. No readable text, no
-person, no logo or client mark; the two compact case covers keep their subject in the middle of
-the frame, because from 905px only a narrow strip of the picture shows beside the card. They
-illustrate the work and show no client system; the line under the case cards says they are
-generated. How they were made is in `CREDITS.md`. Replace one under a new name, as with every
-asset.
+version (`-dark`): `services-bench` (one wide picture, 3072 by 1024, set across the three service
+columns) and the case covers `case-ai-cited-answer` (2000 by 1333), `case-cars-build-passed` and
+`case-trucks-cab-player` (1600 square, because the same file is cut to a wide strip on a phone and
+a tall strip beside a compact card from 905px). They are WebP only and are set as CSS
+backgrounds, because `light-dark()` in `styles.css` chooses the version from the page's colour
+scheme. **A picture always ships as a pair**: make the night version by editing the daylight one
+at the same size, so the objects and the framing match (the services positions in `styles.css`
+are measured on the daylight file and hold for both), and name both in the "Two sets of pictures"
+block. **A picture shows the work its text names, as a plain photograph would**: the first set
+(brass instruments on a drafting sheet) was replaced because it looked AI-generated and out of
+context. No person, no logo or client mark; text in a picture is too small to read, or true (the
+Volvo Cars monitor reads "6 min", the case's figure). The two compact case covers keep their
+subject in the middle of the frame. They illustrate the work and show no client system; the line
+under the case cards says they are generated. How they were made is in `CREDITS.md`, and the 4K
+masters are in the owner's ElevenLabs flow named there. Replace one under a new name, as with
+every asset.
 
 ## Photography
 

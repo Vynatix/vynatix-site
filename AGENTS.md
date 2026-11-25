@@ -760,11 +760,12 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   cloud platforms and application development, each one promise, the list of what is delivered
   (the label `cap__scope` and the list `cap__list`: the items of that service's "What we
   deliver" list on `services.html`, word for word and in its order; change the list there and
-  here together) and one link to its section of `services.html`. One generated photograph lies across the three columns, a third over each
-  (the empty, `aria-hidden` `.cap__art` spans): one long oak workbench with a laptop and an
-  accelerator board, a small server rack, and a phone, tablet and watch, so each column shows the
-  tools of its service. The slices are one file, positioned left, centre and right, so the bench
-  carries across.
+  here together) and one link to its section of `services.html`. One generated photograph lies across the three columns
+  (the empty, `aria-hidden` `.cap__art` spans): one long oak workbench with a laptop and a GPU
+  board, a small server rack, and a phone, tablet and watch, so each column shows the tools of its
+  service. The slices are one file, drawn at 280% of a column and placed so that each column
+  shows its own group whole, on the same bench at the same height (the positions are measured on
+  the file; `styles.css` names them).
 - There is no In numbers block. The plan had one after Services ("The numbers behind the
   promise": minutes per build, clients, reply time, the first drawn on a ruler), and the owner
   removed it from both home pages on 20 November 2026: do not bring it back, and do not move its
@@ -787,8 +788,10 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   in Japanese holds only the characters the visible accents use. Each card says what the system is or what
   was measured, in sentences taken from `work.html`: change a case there first. Their pictures are
   generated photographs from the same set as the Services picture (binders and a highlighted
-  report beside a laptop with an assistant on screen, a monitor showing a build pipeline of green
-  checks, a truck cab with a media player on its centre screen), set as
+  report beside a laptop whose assistant answers with two numbered sources, a harbour crane in the
+  window; a portrait monitor reading "Build passed" and "6 min" over ten stages with green checks,
+  a car body on a lift beyond the glass; a truck cab on a forest road with a media player on its
+  centre screen), set as
   decorative CSS backgrounds on `.case__img--*`. Under the cards: the link to all cases and the
   line that says the images are generated and show no client system. A fourth published case
   needs a decision first: the block holds three.
@@ -865,9 +868,12 @@ the daylight one, so the objects and the composition match. The current set is t
 of 24 and 25 November 2026: the first set (still lifes of brass instruments on a drafting sheet)
 "looks AI generated and out of context", and its replacement was to be made with ElevenLabs. So
 **a picture here shows the work its text names, as a plain photograph would** (a desk, a screen,
-a cab: natural light, no styling, no readable text, no person, no logo or client mark), and each
-compact case picture keeps its subject in the middle of the frame, because beside the card only
-a narrow strip of it shows. `light-dark()` chooses the file from
+a cab: natural light, no styling, no person, no logo or client mark), and each compact case
+picture keeps its subject in the middle of the frame, because beside the card only a narrow strip
+of it shows. Text in a picture is either too small to read or true: the one readable screen is
+the Volvo Cars monitor, whose "6 min" is the case's own figure (change it with the case). The
+owner asked on 25 November 2026 for the best the tools could make ("don't cheap out"): the
+current set was generated at 4K and is shipped at twice its largest size on the page. `light-dark()` chooses the file from
 the page's own `color-scheme` (which `colors_and_type.css` sets with the theme), so there is no
 `[data-theme]` selector and a browser fetches only the set it shows; the theme toggle swaps
 them in place. A browser without `light-dark()` for images keeps the daylight set in both

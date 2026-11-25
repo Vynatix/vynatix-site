@@ -765,7 +765,7 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   cloud platforms and application development, each one promise, the list of what is delivered
   (the label `cap__scope` and the list `cap__list`: the items of that service's "What we
   deliver" list on `services.html`, word for word and in its order; change the list there and
-  here together) and one link to its section of `services.html`. One generated still life lies across the three columns, a third over each
+  here together; `copies.js` compares them) and one link to its section of `services.html`. One generated still life lies across the three columns, a third over each
   (the empty, `aria-hidden` `.cap__art` spans): a card-index drawer, five brass weights stepping
   up, a compass over a pencilled triangle, on one sheet with one pencil line through all three.
   The slices are one file, positioned left, centre and right, so the line carries across.
@@ -816,10 +816,10 @@ wide screens, which put a second bar over a fifth of a laptop window; that block
   2026: its title stays Swedish (`lang="sv"` on the link) and its description is that page's meta
   description in English, with "In Swedish" on the date line, so the page reads in one language
   and the generated languages can translate it. Each entry shows the day its page was published
-  (`read__date`): the page's `pub` in `tools/seo-head.py`, which never moves.
+  (`read__date`): the page's `pub` in `tools/seo-head.py`, which never moves. `copies.js` holds each entry to its page's title, description and `pub`; the English line of the Swedish guide is one of its recorded exceptions.
 - `#faq`, "Common questions": six of the questions on `contact.html`, word for word, as
   `.caps--2` columns (the markup of the Swedish hub's questions), with the page's FAQPage data.
-  Change an answer on `contact.html` and here together.
+  Change an answer on `contact.html` and here together; `copies.js` fails while the two differ.
 - The call-to-action band (`#contact`), "Let's build what comes next." Its contact lines carry
   "Part of Ultra Group" with the footer's link, and no sentence about the group beyond that.
 
@@ -942,7 +942,7 @@ that salary costs line by line, the fixed and total costs, and what is left on t
   pension, the 1.57 and what "Other salary costs" stands for are to be confirmed before the page
   is published, and the two tax rates are the 2026 ones and change with the law. A change is made
   in three places together: the constants in `app.js`, the percentages printed in the page's
-  labels, and the same constants in `tools/verify/calc.js`.
+  labels, and the same constants in `tools/verify/calc.js`. `tools/verify/copies.js` fails when a printed percentage is not its `app.js` constant times 100, rounded to two decimals.
 - **Without JavaScript** the calculator is not displayed and a paragraph (`.calc-nojs`) says it
   needs JavaScript and links to `contact.html`; `app.js` sets `js-calc` on `<html>` once it has
   wired the fields. The car fields are `hidden` until the box is ticked and count only then.
@@ -1208,7 +1208,7 @@ reading repeats the title and description the same way; `sv.html` guider); run `
 footer, the header, the sitemap and `tools/urls.lock`; run `node tools/indexnow.js <slug>.html` after the
 deploy. `publish.js` names an omission of the registries or `llms.txt` precisely, and `permanence.js` fails if
 a `kind='post'` page is missing from `blog.html`, from the ItemList in `tools/seo/blog.json` (keep
-`numberOfItems` and the positions right) or from the home page of its language. Nothing checks the other
+`numberOfItems` and the positions right) or from the home page of its language. `tools/verify/copies.js` fails if an entry on those lists, a guide line of `llms.txt` or an ItemList name stops repeating its page's title (without the brand suffix), meta description or `pub`, apart from the differences it records, with their text, in `EXCEPTIONS`. Nothing checks the other
 hand-kept lists: when you edit `blog.html`, `index.html` or `sv.html`, move that page's `mod` and run the
 generator. Swedish items on the Blog page carry `lang="sv"` (and `hreflang="sv"` on the link). Adding a Swedish
 post makes the `sv.html` guider lead ("Publicerade den 18 oktober 2026") false: fix it then. After the deploy,
@@ -1311,7 +1311,7 @@ the lock row together is not caught. The runbook, with the timeline and what a s
 cannot do, is `tools/TAKEDOWN.md`. A withdrawn page is the one case where `seo-head.py` rewrites `<main>`, the
 title and the description.
 
-**Checks.** `permanence.js` and `mailto.js` are in `npm run check` (static, third and fourth).
+**Checks.** `permanence.js`, `mailto.js` and `copies.js` are in `npm run check` (static, third, fourth and fifth).
 `python3 tools/seo-head.py --check` (`npm run check:gen`) reports any generated part that differs from what a
 run would write; it needs Python and is not in the chain. `seo-head.py` exits with an error on a page that
 lacks its footer marker (it used to skip it silently).
@@ -1382,7 +1382,7 @@ PASS: N is the number of gates it lists that only a person can pass, which the
 checklist's boxes cover with evidence. It is deliberately **not** part of
 `npm run check` (which stays green with the placeholder, and in the exit state),
 but its `--self-test` is, and so is `publish.js`.
-The gate, `consent.js` and `publish.js` read the constants of `app.js` with `appConst`
+The gate, `consent.js`, `publish.js` and `copies.js` read the constants of `app.js` with `appConst`
 in `tools/verify/_common.js`, the one reader: a lifetime written as a product is read
 as its value, and a value it cannot prove fails the check with the name and the
 line instead of being read wrong.

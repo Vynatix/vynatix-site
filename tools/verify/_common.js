@@ -1,7 +1,6 @@
 // Shared config for the verification scripts.
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 
 // The repository root: the tree these scripts read static files from (EDGE-SETUP.md,
 // app.js, the pages). The scripts that open a browser read the tree through BASE.
@@ -190,39 +189,266 @@ const todayUtc = () => new Date().toISOString().slice(0, 10);
 // Masks anything shaped like a Measurement ID except the dummy one, for output that may carry a request URL.
 const redact = (s) => String(s).replace(/G-[A-Z0-9]{6,12}/g, (m) => (m === TEST_ID ? m : 'G-REDACTED'));
 
-// Reads app.js: the Measurement ID line, POLICY_VERSION and the COPY object, without running the module.
-function skipString(src, i) {
-  const q = src[i];
-  for (i++; i < src.length; i++) {
-    if (src[i] === '\\') { i++; continue; }
-    if (src[i] === q) return i;
+// --- The constants of app.js -------------------------------------------------------------------------------------
+// appConst(name, src, type) is the one reader of a constant of app.js: no check matches `var NAME = ...` with a
+// pattern of its own. It reads the file without running it and returns the value of the name's one declaration,
+// `var NAME = <value>;` (let and const are read the same way), which has to stand at the top level of the file or
+// of one of its feature blocks. It evaluates only a literal it can prove: a string, a number, true or false, an
+// array or object of those, and a product, quotient or sum of numbers (365 * 24 * 60 * 60, 5 / 52). Everything else
+// throws, with the
+// name and the line: a name that is not declared, a name declared twice anywhere in the file (in two feature
+// blocks, or as a var and a function) or assigned again after its declaration, a declaration inside a nested block
+// or function, and a value that is not such a literal (a call, another name, two strings joined with
+// +). So a reformat of app.js either reads the same value or stops the check that asked, and never hands it a wrong
+// number, as the old pattern for `var NAME = (\d+)` did with a product, which it read as its first factor.
+// type ('string', 'number', 'boolean', 'array' or 'object') makes a value of another kind throw as well.
+// Comments are blanked first (stripJsComments), and a string or a regular expression literal is one token, so a
+// comment or a string that says `var NAME =` is no declaration. What it cannot see: a property written later on an
+// object constant (COPY.en.label = ...); app.js writes none. src is the text of app.js; without it the file in the
+// tree is read.
+const JS_PUNCT = ['>>>=', '...', '===', '!==', '**=', '<<=', '>>=', '>>>', '&&=', '||=', '??=', '=>', '==', '!=', '<=', '>=',
+  '&&', '||', '??', '?.', '++', '--', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '**', '<<', '>>'];
+// The operators that write to the name in front of them (and ++ or -- in front of a name writes to it too).
+const JS_WRITE = new Set(['=', '+=', '-=', '*=', '/=', '%=', '**=', '<<=', '>>=', '>>>=', '&=', '|=', '^=', '&&=', '||=', '??=', '++', '--']);
+// After these words a slash opens a regular expression; the same list as in stripJsComments, so the two agree.
+const JS_REGEX_AFTER = /^(return|typeof|instanceof|in|of|new|delete|void|throw|case|do|else)$/;
+const JS_NUMBER = /0[xX][0-9a-fA-F]+|0[oO][0-7]+|0[bB][01]+|(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/y;
+
+// The tokens of app.js, comments left out: { type: 'name' | 'num' | 'str' | 'template' | 'regex' | 'punct', text,
+// line }. A slash opens a regular expression exactly where stripJsComments takes it for one.
+function jsTokens(src) {
+  const code = stripJsComments(src);
+  const out = [];
+  const n = code.length;
+  let i = 0, line = 1;
+  const fail = (why, at) => { throw new Error(`app.js: ${why} on line ${at}, so no constant of it can be read`); };
+  while (i < n) {
+    const c = code[i];
+    if (c === '\n') { line++; i++; continue; }
+    if (/\s/.test(c)) { i++; continue; }
+    const start = i, at = line, prev = out[out.length - 1];
+    let type = 'punct';
+    if (/[A-Za-z_$]/.test(c)) {
+      while (i < n && /[\w$]/.test(code[i])) i++;
+      type = 'name';
+    } else if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(code[i + 1] || ''))) {
+      JS_NUMBER.lastIndex = i;
+      JS_NUMBER.exec(code);
+      i = JS_NUMBER.lastIndex;
+      type = 'num';
+    } else if (c === '"' || c === "'" || c === '`') {
+      for (i++; i < n && code[i] !== c; i++) {
+        if (code[i] === '\\') { if (code[i + 1] === '\n') line++; i++; continue; }
+        if (code[i] === '\n') { if (c !== '`') fail('a string runs past the end of its line', at); line++; }
+      }
+      if (i >= n) fail('a string is not closed', at);
+      i++;
+      type = c === '`' ? 'template' : 'str';
+    } else if (c === '/' && (!prev || (prev.type === 'punct' && /[(,=:[!&|?{};+\-*%<>~^]$/.test(prev.text)) || (prev.type === 'name' && JS_REGEX_AFTER.test(prev.text)))) {
+      let inClass = false;
+      for (i++; i < n && code[i] !== '\n'; i++) {
+        if (code[i] === '\\') { i++; continue; }
+        if (code[i] === '[') inClass = true;
+        else if (code[i] === ']') inClass = false;
+        else if (code[i] === '/' && !inClass) break;
+      }
+      if (code[i] !== '/') fail('a regular expression is not closed', at);
+      for (i++; i < n && /[A-Za-z]/.test(code[i]); i++);
+      type = 'regex';
+    } else {
+      const p = JS_PUNCT.find((q) => code.startsWith(q, i));
+      i += p ? p.length : 1;
+    }
+    out.push({ type, text: code.slice(start, i), line: at });
   }
-  throw new Error('unterminated string in app.js');
+  return out;
 }
-function objectLiteralAt(src, start) {
-  let depth = 0;
-  for (let i = start; i < src.length; i++) {
-    const c = src[i];
-    if (c === "'" || c === '"') { i = skipString(src, i); continue; }
-    if (c === '/' && src[i + 1] === '/') { i = src.indexOf('\n', i); if (i < 0) break; continue; }
-    if (c === '/' && src[i + 1] === '*') { i = src.indexOf('*/', i) + 1; continue; }
-    if (c === '{') depth++;
-    if (c === '}' && --depth === 0) return src.slice(start, i + 1);
+
+// Every declaration in app.js and every later write to a variable, by name: { toks, decls, writes }. A declaration
+// is { line, depth (braces open around it), kind ('var' or 'function'), init (the token its value starts at, or -1) }.
+// The commas of a var statement are told from those inside its values by the bracket level the statement opened at.
+const constIndexes = new Map();
+function constIndex(src) {
+  if (constIndexes.has(src)) return constIndexes.get(src);
+  const toks = jsTokens(src);
+  const decls = new Map(), writes = new Map();
+  const note = (map, name, v) => { if (!map.has(name)) map.set(name, []); map.get(name).push(v); };
+  const is = (t, text) => !!t && t.type === 'punct' && t.text === text;
+  const lists = [];                    // the bracket levels of the var statements still open, innermost last
+  let level = 0, depth = 0, expect = false;
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i], prev = toks[i - 1], next = toks[i + 1];
+    const open = lists.length ? lists[lists.length - 1] : -1;
+    const declarator = expect;
+    expect = false;
+    if (t.type === 'punct') {
+      if (t.text === '(' || t.text === '[' || t.text === '{') { level++; if (t.text === '{') depth++; }
+      else if (t.text === ')' || t.text === ']' || t.text === '}') {
+        level--;
+        if (t.text === '}') depth--;
+        while (lists.length && lists[lists.length - 1] > level) lists.pop();
+      } else if (t.text === ';' && open === level) lists.pop();
+      else if (t.text === ',' && open === level) expect = true;
+      continue;
+    }
+    if (t.type !== 'name' || is(prev, '.') || is(prev, '?.')) continue;   // a property is no variable
+    if (t.text === 'var' || t.text === 'let' || t.text === 'const') {
+      if (open === level) lists.pop();                                     // the last statement lacked its semicolon
+      lists.push(level);
+      expect = true;
+      continue;
+    }
+    if (declarator) {
+      note(decls, t.text, { line: t.line, depth, kind: 'var', init: is(next, '=') ? i + 2 : -1 });
+      if (is(next, '=')) i++;                                              // the = that gives the value writes nothing more
+      continue;
+    }
+    if (t.text === 'function' && next && next.type === 'name') { note(decls, next.text, { line: next.line, depth, kind: 'function', init: -1 }); i++; continue; }
+    if ((t.text === 'in' || t.text === 'of') && open === level) { lists.pop(); continue; }   // for (var k in o)
+    if ((next && next.type === 'punct' && JS_WRITE.has(next.text)) || is(prev, '++') || is(prev, '--')) note(writes, t.text, t.line);
   }
-  throw new Error('unbalanced braces in app.js');
+  if (constIndexes.size >= 32) constIndexes.clear();                      // the release gate's self-test reads many variants
+  const index = { toks, decls, writes };
+  constIndexes.set(src, index);
+  return index;
 }
+
+// The value of a JavaScript string literal, quotes included in `text`. An escape the reader cannot be sure of (an
+// octal one, a malformed \x or \u) throws.
+function jsString(text, fail) {
+  const body = text.slice(1, -1);
+  const simple = { n: '\n', r: '\r', t: '\t', b: '\b', f: '\f', v: '\v' };
+  let out = '';
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] !== '\\') { out += body[i]; continue; }
+    const d = body[++i];
+    if (Object.prototype.hasOwnProperty.call(simple, d)) out += simple[d];
+    else if (d === '0' && !/[0-9]/.test(body[i + 1] || '')) out += '\0';
+    else if (/[0-9]/.test(d)) fail('a string has an octal escape');
+    else if (d === 'x') {
+      if (!/^[0-9a-fA-F]{2}$/.test(body.slice(i + 1, i + 3))) fail('a string has a malformed \\x escape');
+      out += String.fromCharCode(parseInt(body.slice(i + 1, i + 3), 16));
+      i += 2;
+    } else if (d === 'u' && body[i + 1] === '{') {
+      const end = body.indexOf('}', i);
+      const hex = end < 0 ? '' : body.slice(i + 2, end);
+      if (!/^[0-9a-fA-F]{1,6}$/.test(hex) || parseInt(hex, 16) > 0x10ffff) fail('a string has a malformed \\u{} escape');
+      out += String.fromCodePoint(parseInt(hex, 16));
+      i = end;
+    } else if (d === 'u') {
+      if (!/^[0-9a-fA-F]{4}$/.test(body.slice(i + 1, i + 5))) fail('a string has a malformed \\u escape');
+      out += String.fromCharCode(parseInt(body.slice(i + 1, i + 5), 16));
+      i += 4;
+    } else if (d === '\r') { if (body[i + 1] === '\n') i++; }            // a line continuation adds nothing
+    else if (d !== '\n' && d !== '\u2028' && d !== '\u2029') out += d;   // any other escaped character is itself
+  }
+  return out;
+}
+
+function appConst(name, src, type) {
+  if (src === undefined) src = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const { toks, decls, writes } = constIndex(src);
+  const all = decls.get(name) || [];
+  if (!all.length) throw new Error(`app.js: ${name} is not declared (no var ${name} = ...; outside comments and strings)`);
+  if (all.length > 1) throw new Error(`app.js: ${name} is declared ${all.length} times (lines ${all.map((d) => d.line).join(' and ')}), so which value counts cannot be read`);
+  const d = all[0];
+  const again = writes.get(name) || [];
+  if (again.length) throw new Error(`app.js: ${name} (line ${d.line}) is assigned again on line ${again.join(' and ')}, so the value it is declared with is not proven`);
+  if (d.depth > 1) throw new Error(`app.js: ${name} (line ${d.line}) is declared inside a nested block or function, not at the top of a feature block`);
+  if (d.kind !== 'var' || d.init < 0) throw new Error(`app.js: ${name} (line ${d.line}) is given no value where it is declared`);
+  const is = (t, text) => !!t && t.type === 'punct' && t.text === text;
+  const shown = (t) => (t ? `"${t.text.length > 40 ? t.text.slice(0, 40) + '...' : t.text}" on line ${t.line}` : 'the end of the file');
+  const fail = (why, t) => {
+    throw new Error(`app.js: ${name} (line ${d.line}) is not a literal the reader can prove: ${why}${t !== undefined ? ` at ${shown(t)}` : ''}. ` +
+      'It reads only a string, a number, true or false, an array or object of those, and a product, quotient or sum of numbers');
+  };
+  const number = (i) => {
+    let sign = 1;
+    if (is(toks[i], '-')) { sign = -1; i++; }
+    const t = toks[i];
+    if (!t || t.type !== 'num') fail('a value it cannot evaluate', t);
+    if (/^0[0-9]/.test(t.text)) fail('a number with a leading zero (an old octal form)', t);
+    return { v: sign * Number(t.text), i: i + 1 };
+  };
+  const product = (i) => {
+    let r = number(i);
+    while (is(toks[r.i], '*') || is(toks[r.i], '/')) { const op = toks[r.i].text; const f = number(r.i + 1); r = { v: op === '*' ? r.v * f.v : r.v / f.v, i: f.i }; }
+    return r;
+  };
+  const sum = (i) => {
+    let r = product(i);
+    while (is(toks[r.i], '+')) { const p = product(r.i + 1); r = { v: r.v + p.v, i: p.i }; }
+    if (!Number.isFinite(r.v)) fail('a number that is not finite', toks[i]);
+    return r;
+  };
+  const value = (i) => {
+    const t = toks[i];
+    if (t && t.type === 'str') return { v: jsString(t.text, (why) => fail(why, t)), i: i + 1 };
+    if (t && t.type === 'name' && (t.text === 'true' || t.text === 'false')) return { v: t.text === 'true', i: i + 1 };
+    if (is(t, '[')) {
+      const out = [];
+      i++;
+      while (!is(toks[i], ']')) {
+        const r = value(i);
+        out.push(r.v);
+        i = r.i;
+        if (is(toks[i], ',')) i++;
+        else if (!is(toks[i], ']')) fail('an array that does not go on with , or end with ]', toks[i]);
+      }
+      return { v: out, i: i + 1 };
+    }
+    if (is(t, '{')) {
+      const out = {};
+      i++;
+      while (!is(toks[i], '}')) {
+        const k = toks[i];
+        let key;
+        if (k && k.type === 'name') key = k.text;
+        else if (k && k.type === 'str') key = jsString(k.text, (why) => fail(why, k));
+        else if (k && k.type === 'num') key = String(number(i).v);
+        else fail('an object key that is not a name, a string or a number', k);
+        if (key === '__proto__') fail('an object key __proto__, which sets the prototype instead of a key', k);
+        if (Object.prototype.hasOwnProperty.call(out, key)) fail(`the object key ${key} twice`, k);
+        if (!is(toks[i + 1], ':')) fail('an object key without a : and a value', toks[i + 1]);
+        const r = value(i + 2);
+        out[key] = r.v;
+        i = r.i;
+        if (is(toks[i], ',')) i++;
+        else if (!is(toks[i], '}')) fail('an object that does not go on with , or end with }', toks[i]);
+      }
+      return { v: out, i: i + 1 };
+    }
+    return sum(i);
+  };
+  const r = value(d.init);
+  // The literal has to be the whole value: what follows ends the declaration (a ; or , or the } of its block, or
+  // a new statement on a later line), so `'a' + 'b'` or `5 - 2` is refused rather than read as its first part.
+  const after = toks[r.i], last = toks[r.i - 1];
+  const ends = !after || is(after, ';') || is(after, ',') || is(after, '}') ||
+    (after.line > last.line && after.type === 'name' && after.text !== 'in' && after.text !== 'instanceof');
+  if (!ends) fail('more after the literal', after);
+  if (type !== undefined) {
+    const kind = Array.isArray(r.v) ? 'array' : typeof r.v;
+    if (kind !== type) throw new Error(`app.js: ${name} (line ${d.line}) is ${kind === 'array' || kind === 'object' ? 'an' : 'a'} ${kind}, not ${type === 'array' || type === 'object' ? 'an' : 'a'} ${type}`);
+  }
+  return r.v;
+}
+
+// Reads app.js without running it: the Measurement ID line, and POLICY_VERSION, CONSENT_KEY and COPY through
+// appConst, so a value that is not a plain literal throws with its name and line instead of reading as null.
+// The Measurement ID is read by its line, on purpose: rewriteGaIdSource rewrites exactly one `var GA_ID = '...';`
+// line, and the release gate and consent.js require that line once (gaLines), so its shape is the rule and is not
+// left to the general reader.
 function readApp(root = ROOT, source) {
   const src = source !== undefined ? source : fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   const gaLines = src.match(/var GA_ID = '[^']*';/g) || [];
   const gaId = gaLines.length === 1 ? /'([^']*)'/.exec(gaLines[0])[1] : null;
-  const pv = /var POLICY_VERSION = '([^']*)'/.exec(src);
-  const ck = /var CONSENT_KEY = '([^']*)'/.exec(src);
-  let copy = null;
-  const at = src.indexOf('var COPY = {');
-  if (at >= 0) {
-    try { copy = vm.runInNewContext('(' + objectLiteralAt(src, src.indexOf('{', at)) + ')', {}, { timeout: 1000 }); } catch (e) { copy = null; }
-  }
-  return { src, gaLines: gaLines.length, gaId, policyVersion: pv ? pv[1] : null, consentKey: ck ? ck[1] : null, copy };
+  return {
+    src, gaLines: gaLines.length, gaId,
+    policyVersion: appConst('POLICY_VERSION', src, 'string'),
+    consentKey: appConst('CONSENT_KEY', src, 'string'),
+    copy: appConst('COPY', src, 'object'),
+  };
 }
 // A Measurement ID the module would act on: GA4 shape and not the placeholder.
 const isActiveShape = (id) => typeof id === 'string' && /^G-[A-Z0-9]{6,12}$/.test(id) && !/^G-X+$/.test(id);
@@ -727,7 +953,7 @@ module.exports = {
   ROOT, PAGES, readRegistry, readLangs, generatedPages, NOTICE_PAGES, BASE, THEMES, ALL_THEMES, pinTheme, launch, chromePath, pool, heroUnit,
   CONSENT_KEY, POLICY_VERSION, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, PURGE_DECL, normalisePurgeOnly, stripJsComments, purgeOnlyState, parseTags, TEST_ID, PLACEHOLDER_ID, GOOGLE_HOSTS, GTAG_SCRIPT,
   hostMatchesSource, isAllowedGoogleHost, isGoogleHost, GOOGLEISH, pinConsent, todayUtc, redact,
-  readApp, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
+  readApp, appConst, isActiveShape, rewriteGaIdSource, rewriteGaId, armGa, abortGoogle, assertArmClean, gtagStub,
   parseCsp, CSP_META_RE, readPage, pageLang, edgeCsp,
   lowerAscii, escapeRegExp, stripComments, stripElements, decodeEntities, BLOCK_TAGS, htmlToText,
 };

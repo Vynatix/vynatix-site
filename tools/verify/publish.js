@@ -29,7 +29,7 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  ROOT, PAGES, NOTICE_PAGES, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, parseTags, stripJsComments, stripComments, stripElements,
+  ROOT, PAGES, NOTICE_PAGES, readLangs, CONSENT_KEY, THEME_KEY, LOOK_KEY, BG_KEY_PREFIX, BG_ATTR, readApp, appConst, parseTags, stripJsComments, stripComments, stripElements,
 } = require('./_common');
 
 // Raw hex colours styles.css may contain. Today it contains none: the site layer uses role tokens only. A new entry
@@ -277,7 +277,13 @@ function run(root = ROOT, pages = PAGES) {
     const lost = storageKeyProblems(html, keys);
     if (lost.length) keyBad.push(`${page} does not name ${lost.map((k) => '<code>' + k + '</code>').join(', ')}`);
   }
-  if (app) for (const k of [THEME_KEY]) if (!app.src.includes(`'${k}'`) && !app.src.includes(`"${k}"`)) keyBad.push(`app.js no longer uses ${k} (rename it in the notices and in _common.js too)`);
+  // The theme key the notices and _common.js name is the value of THEME_KEY in app.js, read by appConst. (The scan
+  // above stays a scan on purpose: it collects every key the code writes, wherever it is written.)
+  if (app) {
+    let k = null;
+    try { k = appConst('THEME_KEY', app.src, 'string'); } catch (e) { keyBad.push(e.message); }
+    if (k !== null && k !== THEME_KEY) keyBad.push(`app.js THEME_KEY is ${k}, no longer ${THEME_KEY} (rename it in the notices and in _common.js too)`);
+  }
   // The retired colour-scheme draw: no script may write its key again, and no notice may still describe it.
   if (app && stripJsComments(app.src).includes(LOOK_KEY)) keyBad.push(`app.js uses ${LOOK_KEY}, the retired colour-scheme draw`);
   for (const page of Object.values(NOTICE_PAGES)) { const html = tryRead(page); if (html && html.includes(LOOK_KEY)) keyBad.push(`${page} still names ${LOOK_KEY}, which nothing writes now`); }

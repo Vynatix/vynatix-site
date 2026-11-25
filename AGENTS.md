@@ -1382,6 +1382,10 @@ PASS: N is the number of gates it lists that only a person can pass, which the
 checklist's boxes cover with evidence. It is deliberately **not** part of
 `npm run check` (which stays green with the placeholder, and in the exit state),
 but its `--self-test` is, and so is `publish.js`.
+The gate, `consent.js` and `publish.js` read the constants of `app.js` with `appConst`
+in `tools/verify/_common.js`, the one reader: a lifetime written as a product is read
+as its value, and a value it cannot prove fails the check with the name and the
+line instead of being read wrong.
 
 **Switching it off again** is not the reverse of the flip. The first action of an
 exit is `PURGE_ONLY` set to `true`; the `GA_ID` revert comes last, once the purge

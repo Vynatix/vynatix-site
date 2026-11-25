@@ -143,6 +143,17 @@ and fails loudly unless `app.js` has exactly one `var GA_ID = '...';` line and e
 `var PURGE_ONLY = true|false;` line, so the whole suite passes in the exit state where the
 file ships `PURGE_ONLY = true`; `release-gate.js` owns the value that ships.
 
+A check that needs a constant of `app.js` reads it with `appConst(name, src, type)` from `verify/_common.js`,
+never with a pattern of its own. It reads the file without running it and returns the value of the name's one
+top-level declaration only when that value is a literal it can prove: a string, a number, `true` or `false`, an
+array or object of those, or a product, quotient or sum of numbers (so `365 * 24 * 60 * 60` reads as 31536000
+and `5 / 52` as its value). A name
+that is missing, declared twice, assigned again or declared in a nested block, and any other value (a call,
+another name, a difference, joined strings), throws with the name and the line. `readApp` reads `POLICY_VERSION`,
+`CONSENT_KEY` and `COPY` with it. The `GA_ID` line and the `PURGE_ONLY` line stay shape rules, because
+`rewriteGaId` and the release gate depend on exactly one line of that form. The reader's own cases are in the
+release gate's `--self-test`.
+
 The consent module is inert while `GA_ID` in `app.js` is the placeholder, so a check
 would audit nothing, and a check that ran with the real ID would send real
 traffic. Every browser check therefore calls `armGa(context)` from

@@ -18,8 +18,8 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const {
-  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, readApp, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
-  stripJsComments, todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
+  ROOT, PAGES, NOTICE_PAGES, TEST_ID, THEME_KEY, readApp, appConst, isActiveShape, readPage, purgeOnlyState, normalisePurgeOnly,
+  todayUtc, htmlToText, decodeEntities, escapeRegExp, BLOCK_TAGS,
 } = require('./_common');
 const csp = require('./csp');
 const pub = require('./publish');
@@ -222,22 +222,30 @@ function runChecks({ root = ROOT, overrides = {}, today = todayUtc() } = {}) {
   const tryRead = (rel) => { try { return read(rel); } catch (e) { return null; } };
   const add = (id, file, ok, name, detail, count) => results.push({ id, file, ok, name, detail: detail || '', count });
 
-  // 1. The Measurement ID
-  const app = readApp(root, overrides['app.js']);
+  // 1. The Measurement ID. readApp reads POLICY_VERSION, CONSENT_KEY and COPY with appConst, which throws on a value
+  // it cannot prove; that is one FAIL row with the reader's message, and the rows that need those values are not run.
+  let app;
+  try { app = readApp(root, overrides['app.js']); } catch (e) {
+    add('app-js', 'app.js', false, 'app.js can be read: POLICY_VERSION, CONSENT_KEY and COPY are literals (appConst in _common.js)', e.message);
+    return { results, warns, notes };
+  }
   const shape = app.gaId === null ? `${app.gaLines} GA_ID lines` : /^G-X+$/.test(app.gaId) ? 'the placeholder' : app.gaId === TEST_ID ? 'the dummy test ID' : isActiveShape(app.gaId) ? `valid shape, ${app.gaId.length} characters` : 'not a GA4 ID';
   add('ga-id', 'app.js', app.gaLines === 1 && isActiveShape(app.gaId) && app.gaId !== TEST_ID, 'GA_ID is a valid Measurement ID and not the placeholder or the test ID', `now: ${shape}`);
 
-  // 1b. The exit switch and the policy constants (T3)
+  // 1b. The exit switch and the policy constants (T3). The PURGE_ONLY verdict stays with purgeOnlyState, on purpose:
+  // the rule is the shape of the one line a re-flip edits, exactly one `var PURGE_ONLY = false;` and no other
+  // assignment. appConst only says what the value is, for the message.
   const purge = purgeOnlyState(app.src);
-  const purgeNow = (/^[ \t]*var PURGE_ONLY = (true|false);/m.exec(app.src) || [])[1];
+  const constOf = (name, type) => { try { return { value: appConst(name, app.src, type) }; } catch (e) { return { why: e.message }; } };
+  const purgeNow = constOf('PURGE_ONLY', 'boolean');
   add('purge-only', 'app.js', purge.assignments === 1 && purge.falseDecls === 1, 'PURGE_ONLY is false (exactly one "var PURGE_ONLY = false;"; true is the emergency stop, a re-flip sets it back)',
-    purge.assignments === 1 && purge.falseDecls === 1 ? '' : `now: ${purge.assignments} assignment(s), PURGE_ONLY ${purgeNow || 'not declared'}`);
-  const code = stripJsComments(app.src);
-  const constOf = (name) => { const all = [...code.matchAll(new RegExp('var ' + name + ' = (\\d+);', 'g'))]; return all.length === 1 ? Number(all[0][1]) : null; };
-  const maxAge = constOf('COOKIE_MAX_AGE'), maxDays = constOf('CONSENT_MAX_DAYS');
-  add('policy-constants', 'app.js', maxAge === COOKIE_MAX_AGE_WANT && maxDays === CONSENT_MAX_DAYS_WANT,
+    purge.assignments === 1 && purge.falseDecls === 1 ? '' : `now: ${purge.assignments} assignment(s); ${purgeNow.why || `PURGE_ONLY is ${purgeNow.value}`}`);
+  // The two lifetimes are read by appConst: 365 * 24 * 60 * 60 is read as 31536000, and a value it cannot prove fails.
+  const age = constOf('COOKIE_MAX_AGE', 'number'), days = constOf('CONSENT_MAX_DAYS', 'number');
+  const lifetimesOk = age.value === COOKIE_MAX_AGE_WANT && days.value === CONSENT_MAX_DAYS_WANT;
+  add('policy-constants', 'app.js', lifetimesOk,
     `COOKIE_MAX_AGE is ${COOKIE_MAX_AGE_WANT} (365 days in seconds) and CONSENT_MAX_DAYS is ${CONSENT_MAX_DAYS_WANT}: the "12 months" both notices say`,
-    maxAge === COOKIE_MAX_AGE_WANT && maxDays === CONSENT_MAX_DAYS_WANT ? '' : `now: COOKIE_MAX_AGE ${maxAge === null ? 'not found once' : maxAge}, CONSENT_MAX_DAYS ${maxDays === null ? 'not found once' : maxDays}`);
+    lifetimesOk ? '' : `now: ${age.why || `COOKIE_MAX_AGE ${age.value}`}; ${days.why || `CONSENT_MAX_DAYS ${days.value}`}`);
 
   // 2. The notice pages: the section and one empty panel; 3. banner and markers; 4. lifetime words and storage keys; 5. dates
   const py = tryRead(SEO_HEAD);
@@ -548,6 +556,34 @@ function selfTest() {
     t(ok({ [SV]: ready[SV].split(`<code>${k}</code>`).join(k) }, 'keys-' + SV) === false, `T3: the Swedish notice without <code>${k}</code> fails`);
   }
   t(ok({ 'app.js': app.replace("var CONSENT_KEY = 'vynatix-consent'", "var CONSENT_KEY = 'vynatix-choice'") }, 'keys-' + EN) === false, 'T3: CONSENT_KEY renamed in app.js while the notices still say vynatix-consent fails');
+  // The lifetimes go through appConst, so a reformat reads the same value or fails, never a wrong number.
+  const lifetime = (v) => ({ 'app.js': app.replace(/var COOKIE_MAX_AGE = \d+;/, `var COOKIE_MAX_AGE = ${v};`) });
+  t(ok(lifetime('365 * 24 * 60 * 60'), 'policy-constants') === true, 'T3: COOKIE_MAX_AGE written as 365 * 24 * 60 * 60 is read as 31536000 and passes');
+  t(ok(lifetime('365 * 24 * 60'), 'policy-constants') === false, 'T3: a product that is not 365 days in seconds fails (it is read whole, not as its first factor)');
+  t(ok(lifetime('DAY_MS / 1000 * 365'), 'policy-constants') === false, 'T3: a lifetime the reader cannot prove (another name, a division) fails');
+  t(ok({ 'app.js': app.replace('var CONSENT_MAX_DAYS = 365;', 'var CONSENT_MAX_DAYS = 365;\n  CONSENT_MAX_DAYS = 730;') }, 'policy-constants') === false, 'T3: CONSENT_MAX_DAYS assigned again after its declaration fails');
+  // A constant readApp needs that is not a literal is one FAIL row naming it and its line, not a crash.
+  const unread = run({ 'app.js': app.replace("noticeHref: 'privacy.html#cookies'", "noticeHref: 'privacy.html' + '#cookies'") });
+  const unreadRow = rowOf(unread, 'app-js');
+  t(!!unreadRow && !unreadRow.ok && /^app\.js: COPY \(line \d+\) is not a literal/.test(unreadRow.detail) && failedIds(unread).join() === 'app-js', 'T3: a COPY that is not a literal is one FAIL row with the name and the line, not a crash');
+
+  // appConst itself (_common.js), the one reader of app.js's constants: what it proves, and how it refuses.
+  const feature = (body) => `(function () {\n  ${body}\n})();\n`;
+  const read = (body, name = 'X', type) => appConst(name, feature(body), type);
+  const refuses = (body, re, name = 'X', type) => { try { read(body, name, type); return false; } catch (e) { return re.test(e.message); } };
+  t(read("var X = 'it\\'s';") === "it's" && read('var X = "v1";') === 'v1' && read("var X = '\\u00e5\\x41';") === 'åA', 'appConst: a string in either quote, its escapes decoded');
+  t(read('var X = 365 * 24 * 60 * 60;') === 31536000 && read('var X = 60 * 60 + 5;') === 3605 && read('var X = 1e7;') === 1e7 && read('var X = -0.5;') === -0.5, 'appConst: a number, a product and a sum of numbers');
+  t(read('var X = false;') === false && JSON.stringify(read("var X = { a: [1, 'b', true], 'c-d': { e: 2 * 3 }, };")) === '{"a":[1,"b",true],"c-d":{"e":6}}', 'appConst: booleans, and arrays and objects of literals (a trailing comma allowed)');
+  t(read("// var X = 2;\n  var s = 'var X = 3;';\n  var X = 1;") === 1, 'appConst: a comment or a string that says "var X =" is no declaration');
+  t(read('var a = 1, X = 4, b = [X];') === 4, 'appConst: a constant in a list of declarations');
+  t(refuses('var Y = 1;', /^app\.js: X is not declared/), 'appConst: a missing name throws, naming it');
+  t(refuses('var X = 1;\n  var X = 1;', /X is declared 2 times \(lines 2 and 3\)/) && (() => { try { appConst('X', feature('var X = 1;') + feature('var X = 1;')); return false; } catch (e) { return /declared 2 times/.test(e.message); } })(), 'appConst: a name declared twice (in one block or in two) throws, with both lines');
+  t(refuses('var X = 1;\n  X = 2;', /X \(line 2\) is assigned again on line 3/) && refuses('var X = 1;\n  X++;', /assigned again/), 'appConst: a name assigned again after its declaration throws');
+  t(refuses('if (a) {\n    var X = 1;\n  }', /X \(line 3\) is declared inside a nested block/), 'appConst: a declaration inside a nested block throws');
+  t(refuses('var X = Math.pow(2, 3);', /^app\.js: X \(line 2\) is not a literal the reader can prove: .* on line 2/), 'appConst: a call throws, with the name and the line');
+  t(read('var X = 5 / 52;', 'X') === 5 / 52 && refuses('var X = 1 / 0;', /not finite/) && refuses('var X = 5 - 2;', /not a literal/) && refuses("var X = 'a' + 'b';", /not a literal/) && refuses('var X = Y;', /not a literal/) && refuses('var X = 010;', /leading zero/) && refuses('var X;', /given no value/), 'appConst: a quotient reads as its value; a division by zero, a difference, joined strings, another name, an old octal number and no value all throw');
+  t(refuses('var X = 1;', /X \(line 2\) is a number, not a string/, 'X', 'string') && read('var X = [];', 'X', 'array').length === 0, 'appConst: a value of another kind than the one asked for throws');
+  t(appConst('COOKIE_MAX_AGE', lifetime('365 * 24 * 60 * 60')['app.js']) === 31536000 && appConst('COOKIE_MAX_AGE', app) === 31536000, 'appConst: the lifetime in app.js reads as 31536000, written as a number or as a product');
 
   // T4: the dates
   const day = (offset) => { const d = new Date(dayNum(today) * 86400000 + offset * 86400000); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };

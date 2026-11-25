@@ -17,7 +17,7 @@
 // gtag cookie and network behaviour is covered only by consent-live.js and the pre-flip checklist.
 const {
   PAGES, BASE, TEST_ID, PLACEHOLDER_ID, CONSENT_KEY, POLICY_VERSION, NOTICE_PAGES, launch, pool, pinConsent,
-  readApp, rewriteGaIdSource, normalisePurgeOnly, PURGE_DECL, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
+  readApp, appConst, rewriteGaIdSource, normalisePurgeOnly, PURGE_DECL, todayUtc, redact, isActiveShape, GOOGLEISH, pageLang,
   stripComments, stripElements, decodeEntities, htmlToText, escapeRegExp,
 } = require('./_common');
 const C = require('./_consent');
@@ -51,9 +51,11 @@ if (process.argv.includes('--update')) {
   process.exit(0);
 }
 
-// The current COOKIE_MAX_AGE and limits in app.js, to compare with what the module sends.
-const maxAge = Number((/var COOKIE_MAX_AGE = (\d+)/.exec(app.src) || [])[1]);
-const maxDays = Number((/var CONSENT_MAX_DAYS = (\d+)/.exec(app.src) || [])[1]);
+// The current COOKIE_MAX_AGE and limits in app.js, to compare with what the module sends. appConst reads them as
+// numbers: a lifetime written as 365 * 24 * 60 * 60 is 31536000 here, and one it cannot prove stops the run with its
+// name and line (a pattern of its own read that product as 365).
+const maxAge = appConst('COOKIE_MAX_AGE', app.src, 'number');
+const maxDays = appConst('CONSENT_MAX_DAYS', app.src, 'number');
 const dAgo = (n) => { const d = new Date(); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - n)).toISOString().slice(0, 10); };
 
 const rendered = [];                 // every string the module showed, for the copy rules

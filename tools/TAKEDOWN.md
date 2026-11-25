@@ -7,7 +7,8 @@ GitHub Pages has no server-side redirects, a push to the production branch is li
 the repository is public. So a page that has been public never gets a 404 by accident: it keeps its URL and
 answers with a short stub. The registry drives it: set `"status": "withdrawn"` in the page's row,
 `tools/site/pages/<slug>.json`, and run `tools/seo-head.py`, and the page's title, description and whole `<main>` are replaced by the stub (about a
-hundred characters, no reason given, built from the existing `.page-hero` markup), the robots meta becomes
+hundred characters, no reason given, built from the existing `.page-hero` markup; its markup and its English and
+Swedish words are `tools/templates/stub.html`), the robots meta becomes
 `noindex`, hreflang, FAQ and Article data disappear, and the page leaves `sitemap.xml`.
 
 **What a stub does not do.** It controls only what vynatix.com serves. The old text stays in git history, in

@@ -124,8 +124,9 @@ highlights the things most worth keeping front-of-mind.
   drawn frames over a film (20 November 2026): no video. `sv.html` keeps the older layout and the stock
   photographs. See AGENTS.md, *The English home page*.
 - **Header and footer are templates; the skip link and the inline wordmark `<symbol>` are duplicated.** The
-  sources are the `HEADER` (with its `NAV` list, which sets `aria-current="page"` itself) and `FOOTER`
-  templates in `tools/seo-head.py`: a nav, logo or contact-detail change is made there and the script run,
+  sources are `tools/templates/header.html` (its menu, where `${current}` puts `aria-current="page"` on the
+  page's own link) and `footer.html`, with the company's facts and contact details in `tools/site/company.json`,
+  which `tools/seo-head.py` reads: a nav, logo or contact-detail change is made there and the script run,
   which writes it into every page. The skip link and the `.svg-defs` block (the `<symbol>` and the two glass `<filter>`s) are copy-pasted into every
   `*.html` file — there is no include system — so a change to either is made in **all** pages.
 - **The four shared files carry version stamps in every page** (`styles.css?v=1a2b3c4d`

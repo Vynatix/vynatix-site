@@ -4,7 +4,7 @@
 //   node verify/copies.js --root DIR    the same on another tree, a scratch copy for instance
 //   node verify/copies.js --verbose     also prints what each case of the self-test was caught by
 //
-// Four parts, all on the root pages (the generated languages are written from these by tools/seo-head.py):
+// Five parts, all on the root pages (the generated languages are written from these by tools/seo-head.py):
 //  faq           The Common questions of index.html are questions of contact.html, word for word (the comment
 //                above the block says so). Every [data-faq-item] of index.html must have an item on contact.html
 //                with the same question, and the two items must be the same markup once white space is
@@ -22,6 +22,12 @@
 //                and, where a date shows, its pub in the registry, in the datetime and in the text shown. A
 //                guide is a page that blog.html lists. Not every list carries every field: the ItemList has only
 //                the name, sv.html shows no date, and llms.txt is read only above its generated languages.
+//  footer        The footer's shorter wording of the company sentence. In tools/site/company.json, footer_sentence
+//                is the sentence without its first two words and its last sentence, its first letter then a
+//                capital ("Vynatix is the senior ..." gives "The senior ..."), and the about line of the footer of
+//                every root page says footer_sentence (tools/seo-head.py writes the footer from
+//                tools/templates/footer.html, which names it). The generated languages translate it as a message
+//                of its own, so their footers are not read.
 //
 // The copies that differ from their page today, on purpose or until the owner decides (tools/REFACTORING-PLAN.md,
 // section 5, item 3), are named in EXCEPTIONS with the exact text they hold. Such a copy fails when it moves off
@@ -160,6 +166,16 @@ function parting(a, b) {
   while (i < a.length && i < b.length && a[i] === b[i]) i++;
   const from = Math.max(0, i - 24);
   return `they part at character ${i}: "${a.slice(from, i + 40)}" against "${b.slice(from, i + 40)}"`;
+}
+
+// The footer's shorter wording of a company sentence: without its first two words and its last sentence, its first
+// letter then a capital. A sentence ends at a full stop followed by a space; null when there is no second sentence.
+function footerWording(sentence) {
+  const rest = String(sentence).trim().split(/\s+/).slice(2).join(' ');
+  const parts = rest.split(/(?<=\.) /);
+  if (parts.length < 2) return null;
+  const kept = parts.slice(0, -1).join(' ');
+  return kept.charAt(0).toUpperCase() + kept.slice(1);
 }
 
 // The root page a link names: "test-automation.html", "https://vynatix.com/test-automation.html" and
@@ -422,6 +438,28 @@ function check(read, opts = {}) {
     }
   });
 
+  // 5. The footer's shorter wording against the company sentence, and the footers of the root pages against both.
+  guard('footer', () => {
+    const rel = 'tools/site/company.json';
+    let company;
+    try { company = JSON.parse(read(rel)); } catch (e) { throw new Error(`${rel} cannot be read as JSON (${e.message.split('\n')[0]})`); }
+    const { sentence, footer_sentence: footer } = company || {};
+    if (typeof sentence !== 'string' || typeof footer !== 'string') throw new Error(`${rel} has no sentence or no footer_sentence, as strings`);
+    const want = footerWording(sentence);
+    if (want === null) fail('footer', `the sentence in ${rel} has no last sentence to leave out of the footer's wording: "${sentence}"`);
+    else if (footer !== want) fail('footer', `footer_sentence in ${rel} is not its sentence without the first two words and the last sentence, the first letter then a capital; ${parting(footer, want)}`);
+    const pages = Object.keys(registry);
+    if (!pages.length) throw new Error('no root page to read the footer of (the registry is empty)');
+    let same = 0;
+    for (const f of pages) {
+      const about = one(find(parse(read(f)), (t) => t.name === 'p' && hasClass(t, 'site-footer__about')), `footer about lines (p.site-footer__about) on ${f}`);
+      const got = text(about.inner);
+      if (got !== footer) fail('footer', `the footer of ${f} does not say footer_sentence of ${rel}; ${parting(got, footer)} (run python3 tools/seo-head.py)`);
+      else same++;
+    }
+    note('footer', `footer_sentence is the company sentence's shorter wording, and the footers of ${same} of the ${pages.length} root pages say it`);
+  });
+
   return { problems, notes };
 }
 
@@ -486,6 +524,8 @@ function selfTest(root, verbose = false) {
   const notApplicable = (why) => Object.assign(new Error(why), { notApplicable: true });
   const llmsLine = (s, file) => s.split('\n').findIndex((l) => l.startsWith('- [') && l.includes(`(${SITE}${file})`));
   const editLine = (s, i, fn) => { if (i < 0) throw new Error('the llms.txt line the case changes is not there'); const lines = s.split('\n'); lines[i] = fn(lines[i]); return lines.join('\n'); };
+  // tools/site/company.json changed as data: fn takes its object and changes it.
+  const editCompany = (s, fn) => { const o = JSON.parse(s); fn(o); return JSON.stringify(o, null, 2) + '\n'; };
 
   const cases = [
     ['faq', 'a word added to the first answer on index.html', 'index.html', (s) => at(s, first(s, (t) => t.name === 'p', (t) => hasAttr(t, 'data-faq-item')).open, 'Changed ')],
@@ -537,6 +577,11 @@ function selfTest(root, verbose = false) {
     ['guides', 'a copy moved off the text its exception records', 'tools/seo/blog.json', renameItem, () => [madeUp(), ...EXCEPTIONS]],
     ['guides', 'a copy that equals its page while an exception names it, so the exception is stale', null, null, () => [madeUp(), ...EXCEPTIONS]],
     ['guides', 'an exception that names no entry', null, null, () => [...EXCEPTIONS, { src: 'blog.html', page: 'no-such-guide.html', field: 'title', text: '', why: 'the self-test' }]],
+    ['footer', 'a word added to the company sentence and not to footer_sentence', 'tools/site/company.json', (s) => editCompany(s, (o) => { o.sentence = o.sentence.replace(/^(\S+ \S+ )/, '$1very '); })],
+    ['footer', 'a word added to footer_sentence and not to the company sentence', 'tools/site/company.json', (s) => editCompany(s, (o) => { o.footer_sentence = o.footer_sentence.replace(/^(\S+ )/, '$1very '); })],
+    ['footer', 'footer_sentence that keeps the last sentence', 'tools/site/company.json', (s) => editCompany(s, (o) => { const rest = o.sentence.split(' ').slice(2).join(' '); o.footer_sentence = rest.charAt(0).toUpperCase() + rest.slice(1); })],
+    ['footer', 'footer_sentence that keeps the small first letter', 'tools/site/company.json', (s) => editCompany(s, (o) => { o.footer_sentence = o.footer_sentence.charAt(0).toLowerCase() + o.footer_sentence.slice(1); })],
+    ['footer', 'the footer of about.html with a word added', 'about.html', (s) => at(s, first(s, (t) => t.name === 'p' && hasClass(t, 'site-footer__about')).open, 'Changed ')],
   ];
 
   let bad = 0;

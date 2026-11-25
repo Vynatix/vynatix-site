@@ -12,9 +12,9 @@ What it rewrites, on every page it is given:
   WebSite node; the page node with datePublished and dateModified; a FAQPage node built from the
   page's visible FAQ, [data-faq] and [data-faq-item]; an Article node for the guides; and the
   page's extra nodes from tools/seo/<page>.json, when that file exists);
-- the footer, from the FOOTER template below (a footer change is made there, then this is run;
-  it is not edited in every file);
-- the site header, from the HEADER template below (a nav change is made in NAV, then this is run); it stays
+- the footer, from tools/templates/footer.html and the company's facts in tools/site/company.json (a
+  footer change is made there, then this is run; it is not edited in every file);
+- the site header, from tools/templates/header.html (a nav change is made there, then this is run); it stays
   English, with lang="en", on the Swedish pages;
 - sitemap.xml, from the registry's mod dates and language versions;
 - the generated languages (LANGS below: Spanish, French, German, Japanese, Arabic): every English page except
@@ -26,22 +26,24 @@ What it rewrites, on every page it is given:
 What it never touches: anything inside <main>, the <title> and the meta description (the page
 is the source of truth for both; the block repeats them), and the ?v= stamps on the stylesheets
 and app.js. The one exception is a page whose registry status is 'withdrawn': the whole page
-body, title and description are replaced by the short stub below (see TAKEDOWN.md), because on
-GitHub Pages a withdrawn URL has to keep answering and must stop serving its old text.
+body, title and description are replaced by the stub of tools/templates/stub.html (see TAKEDOWN.md),
+because on GitHub Pages a withdrawn URL has to keep answering and must stop serving its old text.
 
     python3 tools/seo-head.py --check     reports (and exits 1 on) any generated part that differs
                                           from what a run would write, without writing anything
 
 When to run it: after editing a FAQ (the FAQPage data must repeat the visible answers word for
 word), after moving a page's `mod` date in its row because its content changed (`pub`, the date the
-page first went live, never moves), or after changing the footer. It is idempotent: on an
-unchanged tree it changes nothing. If styles or scripts changed as well, run `npm run stamp` in
-tools/ afterwards; the stamps are not this script's business, and `npm run check` fails until
-they are current (stamp.js stamps the language folders with the root pages, so the two agree).
+page first went live, never moves), or after changing a template in tools/templates or a fact in
+tools/site/company.json. It is idempotent: on an unchanged tree it changes nothing. If styles or
+scripts changed as well, run `npm run stamp` in tools/ afterwards; the stamps are not this script's
+business, and `npm run check` fails until they are current (stamp.js stamps the language folders with
+the root pages, so the two agree).
 After editing an English page, `python3 tools/i18n.py` lists what the catalogues now lack.
 """
 import json, os, re, sys, html
 from html.parser import HTMLParser
+from string import Template
 
 EXEC = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, EXEC)
@@ -265,40 +267,144 @@ def cluster(f, drafts=False):
                     v[k] = f'{k}/{en}'
     return {k: v[k] for k in LANGS if k in v}
 
+# ---------------------------------------------------------------- templates and the company's facts
+# The header, the footer and the stub of a withdrawn page are HTML files in tools/templates/, and the company's facts
+# are tools/site/company.json. A template file holds named fragments, each a <template id="name"> element whose
+# lines between the opening and the closing tag are the fragment. Around them stand comments and, in stub.html, the
+# stub's words, one <dl lang="xx"> list per language written by hand. A fragment names what varies as ${name}
+# (string.Template; a dollar sign is written $$). read_template() refuses a file that holds anything else, and
+# fragment() a name the fragment may not use, a name it must use once and does not, $name without braces and a
+# stray $, each naming the file, so a merge that left both sides stops the run instead of reaching a page.
+TEMPLATE_DIR = os.path.join(EXEC, 'templates')
+TEMPLATE_TOKEN = re.compile(r'\s+|<!--.*?-->|<template id="([a-z][a-z-]*)">\n(.*?)\n</template>(?=\n|\Z)'
+                            r'|<dl lang="([a-z]{2})">(.*?)</dl>', re.S)
+WORD_TOKEN = re.compile(r'\s+|<dt>([a-z][a-z0-9]*)</dt>\s*<dd>(.*?)</dd>', re.S)
+COMPANY_KEYS = ('name', 'legal_name', 'sentence', 'footer_sentence', 'slogan', 'founded', 'founded_in', 'group',
+                'group_url', 'org_number', 'street', 'postal_code', 'city', 'country', 'email', 'telephone',
+                'telephone_shown', 'contact_type', 'knows_about', 'same_as', 'note')
+_TEMPLATES = {}
+
+def read_template(name):
+    """The fragments and the word lists of tools/templates/<name>, read once: ({id: text}, {lang: {key: text}})."""
+    if name in _TEMPLATES:
+        return _TEMPLATES[name]
+    rel = f'tools/templates/{name}'
+    try:
+        with open(os.path.join(TEMPLATE_DIR, name), encoding='utf-8') as fh:
+            text = fh.read()
+    except OSError as e:
+        raise SystemExit(f'{rel}: cannot be read ({e.strerror})')
+    where = lambda at: f'{rel}, line {text.count(chr(10), 0, at) + 1}'
+    parts, words, i = {}, {}, 0
+    while i < len(text):
+        m = TEMPLATE_TOKEN.match(text, i)
+        if not m:
+            raise SystemExit(f'{where(i)}: neither a comment, a <template id="..."> nor a <dl lang="..."> '
+                             f'({text[i:i + 30]!r}); a merge may have left both sides here')
+        if m.group(1):
+            if m.group(1) in parts:
+                raise SystemExit(f'{where(i)}: a second <template id="{m.group(1)}">')
+            parts[m.group(1)] = m.group(2)
+        elif m.group(3):
+            if m.group(3) in words:
+                raise SystemExit(f'{where(i)}: a second <dl lang="{m.group(3)}">')
+            body, row, j = m.group(4), {}, 0
+            while j < len(body):
+                w = WORD_TOKEN.match(body, j)
+                if not w:
+                    raise SystemExit(f'{where(m.start(4) + j)}: neither white space nor <dt>key</dt> <dd>word</dd>')
+                if w.group(1):
+                    if w.group(1) in row:
+                        raise SystemExit(f'{where(m.start(4) + j)}: {w.group(1)} is given twice')
+                    row[w.group(1)] = w.group(2)
+                j = w.end()
+            words[m.group(3)] = row
+        i = m.end()
+    _TEMPLATES[name] = (parts, words)
+    return parts, words
+
+def placeholders(text, where):
+    """The names a template's text gives as ${name}, in order. A $ that names nothing, or a name without braces, stops
+    the run with `where` and what is wrong."""
+    found = list(Template.pattern.finditer(text))
+    if any(m.group('invalid') is not None for m in found):
+        raise SystemExit(f'{where} holds a $ that names nothing (a dollar sign is written $$)')
+    bare = [m.group('named') for m in found if m.group('named')]
+    if bare:
+        raise SystemExit(f'{where} writes ${bare[0]}; write ${{{bare[0]}}}, with braces')
+    return [m.group('braced') for m in found if m.group('braced')]
+
+def fragment(name, id, values=(), names=(), once=()):
+    """<template id="id"> of tools/templates/<name> as a string.Template. It may name the keys of values, whose values
+    go into the page as they stand (so one it names may not hold <, >, & or a double quote), and the names given,
+    which the caller fills in, and it must name each name of once exactly once."""
+    rel = f'tools/templates/{name}'
+    parts = read_template(name)[0]
+    if id not in parts:
+        raise SystemExit(f'{rel}: no <template id="{id}">')
+    t = Template(parts[id])
+    used = placeholders(t.template, f'{rel}: <template id="{id}">')
+    allowed = sorted(set(values) | set(names) | set(once))
+    for n in used:
+        if n not in allowed:
+            raise SystemExit(f'{rel}: <template id="{id}"> names ${{{n}}}, which is not one of its names '
+                             f'({", ".join(allowed) or "it has none"})')
+        if n in values and re.search(r'[<>&"]', values[n]):
+            raise SystemExit(f'{rel}: <template id="{id}"> names ${{{n}}}, whose value {values[n]!r} holds <, >, & or a '
+                             'double quote; it goes into the page as it stands, so write it without them')
+    for n in once:
+        if used.count(n) != 1:
+            raise SystemExit(f'{rel}: <template id="{id}"> names ${{{n}}} {used.count(n)} times; it must name it once')
+    return t
+
+def load_company():
+    """The company's facts from tools/site/company.json: every key of COMPANY_KEYS but note, each a string with text
+    in it, except knows_about and same_as, which are lists of them. note stays in the file."""
+    rel = 'tools/site/company.json'
+    data = load_json(os.path.join(SITE_DATA, 'company.json'))
+    unknown = sorted(set(data) - set(COMPANY_KEYS))
+    if unknown:
+        raise SystemExit(f'{rel}: unknown key {unknown} (known: {list(COMPANY_KEYS)})')
+    missing = [k for k in COMPANY_KEYS if k not in data and k != 'note']
+    if missing:
+        raise SystemExit(f'{rel}: {missing[0]} is missing')
+    text = lambda v: isinstance(v, str) and v.strip() != ''
+    for k, v in data.items():
+        lists = k in ('knows_about', 'same_as')
+        if not (isinstance(v, list) and v and all(text(x) for x in v) if lists else text(v)):
+            raise SystemExit(f'{rel}: {k} is {json.dumps(v, ensure_ascii=False)}, which is not '
+                             + ('a list of strings' if lists else 'a string with text in it'))
+    return {k: v for k, v in data.items() if k != 'note'}
+
 # ---------------------------------------------------------------- shared nodes
-COMPANY_SENTENCE = ("Vynatix is the senior software consultancy for scale-ups. Our engineers join your team, raise "
-    "the pace and make your software stronger as you grow. Based in Gothenburg, part of Ultra Group.")
+# The company's facts, tools/site/company.json: the Organization node is built from them, and the footer names the
+# ones it shows (tools/templates/footer.html).
+COMPANY = load_company()
 
 ORGANIZATION = {
   "@type": "Organization",
   "@id": ORG_ID,
-  "name": "Vynatix",
-  "legalName": "Vynatix AB",
-  "alternateName": "Vynatix AB",
+  "name": COMPANY['name'],
+  "legalName": COMPANY['legal_name'],
+  "alternateName": COMPANY['legal_name'],
   "url": SITE,
   "logo": {"@type": "ImageObject", "url": SITE + "assets/icon-512.png", "width": 512, "height": 512},
-  "description": COMPANY_SENTENCE,
-  "slogan": "Engineering that compounds",
-  "foundingDate": "2023",
-  "foundingLocation": {"@type": "Place", "name": "Gothenburg, Sweden"},
-  "memberOf": {"@type": "Organization", "name": "Ultra Group", "url": "https://ultragroup.se/"},
-  "identifier": {"@type": "PropertyValue", "propertyID": "Swedish organisationsnummer", "value": "559445-6542"},
-  "address": {"@type": "PostalAddress", "streetAddress": "Mailbox 1611", "postalCode": "411 42",
-              "addressLocality": "Gothenburg", "addressCountry": "SE"},
-  "email": "front.disk@vynatix.com",
-  "telephone": "+46720710676",
-  "contactPoint": {"@type": "ContactPoint", "contactType": "Projects and careers",
-                   "email": "front.disk@vynatix.com", "telephone": "+46720710676"},
-  "knowsAbout": [
-    "AI engineering", "Retrieval-augmented generation", "LLM evaluation pipelines",
-    "MCP servers and integrations", "Agent and harness engineering", "On-prem and sovereign cloud deployment",
-    "Cloud platforms on GCP and AWS", "Kubernetes and GitOps", "Platform engineering",
-    "Build pipelines", "FinOps and cost control", "Migration off legacy systems",
-    "Native mobile development for iOS and Android", "Web and desktop applications",
-    "Enterprise integration and SaaS", "Embedded Android", "Android Automotive (AAOS)"],
-  "sameAs": ["https://www.linkedin.com/company/vynatix", "https://github.com/Vynatix"],
+  "description": COMPANY['sentence'],
+  "slogan": COMPANY['slogan'],
+  "foundingDate": COMPANY['founded'],
+  "foundingLocation": {"@type": "Place", "name": COMPANY['founded_in']},
+  "memberOf": {"@type": "Organization", "name": COMPANY['group'], "url": COMPANY['group_url']},
+  "identifier": {"@type": "PropertyValue", "propertyID": "Swedish organisationsnummer", "value": COMPANY['org_number']},
+  "address": {"@type": "PostalAddress", "streetAddress": COMPANY['street'], "postalCode": COMPANY['postal_code'],
+              "addressLocality": COMPANY['city'], "addressCountry": COMPANY['country']},
+  "email": COMPANY['email'],
+  "telephone": COMPANY['telephone'],
+  "contactPoint": {"@type": "ContactPoint", "contactType": COMPANY['contact_type'],
+                   "email": COMPANY['email'], "telephone": COMPANY['telephone']},
+  "knowsAbout": COMPANY['knows_about'],
+  "sameAs": COMPANY['same_as'],
 }
-WEBSITE = {"@type": "WebSite", "@id": WEBSITE_ID, "url": SITE, "name": "Vynatix",
+WEBSITE = {"@type": "WebSite", "@id": WEBSITE_ID, "url": SITE, "name": COMPANY['name'],
            "inLanguage": [l['tag'] for l in LANGS.values() if l.get('status', 'live') == 'live'], "publisher": {"@id": ORG_ID}}
 
 # ---------------------------------------------------------------- parsing helpers
@@ -371,10 +477,10 @@ def head_block(f, title, desc, main_html, extra_nodes):
             lines.append(f'<link rel="alternate" hreflang="{LANGS[lang]["tag"]}" href="{url_of(other)}">')
         lines.append(f'<link rel="alternate" hreflang="x-default" href="{url_of(versions.get("en", f))}">')
     robots = 'index, follow, max-snippet:-1, max-image-preview:large' if public else 'noindex'
-    lines += ['<meta name="author" content="Vynatix AB">',
+    lines += [f'<meta name="author" content="{html.escape(COMPANY["legal_name"], quote=True)}">',
               f'<meta name="robots" content="{robots}">',
               f'<meta property="og:type" content="{"website" if withdrawn else p["og"]}">',
-              '<meta property="og:site_name" content="Vynatix">',
+              f'<meta property="og:site_name" content="{html.escape(COMPANY["name"], quote=True)}">',
               f'<meta property="og:title" content="{html.escape(title, quote=True)}">',
               f'<meta property="og:description" content="{html.escape(desc, quote=True)}">',
               f'<meta property="og:url" content="{u}">',
@@ -427,104 +533,32 @@ def head_block(f, title, desc, main_html, extra_nodes):
     return '<!-- seo -->\n' + '\n'.join(lines) + '\n<!-- /seo -->'
 
 # ---------------------------------------------------------------- footer
-# The one source of the footer. Every page's footer is replaced with this on each run, so a
-# change to the contact details, the links or the fine print is made here, once.
-FOOTER = '''  <!-- ============================================================ Footer -->
-  <footer class="site-footer inverse"@@LANG@@>
-    <div class="container">
-      <div class="site-footer__grid@@GRID@@">
-        <div class="site-footer__brand">
-          <a href="index.html" class="site-footer__logo" aria-label="Vynatix home">
-            <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="162" height="40" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
-          </a>
-          <p class="site-footer__about">The senior software consultancy for scale-ups. Our engineers join your team, raise the pace and make your software stronger as you grow.</p>
-          <address class="site-footer__addr">
-            <a href="mailto:front.disk@vynatix.com">front.disk@vynatix.com</a><br>
-            <a href="tel:+46720710676">+46 72 071 06 76</a><br>
-            Mailbox 1611, 411 42 Gothenburg<br>
-            Org.nr 559445-6542 · <a href="https://ultragroup.se/" rel="noopener">Part of Ultra Group</a>
-          </address>
-        </div>
-        <div>
-          <h2 class="site-footer__h">Services</h2>
-          <ul class="site-footer__links list-reset">
-            <li><a href="services.html#ai-engineering">AI engineering</a></li>
-            <li><a href="services.html#cloud-platforms">Cloud platforms</a></li>
-            <li><a href="services.html#application-development">Application development</a></li>
-          </ul>
-        </div>
-        <div>
-          <h2 class="site-footer__h">Company</h2>
-          <ul class="site-footer__links list-reset">
-            <li><a href="about.html">About</a></li>
-            <li><a href="industries.html">Industries</a></li>
-            <li><a href="work.html">Cases</a></li>
-            <li><a href="blog.html">Insights</a></li>
-            <li><a href="membership.html">Career</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-        </div>
-@@SWEDISH@@        <div>
-          <h2 class="site-footer__h">Legal</h2>
-          <ul class="site-footer__links list-reset">
-            <li><a href="privacy.html">Privacy</a></li>
-            <li><a href="privacy.html#cookies" data-consent-open>Cookie settings</a></li>
-            <li><a href="terms.html">Terms</a></li>
-            <li><a href="accessibility.html">Accessibility</a></li>
-            <li class="motion-item"><button class="motion-toggle" type="button" data-i18n-play="Play background motion">Pause background motion</button></li>
-          </ul>
-        </div>
-      </div>
-      <div class="site-footer__fine">
-        <span>© 2026 Vynatix AB</span>
-@@LANGUAGES@@        <span>vynatix.com</span>
-      </div>
-    </div>
-  </footer>'''
+# The one source of the footer is tools/templates/footer.html, with the facts it names from tools/site/company.json.
+# Every page's footer is replaced with it on each run, so a change to the links or the fine print is made there, and
+# one to the contact details in company.json, once.
+COMPANY_TEXT = {k: v for k, v in COMPANY.items() if isinstance(v, str)}     # the facts a template may name
+FOOTER = fragment('footer.html', 'footer', values=COMPANY_TEXT, once=('lang', 'grid', 'swedish', 'languages'))
 
 # ---------------------------------------------------------------- header
-# The one source of the site header, the way FOOTER is the one source of the footer. Every page's header is
-# replaced with this on each run (the aria-current link is the page itself), so a nav change is made in NAV
-# below, once, and this script run. The skip link and the wordmark <symbol> above the header are still
-# copied by hand into every page.
-NAV = [('services.html', 'Services'), ('industries.html', 'Industries'), ('work.html', 'Cases'), ('blog.html', 'Insights'), ('membership.html', 'Career'), ('about.html', 'About'), ('contact.html', 'Contact')]
-MENU_CTA = ('contact.html', 'Get in touch')   # the extra link the mobile menu shows
-HEADER = '''  <!-- ============================================================ Header -->
-  <header class="site-header" role="banner"@@LANG@@>
-    <div class="site-header__inner">
-      <a href="index.html" class="site-header__logo" aria-label="Vynatix home">
-        <svg class="vx-wordmark" viewBox="0 0 2654.79 653.758" width="122" height="30" aria-hidden="true" focusable="false"><use href="#vx-wordmark"/></svg>
-      </a>
-      <button class="icon-btn mobile-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
-        <svg class="icon icon--menu" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M140-254.62V-300h680v45.38H140Zm0-202.69v-45.38h680v45.38H140ZM140-660v-45.38h680V-660H140Z"/></svg>
-        <svg class="icon icon--close" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="m250.92-218.92-32-32L448-480 218.92-709.08l32-32L480-512l229.08-229.08 32 32L512-480l229.08 229.08-32 32L480-448 250.92-218.92Z"/></svg>
-      </button>
-      <nav class="site-header__nav" id="primary-nav" aria-label="Primary">
-        <ul class="site-header__list list-reset">
-@@NAV@@
-        </ul>
-      </nav>
-      <div class="site-header__tools">
-        <button class="icon-btn theme-toggle" type="button" title="Dark theme" aria-label="Dark theme" aria-pressed="false">
-          <svg class="icon icon--dark" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M481.15-140q-141.66 0-240.83-99.17-99.16-99.16-99.16-240.83 0-135.77 92.11-232.88 92.11-97.12 225.57-105.2 4.16 0 9.12.31 4.96.31 13.96.49-27.15 30.9-41.96 71.74-14.81 40.85-14.81 85.54 0 98.33 68.84 167.17Q562.82-424 661.15-424q44.31 0 85.35-13.69 41.04-13.69 71.5-38.61.23 7.38.54 11.23.3 3.84.3 7.38-7.69 133.46-104.8 225.57Q616.92-140 481.15-140Zm0-45.39q103.23 0 181.35-62.49 78.11-62.5 101.19-149.66-23.46 9.46-49.82 14.19-26.36 4.74-52.72 4.74-116.92 0-199.15-82.23T379.77-660q0-23.23 4.42-48.62 4.42-25.38 15.5-56.15-92.61 28.16-152.88 107.47-60.27 79.31-60.27 177.3 0 122.77 85.92 208.69t208.69 85.92Zm-5.53-289.69Z"/></svg>
-          <svg class="icon icon--light" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M575.15-384.85q39.46-39.46 39.46-95.15 0-55.69-39.46-95.15-39.46-39.46-95.15-39.46-55.69 0-95.15 39.46-39.46 39.46-39.46 95.15 0 55.69 39.46 95.15 39.46 39.46 95.15 39.46 55.69 0 95.15-39.46Zm-222.61 32.31Q300-405.08 300-480q0-74.92 52.54-127.46Q405.08-660 480-660q74.92 0 127.46 52.54Q660-554.92 660-480q0 74.92-52.54 127.46Q554.92-300 480-300q-74.92 0-127.46-52.54ZM200-457.31H50v-45.38h150v45.38Zm710 0H760v-45.38h150v45.38ZM457.31-760v-150h45.38v150h-45.38Zm0 710v-150h45.38v150h-45.38ZM267.39-662.62l-93.08-90.46 32.23-33.61L296.77-694l-29.38 31.38Zm486.69 488.7-91.46-92.7L693.61-298l92.08 91.08-31.61 33ZM662-693.61l91.08-92.08 33.61 31.61-92.08 91.46L662-693.61ZM173.92-206.54 266-298l31.23 31.23-90.69 92.85-32.62-32.62ZM480-480Z"/></svg>
-        </button>
-        <a href="contact.html" class="btn btn--sm site-header__cta">Get in touch</a>
-      </div>
-    </div>
-  </header>'''
+# The one source of the site header is tools/templates/header.html, the way footer.html is the one source of the
+# footer. Every page's header is replaced with it on each run (the aria-current link is the page itself), so a nav
+# change is made there, once, and this script run. The skip link and the wordmark <symbol> above the header are
+# still copied by hand into every page.
+HEADER = fragment('header.html', 'header', names=('current',), once=('lang',))
+for line in HEADER.template.split('\n'):
+    if '${current}' in line and line.count(' href="') != 1:
+        raise SystemExit(f'tools/templates/header.html: a line that names ${{current}} holds one link: {line.strip()}')
 
 def header_for(f, gen=False):
-    rows = []
-    for href, label in NAV:
-        cur = ' aria-current="page"' if href == f else ''
-        rows.append(f'          <li><a href="{href}" class="site-header__link"{cur}>{label}</a></li>')
-    rows.append(f'          <li class="site-header__menu-cta"><a href="{MENU_CTA[0]}" class="site-header__link">{MENU_CTA[1]}</a></li>')
-    # On a generated page the header is translated with the rest, so it does not declare English.
-    return HEADER.replace('@@NAV@@', '\n'.join(rows)).replace('@@LANG@@', '' if gen else ' lang="en"')
+    # ${current} is on the line of each link of the menu: aria-current="page" on the link to the page itself. On a
+    # generated page the header is translated with the rest, so it does not declare English.
+    lang = '' if gen else ' lang="en"'
+    return '\n'.join(Template(line).substitute(lang=lang, current=' aria-current="page"' if f' href="{f}"' in line else '')
+                     for line in HEADER.template.split('\n'))
 
-# The footer's Swedish column: on the hand-written pages only. A generated page has the language list instead.
-SWEDISH_COLUMN = '        <div lang="sv">\n          <h2 class="site-footer__h">På svenska</h2>\n          <ul class="site-footer__links list-reset">\n            <li><a href="sv.html" hreflang="sv">Vynatix på svenska</a></li>\n            <li><a href="ai-utveckling.html" hreflang="sv">AI-utveckling</a></li>\n            <li><a href="sv.html#guider" hreflang="sv">Guider</a></li>\n            <li><a href="integritet.html" hreflang="sv">Integritetsmeddelande</a></li>\n          </ul>\n        </div>\n'
+# The footer's Swedish column: on the hand-written pages only. A generated page has the language list instead. It is
+# <template id="swedish"> of footer.html, whole lines, so it ends in a newline.
+SWEDISH_COLUMN = fragment('footer.html', 'swedish').substitute() + '\n'
 LANGUAGES_SLOT = '        <!--@@languages@@-->\n'      # where a generated page's language list goes, once it is translated
 
 def relative(target, f):
@@ -558,9 +592,8 @@ def languages_for(f, label='Language'):
             '          <ul class="site-footer__langlist list-reset">\n' + '\n'.join(rows) + '\n          </ul>\n        </nav>\n')
 
 def footer_for(f, gen=False):
-    s = FOOTER.replace('@@LANG@@', '' if gen else ' lang="en"').replace('@@GRID@@', ' site-footer__grid--four' if gen else '')
-    s = s.replace('@@SWEDISH@@', '' if gen else SWEDISH_COLUMN)
-    return s.replace('@@LANGUAGES@@', LANGUAGES_SLOT if gen else languages_for(f))
+    return FOOTER.substitute(COMPANY_TEXT, lang='' if gen else ' lang="en"', grid=' site-footer__grid--four' if gen else '',
+                             swedish='' if gen else SWEDISH_COLUMN, languages=LANGUAGES_SLOT if gen else languages_for(f))
 
 # ---------------------------------------------------------------- read helpers
 CHECK = '--check' in sys.argv
@@ -601,43 +634,64 @@ def main_of(s):
 
 # ---------------------------------------------------------------- withdrawn pages
 # A withdrawn page keeps its URL (GitHub Pages cannot redirect) and says so, in about a hundred
-# characters, with nothing of the old text. Built from existing components only (.page-hero), so a
-# withdrawal never needs a stylesheet change or a new stamp. No reason is given on the page.
+# characters, with nothing of the old text: the stub of tools/templates/stub.html, in the words of the page's
+# language. Built from existing components only (.page-hero), so a withdrawal never needs a stylesheet change or a
+# new stamp. No reason is given on the page.
 MONTHS = {'en': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
                  'October', 'November', 'December'],
           'sv': ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september',
                  'oktober', 'november', 'december']}
-STUB = {
-  'en': dict(title='Page withdrawn, Vynatix', desc='Vynatix has withdrawn this page.', eyebrow='Withdrawn',
-             h1='This page has been withdrawn', home='index.html',
-             lede='Vynatix removed this page on {date}. <a href="{home}">Go to the home page</a>.',
-             date=lambda y, m, d: f'{d} {MONTHS["en"][m - 1]} {y}'),
-  'sv': dict(title='Sidan är återkallad, Vynatix', desc='Vynatix har tagit bort den här sidan.', eyebrow='Återkallad',
-             h1='Den här sidan är återkallad', home='sv.html',
-             lede='Vynatix tog bort sidan den {date}. <a href="{home}">Gå till startsidan</a>.',
-             date=lambda y, m, d: f'{d} {MONTHS["sv"][m - 1]} {y}'),
-}
+STUB_PAGE = fragment('stub.html', 'stub', once=('title', 'desc', 'eyebrow', 'h1', 'lede'))
+# The fragment is a <title> line, a meta description line and the <main>, which withdraw() puts in place of the page's.
+STUB_SHAPE = re.compile(r'(<title>.*?</title>)\n(<meta name="description" content="[^"]*">)\n(\s*<main id="main">.*</main>)', re.S)
+if not STUB_SHAPE.fullmatch(STUB_PAGE.substitute(title='t', desc='d', eyebrow='e', h1='h', lede='l')):
+    raise SystemExit('tools/templates/stub.html: <template id="stub"> is a <title> line, a <meta name="description"> '
+                     'line and a <main id="main">, in that order, and nothing else')
+STUB_WORDS = ('title', 'desc', 'eyebrow', 'h1', 'lede', 'home', 'date')
 
-def stub_main(f):
+def load_stub():
+    """The stub's words in each language written by hand, the <dl lang> lists of tools/templates/stub.html, in the
+    shape stub_for() gives a generated language: {lang: dict(title, desc, eyebrow, h1, home, lede, date)}, where lede
+    is a str.format pattern with {date} and {home} and date a function of the year, the month and the day."""
+    rel = 'tools/templates/stub.html'
+    words = read_template('stub.html')[1]
+    written = [k for k, l in LANGS.items() if l['kind'] == 'written']
+    if sorted(words) != sorted(written):
+        raise SystemExit(f'{rel}: the words are for {", ".join(words) or "no language"}; they are for each language '
+                         f'written by hand, {", ".join(written)}')
+    out = {}
+    for lang, w in words.items():
+        where = f'{rel}: <dl lang="{lang}">'
+        if sorted(w) != sorted(STUB_WORDS):
+            raise SystemExit(f'{where} gives {", ".join(w)}; it gives {", ".join(STUB_WORDS)}, once each')
+        allowed = dict(lede=('date', 'home'), date=('d', 'm', 'month', 'y'))
+        for k, v in w.items():
+            used = placeholders(v, f'{where}, {k},')
+            if set(used) - set(allowed.get(k, ())) or (k == 'lede' and used.count('date') != 1) or (k == 'date' and not used):
+                raise SystemExit(f'{where}, {k}, names {", ".join("${" + n + "}" for n in used) or "nothing"}; it may name '
+                                 + {'lede': '${date} once and ${home}', 'date': '${d}, ${m}, ${month} and ${y}'}.get(k, 'nothing'))
+        if re.search(r'[{}]', Template.pattern.sub('', w['lede'])):
+            raise SystemExit(f'{where}, lede, holds a brace of its own, which the lede may not hold')
+        text = {k: Template(v).substitute() for k, v in w.items() if k not in allowed}
+        out[lang] = dict(text, lede=Template(w['lede']).substitute(date='{date}', home='{home}'),
+                         date=lambda y, m, d, p=Template(w['date']), lang=lang: p.substitute(d=d, m=m, month=MONTHS[lang][m - 1], y=y))
+    return out
+
+STUB = load_stub()
+
+def stub_page(f):
+    """The stub of page f in the words of its language: its <title>, its meta description and its <main>."""
     p = ALL[f]; t = stub_for(p['lang'])
     y, m, d = (int(x) for x in p['mod'].split('-'))
     lede = t['lede'].format(date=t['date'](y, m, d), home=t['home'])
-    return ('  <main id="main">\n'
-            '    <section class="page-hero">\n'
-            '      <div class="container">\n'
-            f'        <p class="eyebrow">{t["eyebrow"]}</p>\n'
-            f'        <h1 class="page-hero__h1">{t["h1"]}</h1>\n'
-            f'        <p class="page-hero__lede">{lede}</p>\n'
-            '      </div>\n'
-            '    </section>\n'
-            '  </main>')
+    return STUB_SHAPE.fullmatch(STUB_PAGE.substitute(title=t['title'], desc=t['desc'], eyebrow=t['eyebrow'], h1=t['h1'], lede=lede)).groups()
 
 def withdraw(f, s):
     """Replaces the title, the meta description and the whole <main> with the stub."""
-    t = stub_for(ALL[f]['lang'])
-    s = re.sub(r'<title[^>]*>.*?</title>', lambda m: f'<title>{t["title"]}</title>', s, count=1, flags=re.S)
-    s = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{t["desc"]}">', s, count=1)
-    s, n = re.subn(r'(\s*)<main id="main"[^>]*>.*?</main>', lambda m: m.group(1) + stub_main(f).lstrip(), s, count=1, flags=re.S)
+    title, desc, main = stub_page(f)
+    s = re.sub(r'<title[^>]*>.*?</title>', lambda m: title, s, count=1, flags=re.S)
+    s = re.sub(r'<meta name="description" content="[^"]*">', lambda m: desc, s, count=1)
+    s, n = re.subn(r'(\s*)<main id="main"[^>]*>.*?</main>', lambda m: m.group(1) + main.lstrip(), s, count=1, flags=re.S)
     if n != 1:
         raise SystemExit(f + ': no <main id="main"> to replace with the stub')
     return s
@@ -671,6 +725,12 @@ def render(f, gen=False):
 # public is withdrawn with its English source, and must say so in its own language).
 STUB_LEDE = 'Vynatix removed this page on {date}. <1>Go to the home page</1>.'
 DATE_PATTERN = '{d} {month} {y}'       # a translation may use {m}, the month as a number, instead of {month}
+# The two are the English lede and date of tools/templates/stub.html as the catalogues write them, <1> for the link
+# and {date} for the day: a change to one is made to the other, and the five catalogues translate the new message.
+if (STUB['en']['lede'] != STUB_LEDE.replace('<1>', '<a href="{home}">').replace('</1>', '</a>')
+        or Template(read_template('stub.html')[1]['en']['date']).substitute(d='{d}', m='{m}', month='{month}', y='{y}') != DATE_PATTERN):
+    raise SystemExit('tools/templates/stub.html and STUB_LEDE or DATE_PATTERN in tools/seo-head.py, the messages the catalogues '
+                     'translate, no longer say the same: change them together')
 EXTRA_MESSAGES = (['Language', STUB['en']['title'], STUB['en']['desc'], STUB['en']['eyebrow'], STUB['en']['h1'],
                    STUB_LEDE, DATE_PATTERN] + MONTHS['en'])
 LD_TEXT = ('name', 'description', 'serviceType', 'keywords', 'headline')     # the strings of a page's own JSON-LD nodes that are prose

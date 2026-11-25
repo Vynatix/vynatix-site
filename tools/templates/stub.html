@@ -1,0 +1,50 @@
+<!-- The stub a withdrawn page serves (tools/TAKEDOWN.md). A page whose registry row has "status": "withdrawn" keeps
+     its URL, because GitHub Pages cannot redirect, and tools/seo-head.py puts the three parts of the fragment below
+     in place of its title, its meta description and its whole <main>, filled in with the words of the page's
+     language: about a hundred characters, nothing of the old text and no reason. It is built from existing
+     components only (.page-hero), so a withdrawal never needs a stylesheet change or a new stamp. Not published:
+     tools/ is excluded in _config.yml.
+
+     The fragment is the lines between <template id="stub"> and </template>; ${title}, ${desc}, ${eyebrow}, ${h1}
+     and ${lede} are the words of the page's language. A dollar sign is written $$. -->
+<template id="stub">
+<title>${title}</title>
+<meta name="description" content="${desc}">
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">${eyebrow}</p>
+        <h1 class="page-hero__h1">${h1}</h1>
+        <p class="page-hero__lede">${lede}</p>
+      </div>
+    </section>
+  </main>
+</template>
+
+<!-- The words, one list for each language written by hand. In the lede, ${date} is the day of the page's mod,
+     written as the date says (${d} is the day, ${m} the month as a number, ${month} its name and ${y} the year),
+     and ${home} is the home page the lede links. A generated language translates the English words from its
+     catalogue, tools/i18n/<code>.json, as messages of their own: there the lede marks its link <1> and the day
+     {date}, as STUB_LEDE and DATE_PATTERN in tools/seo-head.py write them, and seo-head.py stops when those two
+     no longer say what the English lede and date say here. A changed English word is a new message, so translate
+     it in the five catalogues (python3 tools/i18n.py missing <code>). tools/verify/permanence.js keeps its own copy
+     of these words and fails when the two differ. -->
+<dl lang="en">
+  <dt>title</dt>   <dd>Page withdrawn, Vynatix</dd>
+  <dt>desc</dt>    <dd>Vynatix has withdrawn this page.</dd>
+  <dt>eyebrow</dt> <dd>Withdrawn</dd>
+  <dt>h1</dt>      <dd>This page has been withdrawn</dd>
+  <dt>lede</dt>    <dd>Vynatix removed this page on ${date}. <a href="${home}">Go to the home page</a>.</dd>
+  <dt>home</dt>    <dd>index.html</dd>
+  <dt>date</dt>    <dd>${d} ${month} ${y}</dd>
+</dl>
+
+<dl lang="sv">
+  <dt>title</dt>   <dd>Sidan är återkallad, Vynatix</dd>
+  <dt>desc</dt>    <dd>Vynatix har tagit bort den här sidan.</dd>
+  <dt>eyebrow</dt> <dd>Återkallad</dd>
+  <dt>h1</dt>      <dd>Den här sidan är återkallad</dd>
+  <dt>lede</dt>    <dd>Vynatix tog bort sidan den ${date}. <a href="${home}">Gå till startsidan</a>.</dd>
+  <dt>home</dt>    <dd>sv.html</dd>
+  <dt>date</dt>    <dd>${d} ${month} ${y}</dd>
+</dl>

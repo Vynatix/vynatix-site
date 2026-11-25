@@ -5,6 +5,14 @@ Written 24 November 2026 for item 4.0 of `tools/REFACTORING-PLAN.md`. Not publis
 record (as of commit 5784a9c), classes each one, and proposes a pattern where one can hold it. It makes no
 decision, changes nothing the docs say, and nothing in it is the owner's word unless a quote says so.
 
+**Since this table was made.** It is a record of commit 5784a9c and is not rewritten. Steps 2.1 and 2.2 of the
+plan then moved the registry into `tools/site/pages/<slug>.json` and `tools/site/langs.json`, and the header,
+footer, stub and company facts into `tools/templates/` and `tools/site/company.json`. Four patterns name
+`tools/seo-head.py` and must be pointed at the new homes before they become guards: P16 (the company sentence,
+now in `tools/site/company.json`), P21 (no `zh` or `hi` language, now `tools/site/langs.json`), P22 (three
+withdrawn rows, now `"status": "withdrawn"` in `tools/site/pages/`) and P33 (the menu, now
+`tools/templates/header.html`). Line numbers below are those of 5784a9c (`git show 5784a9c:AGENTS.md`).
+
 ## How it was made
 
 **What counts.** A sentence is counted when it records a choice, a request, an acceptance or a rule and names the

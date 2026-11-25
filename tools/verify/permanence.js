@@ -10,7 +10,8 @@
 //     description, og/twitter copies and <main> are the stub's own strings for its language and the date in
 //     `mod`, it carries noindex and no Article or FAQPage data; and it is in no sitemap.xml, llms.txt or feed,
 //     named by no robots.txt Disallow, and linked by no other page (any href, src or link element that resolves
-//     to it, however it is written), so nothing of the old text is served and nothing points at the stub
+//     to it, however it is written), so nothing of the old text is served and nothing points at the stub. The
+//     words of tools/templates/stub.html, which the generator writes the stub from, are the ones expected here
 //  L  tools/urls.lock lists every URL ever registered, one row per URL as "<url> <YYYY-MM-DD>": each locked URL
 //     still has a file (the live page or the stub), every registered URL is locked and no pub date moved. The one
 //     exception to "still has a file" is a URL in tools/urls.retired (removed on the owner's decision): it must be
@@ -44,8 +45,9 @@ const FEEDS = ['feed.xml', 'atom.xml', 'rss.xml'];
 const PUBLISHED_TEXT = ['llms.txt', 'robots.txt', 'sitemap.xml', 'site.webmanifest', ...FEEDS];
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// The stub (tools/seo-head.py, STUB and stub_main). The strings are repeated here on purpose, so that the check
-// does not trust the generator; a test below proves they still equal the generator's.
+// The stub (tools/templates/stub.html: its fragment and the words of each language written by hand). The strings are
+// repeated here on purpose, so that the check does not trust the generator; a test below proves they still equal the
+// template's.
 const MONTHS = {
   en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   sv: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
@@ -57,6 +59,33 @@ const STUB = {
   sv: { title: 'Sidan är återkallad, Vynatix', desc: 'Vynatix har tagit bort den här sidan.', eyebrow: 'Återkallad', h1: 'Den här sidan är återkallad',
         lede: (iso) => `Vynatix tog bort sidan den ${day(iso, 'sv')}. Gå till startsidan.`, home: 'sv.html' },
 };
+
+// The words of tools/templates/stub.html as the generator reads them: { en: { title, desc, eyebrow, h1, lede, home,
+// date }, sv: ... }, one <dl lang> list each, read with the comments taken out. A word may name ${...}: the lede names
+// ${date} and ${home}, the date ${d}, ${m}, ${month} and ${y}, and $$ is a dollar sign.
+function templateWords(text) {
+  const out = {};
+  for (const m of stripComments(text).matchAll(/<dl lang="([a-z]{2})">([\s\S]*?)<\/dl>/g)) {
+    const row = {};
+    for (const w of m[2].matchAll(/<dt>([a-z][a-z0-9]*)<\/dt>\s*<dd>([\s\S]*?)<\/dd>/g)) row[w[1]] = w[2];
+    out[m[1]] = row;
+  }
+  return out;
+}
+const fill = (s, values) => String(s).replace(/\$(?:\$|\{([a-z][a-z0-9_]*)\})/gi, (m, n) => (n ? (n in values ? String(values[n]) : m) : '$'));
+// What a word of the template differs in from the copy above: [] when the two agree. The lede is compared as the
+// visible text of a page withdrawn on SAMPLE_DAY.
+const SAMPLE_DAY = '2026-11-05';
+function stubDiffers(lang, w) {
+  const t = STUB[lang];
+  if (!w) return [`tools/templates/stub.html has no <dl lang="${lang}">`];
+  const out = ['title', 'desc', 'eyebrow', 'h1', 'home'].filter((k) => w[k] !== t[k]).map((k) => `${k} is "${w[k]}", not "${t[k]}"`);
+  const [y, mo, d] = SAMPLE_DAY.split('-');
+  const date = fill(w.date, { d: +d, m: +mo, month: MONTHS[lang][+mo - 1], y });
+  const lede = htmlToText(fill(w.lede, { date, home: w.home })).replace(/\s+/g, ' ').trim();
+  if (lede !== t.lede(SAMPLE_DAY)) out.push(`the lede of a page withdrawn on ${SAMPLE_DAY} reads "${lede}", not "${t.lede(SAMPLE_DAY)}"`);
+  return out;
+}
 
 // The lock on origin/main, read through git, to compare the tree's lock with: { label, text }, or { error } (with a
 // label when the commit itself was found) when there is nothing to compare with. A missing origin/main is an error
@@ -100,11 +129,11 @@ function run(root = ROOT, main = mainLock(root)) {
   const robots = tryRead('robots.txt') || '';
   const feeds = FEEDS.map((f) => tryRead(f)).filter((t) => t !== null).join('\n');
   const htmlFiles = fs.readdirSync(root).filter((f) => /\.html$/.test(f));
-  const pyText = tryRead(path.join('tools', 'seo-head.py')) || '';
+  const stubText = tryRead(path.join('tools', 'templates', 'stub.html'));
+  const words = stubText === null ? {} : templateWords(stubText);
   for (const lang of Object.keys(STUB)) {
-    const t = STUB[lang];
-    const gone = [t.title, t.desc, t.eyebrow, t.h1].filter((x) => !pyText.includes(x));
-    add(!gone.length, `the ${lang} stub strings in permanence.js are the ones tools/seo-head.py writes`, `not in seo-head.py: ${gone.join(' | ')}`);
+    const differs = stubText === null ? ['tools/templates/stub.html cannot be read'] : stubDiffers(lang, words[lang]);
+    add(!differs.length, `the ${lang} stub strings in permanence.js are the ones tools/templates/stub.html holds`, differs.join('; '));
   }
   const host = /^(www\.)?vynatix\.com$/i;
   for (const w of withdrawn) {
@@ -321,11 +350,13 @@ function selfTest() {
       fs.mkdirSync(path.join(dir, d.name), { recursive: true });
       for (const f of fs.readdirSync(path.join(ROOT, d.name))) if (/\.html$/.test(f)) fs.copyFileSync(path.join(ROOT, d.name, f), path.join(dir, d.name, f));
     }
-    // The registry (tools/site: the page rows and the language table), and seo-head.py, which holds the stub strings.
+    // The registry (tools/site: the page rows and the language table), and tools/templates, whose stub.html holds the
+    // stub strings.
     fs.mkdirSync(path.join(dir, 'tools', 'seo'), { recursive: true });
-    for (const f of ['seo-head.py', 'urls.lock', 'urls.retired']) if (fs.existsSync(path.join(ROOT, 'tools', f))) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
+    for (const f of ['urls.lock', 'urls.retired']) if (fs.existsSync(path.join(ROOT, 'tools', f))) fs.copyFileSync(path.join(ROOT, 'tools', f), path.join(dir, 'tools', f));
     for (const f of fs.readdirSync(path.join(ROOT, 'tools', 'seo'))) fs.copyFileSync(path.join(ROOT, 'tools', 'seo', f), path.join(dir, 'tools', 'seo', f));
     fs.cpSync(path.join(ROOT, 'tools', 'site'), path.join(dir, 'tools', 'site'), { recursive: true });
+    fs.cpSync(path.join(ROOT, 'tools', 'templates'), path.join(dir, 'tools', 'templates'), { recursive: true });
     return dir;
   };
   const edit = (dir, rel, fn) => { const p = path.join(dir, rel); fs.writeFileSync(p, fn(fs.readFileSync(p, 'utf8'))); };
@@ -352,6 +383,11 @@ function selfTest() {
     ['control: the real tree passes', (d) => {}, true],
     ['control: a correct, unlinked stub passes', (d) => withStub(d), true],
     ['control: the same with its row written on one line passes', (d) => withStub(d, { compact: true }), true],
+    ['an eyebrow in tools/templates/stub.html that is not the one expected', (d) => edit(d, path.join('tools', 'templates', 'stub.html'), (s) => s.replace('<dd>Withdrawn</dd>', '<dd>Removed</dd>')), /en stub strings in permanence\.js .*eyebrow is "Removed"/],
+    ['a Swedish lede in tools/templates/stub.html that is not the one expected', (d) => edit(d, path.join('tools', 'templates', 'stub.html'), (s) => s.replace('Gå till startsidan</a>', 'Till startsidan</a>')), /sv stub strings in permanence\.js .*the lede/],
+    ['an English date in tools/templates/stub.html written another way', (d) => edit(d, path.join('tools', 'templates', 'stub.html'), (s) => s.replace('<dd>${d} ${month} ${y}</dd>', '<dd>${month} ${d}, ${y}</dd>')), /en stub strings in permanence\.js .*the lede/],
+    ['tools/templates/stub.html without its Swedish words', (d) => edit(d, path.join('tools', 'templates', 'stub.html'), (s) => s.replace('<dl lang="sv">', '<dl lang="xx">')), /has no <dl lang="sv">/],
+    ['no tools/templates/stub.html', (d) => fs.rmSync(path.join(d, 'tools', 'templates', 'stub.html')), /stub\.html cannot be read/],
     ['an old title on a withdrawn page', (d) => withStub(d, { title: 'Så väljer ni konsultbolag, Vynatix' }), /title is/],
     ['a short wrong <main> on a withdrawn page', (d) => withStub(d, { main: '<main id="main"><p>Volvo Trucks paid us under NDA clause 7</p></main>' }), /<main> is/],
     ['a withdrawn page linked as ./standin.html', (d) => { withStub(d); edit(d, 'about.html', (s) => s.replace('</main>', '<a href="./standin.html">x</a></main>')); }, /linked from about\.html/],

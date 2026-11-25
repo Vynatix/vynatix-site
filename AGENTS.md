@@ -111,6 +111,10 @@ tools/TAKEDOWN.md   Runbook for taking a page down; tools/urls.lock the append-o
                     protocol and decision rule; none published
 tools/DECISION-TABLE.md   Every owner decision the docs record, classed by what holds it, with the proposed
                     patterns and their samples (step 4.0 of the refactoring plan); not published
+tools/templates/    The header, the footer and the stub of a withdrawn page as HTML (header.html, footer.html,
+                    stub.html), and tools/site/company.json the company's facts: seo-head.py writes them
+                    into every page; tools/migrate/chrome.py moved them there from seo-head.py's literals and
+                    converts a branch opened before the move; not published
 ```
 
 There is no `assets/`-level JS or CSS — those folders are static files only.
@@ -349,7 +353,7 @@ animated static image"). It is the site's one ambient loop. Two parts:
   (`.js-waves-live`), not removed, because the colours are read from them. Drawing
   starts after the page is up, never in the blocking head.
 - **The pause control** is a `<button class="motion-toggle">` in the footer's Legal
-  list (the `FOOTER` template in `tools/seo-head.py`), labelled "Pause background
+  list (`tools/templates/footer.html`), labelled "Pause background
   motion" or "Play background motion", hidden until `.js-motion` and absent under
   reduced motion and forced colours. Pressing it stops the frame loop, removes the
   canvas and shows the still silk. The choice is `localStorage` `vynatix-motion` (`off`
@@ -631,13 +635,16 @@ Without `hero-bg.css` the hero has no background at all, on a page with or witho
 script.
 
 **Shared chrome: the header and the footer are templates, the rest is duplicated.** The `<header>` and `<footer>`
-are written into every page by `tools/seo-head.py` from the `HEADER` and `FOOTER` templates in it: a nav
-change (the `NAV` list), a change to the footer's links or contact details, or an `aria-current="page"` on the
+are written into every page by `tools/seo-head.py` from the templates `tools/templates/header.html` and
+`footer.html`, with the company's facts from `tools/site/company.json`: a nav
+change (the menu's links in `header.html`), a change to the footer's links (`footer.html`) or to its contact
+details (`company.json`, which the Organization node reads too), or an `aria-current="page"` on the
 current page's nav link is made there, once, and the script run, not by hand in every file. The skip link and
 the inline `<svg class="svg-defs">` that defines the wordmark `<symbol>` (both header and footer place it with
 `<use>`) are still copy-pasted into every page: a change to either must be applied to all `*.html` files
 The
-header's logo and contact-detail markup is part of the `HEADER` template. The Legal list in the footer
+header's logo markup is part of `header.html`; the contact details the footer shows are `${name}`s in
+`footer.html` whose values are in `company.json`. The Legal list in the footer
 carries the "Cookie settings" link (`data-consent-open`), which reopens the consent bar. The header is the system's TopAppBar: a floating Liquid
 Glass bar (`.site-header`) whose links take the 2px `--indicator` underline
 when current, one small primary button and two icon buttons. On a phone the links fold into
@@ -775,7 +782,8 @@ machinery in its `<head>`, between `<!-- seo -->` and `<!-- /seo -->`:
   **Keep the Organization node identical on every page** and true to the site:
   the relationship to Ultra Group is `memberOf`, matching the footer's "Part of
   Ultra Group"; do not change it to `parentOrganization` unless Bolagsverket shows
-  Vynatix AB in an Ultra Group koncern.
+  Vynatix AB in an Ultra Group koncern. Its facts, and the contact details the footer shows, are
+  `tools/site/company.json`, one home each.
 - Every page node carries `datePublished` (the date the page first went live;
   it never moves) and `dateModified`, repeated as
   `<meta property="article:published_time">` and
@@ -809,8 +817,11 @@ pace and make your software stronger as you grow. Based in Gothenburg, part of U
 Group." (Swedish: "Vynatix är mjukvarukonsultbolaget för scaleups. Våra seniora
 utvecklare blir en del av ert team, höjer tempot och gör er mjukvara starkare i takt
 med att ni växer. Vi finns i Göteborg och är en del av Ultra Group.") These are the
-brand voice's standard descriptions, in the JSON-LD (`COMPANY_SENTENCE` in
-`tools/seo-head.py`), the footer, `llms.txt` and the guides' "About Vynatix". The
+brand voice's standard descriptions, in the JSON-LD (`sentence` in `tools/site/company.json`, which
+`tools/seo-head.py` writes into every page), the footer, `llms.txt` and the guides' "About Vynatix". The
+footer says it without its first two words and its last sentence, its first letter then a capital
+(`footer_sentence`, beside it in `company.json`; `tools/verify/copies.js` fails when the two drift apart, and
+the generated languages translate it as a message of its own). The
 slogan in the structured data is the brand line, "Engineering that compounds". If a
 fact in it changes, change it everywhere, including LinkedIn and the registries, which
 are outside this repository and still carry the earlier sentence until the owner
@@ -1124,7 +1135,8 @@ English page is the only source: nobody edits a file in `es/`, `fr/`, `de/`, `ja
   generated page for the same reason (`COPY` in `app.js` has English and Swedish only). **Before analytics is
   switched on with a generated language live, counsel has to decide whether the bar and the notice need that
   language**; that is a line for `tools/PRE-FLIP-CHECKLIST.md`, not something to translate ad hoc.
-- *Header and footer.* Built from the same `HEADER`, `NAV` and `FOOTER` templates and then translated with the
+- *Header and footer.* Built from the same templates, `tools/templates/header.html` and `footer.html`, and then
+  translated with the
   page, so they carry no `lang="en"`. The footer has no Swedish column (`site-footer__grid--four`) and, in its
   last row, the language list (`languages_for`): every language in its own name, linked to this page in that
   language or, where it has none, to that language's home page.

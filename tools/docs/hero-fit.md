@@ -47,8 +47,9 @@ should always scale to fit the browser screen when it loads"). Both home pages, 
   height (at 790 that leaves 80px spare above the plain 96), 86px at the envelope's lower edge.
   *Whole*: from 864px of height at 1024px and wider (1000px on a tablet held upright, at the
   design size) the unit is solved for the whole hero (never under 0.82: 79px headline at 864,
-  84px at 1440 by 900) and the client row is pinned to the bottom of the window, the spare room
-  above its rule; from 975px that is the design size with more air. *Natural*: outside the envelope the hero is the plain scrolling hero at the design
+  84px at 1440 by 900), so the hero ends on the fold; from 975px that is the design size and the
+  row is not pinned: it follows the buttons at the plain 96 and the next section starts on the
+  first screen, never an empty band above the rule (the owner's word of 25 November 2026). *Natural*: outside the envelope the hero is the plain scrolling hero at the design
   size.
 - **The envelope.** The fit applies from 650px of window height at 600px and wider and from
   520px on a phone, inside `@supports (height: 100svh) and (transition-behavior:

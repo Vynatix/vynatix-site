@@ -106,7 +106,7 @@ front-of-mind.
   screen is the hero: `styles.css` ("Hero fit") draws the hero in one unit, `--hero-u` (1px at the design
   size), and solves it from the window's height (`100svh`) so that the header and the
   message end on the fold, with the clients' rule lying on it; from 864px of height (at 1024px and wider) the client row is on the
-  first screen too, pinned to its bottom edge. The English hero has the plain 96 units between its buttons and that rule at every
+  first screen too; from 975px, at the design size, it is not pinned and the next section starts on the first screen (owner, 25 November 2026). The English hero has the plain 96 units between its buttons and that rule at every
   width: the 336 it kept from 1100px, the room the art hung into, went on the owner's word of 24 November 2026, once the art was lifted. Every vertical size in the hero is `calc(N * var(--hero-u))`
   (N is the token the comment names), `hero-bg.css` multiplies the art's constants by the same unit, the
   eyebrow and buttons keep their size and the lede stops at 18px (16px on a phone). Outside the envelope (a

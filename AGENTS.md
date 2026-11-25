@@ -92,6 +92,8 @@ _config.yml         Controls what GitHub Pages publishes (excludes dev docs)
 SECURITY.md         Disclosure policy (GitHub surfaces it) — not published
 CODEOWNERS          Review ownership — not published
 .gitattributes      Marks the files a tool writes whole as generated, so GitHub collapses them in review
+.github/workflows/check.yml  The checks on every pull request and every push to main (static, build,
+                    browser); a dot folder, so never published, and it deploys nothing
 EDGE-SETUP.md       Cloudflare runbook for the header-only controls — not published
 tools/              Local verification scripts (verify/, including the consent checks
                     and the hero background guard), stamp.js (writes the ?v=
@@ -1699,6 +1701,15 @@ add third-party font/CDN requests for fonts.
   in such a pull request's description, and run it with `--neutral` before pushing; an empty list
   is the proof.
 
+- **The checks run on GitHub** for every pull request and every push to `main`
+  (`.github/workflows/check.yml`, read-only, every action pinned by commit). `static`
+  runs the static tier and `shipped.js` (seconds, no install); `build` builds the same
+  commit with GitHub's own Pages action and requires the output to be, byte for byte,
+  what the repository says it publishes, and the recorded carrier version to be GitHub's;
+  `browser` runs `node tools/check.js`. A push to `main` is compared with the commit
+  before it. The workflow informs; it stops a merge only once a job is a required status
+  check (below).
+
 ### Repository hardening (set once, in GitHub settings)
 
 These are not code changes, so they cannot be committed — they need someone with
@@ -1707,7 +1718,9 @@ admin rights on the repository:
 - **Branch protection on the default branch.** Because a push publishes to
   production, require a pull request and a Code Owner review before merging, and
   disallow bypassing it. `CODEOWNERS` is in place; replace the placeholder team
-  with the real one.
+  with the real one. The job to require is `static` of `.github/workflows/check.yml`
+  (`tools/REFACTORING-PLAN.md`, step 0.3, weighs the review rule and the bypass against a
+  single account that opens and merges every pull request).
 - **Commit email privacy.** The history contains a personal address on 26
   commits. Git author emails are public on GitHub. Enable *Keep my email
   addresses private* and *Block command line pushes that expose my email* in

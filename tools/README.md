@@ -40,6 +40,25 @@ also needs the system libraries Playwright lists when it fails to start
 (`npx playwright install-deps webkit`, which uses apt). Nothing here is committed except the
 scripts — `node_modules/` and generated screenshots are gitignored.
 
+## On GitHub
+
+`.github/workflows/check.yml` runs on every pull request (opened, synchronised, reopened or
+edited) and every push to `main`, with read-only permissions and every action pinned by commit:
+
+- `static`: `node check.js --static`, `node verify/i18n.js --static` and `shipped.js` against the
+  base of the run (a pull request's merge commit against its first parent; a push against the
+  commit before it, so `origin/main` is pointed there first). No install, about half a minute.
+  A pull request whose description holds the line `Byte-neutral: yes` fails here on any
+  published file that differs.
+- `build`: the same commit built with `actions/jekyll-build-pages` (the action and image of the
+  Pages run, which builds and does not deploy), then `shipped.js --built`: the output must be
+  byte for byte what the repository says it publishes; and the carrier version in
+  `pages-build.txt` must be the one `pages.github.com/versions.json` reports.
+- `browser`: `npm ci`, Playwright's Chromium, then `node check.js`.
+
+It deploys nothing; GitHub Pages builds and publishes `main` as before. Whether a job is a
+required status check is set in the repository's settings, not here.
+
 ## Running
 
 The whole chain, from `tools/`, with nothing to start first:
